@@ -1,0 +1,15 @@
+.content {
+  margin: 200rpx 0 300rpx 100rpx;
+}
+
+.content text {
+    display: block;
+    color: #9d9d9d;
+    margin-top: 40rpx;
+}
+
+.bottom {
+    border-radius: 80rpx;
+    margin: 0rpx 100rpx 0rpx 100rpx;
+    font-size: 35rpx;
+}
