@@ -1,0 +1,86 @@
+.registerContainer{
+  padding: 20rpx 20rpx 20rpx 5rpx;
+}
+.submit {
+  width: 500rpx;
+}
+.nextStepBtn{
+  margin-top: 20rpx; 
+}
+.submitBtn{
+  margin-top: 20rpx;
+}
+
+.register-steps {
+  line-height: 80rpx;
+  height: 80rpx;
+  text-align: center;
+  font-size: 28rpx;
+  width: 100%;
+  color: #fff;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.register-steps .step{
+  width: 50%;
+  float: left;
+  background: #89cff5;
+  position: relative;
+}
+.register-steps .active, .register-steps .active:after {
+  background-color: #29a0de;
+}
+.register-steps .step::after {
+  content: "";
+  border-bottom: 0;
+  border-left: 0;
+  height: 67rpx;
+  width: 67rpx;
+  position: absolute;
+  display: block;
+  top: 7rpx;
+  transform: rotate(45deg);
+}
+
+.register-steps .base-step::after{
+  right: -27rpx;
+  z-index: 2;
+  background-color: #89cff5;
+}
+.register-steps .detail-step::after{
+  left:-24rpx;
+  z-index: 1;
+  background-color: white;
+}
+.register-steps .base-step.active::after{
+  background-color: #29a0de;
+}
+
+.vcode-btn{
+  width: 150rpx;
+  height: 60rpx;
+  text-align: center;
+  line-height: 60rpx;
+  border-radius: 10rpx;
+  color: #fff;
+  font-size: 24rpx;
+  padding: 0 10rpx;
+}
+
+.comment{
+  width: 200rpx;
+}
+.comment .commentArea{
+  width: 100%;
+  padding: 20rpx 25rpx 20rpx 5rpx;
+}
+
+.textTips{
+  margin: 40rpx 0 0 20rpx;
+  font-style: italic;
+  font-size: 30rpx;
+}
+.specialChar{
+  color: red;
+}
