@@ -10,4 +10,5 @@
 *.log
 __pycache__
 MANIFEST
-*/build/*
+**/build
+venv/
