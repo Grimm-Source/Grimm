@@ -1,3 +1,24 @@
+..
+ File: CONTRIBUTING.rst
+ Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
+ License: MIT
+ ------------------------------------------------------------------------ 
+ Authors:  Ming Li(adagio.ming@gmail.com)
+
+ Description: address the norms that contributions from community should follow.
+
+ To-Dos:
+   1. make other supplements if needed.
+
+ Issues:
+   No issue so far.
+
+ Revision History (Date, Editor, Description):
+   1. 2019/08/15, Ming, create first revision.
+..
+
+
+
 =======================
 Contributing to Grimm
 =======================
