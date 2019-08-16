@@ -1,0 +1,3 @@
+<view class="home">
+  <button bindtap="bindTapProfile">个人信息</button>
+</view>

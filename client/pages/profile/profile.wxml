@@ -1,0 +1,133 @@
+<view class="profile">
+  <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="姓名" >姓名</view>
+      </view>
+      <view class="weui-cell__bd form-input-readonly">
+        <input class="weui-input" disabled aria-valuenow="{{userInfo.name}}" aria-readonly value="{{userInfo.name}}"/>
+      </view>
+    </view>
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="身份证号码">身份证号码</view>
+      </view>
+      <view class="weui-cell__bd form-input-readonly">
+        <input class="weui-input" disabled aria-readonly aria-valuenow="{{userInfo.idNum}}" aria-readonly value="{{userInfo.idNum}}"/>
+      </view>
+    </view> 
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="昵称">昵称</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="请输入昵称" bindchange="bindNickNameChange" aria-placeholder="请输入昵称" aria-valuenow="{{userInfo.nickName}}" maxlength="20" value="{{userInfo.nickName}}"/>
+      </view>
+      <view class="weui-cell__ft" wx:if="{{error.nickName}}">
+        <icon type="warn" size="23" color="#E64340"></icon>
+      </view>
+    </view> 
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label"  aria-label="手机号">手机号</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="请输入手机号" bindchange="bindMobileChange" aria-placeholder="请输入手机号" aria-valuenow="{{userInfo.mobile}}" value="{{userInfo.mobile}}" type="number" maxlength="11"/>
+      </view>
+      <view class="weui-cell__ft" wx:if="{{error.mobile}}">
+        <icon type="warn" size="23" color="#E64340"></icon>
+      </view>
+    </view> 
+    <view wx:if="{{ui.isMobileChanged && !ui.isMobileValid}}" class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <button class="weui-label code-valid" disabled="{{ui.isCodeSent}}" bindtap="getCode" aria-label="{{ui.leftTimeLabel}}">{{ui.leftTimeLabel}}</button>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="请输入验证码" bindchange="bindCodeChange" aria-placeholder="请输入验证码" aria-valuenow="{{ui.code}}" value="{{ui.code}}" type="number" maxlength="6"/>
+      </view>
+      <view class="weui-cell__hd">
+        <button class="form-button-code" bindtap="validateCode" aria-label="验证验证码" loading="{{ui.isLoadingValid}}">验证</button>
+      </view>
+    </view> 
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="性别">性别</view>
+      </view>
+      <view class="weui-cell__bd">
+      <picker bindchange="bindGenderChange" value="{{userInfo.gender}}" range="{{meta.genderArray}}">
+        <view class="weui-input" aria-valuenow="{{meta.genderArray[userInfo.gender]}}" >
+        {{meta.genderArray[userInfo.gender]}}
+        </view>
+      </picker>
+      </view>
+    </view>
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="出生年月">出生年月</view>
+      </view>
+      <view class="weui-cell__bd">
+        <picker mode="date" value="{{userInfo.birthday}}" start="{{meta.birthdayStartDate}}" end="{{meta.birthdayEndDate}}" bindchange="bindDateChange">
+            <view class="weui-input" aria-valuenow="{{userInfo.birthday}}">
+            {{userInfo.birthday}}
+            </view>
+        </picker>
+      </view>
+    </view>
+    
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd" aria-label="联系电话">
+        <view class="weui-label">联系电话</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="请输入手机号或电话，如021-58585888" aria-placeholder="请输入手机号或电话，如021-58585888" bindchange="bindPhoneChange" aria-valuenow="{{userInfo.phone}}" value="{{userInfo.phone}}"/>
+      </view>
+      <view class="weui-cell__ft" wx:if="{{error.phone}}">
+        <icon type="warn" size="23" color="#E64340"></icon>
+      </view>
+    </view>
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd" aria-label="联系地址">
+        <view class="weui-label">联系地址</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="请输入联系地址"  aria-placeholder="请输入联系地址" bindchange="bindAddressChange" maxlength="100" aria-valuenow="{{userInfo.address}}" value="{{userInfo.address}}"/>
+      </view>
+      <view class="weui-cell__ft" wx:if="{{error.address}}">
+        <icon type="warn" size="23" color="#E64340"></icon>
+      </view>
+    </view>   
+    <view class="additional-sect" wx:if="{{userInfo.userType === 'normal'}}">
+        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+            <view class="weui-label" aria-label="残疾人证">残疾人证</view>
+        </view>
+        <view class="weui-cell__bd form-input-readonly">
+            <input class="weui-input" disabled aria-valuenow="{{userInfo.disableNum}}" value="{{userInfo.disableNum}}"/>
+        </view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+            <view class="weui-label" aria-label="紧急联系人">紧急联系人</view>
+        </view>
+        <view class="weui-cell__bd">
+            <input class="weui-input" placeholder="请输入紧急联系人姓名" aria-placeholder="请输入紧急联系人姓名" bindchange="bindEmergencyNameChange" maxlength="20" aria-valuenow="{{userInfo.emergencyName}}" value="{{userInfo.emergencyName}}"/>
+        </view>
+        <view class="weui-cell__ft" wx:if="{{error.emergencyName}}">
+            <icon type="warn" size="23" color="#E64340"></icon>
+        </view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+            <view class="weui-label" aria-label="联系人电话">联系人电话</view>
+        </view>
+        <view class="weui-cell__bd">
+            <input class="weui-input" placeholder="请输入紧急联系人电话" aria-placeholder="请输入紧急联系人电话" aria-valuenow="{{userInfo.emergencyPhone}}" bindchange="bindEmergencyPhoneChange" value="{{userInfo.emergencyPhone}}"/>
+        </view>
+        <view class="weui-cell__ft" wx:if="{{error.emergencyPhone}}">
+            <icon type="warn" size="23" color="#E64340"></icon>
+        </view>
+        </view> 
+    </view>
+  </view>  
+    <button class="weui-btn" disabled="{{!ui.isFormValid || !ui.isMobileValid}}" loading="{{ui.isLoadingUpdate}}" type="primary" bindtap="updateProfile">更新</button>
+</view>

@@ -1,12 +1,14 @@
 from flask import Flask,request
 import urllib3
 import json
-import config
+import time
+
+# import config
 
 app = Flask(__name__)
 
-wx_appid = config.wx_appid
-wx_secret = config.wx_appid
+# wx_appid = config.wx_appid
+# wx_secret = config.wx_appid
 
 @app.route('/jscode2session')
 def wx_jscode2session():
@@ -40,6 +42,28 @@ def register():
 	data['phoneNum'] = request.args.get("phoneNum")
 	
 	return json.dumps(data)
+
+@app.route('/profile/<int:open_id>', methods=['GET'])
+def getProfile(open_id):
+	time.sleep(1)#fake time
+	return json.dumps({
+        "name": "何君尧",
+        "nickName": "小手冰凉的小何何",
+        "birthday":"1968-01-01",
+        "gender":0,
+        "idNum":"310111196801010450",
+        "mobile":"13918013475",
+        "address":"上海市人民路1号101室",
+        "phone": "13919191383",
+        "emergencyName": "何耀军",
+        "emergencyPhone": "13919191385",
+        "disableNum":"310111196801010450A1",
+        "userType": "normal"
+	})
+
+@app.route('/profile', methods=['POST'])
+def updateProfile():
+	return request.data
 	
 if __name__ == '__main__':
 	app.run()

@@ -374,7 +374,10 @@ Page({
       url: apiUrl + 'register',
       data: formData,
       success: function (res) {
-       console.log(res)
+        console.log(res)
+        wx.navigateTo({
+          url: '../home/home',
+        });
       }
     })
   },
