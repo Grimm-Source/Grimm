@@ -29,16 +29,18 @@ Py Code Style Conventions:
                             (both forms are okay, but prefer the first one)
     3. Function Name:       template_func_name 
                             (only 1 form is allowed, use underscore to separate name words)
-    4. Global Var Name:     TEMPLATE_GLOBAL_VAR_NAME
+    4. Global Consts:       TEMPLATE_GLOBAL_CONSTS
                             (only 1 form is allowed, capitalized each word and use underscore to separate each word, put all global vars at the beginning of the code, right after the 'import' part, and before the declaration part)
-    5. Scope Var Name:      template_scope_var_name
+    5. Global Non-consts:   template_global_non_consts
+                            (follows 'Function Name' convention)
+    5. Scope Vars:          template_scope_var_name
                             (follows 'Function Name' convention)
     6. File Names:          python_template_file.py
                             (follows 'Function Name' convention, but with filetype suffix)
     Others to be amended...
 
 
-Name Form Conventions:
+Name Form Conventions(Recommended):
     1. do_something:        a function or a procedure is designed to do a certain job, when naming this kind of functions/procedures, put the verb ahead of other words, like 'parse', then others behind, and then the job name at last.
                             example:
                                     parse_url_info

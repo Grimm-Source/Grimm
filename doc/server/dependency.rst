@@ -27,7 +27,5 @@ Package List
     - Jinja2
 
 - urllib3
-- mysql-python
-- mysql-connector
-- mysql-connector-python
-- mysqlclient
+- PyMySQL
+- bcrypt

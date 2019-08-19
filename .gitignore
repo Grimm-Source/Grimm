@@ -2,13 +2,25 @@
 # $GIT_DIR/info/exclude or the core.excludesFile configuration variable as
 # described in https://git-scm.com/docs/gitignore
 
-
+# Mac desktop files
 .DS_Store*
+# useless python files
 *.egg-info
 *.pot
 *.py[co]
-*.log
-__pycache__
-MANIFEST
 **/build
+# python venv files
 venv/
+# log files
+log
+# python cache files
+__pycache__
+# MANIFEST resource files
+MANIFEST
+# backup files
+*~
+*.bak
+*.orig
+# cscope and ctags file
+tags
+cscope*
