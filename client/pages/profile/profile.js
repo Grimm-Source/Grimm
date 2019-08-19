@@ -51,8 +51,16 @@ Page({
           icon: 'success', //error
           duration: 2000
         });
-        this.__setUi("isTelValid", true);
-        this.__setError("tel", false);
+        clearInterval(this.timer);
+        this.setData({"code": ""});
+        this.__setError("tel",false);
+        this.__setUis({
+          "isCodeSent": false,
+          "leftTimeLabel": `获取验证码`,
+          "isTelValid": true,
+          "tel": false
+        });
+        this.__validateAll();
     },()=>{
       wx.showToast({
         title: '验证码错误',
@@ -70,12 +78,12 @@ Page({
       "isTelChanged": true,
       "isTelValid": false
     });
-    this.setData("code", "");
+    this.setData({"code": ""});
     this.__updateUserInfo("tel", e.detail && e.detail.value);
   },
 
   bindCodeChange: function(e){
-    this.setData("code", e.detail && e.detail.value);
+    this.setData({"code": e.detail && e.detail.value});
   },
 
   bindGenderChange: function(e){
@@ -193,12 +201,12 @@ Page({
 
   __updateTimer: function(){
     let that = this,
-    time = 60,
-    timer = setInterval(function(){
+    time = 60;
+    this.timer = setInterval(function(){
       that.__setUi("leftTimeLabel", `${time--}秒后再试`);
       if(time < 0){
         time = 60;
-        clearInterval(timer);
+        clearInterval(that.timer);
         that.__setUi("isCodeSent", false);
         that.__setUi("leftTimeLabel", `获取验证码`);
       }
