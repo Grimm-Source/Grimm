@@ -32,7 +32,7 @@
         <button class="weui-label code-valid" disabled="{{ui.isCodeSent}}" bindtap="getCode" aria-label="{{ui.leftTimeLabel}}">{{ui.leftTimeLabel}}</button>
       </view>
       <view class="weui-cell__bd">
-        <input class="weui-input" placeholder="请输入验证码" bindchange="bindCodeChange" aria-placeholder="请输入验证码" aria-valuenow="{{ui.code}}" value="{{ui.code}}" type="number" maxlength="6"/>
+        <input class="weui-input" placeholder="请输入验证码" bindchange="bindCodeChange" aria-placeholder="请输入验证码" aria-valuenow="{{code}}" value="{{code}}" type="number" maxlength="6"/>
       </view>
       <view class="weui-cell__hd">
         <button class="form-button-code" bindtap="validateCode" aria-label="验证验证码" loading="{{ui.isLoadingValid}}">验证</button>

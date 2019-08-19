@@ -44,7 +44,7 @@ Page({
     }
     verifyCode({ 
       tel: this.data.userInfo.tel, 
-      code: this.data.ui.code
+      code: this.data.code
     },()=>{
         wx.showToast({
           title: '验证成功',
@@ -68,14 +68,14 @@ Page({
     }
     this.__setUis({
       "isTelChanged": true,
-      "isTelValid": false,
-      "code": ""
+      "isTelValid": false
     });
+    this.setData("code", "");
     this.__updateUserInfo("tel", e.detail && e.detail.value);
   },
 
   bindCodeChange: function(e){
-    this.__setUi("code", e.detail && e.detail.value);
+    this.setData("code", e.detail && e.detail.value);
   },
 
   bindGenderChange: function(e){
@@ -100,13 +100,13 @@ Page({
 
   __initData: function(){
     this.setData({
+      code:"",
       ui:{
           isTelChanged: false,
           leftTimeLabel: "获取验证码",
           isCodeSent: false,
           isTelValid: true,
           telNeedValidate: null,
-          code: "",
           isFormValid: true,
           isLoadingValid: false,
           isLoadingUpdate: false
