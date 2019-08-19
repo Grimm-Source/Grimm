@@ -378,6 +378,9 @@ Page({
         wx.navigateTo({
           url: '../home/home',
         });
+        wx.switchTab({
+          url: '../home/home',
+        });
       }
     })
   },

@@ -39,7 +39,6 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    wx.showLoading();
     this.__getProfile();
   },
 
@@ -84,7 +83,7 @@ Page({
       });
     });
   },
-  
+
   bindNickNameChange: function(e){
     this.__updateUserInfo("nickName", e.detail && e.detail.value);
   },
@@ -214,17 +213,16 @@ Page({
   },
 
   __getProfile: function(){
-    getProfile(this.data.id, (res) => {
-      wx.hideLoading();
+    return getProfile(this.data.id, (data) => {
       this.setData({
-        userInfo: res.data
+        userInfo: data
       });
-    },(res) => {
-      wx.hideLoading();
+    },(err) => {
       wx.showModal({
         title: '提示',
-        content: '未查询到个人信息',
-        success (res) {
+        content: err,
+        showCancel: false,
+        success () {
           wx.navigateTo({
             url: '../home/home',
           });
@@ -234,8 +232,7 @@ Page({
   },
 
   __updateProfile: function(){
-    updateProfile(this.data.userInfo, (res)=>{
-      wx.hideLoading();
+    return updateProfile(this.data.userInfo, (res)=>{
       wx.showToast({
         title: '已更新',
         icon: 'success',
@@ -246,11 +243,11 @@ Page({
           url: '../home/home',
         });
       }, 300);
-    },()=>{
-      wx.hideLoading();
+    },(err)=>{
       wx.showModal({
-        title: '提示',
-        content: '更新失败'
+        showCancel: false,
+        title: '更新失败',
+        content: err || "网络失败，请稍候再试"
       });  
     });
   }

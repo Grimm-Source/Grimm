@@ -13,5 +13,25 @@
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"
   },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "networkTimeout": {
+    "request": 10000
+  },
+  "tabBar": {
+    "color": "#07c160",
+    "selectedColor": "#07c160",
+    "borderStyle": "black",
+    "backgroundColor": "black",
+    "list": [{
+      "pagePath": "pages/home/home",
+      "iconPath": "images/home.png",
+      "selectedIconPath": "images/home.png",
+      "text": "首页"
+    }, {
+      "pagePath": "pages/profile/profile",
+      "iconPath": "images/self.png",
+      "selectedIconPath": "images/self.png",
+      "text": "个人中心"
+    }]
+  }
 }

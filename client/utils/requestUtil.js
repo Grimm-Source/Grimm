@@ -1,35 +1,20 @@
-const apiUrl = require('../config.js').apiUrl;
+const {request} = require('interceptor.js');
 
 function getProfile(id, successCallback, failCallback){
-    return wx.request({
-        url: `${apiUrl}profile/${id}`, //仅为示例，并非真实的接口地址
-        header: {
-          'content-type': 'application/json' // 默认值
-        },
-        method: "GET",
-        success (res) {
-            successCallback(res);
-        },
-        fail(res){
-            failCallback(res);        
-        }
+    return request({
+        url: `profile/${id}`, 
+        success: successCallback,
+        fail: failCallback
     });
 }
 
 function updateProfile(userInfo, successCallback, failCallback){
-    return wx.request({
-        url: `${apiUrl}profile`, //仅为示例，并非真实的接口地址
-        header: {
-          'content-type': 'application/json' // 默认值
-        },
-        data: userInfo,
+    return request({
+        url: `profile`, 
         method: "POST",
-        success (res) {
-            successCallback(res);
-        },
-        fail(res){
-            failCallback(res);        
-        }
+        data: userInfo,
+        success: successCallback,
+        fail: failCallback
     });
 }
 
