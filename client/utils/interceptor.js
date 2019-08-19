@@ -1,18 +1,25 @@
 const apiUrl = require('../config.js').apiUrl;
+
 const request = (option, isManualLoading = false) => {
     if(!option.url){
         return;
     }
-    wx.showLoading();
+
+    if(!isManualLoading){
+        wx.showLoading();
+    }
+    
     return new Promise((resolve, reject) => {
+
         let obj = {
             url: `${apiUrl}${option.url}`,
             header: {
-                'content-type': 'application/json' // 默认值
+                'content-type': 'application/json',
+                'authorization': wx.getStorageSync('openid'),
             },
             method: option.method || "GET",
             success: (res) =>{
-                if(res.statusCode >= 500){
+                if(res.statusCode >= 400){
                     reject('网络失败，请稍后再试');
                 }else{
                     if(res.data.error){
@@ -35,7 +42,9 @@ const request = (option, isManualLoading = false) => {
         if(option.method === "POST"){
             obj["data"] = option.data;
         }
+        
         wx.request(obj);
+
      }).then((data)=>{
         option.success && option.success(data);
      },(error)=>{

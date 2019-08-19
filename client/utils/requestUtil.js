@@ -1,14 +1,14 @@
 const {request} = require('interceptor.js');
 
-function getProfile(id, successCallback, failCallback){
+const getProfile = (id, successCallback, failCallback) => {
     return request({
-        url: `profile/${id}`, 
+        url: `profile`, 
         success: successCallback,
         fail: failCallback
     });
 }
 
-function updateProfile(userInfo, successCallback, failCallback){
+const updateProfile = (userInfo, successCallback, failCallback) => {
     return request({
         url: `profile`, 
         method: "POST",
@@ -18,13 +18,13 @@ function updateProfile(userInfo, successCallback, failCallback){
     });
 }
 
-function getVerifyCode(mobile){
+const getVerifyCode = (tel) => {
     //get
 }
 
-function verifyCode(obj, successCallback, failCallback){
+const verifyCode = (obj, successCallback, failCallback) =>{
     //send
-    let {mobile, code} = obj;
+    let {tel, code} = obj;
     successCallback();
 }
 

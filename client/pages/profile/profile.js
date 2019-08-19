@@ -4,41 +4,17 @@ const {getVerifyCode, verifyCode, getProfile, updateProfile} = require('../../ut
 const app = getApp()
 
 Page({
-
-  /**
-   * Page initial data
-   */
+  
   data: {
-    id: "11111111111", //temp openid 
     meta:{
-        genderArray: ["男","女"],
-        birthdayStartDate: "1910-01-01",
-        birthdayEndDate: (new Date).toJSON().split("T")[0],
-    },
-    ui:{
-        isMobileChanged: false,
-        leftTimeLabel: "获取验证码",
-        isCodeSent: false,
-        isMobileValid: true,
-        mobileNeedValidate: null,
-        code: "",
-        isFormValid: true,
-        isLoadingValid: false,
-        isLoadingUpdate: false
-    },
-    error: {
-      nickName: false,
-      mobile: false,
-      address: false,
-      phone: false,
-      emergencyName: false,
-      emergencyPhone: false,
+      genderArray: ["男","女"],
+      birthdayStartDate: "1910-01-01",
+      birthdayEndDate: (new Date).toJSON().split("T")[0],
     }
   },
-  /**
-   * Lifecycle function--Called when page load
-   */
-  onLoad: function (options) {
+
+  onShow: function (options) {
+    this.__initData();
     this.__getProfile();
   },
 
@@ -50,31 +26,33 @@ Page({
   },
 
   getCode: function(e){
-    getVerifyCode(this.data.userInfo.mobile);
-    this.__setUi("isCodeSent", true);
+    getVerifyCode(this.data.userInfo.tel);
+    this.__setUis({
+      "isCodeSent": true,
+      "telNeedValidate": this.data.userInfo.tel 
+    });
     this.__updateTimer();
   },
 
   validateCode: function(){
+    if(this.data.ui.telNeedValidate !== this.data.userInfo.tel){ //incase the user change the number after get a code
+      wx.showToast({
+        title: '验证失败',
+        icon: 'success', //error
+        duration: 2000
+      });
+    }
     verifyCode({ 
-      mobile: this.data.userInfo.mobile, 
+      tel: this.data.userInfo.tel, 
       code: this.data.ui.code
     },()=>{
-      if(this.ui.mobileNeedValidate !== this.userInfo.phone){ //incase the user change the number after get a code
-        wx.showToast({
-          title: '手机号不匹配，请重新获取',
-          icon: 'success', //error
-          duration: 2000
-        });
-      }else{
         wx.showToast({
           title: '验证成功',
           icon: 'success', //error
           duration: 2000
         });
-        this.__setUi("isMobileValid", true);
-        this.__setError("mobile", false);
-      }
+        this.__setUi("isTelValid", true);
+        this.__setError("tel", false);
     },()=>{
       wx.showToast({
         title: '验证码错误',
@@ -84,21 +62,16 @@ Page({
     });
   },
 
-  bindNickNameChange: function(e){
-    this.__updateUserInfo("nickName", e.detail && e.detail.value);
-  },
-
-  bindMobileChange: function(e){
-    if((e.detail && e.detail.value) === this.data.userInfo.mobile){
+  bindTelChange: function(e){
+    if((e.detail && e.detail.value) === this.data.userInfo.tel){
       return;
     }
     this.__setUis({
-      "isMobileChanged": true,
-      "isMobileValid": false,
-      "code": null,
-      "mobileNeedValidate": e.detail.value 
+      "isTelChanged": true,
+      "isTelValid": false,
+      "code": ""
     });
-    this.__updateUserInfo("mobile", e.detail && e.detail.value);
+    this.__updateUserInfo("tel", e.detail && e.detail.value);
   },
 
   bindCodeChange: function(e){
@@ -106,23 +79,46 @@ Page({
   },
 
   bindGenderChange: function(e){
-    this.__updateUserInfo("gender", e.detail && Number(e.detail.value));
+    this.__updateUserInfo("gender", this.data.meta.genderArray[e.detail && Number(e.detail.value)]);
   },
 
   bindDateChange: function(e){
-    this.__updateUserInfo("birthday", e.detail && e.detail.value);
+    this.__updateUserInfo("birthDate", e.detail && e.detail.value);
   },
-  bindPhoneChange: function(e){
-    this.__updateUserInfo("phone", e.detail && e.detail.value);
+  bindLinktelChange: function(e){
+    this.__updateUserInfo("linktel", e.detail && e.detail.value);
   },
-  bindAddressChange: function(e){
-    this.__updateUserInfo("address", e.detail && e.detail.value);
+  bindLinkaddressChange: function(e){
+    this.__updateUserInfo("linkaddress", e.detail && e.detail.value);
   },
-  bindEmergencyNameChange: function(e){
-    this.__updateUserInfo("emergencyName", e.detail && e.detail.value);
+  bindEmergencyPersonChange: function(e){
+    this.__updateUserInfo("emergencyPerson", e.detail && e.detail.value);
   },
-  bindEmergencyPhoneChange: function(e){
-    this.__updateUserInfo("emergencyPhone", e.detail && e.detail.value);
+  bindEmergencyTelChange: function(e){
+    this.__updateUserInfo("emergencyTel", e.detail && e.detail.value);
+  },
+
+  __initData: function(){
+    this.setData({
+      ui:{
+          isTelChanged: false,
+          leftTimeLabel: "获取验证码",
+          isCodeSent: false,
+          isTelValid: true,
+          telNeedValidate: null,
+          code: "",
+          isFormValid: true,
+          isLoadingValid: false,
+          isLoadingUpdate: false
+      },
+      error: {
+        tel: false,
+        linkaddress: false,
+        linktel: false,
+        emergencyPerson: false,
+        emergencyTel: false,
+      }
+    });
   },
 
   __updateUserInfo: function(key, value = null, isIgnoreValid){
@@ -164,22 +160,19 @@ Page({
     let mobile = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
     phone = /^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/;
     switch(key) {
-      case "emergencyName":
-          if(this.data.userInfo.userType !== "normal"){
+      case "emergencyPerson":
+          if(this.data.userInfo.role !== "视障人士"){
             return true;
           }
-      case "nickName":
-        return !!value && (value.length <= 20);
-      case "mobile":
-        return !!value && mobile.test(value) && this.data.ui.isMobileValid;
-      case "emergencyPhone":
-        if(this.data.userInfo.userType !== "normal"){
+          return !!value && (value.length <= 20);
+      case "tel":
+        return !!value && mobile.test(value) && this.data.ui.isTelValid;
+      case "emergencyTel":
+        if(this.data.userInfo.role !== "视障人士"){
           return true;
         }
-      case "phone":
+      case "linktel":
         return !!value && (mobile.test(value) || phone.test(value));
-      case "gender":
-        return value === 0 || value === 1;
       default:
         return !!value
     }
@@ -223,7 +216,7 @@ Page({
         content: err,
         showCancel: false,
         success () {
-          wx.navigateTo({
+          wx.switchTab({
             url: '../home/home',
           });
         }
@@ -238,11 +231,6 @@ Page({
         icon: 'success',
         duration: 300
       });
-      setTimeout(function(){
-        wx.navigateTo({
-          url: '../home/home',
-        });
-      }, 300);
     },(err)=>{
       wx.showModal({
         showCancel: false,

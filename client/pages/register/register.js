@@ -375,9 +375,6 @@ Page({
       data: formData,
       success: function (res) {
         console.log(res)
-        wx.navigateTo({
-          url: '../home/home',
-        });
         wx.switchTab({
           url: '../home/home',
         });
