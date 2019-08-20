@@ -1,8 +1,6 @@
 import WxValidate from "../../utils/WxValidate";
 const {getVerifyCode, verifyCode, getProfile, updateProfile} = require('../../utils/requestUtil.js');
 
-const app = getApp()
-
 Page({
   
   data: {
@@ -38,9 +36,10 @@ Page({
     if(this.data.ui.telNeedValidate !== this.data.userInfo.tel){ //incase the user change the number after get a code
       wx.showToast({
         title: '验证失败',
-        icon: 'success', //error
+        icon: 'none', //error
         duration: 2000
       });
+      return;
     }
     verifyCode({ 
       tel: this.data.userInfo.tel, 
@@ -64,7 +63,7 @@ Page({
     },()=>{
       wx.showToast({
         title: '验证码错误',
-        icon: 'success', //error
+        icon: 'none', //error
         duration: 2000
       });
     });
@@ -150,6 +149,7 @@ Page({
         ui
       });
   },
+
   __setError: function(key, value){
     let error = this.data && this.data.error;
       error[key] = value;
@@ -200,15 +200,14 @@ Page({
   },
 
   __updateTimer: function(){
-    let that = this,
-    time = 60;
-    this.timer = setInterval(function(){
-      that.__setUi("leftTimeLabel", `${time--}秒后再试`);
+    let time = 60;
+    this.timer = setInterval(() => {
+      this.__setUi("leftTimeLabel", `${time--}秒后再试`);
       if(time < 0){
         time = 60;
         clearInterval(that.timer);
-        that.__setUi("isCodeSent", false);
-        that.__setUi("leftTimeLabel", `获取验证码`);
+        this.__setUi("isCodeSent", false);
+        this.__setUi("leftTimeLabel", `获取验证码`);
       }
     }, 1000);
   },
