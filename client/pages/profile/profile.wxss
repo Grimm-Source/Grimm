@@ -16,3 +16,8 @@
     background: #07c160;
     color: white;
 }
+
+.profile icon{
+    color: #E64340;
+    size: 23;
+}

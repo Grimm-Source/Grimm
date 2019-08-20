@@ -1,4 +1,4 @@
-import WxValidate from "../../utils/WxValidate";
+const {userInfoMessage} = require('../../utils/messageHelper.js');
 const {getVerifyCode, verifyCode, getProfile, updateProfile} = require('../../utils/requestUtil.js');
 
 Page({
@@ -8,7 +8,8 @@ Page({
       genderArray: ["男","女"],
       birthdayStartDate: "1910-01-01",
       birthdayEndDate: (new Date).toJSON().split("T")[0],
-    }
+    },
+    message: userInfoMessage
   },
 
   onShow: function (options) {
@@ -33,6 +34,9 @@ Page({
   },
 
   validateCode: function(){
+    if(!this.data.code || this.data.code.length !== 6){
+      return;
+    }
     if(this.data.ui.telNeedValidate !== this.data.userInfo.tel){ //incase the user change the number after get a code
       wx.showToast({
         title: '验证失败',
@@ -69,40 +73,29 @@ Page({
     });
   },
 
-  bindTelChange: function(e){
-    if((e.detail && e.detail.value) === this.data.userInfo.tel){
-      return;
+  bindInputChange: function(e){
+    switch( e.currentTarget.dataset['infoKey']) {
+      case "tel": 
+        this.__bindTelChange(e);
+        break;
+      case "code": 
+        this.setData({"code": e.detail && e.detail.value});
+        break;
+      case "gender":
+        this.__updateUserInfo("gender", this.data.meta.genderArray[e.detail && Number(e.detail.value)]);
+        break;
+      default:
+        this.__updateUserInfo(e.currentTarget.dataset['infoKey'], e.detail && e.detail.value);
     }
-    this.__setUis({
-      "isTelChanged": true,
-      "isTelValid": false
+  },
+
+  tapError: function(e){
+    let key = e.currentTarget.dataset['infoKey'];
+    wx.showToast({
+      title: userInfoMessage[key]["message"],
+      icon: 'none',
+      duration: 2000
     });
-    this.setData({"code": ""});
-    this.__updateUserInfo("tel", e.detail && e.detail.value);
-  },
-
-  bindCodeChange: function(e){
-    this.setData({"code": e.detail && e.detail.value});
-  },
-
-  bindGenderChange: function(e){
-    this.__updateUserInfo("gender", this.data.meta.genderArray[e.detail && Number(e.detail.value)]);
-  },
-
-  bindDateChange: function(e){
-    this.__updateUserInfo("birthDate", e.detail && e.detail.value);
-  },
-  bindLinktelChange: function(e){
-    this.__updateUserInfo("linktel", e.detail && e.detail.value);
-  },
-  bindLinkaddressChange: function(e){
-    this.__updateUserInfo("linkaddress", e.detail && e.detail.value);
-  },
-  bindEmergencyPersonChange: function(e){
-    this.__updateUserInfo("emergencyPerson", e.detail && e.detail.value);
-  },
-  bindEmergencyTelChange: function(e){
-    this.__updateUserInfo("emergencyTel", e.detail && e.detail.value);
   },
 
   __initData: function(){
@@ -123,14 +116,26 @@ Page({
         linkaddress: false,
         linktel: false,
         emergencyPerson: false,
-        emergencyTel: false,
+        emergencyTel: false
       }
     });
   },
 
+  __bindTelChange: function(e){
+    if((e.detail && e.detail.value) === this.data.userInfo.tel){
+      return;
+    }
+    this.__setUis({
+      "isTelChanged": true,
+      "isTelValid": false
+    });
+    this.setData({"code": ""});
+    this.__updateUserInfo("tel", e.detail && e.detail.value);
+  },
+
   __updateUserInfo: function(key, value = null, isIgnoreValid){
     let userInfo = this.data && this.data.userInfo;
-    userInfo[key] = value;
+    userInfo[key] = value.trim();
     this.setData({
         userInfo
     });
@@ -165,14 +170,15 @@ Page({
   },
 
   __validate: function(key, value){
-    let mobile = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
+    let name = /^[\u4E00-\u9FA5A-Za-z\s]+(·[\u4E00-\u9FA5A-Za-z]+)*$/, //中英文名包括点或者空格
+    mobile = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
     phone = /^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/;
     switch(key) {
       case "emergencyPerson":
           if(this.data.userInfo.role !== "视障人士"){
             return true;
           }
-          return !!value && (value.length <= 20);
+          return !!value && name.test(value);
       case "tel":
         return !!value && mobile.test(value) && this.data.ui.isTelValid;
       case "emergencyTel":
