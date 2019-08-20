@@ -20,11 +20,11 @@ class grimmdb():
         self.db = pymysql.connect(self.host, self.user, self.passwd, self.dbName)
         self.cursor = self.db.cursor()
 
-    def get_one(self, sql):
+    def get_one(self, sql, args):
         res = None
         try:
             self.connect()
-            self.cursor.execute(sql)
+            self.cursor.execute(sql, args)
             res = self.cursor.fetchone()
             self.close()
         except:
@@ -82,9 +82,15 @@ def wx_jscode2session():
         
         json_data = json.loads(response_data)
         json_data['server_errcode'] = 0
-        
         json_data['is_register'] = False
-        
+        openid = request.args.get('openid')
+        print('current user:', openid)
+        sql = "SELECT * from mainInfo where idcard = %s"
+        res = grimmdb.get_one(sql, openid)
+        print(res)
+        if res is not None:
+            json_data['is_register'] = True
+            print('xtydbug:', res)
         ret_data_str = json.dumps(json_data)
         print('response_data: ', ret_data_str)
     else:
@@ -96,6 +102,7 @@ def wx_jscode2session():
 def maininfoset():
     data = json.loads('{}')
     if request.method == 'GET':
+        data['openid']           = request.args.get('openid')
         data['birthDate']        = request.args.get("birthdate")
         data['usercomment']      = request.args.get("usercomment")
         data['disabledID']       = request.args.get("disabledID")
@@ -110,6 +117,7 @@ def maininfoset():
         data['role']             = request.args.get('role')
         data['tel']              = request.args.get('tel')
     else:
+        data['openid']           = request.form.get("openid")
         data['birthDate']        = request.form.get("birthdate")
         data['usercomment']      = request.form.get("usercomment")
         data['disabledID']       = request.form.get("disabledID")
@@ -123,8 +131,8 @@ def maininfoset():
         data['password']         = request.form.get('password')
         data['role']             = request.form.get('role')
         data['tel']              = request.form.get('tel')
-    sql = "INSERT INTO mainInfo (birthDate, usercomment, disabledID, emergencyPerson, emergencyTel, gender, idcard, linkaddress,\
-           linktel, name, password, role, tel) VALUES (%(birthDate)s, %(usercomment)s, %(disabledID)s, %(emergencyPerson)s, %(emergencyTel)s,\
+    sql = "INSERT INTO mainInfo (openid, birthDate, usercomment, disabledID, emergencyPerson, emergencyTel, gender, idcard, linkaddress,\
+           linktel, name, password, role, tel) VALUES (%(openid)s, %(birthDate)s, %(usercomment)s, %(disabledID)s, %(emergencyPerson)s, %(emergencyTel)s,\
            %(gender)s, %(idcard)s, %(linkaddress)s, %(linktel)s, %(name)s, %(password)s, %(role)s, %(tel)s)"
     try:
         grimmdb.insert(sql, data)
