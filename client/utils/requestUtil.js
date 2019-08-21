@@ -2,7 +2,7 @@ const {request} = require('interceptor.js');
 
 const getProfile = (id, successCallback, failCallback) => {
     return request({
-        url: `profile`, 
+        url: "profile", 
         success: successCallback,
         fail: failCallback
     });
@@ -10,7 +10,7 @@ const getProfile = (id, successCallback, failCallback) => {
 
 const updateProfile = (userInfo, successCallback, failCallback) => {
     return request({
-        url: `profile`, 
+        url: "profile", 
         method: "POST",
         data: userInfo,
         success: successCallback,

@@ -21,7 +21,7 @@
         <view class="weui-label"  aria-label="手机号">手机号</view>
       </view>
       <view class="weui-cell__bd">
-        <input class="weui-input" data-info-key="tel" placeholder="{{message.tel.placeholder}}" bindchange="bindInputChange" aria-placeholder="{{message.tel.placeholder}}" aria-valuenow="{{userInfo.tel}}" value="{{userInfo.tel}}" type="number" maxlength="11"/>
+        <input class="weui-input"  data-info-key="tel" placeholder="{{message.tel.placeholder}}" bindchange="bindInputChange" aria-placeholder="{{message.tel.placeholder}}" aria-valuenow="{{userInfo.tel}}" value="{{userInfo.tel}}" type="number" maxlength="11" auto-focus/>
       </view>
       <view class="weui-cell__ft" wx:if="{{error.tel}}" bindtap="tapError" data-info-key="tel">
         <icon type="warn"></icon>
