@@ -143,7 +143,7 @@
               <view class="weui-label">残疾证号码<span class="specialChar">*</span></view>
             </view>
             <view class="weui-cell__bd">
-              <input name="diabledID" value="{{form.diabledID}}" class="weui-input" type="number" placeholder="请输入残疾证号" />
+              <input name="disabledID" value="{{form.disabledID}}" class="weui-input" type="number" placeholder="请输入残疾证号" />
             </view>
           </view>
         </block>
