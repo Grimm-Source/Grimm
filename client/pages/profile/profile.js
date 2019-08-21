@@ -140,6 +140,7 @@ Page({
         userInfo
     });
     if(!isIgnoreValid && !this.__validate(key, value)){
+      console.error("key**************"+key)
       this.__setUi("isFormValid", false);
       this.__setError(key, true);
     }else{
@@ -196,9 +197,11 @@ Page({
     let isValidate = true;
     for(let key in this.data.userInfo){
       if(!this.__validate(key, this.data.userInfo[key])){
+        console.error(`key%%%%%%${key}%%%%%%%value%%%%%%%${this.data.userInfo[key]}`)
         isValidate = false;
         this.__setError(key, true);
       }else{
+        console.log(`key%%%%%%${key}%%%%%%%value%%%%%%%${this.data.userInfo[key]}`)
         this.__setError(key, false);
       }
     }
