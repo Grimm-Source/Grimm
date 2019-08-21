@@ -82,10 +82,9 @@ def wx_jscode2session():
         
         json_data = json.loads(response_data)
         json_data['server_errcode'] = 0
-        json_data['is_register'] = False
-        openid = request.args.get('openid')
-        print('current user:', openid)
-        sql = "SELECT * from mainInfo where idcard = %s"
+        json_data['is_register'] = False # make it True for debug
+        openid = json_data['openid']
+        sql = "SELECT * from mainInfo where openid = %s"
         res = grimmdb.get_one(sql, openid)
         print(res)
         if res is not None:
@@ -141,6 +140,9 @@ def maininfoset():
         return('duplicated id!')
     return 'mainInfo set success!'
 
+@app.route('/profile')
+def profile():
+    return 'OK'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
