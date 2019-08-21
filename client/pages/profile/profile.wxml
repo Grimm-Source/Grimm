@@ -117,6 +117,14 @@
         </view>
         </view> 
     </view>
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="备注">备注</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="{{message.usercomment.placeholder}}" aria-placeholder="{{message.usercomment.placeholder}}" aria-valuenow="{{userInfo.usercomment}}" data-info-key="usercomment" bindchange="bindInputChange" value="{{userInfo.usercomment}}"/>
+      </view>
+    </view> 
   </view>  
     <button class="weui-btn" disabled="{{!ui.isFormValid || !ui.isTelValid}}" loading="{{ui.isLoadingUpdate}}" type="primary" bindtap="updateProfile">更新</button>
 </view>

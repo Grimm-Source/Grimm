@@ -14,7 +14,7 @@ const userInfoMessage = {
     },
     emergencyPerson: {
         placeholder: "请输入紧急联系人",
-        message: "请输入紧急联系人姓名，可输入中英字符"
+        message: "请输入紧急联系人姓名，不可输入除中英文字符外，其它非法字符"
     },
     emergencyTel: {
         placeholder: "请输入联系人电话",
@@ -22,6 +22,9 @@ const userInfoMessage = {
     },
     code:{
         placeholder: "请输入验证码"
+    },
+    usercomment:{
+        plcaholder: "请输入备注信息，可选"
     }
 }
 
