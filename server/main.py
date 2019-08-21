@@ -86,7 +86,6 @@ def wx_jscode2session():
         openid = json_data['openid']
         sql = "SELECT * from mainInfo where openid = %s"
         res = grimmdb.get_one(sql, openid)
-        print(res)
         if res is not None:
             json_data['is_register'] = True
             print('xtydbug:', res)
@@ -142,7 +141,35 @@ def maininfoset():
 
 @app.route('/profile')
 def profile():
-    return 'OK'
+    openid = request.headers.get('Authorization')
+    sql = "SELECT * from mainInfo where openid = %s"
+    res = grimmdb.get_one(sql, openid)
+    print(res)
+    birthDate = (res[1]).isoformat()
+    if res is not None:
+        data = json.loads('{}')
+        print('XTYDBG: something happen')
+        data['openid']           = res[0]
+        data['birthDate']        = birthDate
+        data['usercomment']      = res[2]
+        data['disabledID']       = res[3]
+        data['emergencyPerson']  = res[4]
+        data['emergencyTel']     = res[5]
+        data['gender']           = res[6]
+        data['idcard']           = res[7]
+        data['linkaddress']      = res[8]
+        data['linktel']          = res[9]
+        data['name']             = res[10]
+        data['password']         = res[11]
+        data['role']             = res[12]
+        data['tel']              = res[13]
+        print(data)
+        ret_data_str = json.dumps(data)
+    else:
+        print('XTYDBG: query error')
+        json_data = json.loads('{"server_errcode": -2}')
+        ret_data_str = json.dumps(json_data)
+    return ret_data_str
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
