@@ -56,7 +56,7 @@ const rules3 = {
     required: true,
     tel: true
   },
-  diabledID: {
+  disabledID: {
     required: true
   }
 }
@@ -110,7 +110,7 @@ const messages = {
     required: '请输入紧急联系人电话',
     tel: '请输入正确的紧急联系人手机号'
   },
-  diabledID: {
+  disabledID: {
     required: '请输入残疾人证'
   }
 }
@@ -135,7 +135,7 @@ Page({
       linktel: '',
       emergencyPerson: '',
       emergencyTel: '',
-      diabledID: '',
+      disabledID: '',
       comment: ''
     },
     text: '获取验证码', //按钮文字
