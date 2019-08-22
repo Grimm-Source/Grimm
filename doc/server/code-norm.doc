@@ -54,23 +54,31 @@ Name Form Conventions(Recommended):
 
 
 Comment Norm:
-    1. comment line starting with "#" is for developers to put note, like adding necessary feature or amend existent job in the feature.
+    1. developing comment lines should start with '#', which is useful when adding TO-DO or note current job in code.
         example:
             # TO-DO:
             # Descrption: a user-name checking feature needs to be finished here.
             # Issues: What is not qualified.
 
-    2. comment line/paragraph starting with "''' xxx '''" is for function/procedure/class users, this is to comment docstring only.
+    2. function/procedure/class internal comment should be wrapped by single quotes as "''' xxx '''", this is to comment docstring only.
         example:
             class SomeClass(object):
                 '''
-                    docstring of SomeClass here.
+                docstring of SomeClass here.
                 '''
                 def __init__(self, xx, yy):
                     '''docstring of class functions here'''
 
-    3. DO NOT USE THE QUOTES '"' TO START A COMMENT PARAGRAPH.
-
+    3. block comment should be wrapped by double quotes as '""" xxx """', this can be used to comment some code paragraph.
+        example:
+            """
+            class SomeClass(object):
+                '''
+                what is here...
+                '''
+                this class is probably defined for future use.
+            """
+    Others to be amended...
 
 
 Sample:
