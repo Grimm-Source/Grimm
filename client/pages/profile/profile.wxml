@@ -1,0 +1,130 @@
+<view class="profile">
+  <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="姓名">姓名</view>
+      </view>
+      <view class="weui-cell__bd form-input-readonly">
+        <input class="weui-input" disabled aria-valuenow="{{userInfo.name}}" aria-readonly value="{{userInfo.name}}"/>
+      </view>
+    </view>
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="身份证号码">身份证号码</view>
+      </view>
+      <view class="weui-cell__bd form-input-readonly">
+        <input class="weui-input" disabled aria-readonly aria-valuenow="{{userInfo.idcard}}" aria-readonly value="{{userInfo.idcard}}"/>
+      </view>
+    </view> 
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label"  aria-label="手机号">手机号</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input"  data-info-key="tel" placeholder="{{message.tel.placeholder}}" bindchange="bindInputChange" aria-placeholder="{{message.tel.placeholder}}" aria-valuenow="{{userInfo.tel}}" value="{{userInfo.tel}}" type="number" maxlength="11" auto-focus/>
+      </view>
+      <view class="weui-cell__ft" wx:if="{{error.tel}}" bindtap="tapError" data-info-key="tel">
+        <icon type="warn"></icon>
+      </view>
+    </view> 
+    <view wx:if="{{ui.isTelChanged && !ui.isTelValid}}" class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <button class="weui-label code-valid" disabled="{{ui.isCodeSent}}" bindtap="getCode" aria-label="{{ui.leftTimeLabel}}">{{ui.leftTimeLabel}}</button>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="{{message.code.placeholder}}" data-info-key="code" bindchange="bindInputChange" aria-placeholder="{{message.code.placeholder}}" aria-valuenow="{{code}}" value="{{code}}" type="number" maxlength="6"/>
+      </view>
+      <view class="weui-cell__hd">
+        <button class="form-button-code" bindtap="validateCode" aria-label="验证" loading="{{ui.isLoadingValid}}">验证</button>
+      </view>
+    </view> 
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="性别">性别</view>
+      </view>
+      <view class="weui-cell__bd">
+      <picker data-info-key="gender" bindchange="bindInputChange" value="{{userInfo.gender==='男'?0:1}}" range="{{meta.genderArray}}">
+        <view class="weui-input" aria-valuenow="{{userInfo.gender}}" >
+        {{userInfo.gender}}
+        </view>
+      </picker>
+      </view>
+    </view>
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="出生年月">出生年月</view>
+      </view>
+      <view class="weui-cell__bd">
+        <picker mode="date" value="{{userInfo.birthDate}}" start="{{meta.birthdayStartDate}}" end="{{meta.birthdayEndDate}}" data-info-key="birthDate" bindchange="bindInputChange">
+            <view class="weui-input" aria-valuenow="{{userInfo.birthDate}}">
+            {{userInfo.birthDate}}
+            </view>
+        </picker>
+      </view>
+    </view>
+    
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd" aria-label="联系电话">
+        <view class="weui-label">联系电话</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="{{message.linktel.placeholder}}" aria-placeholder="{{message.linktel.placeholder}}" data-info-key="linktel" bindchange="bindInputChange" aria-valuenow="{{userInfo.linktel}}" value="{{userInfo.linktel}}"/>
+      </view>
+      <view class="weui-cell__ft" wx:if="{{error.linktel}}" bindtap="tapError" data-info-key="linktel">
+        <icon type="warn" ></icon>
+      </view>
+    </view>
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd" aria-label="联系地址">
+        <view class="weui-label">联系地址</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="{{message.linkaddress.placeholder}}"  aria-placeholder="{{message.linkaddress.placeholder}}" data-info-key="linkaddress" bindchange="bindInputChange" aria-valuenow="{{userInfo.linkaddress}}" value="{{userInfo.linkaddress}}"/>
+      </view>
+      <view class="weui-cell__ft" wx:if="{{error.linkaddress}}" bindtap="tapError" data-info-key="linkaddress">
+        <icon type="warn"></icon>
+      </view>
+    </view>   
+    <view class="additional-sect" wx:if="{{userInfo.role === '视障人士'}}">
+        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+            <view class="weui-label" aria-label="残疾人证">残疾人证</view>
+        </view>
+        <view class="weui-cell__bd form-input-readonly">
+            <input class="weui-input" disabled aria-valuenow="{{userInfo.disabledID}}" value="{{userInfo.disabledID}}"/>
+        </view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+            <view class="weui-label" aria-label="紧急联系人">紧急联系人</view>
+        </view>
+        <view class="weui-cell__bd">
+            <input class="weui-input" placeholder="{{message.emergencyPerson.placeholder}}" aria-placeholder="{{message.emergencyPerson.placeholder}}" data-info-key="emergencyPerson" bindchange="bindInputChange" maxlength="20" aria-valuenow="{{userInfo.emergencyPerson}}" value="{{userInfo.emergencyPerson}}"/>
+        </view>
+        <view class="weui-cell__ft" wx:if="{{error.emergencyPerson}}" bindtap="tapError" data-info-key="emergencyPerson">
+            <icon type="warn" ></icon>
+        </view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+            <view class="weui-label" aria-label="联系人电话">联系人电话</view>
+        </view>
+        <view class="weui-cell__bd">
+            <input class="weui-input" placeholder="{{message.emergencyTel.placeholder}}" aria-placeholder="{{message.emergencyTel.placeholder}}" aria-valuenow="{{userInfo.emergencyTel}}" data-info-key="emergencyTel" bindchange="bindInputChange" value="{{userInfo.emergencyTel}}"/>
+        </view>
+        <view class="weui-cell__ft" wx:if="{{error.emergencyTel}}" bindtap="tapError" data-info-key="emergencyTel">
+            <icon type="warn"></icon>
+        </view>
+        </view> 
+    </view>
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label" aria-label="备注">备注</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="{{message.usercomment.placeholder}}" aria-placeholder="{{message.usercomment.placeholder}}" aria-valuenow="{{userInfo.usercomment}}" data-info-key="usercomment" bindchange="bindInputChange" value="{{userInfo.usercomment}}"/>
+      </view>
+    </view> 
+  </view>  
+    <button class="weui-btn" disabled="{{!ui.isFormValid || !ui.isTelValid}}" loading="{{ui.isLoadingUpdate}}" type="primary" bindtap="updateProfile">更新</button>
+</view>
