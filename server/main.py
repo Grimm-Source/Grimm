@@ -26,9 +26,10 @@ class grimmdb():
             self.connect()
             self.cursor.execute(sql, args)
             res = self.cursor.fetchone()
-            self.close()
-        except:
+            self.db.close()
+        except Exception as e:
             print("query fail!")
+            print("XTYDBG_ERR:", e)
         return res
     
     def get_all(self, sql):
@@ -37,7 +38,7 @@ class grimmdb():
             self.connet()
             self.cursor.execute(sql)
             res = self.cursor.fetchall()
-            self.close()
+            self.db.close()
         except:
             print("query fail!")
         return res
@@ -45,7 +46,7 @@ class grimmdb():
     def insert(self, sql, args):
         return self.__edit(sql, args)
 
-    def update(self, sql):
+    def update(self, sql, args):
         return self.__edit(sql, args)
 
     def delete(self, sql):
@@ -101,7 +102,7 @@ def maininfoset():
     data = json.loads('{}')
     if request.method == 'GET':
         data['openid']           = request.args.get('openid')
-        data['birthDate']        = request.args.get("birthdate")
+        data['birthDate']        = request.args.get("birthdate") #the name different here
         data['usercomment']      = request.args.get("usercomment")
         data['disabledID']       = request.args.get("disabledID")
         data['emergencyPerson']  = request.args.get("emergencyPerson")
@@ -135,41 +136,68 @@ def maininfoset():
     try:
         grimmdb.insert(sql, data)
     except Exception as e:
-        print('reason', e)
-        return('duplicated id!')
+        print('XTYDBG:', e)
+        return('XTYDBG: error happen in maininfoset')
     return 'mainInfo set success!'
 
-@app.route('/profile')
+@app.route('/profile', methods=['POST', 'GET'])
 def profile():
-    openid = request.headers.get('Authorization')
-    sql = "SELECT * from mainInfo where openid = %s"
-    res = grimmdb.get_one(sql, openid)
-    print(res)
-    birthDate = (res[1]).isoformat()
-    if res is not None:
-        data = json.loads('{}')
-        print('XTYDBG: something happen')
-        data['openid']           = res[0]
-        data['birthDate']        = birthDate
-        data['usercomment']      = res[2]
-        data['disabledID']       = res[3]
-        data['emergencyPerson']  = res[4]
-        data['emergencyTel']     = res[5]
-        data['gender']           = res[6]
-        data['idcard']           = res[7]
-        data['linkaddress']      = res[8]
-        data['linktel']          = res[9]
-        data['name']             = res[10]
-        data['password']         = res[11]
-        data['role']             = res[12]
-        data['tel']              = res[13]
-        print(data)
-        ret_data_str = json.dumps(data)
+    if request.method =='GET':
+        openid = request.headers.get('Authorization')
+        sql = "SELECT * from mainInfo where openid = %s"
+        res = grimmdb.get_one(sql, openid)
+        print(res)
+        birthDate = (res[1]).isoformat()
+        if res is not None:
+            data = json.loads('{}')
+            data['openid']           = res[0]
+            data['birthDate']        = birthDate
+            data['usercomment']      = res[2]
+            data['disabledID']       = res[3]
+            data['emergencyPerson']  = res[4]
+            data['emergencyTel']     = res[5]
+            data['gender']           = res[6]
+            data['idcard']           = res[7]
+            data['linkaddress']      = res[8]
+            data['linktel']          = res[9]
+            data['name']             = res[10]
+            data['password']         = res[11]
+            data['role']             = res[12]
+            data['tel']              = res[13]
+            print(data)
+            ret_data_str = json.dumps(data)
+        else:
+            print('XTYDBG: query error')
+            json_data = json.loads('{"server_errcode": -2}')
+            ret_data_str = json.dumps(json_data)
+        return ret_data_str
     else:
-        print('XTYDBG: query error')
-        json_data = json.loads('{"server_errcode": -2}')
-        ret_data_str = json.dumps(json_data)
-    return ret_data_str
+        data = request.get_data() # get the POST data bytes format
+        s_data = str(data, encoding = "utf-8") # decode it to string
+        j_data = json.loads(s_data) # make it a json
+        openid = j_data['openid']
+        print('XTYDBG: new data:', j_data)
+        print('XTYDBG:', openid)
+        newdata = json.loads('{}')
+        newdata['tel']                 = j_data['tel']
+        newdata['gender']              = j_data['gender']
+        newdata['birthDate']           = j_data['birthDate']
+        newdata['linktel']             = j_data['linktel']
+        newdata['linkaddress']         = j_data['linkaddress']
+        newdata['emergencyPerson']     = j_data['emergencyPerson']
+        newdata['emergencyTel']        = j_data['emergencyTel']
+        newdata['usercomment']         = j_data['usercomment']
+        newdata['openid']              = j_data['openid']
+        print("XTYDBG:", newdata)
+        sql = "UPDATE mainInfo SET tel=%(tel)s, gender=%(gender)s, birthDate=%(birthDate)s, linktel=%(linktel)s, linkaddress=%(linkaddress)s,\
+               emergencyPerson=%(emergencyPerson)s, emergencyTel=%(emergencyTel)s, usercomment=%(usercomment)s WHERE openid=%(openid)s"
+        try:
+            grimmdb.update(sql, newdata)
+        except Exception as e:
+            print('XTYDBG_ERR:', e)
+            return('{"server_errcode": -3}')
+        return 'mainInfo set success!'
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
