@@ -1,13 +1,18 @@
 from flask import Flask,request
 import urllib3
 import json
-import configwx
 import pymysql
 from pymysql import IntegrityError
 
 app = Flask(__name__)
-wx_appid = configwx.wx_appid
-wx_secret = configwx.wx_secret
+
+with open('config/wxapp.config', 'r') as fp:
+    config = json.load(fp=fp, encoding='utf8')
+
+wx_appid = config['wx_appid']
+wx_secret = config['wx_secret']
+
+del config
 
 class grimmdb():
     def __init__(self, host, user, passwd, dbName):

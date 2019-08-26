@@ -20,12 +20,18 @@
 =============
 Package List
 =============
-- Flask
+- Flask (flask)
     - Click
     - itsdangerous
     - Werkzeug
     - Jinja2
 
 - urllib3
-- PyMySQL
+- PyMySQL (pymysql)
 - bcrypt
+- email
+- getpass
+- logging
+- inspect
+- re
+- json
