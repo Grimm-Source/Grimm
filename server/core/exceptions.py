@@ -2,10 +2,10 @@
 # File: exceptions.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
-# ------------------------------------------------------------------------- #
+# ------------------------------------------------------------------------
 # Authors:  Ming Li(adagio.ming@gmail.com)
 #
-# Description: defines all kinds of exceptions for Grimm back-end.
+# Description: define all exception classes and exception handler for this project.
 #
 # To-Dos:
 #   1. make other supplements if needed.
@@ -36,6 +36,7 @@ GRIMM_EXCEPTION_CODE = {
      'UserUpdateInfoFailed': 6,
       'UserExpiredPassword': 7,
       'UserInvalidPassword': 8,
+         'UserInvalidEmail': 9,
                         }
 
 
@@ -272,6 +273,24 @@ class UserInvalidPassword(UserError):
             self.emsg = f'Current input password is invalid, reason: {reason}'
         else:
             self.emsg = f'User {user} input password is invalid. reason: {reason}'
+        self.ecode = GRIMM_EXCEPTION_CODE['UserInvalidPassword']
+        self.args = (self.ecode, self.emsg)
+
+    def __str__(self):
+        return '({0}, {1})'.format(self.ecode, self.emsg)
+    __repr__ = __str__
+
+
+class UserInvalidEmail(UserError):
+    '''
+    email inputted from user is an invalid address.
+    '''
+    def __init__(self, reason, user=None):
+        super().__init__()
+        if user is None:
+            self.emsg = f'Current input email is invalid, reason: {reason}'
+        else:
+            self.emsg = f'User {user} input email is invalid, reason: {reason}'
         self.ecode = GRIMM_EXCEPTION_CODE['UserInvalidPassword']
         self.args = (self.ecode, self.emsg)
 

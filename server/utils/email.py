@@ -1,11 +1,11 @@
 #
-# File: core/__init__.py
+# File: email.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
 # Authors:  Ming Li(adagio.ming@gmail.com)
 #
-# Description: form python package layers.
+# Description: do email related jobs.
 #
 # To-Dos:
 #   1. make other supplements if needed.

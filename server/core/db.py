@@ -5,7 +5,7 @@
 # -------------------------------------------------------------------------
 # Authors:  Ming Li(adagio.ming@gmail.com)
 #
-# Description: server backend code template.
+# Description: midware API to interact with Mysql database using pymysql driver.
 #
 # To-Dos:
 #   1. make other supplements if needed.
