@@ -267,13 +267,13 @@ def query_tbl_columns(tbl):
         raise e
 
     records = cursor.fetchall()
-    query_cols = [str(row[0]) if not isinstance(row[0], str) else row[0] for row in records]
+    query_fields = [str(row[0]) if not isinstance(row[0], str) else row[0] for row in records]
 
-    return tuple(query_cols)
+    return tuple(query_fields)
 
 
 # get table columns data type
-def query_tbl_columns_datatype(tbl, cols='*'):
+def query_tbl_columns_datatype(tbl, fields='*'):
     if session_connection is None or session_connection.open is False:
         init_connection()
 
@@ -294,22 +294,22 @@ def query_tbl_columns_datatype(tbl, cols='*'):
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
 
-    if isinstance(cols, bytes):
-        cols = cols.decode('utf8')
-    if not isinstance(cols, (str, tuple, list)):
+    if isinstance(fields, bytes):
+        fields = fields.decode('utf8')
+    if not isinstance(fields, (str, tuple, list)):
         e = SQLValueError('query columns datatype', 'invalid query column names')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
-    if cols == '*':
-        cols = query_tbl_columns(tbl)
-        columns = cols
+    if fields == '*':
+        fields = query_tbl_columns(tbl)
+        columns = fields
         opcode = 'IN'
-    elif isinstance(cols, str):
-        cols = cols.strip()
-        columns = cols if cols[0] in '\'"' else f"'{cols}'"
+    elif isinstance(fields, str):
+        fields = fields.strip()
+        columns = fields if fields[0] in '\'"' else f"'{fields}'"
         opcode = '='
     else:
-        columns = tuple([c.strip('\'"') if isinstance(c, str) else str(c) for c in cols])
+        columns = tuple([c.strip('\'"') if isinstance(c, str) else str(c) for c in fields])
         opcode = 'IN'
 
     _query = f"SELECT `COLUMN_NAME`,`DATA_TYPE` FROM `INFORMATION_SCHEMA`.`COLUMNS` \
@@ -325,10 +325,10 @@ def query_tbl_columns_datatype(tbl, cols='*'):
         raise e
 
     records = cursor.fetchall()
-    db_cols = [str(row[0]) if not isinstance(row[0], str) else row[0] for row in records]
+    db_fields = [str(row[0]) if not isinstance(row[0], str) else row[0] for row in records]
     db_typeinfo = [str(row[1]) if not isinstance(row[1], str) else row[1] for row in records]
 
-    return dict(zip(db_cols, db_typeinfo))
+    return dict(zip(db_fields, db_typeinfo))
 
 
 # connect exprs where clause exprs list
@@ -345,7 +345,7 @@ def join_exprs_clause(clauses):
 
 
 # parse **kwargs where clauses
-def parse_kwargs_clause(tbls, cols='*', **kwargs):
+def parse_kwargs_clause(tbls, fields='*', **kwargs):
     expr_operator = '='
     expr_connector = 'and'
     where_clause = ''
@@ -360,7 +360,7 @@ def parse_kwargs_clause(tbls, cols='*', **kwargs):
         table_count = 0
     if table_count > 0:
         if table_count == 1:
-            typeinfo = query_tbl_columns_datatype(tbls, cols)
+            typeinfo = query_tbl_columns_datatype(tbls, fields)
         for k, v in kwargs.items():
             if isinstance(v, bytes):
                 v = v.decode('utf8')
@@ -381,7 +381,7 @@ def parse_kwargs_clause(tbls, cols='*', **kwargs):
 # MySQL expr_query API: query with expressions instead of SQL line.
 #     1. tbls: table names, query in what tables.
 #
-#     2. cols: column names, query what columns, '*' by default.
+#     2. fields: column names, query what columns, '*' by default.
 #
 #     3. clauses: string or tuple which provides whole `where clause` info.
 #       1) string.
@@ -410,7 +410,7 @@ def parse_kwargs_clause(tbls, cols='*', **kwargs):
 #           This is for simple cases, for complicated cases, use arguement
 #           `clauses` as above instead.
 #
-def expr_query(tbls, cols='*', clauses=None, **kwargs):
+def expr_query(tbls, fields='*', clauses=None, **kwargs):
     '''standard SQL API for database query operation using expressions'''
     # check SQL connection status
     if session_connection is None or session_connection.open is False:
@@ -438,26 +438,26 @@ def expr_query(tbls, cols='*', clauses=None, **kwargs):
         raise e
 
     # special case, no querying * from multiple tables
-    if table_count > 1 and cols == '*':
+    if table_count > 1 and fields == '*':
         e = SQLValueError('expression query', 'select * from multiple tables')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
 
     # concatenate query columns
-    if isinstance(cols, bytes):
-        cols = cols.decode('utf8')
-    if not isinstance(cols, (str, tuple, list)):
+    if isinstance(fields, bytes):
+        fields = fields.decode('utf8')
+    if not isinstance(fields, (str, tuple, list)):
         e = SQLValueError('expression query', 'invalid column names')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
-    if cols == '*':
-        cols = query_tbl_columns(tbls)
-        columns = ','.join(cols)
-    elif isinstance(cols, str):
-        columns = cols.strip('\'" ')
+    if fields == '*':
+        fields = query_tbl_columns(tbls)
+        columns = ','.join(fields)
+    elif isinstance(fields, str):
+        columns = fields.strip('\'" ')
     else:
-        cols = [str(c) if not isinstance(c, str) else c.strip('\'" ') for c in cols]
-        columns = ','.join(cols)
+        fields = [str(c) if not isinstance(c, str) else c.strip('\'" ') for c in fields]
+        columns = ','.join(fields)
 
     # parse clause, including kwargs clause & dictionary clause
     # function arguement clause
@@ -467,7 +467,7 @@ def expr_query(tbls, cols='*', clauses=None, **kwargs):
 
     # **kwargs arguement clause
     if kwargs is not None:
-        where_clause = parse_kwargs_clause(tbls=tbls, cols=cols, **kwargs)
+        where_clause = parse_kwargs_clause(tbls=tbls, fields=fields, **kwargs)
 
     # do query
     if where_clause:
@@ -493,11 +493,11 @@ def expr_query(tbls, cols='*', clauses=None, **kwargs):
         return None
     elif row_count == 1:
         new_records = [formatter(x) for x in records[0]]
-        data = dict(zip((columns,), new_records)) if isinstance(cols, str) else dict(zip(cols, new_records))
+        data = dict(zip((columns,), new_records)) if isinstance(fields, str) else dict(zip(fields, new_records))
         return (data, )
     else:
         new_records = [[formatter(x) for x in row] for row in records]
-        data = [dict(zip((columns,), record)) if isinstance(cols, str) else dict(zip(cols, record)) for record in new_records]
+        data = [dict(zip((columns,), record)) if isinstance(fields, str) else dict(zip(fields, record)) for record in new_records]
         return tuple(data)
 
 
