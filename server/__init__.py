@@ -2,10 +2,11 @@
 # File: server/__init__.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
-# ------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------
 # Authors:  Ming Li(adagio.ming@gmail.com)
 #
-# Description: load necessary services, initialize environments.
+# Description: load necessary services, check configs,
+# form package layers and do initialization jobs.
 #
 # To-Dos:
 #   1. make other supplements if needed.

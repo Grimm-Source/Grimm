@@ -17,6 +17,13 @@
    1. 2019/08/15, Ming, create first revision.
 ..
 
+==========
+Before use
+==========
+Use pip to install all required python packages.
+.. code-block:: bash
+    $ pip3 install -r server/config/requirement.txt
+
 =============
 Package List
 =============
