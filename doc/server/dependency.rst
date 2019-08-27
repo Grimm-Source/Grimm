@@ -17,15 +17,28 @@
    1. 2019/08/15, Ming, create first revision.
 ..
 
+==========
+Before use
+==========
+Use pip to install all required python packages.       
+
+ ``$ pip3 install -r server/config/requirement.txt``
+
 =============
 Package List
 =============
-- Flask
+- Flask (flask)
     - Click
     - itsdangerous
     - Werkzeug
     - Jinja2
 
 - urllib3
-- PyMySQL
+- PyMySQL (pymysql)
 - bcrypt
+- email
+- getpass
+- logging
+- inspect
+- re
+- json
