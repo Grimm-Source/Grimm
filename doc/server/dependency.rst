@@ -20,9 +20,9 @@
 ==========
 Before use
 ==========
-Use pip to install all required python packages.
-.. code-block:: bash
-    $ pip3 install -r server/config/requirement.txt
+Use pip to install all required python packages.       
+
+ ``$ pip3 install -r server/config/requirement.txt``
 
 =============
 Package List
