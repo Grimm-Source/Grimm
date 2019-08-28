@@ -225,9 +225,11 @@ def execute(_execute):
 def formatter(record):
     '''format records fetched from database'''
     if isinstance(record, bytes):
-        record = record.strip(b'\0').decode('utf8')
+        if len(record) > 1:
+            record = record.strip(b'\0')
+        record = record.decode('utf8')
     if isinstance(record, str):
-        record = record.strip()
+        record = record
     return record
 
 

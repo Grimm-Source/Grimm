@@ -9,8 +9,8 @@ app = Flask(__name__)
 with open('config/wxapp.config', 'r') as fp:
     config = json.load(fp=fp, encoding='utf8')
 
-wx_appid = config['wx_appid']
-wx_secret = config['wx_secret']
+wx_appid = config['appid']
+wx_secret = config['secret']
 
 del config
 

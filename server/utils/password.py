@@ -22,14 +22,15 @@ import bcrypt
 from core.db import expr_query, expr_update
 from core.exceptions import UserNotFound, UserInvalidPassword
 
+from core.grimm import wxapp
+
 
 # Bigger this value is, more time the method takes, more security it offers.
-DEFAULT_PASSWD_HASH_COST = 3
 
 
 def update_usr_passwd(usr, input_passwd):
     '''update user password'''
-    salt = bcrypt.gensalt(DEFAULT_PASSWD_HASH_COST)
+    salt = bcrypt.gensalt(wxapp.config['SECURITY_PASSWORD_SALT'])
     bcrypt_passwd = bcrypt.hashpw(input_passwd, salt)
     new_info = {'passwd': bcrypt_passwd}
     return expr_update(tbl=usr.role, account=usr.account, pairs=new_info)
