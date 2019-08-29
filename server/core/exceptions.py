@@ -317,3 +317,19 @@ class SQLValueError(InternalError):
     __repr__ = __str__
 
 
+class SQLConnectionError(InternalError):
+    '''
+    uninitialized or expired database connection.
+    '''
+    def __init__(self, reason=None):
+        super().__init__()
+        if reason is None:
+            self.emsg = f'database connection is uninitialized or invalid'
+        else:
+            self.emsg = f'database connection is uninitialized or invalid, reason: {reason}'
+        self.ecode = GRIMM_EXCEPTION_CODE['InternalErrCode']
+        self.args = (self.ecode, self.emsg)
+
+    def __str__(self):
+        return '({0}, {1})'.format(self.ecode, self.emsg)
+    __repr__ = __str__
