@@ -1,0 +1,39 @@
+.admin-panel{
+    display: flex;
+    height: 500px;
+    background: #f2f2f2;;
+}
+
+.admin-panel .admin-side-bar{
+    display: flex;
+    flex-direction: column;
+}
+
+
+.admin-panel .admin-action-icon{
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+}
+
+.admin-panel .admin-action-icon:hover{
+    cursor: pointer;
+    transform:rotate(9deg);
+}
+
+.admin-panel .admin-display{
+    display: flex;
+    width: 100%;
+}
+
+.admin-panel .admin-display .admin-detail{
+    width: 70%;
+    border-left: 1px solid #f2f2f2;
+    border-right: 1px solid #f2f2f2;
+    background: white;
+}
+
+.admin-panel .admin-display .admin-detail .admin-form-wrapper, .admin-panel .admin-display .admin-detail .admin-detail-wrapper{
+    width: 50%;
+    margin: 100px auto;
+}
