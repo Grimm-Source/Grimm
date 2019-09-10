@@ -18,7 +18,7 @@ class ActivityList extends React.Component {
         dataSource={this.props.activities}
         renderItem={item => (
           <List.Item
-            actions={[<a key="edit" onClick={this.props.onClickActivity.bind(this,item)}>编辑</a>, <a key="delete" onClick={this.props.onClickRemoveActivity.bind(this,item)}>删除</a>]}
+            actions={[<span key="edit" className="list-item-button" onClick={this.props.onClickActivity.bind(this,item)}>编辑</span>, <span key="delete" className="list-item-button" onClick={this.props.onClickRemoveActivity.bind(this,item)}>删除</span>]}
           >
             <Skeleton avatar title={false} loading={this.props.loading} active>
               <List.Item.Meta

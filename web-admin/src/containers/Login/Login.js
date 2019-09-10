@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Modal } from 'antd';
-import { loginAccount } from '../../actions';
 import { connect } from 'react-redux';
 import AdminForm from '../../components/AdminForm/AdminForm';
 
