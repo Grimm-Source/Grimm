@@ -7,10 +7,6 @@ import { connect } from 'react-redux';
 import './Activity.css';
 
 class Activity extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
   render() {
     return (
         <Modal

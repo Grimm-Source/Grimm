@@ -19,7 +19,7 @@ class AdminPanel extends React.Component {
 
   getDetail = ()=>{
     switch(this.props.mode){
-      case "add": return <div className="admin-form-wrapper"><AdminForm type="create"/></div>;
+      case "add": return <div className="admin-form-wrapper"><AdminForm/></div>;
       default: return <div className="admin-detail-wrapper"><AdminDetail/></div>
     }
   }

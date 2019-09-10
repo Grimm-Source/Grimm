@@ -1,6 +1,6 @@
 import React from 'react';
 import { PageHeader, Tag, Tabs, Button, Menu, Dropdown, Icon } from 'antd';
-import { switchHomeTag, logout , login, showActivityModal} from '../../actions';
+import { switchHomeTag, logout , showActivityModal, switchAdminFormType} from '../../actions';
 import { connect } from 'react-redux';
 import './Header.css';
 
@@ -13,13 +13,13 @@ class Header extends React.Component {
 
     render() {  
         const menu = (
-          <Menu>
+          <Menu className="header-menu">
             <Menu.Item>
-              {this.props.user && this.props.user.username?(<span onClick={this.props.onClickLogout}>
+              {this.props.user && this.props.user.username?(<div className="header-menu-button" onClick={this.props.onClickLogout}>
                 退出
-              </span>): (<span onClick={this.props.onClickLogin}>
+              </div>): (<div className="header-menu-button"  onClick={this.props.onClickLogin}>
                 登录
-              </span>)}
+              </div>)}
             </Menu.Item>
           </Menu>
         );      
@@ -27,20 +27,21 @@ class Header extends React.Component {
         return (
             <PageHeader
                   title="助盲管理"
+                  className="header"
                   subTitle="Grimm Administration System"
                   tags={<Tag color="red">Beta</Tag>}
                   extra={[
                     <Dropdown key="user-menu" overlay={menu}>
-                      <a className="ant-dropdown-link" href="#">
-                        {this.props.user && this.props.user.username ||"未登陆"}<Icon type="down" />
-                      </a>
+                      <span className="ant-dropdown-link">
+                        {(this.props.user && this.props.user.username) || "未登陆"}<Icon type="down" />
+                      </span>
                     </Dropdown>,
                     <Button key="new-activity" type="primary" onClick={this.props.onClickCreateActivity}>
                       发布新活动
                     </Button>,
                   ]}
                   footer={
-                    <Tabs defaultActiveKey="activity" onChange={this.props.onChangeTab}>
+                    <Tabs  onChange={this.props.onChangeTab} activeKey={this.props.activeKey}>
                       <TabPane tab="志愿者活动" key="activity" />
                       <TabPane tab="管理员" key="admin" />
                     </Tabs>
@@ -52,7 +53,8 @@ class Header extends React.Component {
   }
 
   const mapStateToProps = (state, ownProps) => ({
-    user: state.account.user
+    user: state.account.user,
+    activeKey: state.ui.activeHomeTagKey
   });
   
   const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -63,6 +65,8 @@ class Header extends React.Component {
       // dispatch(login());
     },
     onClickLogout: () => {
+      dispatch(switchAdminFormType("login"));
+      dispatch(switchHomeTag("activity"));//incase login form in 2 modes
       sessionStorage.clear();
       dispatch(logout());
     },

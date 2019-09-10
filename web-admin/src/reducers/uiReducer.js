@@ -19,11 +19,6 @@ const ui = (state = [], action) => {
           ...state,
           activeHomeTagKey: action.activeKey 
         };
-      case ACTION_TYPES.UI_ADMIN_SET:
-        return {
-          ...state,
-          admin: action.admin || {}
-        };
       case ACTION_TYPES.UI_ACTIVITY_SHOW:
         return {
           ...state,
