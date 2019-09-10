@@ -3,8 +3,10 @@ import urllib3
 import json
 import pymysql
 from pymysql import IntegrityError
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 with open('config/wxapp.config', 'r') as fp:
     config = json.load(fp=fp, encoding='utf8')
@@ -150,7 +152,7 @@ def profile():
     if request.method =='GET':
         openid = request.headers.get('Authorization')
         sql = "SELECT * from mainInfo where openid = %s"
-        res = grimmdb.get_one(sql, openid)
+        res = grimmdb.get_one(sql, openid) # it's a bug need to fix gracefully later
         print(res)
         birthDate = (res[1]).isoformat()
         if res is not None:
@@ -203,6 +205,40 @@ def profile():
             return('{"server_errcode": -3}')
         return 'mainInfo set success!'
 
+@app.route('/login', methods=['POST', 'GET'])
+def adminlogin():
+    if request.method == 'GET':
+        return "failure"
+    else:
+        newdata = json.loads('{}')
+        data = request.get_data()
+        s_data = str(data, encoding = "utf-8")
+        j_data = json.loads(s_data)
+        email = j_data['email']
+        sql = "SELECT * from adminInfo where email = %s"
+        res = grimmdb.get_one(sql, email)
+        print('XTYDBG', res)
+        print("XTYDBG", j_data['password'])
+        if res is None:
+            newdata['status'] = "failure" # per xiaoting's request 2019-Sep-10
+            newdata['message'] = "email error"
+            ret_data_str = json.dumps(newdata) # convert to json object
+            return ret_data_str
+        password = res[2]
+        if password == j_data['password']:
+            newdata['adminid'] = res[0]
+            newdata['email'] = res[1]
+            newdata['type'] = res[3]
+        else:
+            newdata['status'] = "failure" # per xiaoting's request 2019-Sep-10
+            newdata['message'] = "password error"
+        ret_data_str = json.dumps(newdata) # convert to json object
+        return ret_data_str
+
+
+@app.route('/activities', methods=['GET'])
+def activities():
+    return "OK"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
