@@ -14,7 +14,13 @@ const request = (options) => {
             }else if(response.status >= 500 ){
                 return Promise.reject("网络问题，请稍后重试");
             }
-            return response.json()});
+            return response.json()
+        }).then((response)=>{
+            if(response.status === "failure"){
+                return Promise.reject(response.message)
+            }
+            return Promise.resolve(response)
+        });
     }
 
     return fetch(`${url}${options.path}`,{
@@ -30,8 +36,15 @@ const request = (options) => {
                 return Promise.reject("网络问题，请稍后重试");
             }
         }
-        return response.clone().json()}
-    )
+
+        return response.json()}
+    ).then((response)=>{
+        if(response.status === "failure"){
+            return Promise.reject(response.message)
+        }
+        return Promise.resolve(response)
+    });
+
 }
 
 export default request;

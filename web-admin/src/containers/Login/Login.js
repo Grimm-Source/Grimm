@@ -13,7 +13,7 @@ class Login extends React.Component {
         <Modal
           className="register-modal"
           title="登录"
-          visible={!this.props.user ||!this.props.user.username}
+          visible={!this.props.user ||!this.props.user.email}
           destroyOnClose={true}
           closable={false}
           maskClosable={false}
