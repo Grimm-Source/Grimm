@@ -15,7 +15,7 @@ class Header extends React.Component {
         const menu = (
           <Menu className="header-menu">
             <Menu.Item>
-              {this.props.user && this.props.user.username?(<div className="header-menu-button" onClick={this.props.onClickLogout}>
+              {this.props.user && this.props.user.email?(<div className="header-menu-button" onClick={this.props.onClickLogout}>
                 退出
               </div>): (<div className="header-menu-button"  onClick={this.props.onClickLogin}>
                 登录
@@ -33,7 +33,7 @@ class Header extends React.Component {
                   extra={[
                     <Dropdown key="user-menu" overlay={menu}>
                       <span className="ant-dropdown-link">
-                        {(this.props.user && this.props.user.username) || "未登陆"}<Icon type="down" />
+                        {(this.props.user && this.props.user.email) || "未登陆"}<Icon type="down" />
                       </span>
                     </Dropdown>,
                     <Button key="new-activity" type="primary" onClick={this.props.onClickCreateActivity}>

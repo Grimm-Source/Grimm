@@ -46,10 +46,12 @@ const verifyAccount = user => dispatch => {
         path: "login",
         method: "POST",
         data: user
-    }).then((user) => {
-        sessionStorage.setItem("user", JSON.stringify(user));
+    }).then((userInfo) => {
+        sessionStorage.setItem("user", JSON.stringify({ user: userInfo}));
         dispatch(login(user));    
         message.success('登录成功');
+    }, (errorMessage)=>{
+        message.error(`登录失败，${errorMessage}`);
     }).finally(()=>{
         dispatch(hideLoading());
     });

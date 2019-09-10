@@ -25,23 +25,24 @@ class AdminForm extends React.Component {
         return (
         <Form onSubmit={this.handleSubmit} className="admin-form">
             <Form.Item>
-            {getFieldDecorator('username', {
-                rules: [{ required: true, message: '请输入您的用户名!' }],
+            {getFieldDecorator('email', {
+                rules: [{ required: true, message: '请输入邮箱!' }],
             })(
                 <Input
+                type="email"
                 prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                placeholder="请输入您的用户名"
+                placeholder="请输入邮箱"
                 />,
             )}
             </Form.Item>
             <Form.Item>
             {getFieldDecorator('password', {
-                rules: [{ required: true, message: '请输入您的密码!' }],
+                rules: [{ required: true, message: '请输入密码!' }],
             })(
                 <Input
                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                 type="password"
-                placeholder="请输入您的密码"
+                placeholder="请输入密码"
                 />,
             )}
             </Form.Item>
