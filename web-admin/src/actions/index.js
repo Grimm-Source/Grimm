@@ -47,7 +47,7 @@ const verifyAccount = user => dispatch => {
         method: "POST",
         data: user
     }).then((userInfo) => {
-        sessionStorage.setItem("user", JSON.stringify({ user: userInfo}));
+        sessionStorage.setItem("user", JSON.stringify(userInfo));
         dispatch(login(user));    
         message.success('登录成功');
     }, (errorMessage)=>{
