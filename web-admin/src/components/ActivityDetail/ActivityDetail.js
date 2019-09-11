@@ -25,7 +25,8 @@ class ActivityDetail extends React.Component {
       const values = {
         ...fieldsValue,
         date: fieldsValue['date'].format('YYYY-MM-DD HH:mm:ss'),
-        id: this.props.activity.id
+        id: this.props.activity.id,
+        adminId: this.props.userId
       };
       this.props.publishActivity(values);
       this.props.hideActivityModal();
@@ -155,7 +156,8 @@ const WrappedActivityDetail = Form.create({
 const mapStateToProps = (state) => ({
   activityId: state.ui.activityId,
   activity: state.ui.activity,
-  loading: state.ui.loading
+  loading: state.ui.loading,
+  userId: state.account.user && state.account.user.id
 })
 
 const mapDispatchToProps = (dispatch) => ({
