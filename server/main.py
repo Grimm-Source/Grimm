@@ -39,15 +39,16 @@ class grimmdb():
             print("XTYDBG_ERR:", e)
         return res
     
-    def get_all(self, sql):
+    def get_all(self, sql, args):
         res = None
         try:
-            self.connet()
-            self.cursor.execute(sql)
+            self.connect()
+            self.cursor.execute(sql, args)
             res = self.cursor.fetchall()
             self.db.close()
-        except:
+        except Exception as e:
             print("query fail!")
+            print("XTYDBG_ERR:", e)
         return res
 
     def insert(self, sql, args):
@@ -56,19 +57,19 @@ class grimmdb():
     def update(self, sql, args):
         return self.__edit(sql, args)
 
-    def delete(self, sql):
+    def delete(self, sql, args):
         return self.__edit(sql, args)
 
     def __edit(self, sql, args):
         res = None
-#        try:
-        self.connect()
-        res = self.cursor.execute(sql, args)
-        self.db.commit()
-        self.db.close()
-#        except IntegrityError:
-#return("duplicated id!")
-#       self.db.rollback()
+        try:
+            self.connect()
+            res = self.cursor.execute(sql, args)
+            self.db.commit()
+            self.db.close()
+        except IntegrityError:
+            print('XTYDBG:IntegrityError')
+            self.db.rollback()
         return res
 
 grimmdb = grimmdb('localhost', 'root', '123Xty1.', 'grimm')
@@ -154,7 +155,7 @@ def profile():
         sql = "SELECT * from mainInfo where openid = %s"
         res = grimmdb.get_one(sql, openid) # it's a bug need to fix gracefully later
         print(res)
-        birthDate = (res[1]).isoformat()
+        birthDate = (res[1]).isoformat() # because date is not json serializable
         if res is not None:
             data = json.loads('{}')
             data['openid']           = res[0]
@@ -215,7 +216,8 @@ def adminlogin():
         s_data = str(data, encoding = "utf-8")
         j_data = json.loads(s_data)
         email = j_data['email']
-        sql = "SELECT * from adminInfo where email = %s"
+        print('XTYDBG', email)
+        sql = "SELECT * from admin where email = %s"
         res = grimmdb.get_one(sql, email)
         print('XTYDBG', res)
         print("XTYDBG", j_data['password'])
@@ -226,7 +228,7 @@ def adminlogin():
             return ret_data_str
         password = res[2]
         if password == j_data['password']:
-            newdata['adminid'] = res[0]
+            newdata['id'] = res[0]
             newdata['email'] = res[1]
             newdata['type'] = res[3]
         else:
@@ -236,9 +238,82 @@ def adminlogin():
         return ret_data_str
 
 
-@app.route('/activities', methods=['GET'])
-def activities():
-    return "OK"
+@app.route('/activity', methods=['POST', 'GET'])
+def activity():
+    if request.method == 'GET':
+        return "OK"
+    else:
+        data = request.get_data()
+        print('XTYDBG', type(data))
+        s_data = str(data, encoding = "utf-8")
+        print('XTYDBG', type(s_data))
+        j_data = json.loads(s_data)
+        print('XTYDBG', type(j_data))
+        print('XTYDBG', j_data)
+        newdata = json.loads('{}')
+        newdata['adminId']      = j_data['adminId']
+        newdata['title']        = j_data['title']
+        newdata['location']     = j_data['location']
+        newdata['activitydate'] = j_data['date']
+        newdata['duration']     = j_data['duration']
+        newdata['content']      = j_data['content']
+        sql = "INSERT INTO activity (adminId, title, location, activitydate, duration, content) VALUES\
+               (%(adminId)s, %(title)s, %(location)s, %(activitydate)s, %(duration)s, %(content)s)"
+        try:
+            grimmdb.insert(sql, newdata)
+        except Exception as e:
+            print('XTYDBG:', e)
+        return('XTYDBG: publish sucessful')
+
+
+@app.route('/activity/<int:id>', methods=['POST', 'GET'])
+
+@app.route('/activity/delete', methods=['POST', 'GET'])
+def update():
+    if request.method == 'GET':
+        return "OK"
+    else:
+        data = request.get_data()
+        activityid = int.from_bytes(data, "big") - 48 # it is big right? TDB
+        sql = "DELETE from activity where id = %s"
+        try:
+            grimmdb.delete(sql, activityid)
+            print("XTYDBG", 'delete successful')
+            return data
+        except Exception as e:
+            print("XTYDBG activity delete failure")
+        return "failure" # need to define a better protocol to communicate with frontend
+
+
+@app.route('/activities', methods=['POST', 'GET'])
+def get_activities():
+    if request.method == 'GET':
+        sql = "SELECT * from activity"
+        data = None
+        res = grimmdb.get_all(sql, data)
+#        newdata = json.loads('{}')
+        print('XTYDBG', res)
+        ret_data = []
+        for activity in res:
+            if activity is not None:
+                datetime = (activity[4]).isoformat()
+                newdata = json.loads('{}') # need to create the object each loop
+                newdata['id']           = activity[0]
+                newdata['adminId']      = activity[1]
+                newdata['title']        = activity[2]
+                newdata['location']     = activity[3]
+                newdata['activitydate'] = datetime
+                newdata['duration']     = activity[5]
+                newdata['content']      = activity[6]
+                newdata['notice']       = activity[7]
+                newdata['others']       = activity[8]
+                print("XXXXXXX", newdata)
+                ret_data.append(newdata)
+        print('XTYDBG', ret_data)
+        ret_data_str = json.dumps(ret_data)
+        return ret_data_str
+    else:
+        return('XTYDBG: set sucessful')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
