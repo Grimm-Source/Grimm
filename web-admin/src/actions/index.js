@@ -48,7 +48,7 @@ const verifyAccount = user => dispatch => {
         data: user
     }).then((userInfo) => {
         sessionStorage.setItem("user", JSON.stringify(userInfo));
-        dispatch(login(user));    
+        dispatch(login(userInfo));    
         dispatch(switchAdminFormType("create"));
         message.success('登录成功');
     }, (errorMessage)=>{
