@@ -15,3 +15,7 @@
     width: 100%;
     padding: 5px 10px;
 }
+
+.ant-page-header{
+    background: #FFF !important;
+}
