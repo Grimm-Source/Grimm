@@ -129,22 +129,22 @@ const WrappedActivityDetail = Form.create({
       }
       return {
         title: Form.createFormField({
-          value: props.activity.title
+          value: props.activity.title || ""
         }),
         content: Form.createFormField({
-          value: props.activity.content
+          value: props.activity.content || ""
         }),
         location: Form.createFormField({
-          value: props.activity.location
+          value: props.activity.location || ""
         }),
         notice: Form.createFormField({
-          value: props.activity.notice
+          value: props.activity.notice || ""
         }),
         others: Form.createFormField({
-          value: props.activity.others
+          value: props.activity.others || ""
         }),
         duration: Form.createFormField({
-          value: props.activity.duration
+          value: props.activity.duration || ""
         }),
         date: Form.createFormField({
           value: (props.activity.date && moment(props.activity.date, 'YYYY-MM-DD HH:mm:ss')) || null
