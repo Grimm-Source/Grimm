@@ -116,9 +116,8 @@ export const removeActivity = (activityId) => (dispatch, getState) => {
 
 const deleteActivity = activityId => dispatch => {
     return request({
-        path: `activity/delete`,
-        method: "POST",
-        data: activityId
+        path: `activity/${activityId}`,
+        method: "DELETE"
     }).then(() => {
         dispatch(getActivityList());
         message.success('活动删除成功');
@@ -179,9 +178,8 @@ export const removeAdmin = (adminId) => (dispatch, getState) => {
 
 const deleteAdmin = adminId => dispatch => {
     return request({
-        path: `admin/delete`,
-        method: "POST",
-        data: {id : adminId}
+        path: `admin/${adminId}`,
+        method: "DELETE"
     }).then(() => {
         dispatch(getAdminList());
         message.success('管理员删除成功');
