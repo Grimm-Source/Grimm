@@ -79,9 +79,12 @@ const postActivity = activity => dispatch => {
         data: activity
     }).then(() => {
         dispatch(setActivity({})); 
+        dispatch(fetchActivityList());
         message.success('活动发布成功');   
-    }).finally(()=>{
+    }, ()=>{
         dispatch(hideLoading());
+    }).finally(()=>{
+
     });;
 }
 
