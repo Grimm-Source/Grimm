@@ -88,7 +88,6 @@ def wx_jscode2session():
     
     if response.status == 200:      
         response_data = response.data
-        
         json_data = json.loads(response_data)
         json_data['server_errcode'] = 0
         json_data['is_register'] = False # make it True for debug
@@ -237,6 +236,75 @@ def adminlogin():
         ret_data_str = json.dumps(newdata) # convert to json object
         return ret_data_str
 
+@app.route('/admins', methods=['POST', 'GET'])
+def admins():
+    if request.method == 'GET':
+        sql = "SELECT * from admin"
+        data = None
+        res = grimmdb.get_all(sql, data)
+        ret_data = []
+        for admin in res:
+            if admin is not None:
+                newdata = json.loads('{}')
+                newdata['id']    = admin[0]
+                newdata['email'] = admin[1]
+                newdata['type']  = admin[3]
+                print("XXXXXXX", newdata)
+                ret_data.append(newdata)
+        print('XTYDBG', ret_data)
+        ret_data_str = json.dumps(ret_data)
+        return ret_data_str
+
+@app.route('/admin/<int:id>', methods=['POST', 'GET'])
+def update_admin(id):
+    if request.method == 'GET':
+        sql = "SELECT * from admin where id = %s"
+        res = grimmdb.get_one(sql, id)
+        if res is not None:
+            newdata = json.loads('{}')
+            newdata['id'] = res[0]
+            newdata['email'] = res[1]
+            newdata['type'] = res[3]
+            ret_data_str = json.dumps(newdata)
+            return ret_data_str
+        return "fail"
+
+
+@app.route('/admin', methods=['POST', 'GET'])
+def admin():
+    if request.method == 'GET':
+        return "OK"
+    else:
+        data = request.get_data()
+        s_data = str(data, encoding = "utf-8")
+        j_data = json.loads(s_data)
+        newdata = json.loads('{}')
+        newdata['email']      = j_data['email']
+        newdata['password']   = j_data['password']
+        newdata['admintype']  = "normal"
+        sql = "INSERT INTO admin (email, password, admintype) VALUES\
+               (%(email)s, %(password)s, %(admintype)s)"
+        try:
+            grimmdb.insert(sql, newdata)
+        except Exception as e:
+            print('XTYDBG:', e)
+        return data
+
+@app.route('/admin/delete', methods=['POST', 'GET'])
+def delete_admin():
+    if request.method == 'GET':
+        return "OK"
+    else:
+        data = request.get_data()
+        s_data = str(data, encoding = "utf-8")
+        j_data = json.loads(s_data)
+        adminid = j_data['id']
+        print("XTYDBG", type(adminid))
+        print("XTYDBG", adminid)
+        if adminid != 520:
+            sql = "DELETE from admin where id = %s"
+            grimmdb.delete(sql, adminid)
+        return data
 
 @app.route('/activity', methods=['POST', 'GET'])
 def activity():
@@ -267,9 +335,37 @@ def activity():
 
 
 @app.route('/activity/<int:id>', methods=['POST', 'GET'])
+def update_activity(id):
+    print("XTYDBG", id)
+    print("XTYDBG", type(id))
+    sql = "SELECT * from activity where id = %s"
+    try:
+        res = grimmdb.get_one(sql, id)
+    except Exception as e:
+        print("XTYDBG", e)
+    if res is not None:
+        newdata  = json.loads('{}')
+        datetime = (res[4]).isoformat()
+        newdata['id']         = res[0]
+        newdata['adminId']    = res[1]
+        newdata['title']      = res[2]
+        newdata['location']   = res[3]
+        newdata['date']       = datetime
+        newdata['duration']   = res[5]
+        newdata['content']    = res[6]
+        newdata['notice']     = res[7]
+        newdata['others']     = res[8]
+        ret_data_str = json.dumps(newdata)
+        print(ret_data_str)
+        print("XTYDBG: update activity successful")
+        return(ret_data_str)
+    else:
+        print('XTYDBG: update activity fail')
+        return "fail"
+
 
 @app.route('/activity/delete', methods=['POST', 'GET'])
-def update():
+def delete_activity():
     if request.method == 'GET':
         return "OK"
     else:
@@ -302,7 +398,7 @@ def get_activities():
                 newdata['adminId']      = activity[1]
                 newdata['title']        = activity[2]
                 newdata['location']     = activity[3]
-                newdata['activitydate'] = datetime
+                newdata['date']         = datetime
                 newdata['duration']     = activity[5]
                 newdata['content']      = activity[6]
                 newdata['notice']       = activity[7]
