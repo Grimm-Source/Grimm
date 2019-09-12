@@ -255,7 +255,7 @@ def admins():
         ret_data_str = json.dumps(ret_data)
         return ret_data_str
 
-@app.route('/admin/<int:id>', methods=['POST', 'GET'])
+@app.route('/admin/<int:id>', methods=['POST', 'GET', 'DELETE'])
 def update_admin(id):
     if request.method == 'GET':
         sql = "SELECT * from admin where id = %s"
@@ -268,7 +268,11 @@ def update_admin(id):
             ret_data_str = json.dumps(newdata)
             return ret_data_str
         return "fail"
-
+    elif request.method == "DELETE":
+        if id != 520:
+            sql = "DELETE from admin where id = %s"
+            grimmdb.delete(sql, id)
+        return json.dumps({"status": "delete successful"})
 
 @app.route('/admin', methods=['POST', 'GET'])
 def admin():
@@ -325,60 +329,101 @@ def activity():
         newdata['activitydate'] = j_data['date']
         newdata['duration']     = j_data['duration']
         newdata['content']      = j_data['content']
-        sql = "INSERT INTO activity (adminId, title, location, activitydate, duration, content) VALUES\
-               (%(adminId)s, %(title)s, %(location)s, %(activitydate)s, %(duration)s, %(content)s)"
+        newdata['notice']       = j_data['notice']
+        newdata['others']       = j_data['others']
+        sql = "INSERT INTO activity (adminId, title, location, activitydate, duration, content, notice, others) VALUES\
+               (%(adminId)s, %(title)s, %(location)s, %(activitydate)s, %(duration)s, %(content)s, %(notice)s, %(others)s)"
         try:
             grimmdb.insert(sql, newdata)
         except Exception as e:
             print('XTYDBG:', e)
-        return('XTYDBG: publish sucessful')
+        return data
 
 
-@app.route('/activity/<int:id>', methods=['POST', 'GET'])
+@app.route('/activity/<int:id>', methods=['POST', 'GET', 'DELETE'])
 def update_activity(id):
-    print("XTYDBG", id)
-    print("XTYDBG", type(id))
-    sql = "SELECT * from activity where id = %s"
-    try:
-        res = grimmdb.get_one(sql, id)
-    except Exception as e:
-        print("XTYDBG", e)
-    if res is not None:
-        newdata  = json.loads('{}')
-        datetime = (res[4]).isoformat()
-        newdata['id']         = res[0]
-        newdata['adminId']    = res[1]
-        newdata['title']      = res[2]
-        newdata['location']   = res[3]
-        newdata['date']       = datetime
-        newdata['duration']   = res[5]
-        newdata['content']    = res[6]
-        newdata['notice']     = res[7]
-        newdata['others']     = res[8]
-        ret_data_str = json.dumps(newdata)
-        print(ret_data_str)
-        print("XTYDBG: update activity successful")
-        return(ret_data_str)
-    else:
-        print('XTYDBG: update activity fail')
-        return "fail"
-
-
-@app.route('/activity/delete', methods=['POST', 'GET'])
-def delete_activity():
-    if request.method == 'GET':
-        return "OK"
+    if request.method == "GET":
+        print("XTYDBG", id)
+        print("XTYDBG", type(id))
+        sql = "SELECT * from activity where id = %s"
+        try:
+            res = grimmdb.get_one(sql, id)
+        except Exception as e:
+            print("XTYDBG", e)
+        if res is not None:
+            newdata  = json.loads('{}')
+            datetime = (res[4]).isoformat()
+            newdata['id']         = res[0]
+            newdata['adminId']    = res[1]
+            newdata['title']      = res[2]
+            newdata['location']   = res[3]
+            newdata['date']       = datetime
+            newdata['duration']   = res[5]
+            newdata['content']    = res[6]
+            newdata['notice']     = res[7]
+            newdata['others']     = res[8]
+            ret_data_str = json.dumps(newdata)
+            print(ret_data_str)
+            print("XTYDBG: update activity successful")
+            return(ret_data_str)
+        else:
+            print('XTYDBG: update activity fail')
+            return "fail"
+    elif request.method == "DELETE":
+        sql = "DELETE from activity where id = %s"
+        try:
+            grimmdb.delete(sql, id)
+            return json.dumps({"status": "delete successful"})
+        except Exception as e:
+            print("*********XTYDBG activity delete failure", e)
+            return "failure" # need to define a better protocol to communicate with frontend       
     else:
         data = request.get_data()
-        activityid = int.from_bytes(data, "big") - 48 # it is big right? TDB
+        print('XTYDBG', type(data))
+        s_data = str(data, encoding = "utf-8")
+        print('XTYDBG', type(s_data))
+        j_data = json.loads(s_data)
+        print('XTYDBG', type(j_data))
+        print('XTYDBG', j_data)
+        newdata = json.loads('{}')
+        newdata['adminId']      = j_data['adminId']
+        newdata['title']        = j_data['title']
+        newdata['location']     = j_data['location']
+        newdata['activitydate'] = j_data['date']
+        newdata['duration']     = j_data['duration']
+        newdata['content']      = j_data['content']
+        newdata['notice']       = j_data['notice']
+        newdata['others']       = j_data['others']
+        newdata['id']           = j_data['id']
+        sql = "UPDATE activity SET adminId=%(adminId)s, title=%(title)s, location=%(location)s, activitydate=%(activitydate)s,\
+               duration=%(duration)s, content=%(content)s, notice=%(notice)s, others=%(others)s where id = %(id)s"
+        try:
+            grimmdb.insert(sql, newdata)
+        except Exception as e:
+            print('XTYDBG:', e)
+        return data
+       
+        
+
+
+@app.route('/activity/delete', methods=['POST', 'GET', 'DELETE'])
+def delete_activity():
+    if request.method == 'DELETE':
+        data = request.get_data()
+        s_data = str(data, encoding = "utf-8")
+        print('XTYDBG', type(s_data))
+        print('XTYDBG', s_data)
+#activityid = int.from_bytes(data, "big") - 48 # it is big right? TDB, it failed at 2-digits
+        activityid = int(s_data)
+        print("***********XTYDBG", 'delete successful', activityid)
         sql = "DELETE from activity where id = %s"
         try:
             grimmdb.delete(sql, activityid)
-            print("XTYDBG", 'delete successful')
-            return data
+            print("***********XTYDBG", 'delete successful', activityid)
+            return json.dumps({"status": "delete successful"})
         except Exception as e:
-            print("XTYDBG activity delete failure")
-        return "failure" # need to define a better protocol to communicate with frontend
+            print("*********XTYDBG activity delete failure", e)
+            return "failure" # need to define a better protocol to communicate with frontend
 
 
 @app.route('/activities', methods=['POST', 'GET'])
