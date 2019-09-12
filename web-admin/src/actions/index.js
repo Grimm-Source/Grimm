@@ -70,12 +70,31 @@ export const logout = ()=>({
 //activity section
 export const publishActivity = (activity) => (dispatch, getState) => {
     dispatch(loading());
-    return dispatch(postActivity(activity));
+    if(!activity["id"]){
+        return dispatch(postActivity(activity));
+    }
+    return dispatch(updateActivity(activity));
 };
 
 const postActivity = activity => dispatch => {
     return request({
         path: `activity`,
+        method: "POST",
+        data: activity
+    }).then(() => {
+        dispatch(setActivity({})); 
+        dispatch(fetchActivityList());
+        message.success('活动发布成功');   
+    }, ()=>{
+        dispatch(hideLoading());
+    }).finally(()=>{
+
+    });;
+}
+
+const updateActivity = activity => dispatch => {
+    return request({
+        path: `activity/${activity.id}`,
         method: "POST",
         data: activity
     }).then(() => {
