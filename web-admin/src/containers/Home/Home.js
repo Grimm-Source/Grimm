@@ -4,6 +4,7 @@ import Login from '../Login/Login.js';
 import AdminPanel from '../AdminPanel/AdminPanel.js';
 import Activity from '../Activity/Activity.js';
 import ActivityList from '../../components/ActivityLIst/ActivityList.js';
+import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import { Spin } from 'antd';
 import './Home.css';
@@ -11,7 +12,7 @@ import './Home.css';
 class Home extends React.Component {
     getContent = () => {
         switch(this.props.tab){
-            case "admin": return <AdminPanel/>;
+            case HOME_TAG_TYPE.ADMIN: return <AdminPanel/>;
             default: return <ActivityList/>;
         }
     }
@@ -31,7 +32,7 @@ class Home extends React.Component {
   }
 
 const mapStateToProps = (state, ownProps) => ({
-    tab: state.ui.activeHomeTagKey,
+    tab: state.ui.homeTagType,
     loading: state.ui.loading
 })
 

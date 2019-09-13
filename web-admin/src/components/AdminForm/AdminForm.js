@@ -2,6 +2,7 @@
 import React from 'react';
 import { Form, Icon, Input, Button } from 'antd';
 import { loginAccount, publishAdmin } from '../../actions';
+import { ADMIN_FORM_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import "./AdminForm.css";
 
@@ -11,7 +12,7 @@ class AdminForm extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
         if (!err) {
-            if(this.props.type === "create"){
+            if(this.props.type === ADMIN_FORM_TYPE.CREATE){
                 this.props.publishAdmin(values);
                 return;
             }
@@ -46,7 +47,7 @@ class AdminForm extends React.Component {
                 />,
             )}
             </Form.Item>
-            <Button type="primary" loading={this.props.loading} htmlType="submit" className="admin-form-button">{this.props.type === "create"?"注册":"登录"}
+            <Button type="primary" loading={this.props.loading} htmlType="submit" className="admin-form-button">{this.props.type === ADMIN_FORM_TYPE.CREATE?"注册":"登录"}
             </Button>
         </Form>
         );

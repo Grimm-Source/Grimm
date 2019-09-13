@@ -1,6 +1,7 @@
 import React from 'react';
 import { PageHeader, Tag, Tabs, Button, Menu, Dropdown, Icon } from 'antd';
 import { switchHomeTag, logout , showActivityModal, switchAdminFormType} from '../../actions';
+import { HOME_TAG_TYPE, ADMIN_FORM_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import './Header.css';
 
@@ -42,8 +43,8 @@ class Header extends React.Component {
                   ]}
                   footer={
                     <Tabs  onChange={this.props.onChangeTab} activeKey={this.props.activeKey}>
-                      <TabPane tab="志愿者活动" key="activity" />
-                      <TabPane tab="管理员" key="admin" />
+                      <TabPane tab="志愿者活动" key={HOME_TAG_TYPE.ACTIVITY} />
+                      <TabPane tab="管理员" key={HOME_TAG_TYPE.ADMIN} />
                     </Tabs>
                   }
                 >
@@ -54,7 +55,7 @@ class Header extends React.Component {
 
   const mapStateToProps = (state, ownProps) => ({
     user: state.account.user,
-    activeKey: state.ui.activeHomeTagKey
+    activeKey: state.ui.homeTagType
   });
   
   const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -65,8 +66,8 @@ class Header extends React.Component {
       // dispatch(login());
     },
     onClickLogout: () => {
-      dispatch(switchAdminFormType("login"));
-      dispatch(switchHomeTag("activity"));//incase login form in 2 modes
+      dispatch(switchAdminFormType(ADMIN_FORM_TYPE.LOGIN));
+      dispatch(switchHomeTag(HOME_TAG_TYPE.ACTIVITY));//incase login form in 2 modes
       sessionStorage.clear();
       dispatch(logout());
     },

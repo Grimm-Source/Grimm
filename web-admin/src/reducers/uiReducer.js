@@ -17,7 +17,7 @@ const ui = (state = [], action) => {
       case ACTION_TYPES.UI_HOME_TAG_SWITCH:
         return {
           ...state,
-          activeHomeTagKey: action.activeKey 
+          homeTagType: action.activeKey 
         };
       case ACTION_TYPES.UI_ACTIVITY_SHOW:
         return {
@@ -40,7 +40,7 @@ const ui = (state = [], action) => {
       case ACTION_TYPES.UI_ADMIN_PANEL_SWITCH:
           return {
             ...state,
-            activeAdminKey: action.activeKey
+            adminPanelType: action.activeKey
           };
       case ACTION_TYPES.UI_ADMIN_FORM_TYPE_SWITCH:
           return {

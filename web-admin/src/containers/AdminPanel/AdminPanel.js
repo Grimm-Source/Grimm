@@ -6,12 +6,13 @@ import './AdminPanel.css';
 import addIcon from './add.svg';
 import removeIcon from './delete.svg';
 import { removeAdmin, switchAdminPanel, switchAdminFormType} from '../../actions';
+import { ADMIN_PANEL_TYPE, ADMIN_FORM_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 
 class AdminPanel extends React.Component {
 
-  onClickRemoveAdmin = (e) => {
-    if(this.props.mode === "add"){
+  onClickRemove = (e) => {
+    if(this.props.mode === ADMIN_PANEL_TYPE.ADD){
       return;
     }
     this.props.removeAdmin(this.props.adminId);
@@ -19,7 +20,7 @@ class AdminPanel extends React.Component {
 
   getDetail = ()=>{
     switch(this.props.mode){
-      case "add": return <div className="admin-form-wrapper"><AdminForm/></div>;
+      case ADMIN_PANEL_TYPE.ADD: return <div className="admin-form-wrapper"><AdminForm/></div>;
       default: return <div className="admin-detail-wrapper"><AdminDetail/></div>
     }
   }
@@ -45,7 +46,7 @@ class AdminPanel extends React.Component {
                 width={50}
                 alt="deleteUser"
                 src={removeIcon}
-                onClick={this.props.onClickRemove}
+                onClick={this.onClickRemove}
             />
           </div>
         </div>
@@ -54,14 +55,14 @@ class AdminPanel extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  mode: state.ui.activeAdminKey,
+  mode: state.ui.adminPanelType,
   adminId: state.ui.admin && state.ui.admin.id
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onClickAdd : () => {
-    dispatch(switchAdminPanel("add"));
-    dispatch(switchAdminFormType("create"));
+    dispatch(switchAdminPanel(ADMIN_PANEL_TYPE.ADD));
+    dispatch(switchAdminFormType(ADMIN_FORM_TYPE.CREATE));
   },
   removeAdmin: (adminId)=>{
     dispatch(removeAdmin(adminId));
