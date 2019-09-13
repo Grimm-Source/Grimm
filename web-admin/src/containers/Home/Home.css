@@ -1,0 +1,10 @@
+.content-wrapper{
+    width: 80%;
+    margin: 0 10%;
+    padding: 20px 0;
+}
+
+.content-wrapper .ant-list-items .ant-list-item .list-item-button{
+    color: #1890FF;
+}
+
