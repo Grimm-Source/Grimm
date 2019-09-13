@@ -1,6 +1,7 @@
 import { List, Skeleton } from 'antd';
 import React from 'react';
 import { getAdminList, getAdmin, removeAdmin, switchAdminPanel} from '../../actions';
+import { ADMIN_PANEL_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import './AdminList.css';
 
@@ -40,7 +41,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onClickAdmin : (adminInfo) => {
-    dispatch(switchAdminPanel("detail"));
+    dispatch(switchAdminPanel(ADMIN_PANEL_TYPE.DETAIL));
     dispatch(getAdmin(adminInfo.id));
   },
   onClickRemoveAdmin: (adminInfo)=>{

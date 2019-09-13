@@ -1,5 +1,6 @@
 import {ACTION_TYPES} from './actionTypes';
 import request from '../utils/request';
+import { ADMIN_PANEL_TYPE, ADMIN_FORM_TYPE } from "../constants";
 import { message } from 'antd';
 
 //ui section
@@ -49,7 +50,7 @@ const verifyAccount = user => dispatch => {
     }).then((userInfo) => {
         sessionStorage.setItem("user", JSON.stringify(userInfo));
         dispatch(login(userInfo));    
-        dispatch(switchAdminFormType("create"));
+        dispatch(switchAdminFormType(ADMIN_FORM_TYPE.CREATE));
         message.success('登录成功');
     }, (errorMessage)=>{
         message.error(`登录失败，${errorMessage}`);
@@ -179,7 +180,7 @@ const postAdmin = admin => dispatch => {
         data: admin
     }).then(() => {    
         dispatch(getAdminList());
-        dispatch(switchAdminPanel("detail"));
+        dispatch(switchAdminPanel(ADMIN_PANEL_TYPE.DETAIL));
         message.success('管理员创建成功');
     });
 }
