@@ -44,7 +44,7 @@ class Header extends React.Component {
                   footer={
                     <Tabs  onChange={this.props.onChangeTab} activeKey={this.props.activeKey}>
                       <TabPane tab="志愿者活动" key={HOME_TAG_TYPE.ACTIVITY} />
-                      <TabPane tab="管理员" key={HOME_TAG_TYPE.ADMIN} />
+                      {this.props.user && this.props.user.type === "root"? <TabPane tab="管理员" key={HOME_TAG_TYPE.ADMIN} />: null}
                     </Tabs>
                   }
                 >
