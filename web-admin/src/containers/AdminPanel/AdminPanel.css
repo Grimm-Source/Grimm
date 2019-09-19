@@ -37,3 +37,7 @@
     width: 50%;
     margin: 100px auto;
 }
+
+.admin-panel .ant-list-item-action{
+    margin-left: 0;
+}
