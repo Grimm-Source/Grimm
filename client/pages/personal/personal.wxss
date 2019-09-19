@@ -1,0 +1,77 @@
+/* pages/personal/personal.wxss */
+page{
+    height: 100%;
+}
+
+.personal_container{
+    height: 100%;
+    overflow: hidden;
+    background-color: rgb(241, 241, 241);
+}
+.personal_header{
+    height: 30%;
+    background: linear-gradient(#6badff, #92ccfe);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.personal_header .left_part{
+    display: flex;
+    align-items: center;
+}
+
+.personal_header .register_login{
+    display: flex;
+}
+
+.personal_header .register_login .login_btn{
+    margin-right:20rpx;
+}
+
+.personal_header .register_login button{
+    background-color: transparent;
+    color: white;
+    border: 2rpx solid white;
+    padding: 0 30rpx;
+}
+
+.personal_body{
+    height: 80%;
+    background-color: white;
+    margin-top: -10%;
+    margin-left: 50rpx;
+    margin-right: 50rpx;
+    border-top-left-radius: 30rpx;
+    border-top-right-radius: 30rpx;
+    padding: 40rpx;
+    color: grey;
+    font-size: 20rpx;
+    overflow: auto;
+}
+
+.avatar{
+    width: 120rpx;
+    height: 120rpx;
+    border-radius: 60rpx;
+    margin-left: 50rpx;
+    margin-right: 30rpx;
+}
+.avatar image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.updateProfile{
+    display: flex;
+    margin-right: 50rpx;
+}
+.updateProfile .updateProfile_btn{
+    background-color: transparent;
+    padding: 0 10rpx;
+    font-size: 20rpx;
+    border-radius: 20rpx;
+    border: 1rpx solid white;
+    color: white;
+}

@@ -85,7 +85,7 @@ Page({
   checkJumpToRegisterPage : function() {
     if (this.data.hasUserInfo) {
       wx.navigateTo({
-        url: './register',
+        url: '../register/register',
       })
     }
   },
@@ -99,5 +99,19 @@ Page({
       hasUserInfo: true
     })
     this.checkJumpToRegisterPage()
+  },
+
+  refuseGetUserInfo: function(){
+    wx.showModal({
+      title: '拒绝授权',
+      content: '无法注册或登陆',
+      showCancel: false,
+      confirmText: '确定',
+      success: function(res) {
+        wx.switchTab({
+          url: '../home/home',
+        });
+      }
+    })
   }
 })

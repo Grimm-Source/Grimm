@@ -1,6 +1,6 @@
 const {request} = require('interceptor.js');
 
-const getProfile = (id, successCallback, failCallback) => {
+const getProfile = (successCallback, failCallback) => {
     return request({
         url: "profile", 
         success: successCallback,

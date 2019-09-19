@@ -11,17 +11,6 @@ const rules1 = {
     required: true,
     minlength: 4
   },
-  password: {
-    required: true,
-    minlength: 6,
-    maxlength: 15,
-  },
-  confirmPassword: {
-    required: true,
-    minlength: 6,
-    maxlength: 15,
-    equalTo: 'password'
-  },
   role: {
     required: true
   }
@@ -31,9 +20,6 @@ const rules2 = {
     required: true
   },
   gender: {
-    required: true
-  },
-  birthdate: {
     required: true
   },
   idcard: {
@@ -69,17 +55,6 @@ const messages = {
     required: '请输入验证码',
     minlength: '请输入正确的验证码'
   },
-  password: {
-    required: '请输入密码',
-    minlength: '密码长度不少于6位',
-    maxlength: '密码长度不多于15位'
-  },
-  confirmpassword: {
-    required: '请输入密码',
-    minlength: '密码长度不少于6位',
-    maxlength: '密码长度不多于15位',
-    equalTo: '确认密码和输入密码保持一致',
-  },
   role: {
     required: '请选择注册身份'
   },
@@ -88,9 +63,6 @@ const messages = {
   },
   gender: {
     required: '请选择性别'
-  },
-  birthdate: {
-    required: '请选择出生年月'
   },
   idcard: {
     required: '请输入身份证号码',
@@ -125,8 +97,6 @@ Page({
       gender: '男',
       tel: '',
       idcard: '',
-      password: '',
-      confirmPassword: '',
       regcode: '',
       role: '视障人士',
       name: '',
@@ -259,18 +229,6 @@ Page({
     })
   },
 
-  inputPassword: function(e) {
-    this.setData({
-      'form.password': e.detail.value
-    })
-  },
-
-  inputConfirmPass: function (e) {
-    this.setData({
-      'form.confirmPassword': e.detail.value
-    })
-  },
-
   bindVcodeButtonTap: function(){
     this.setData({
       disabled: true, //只要点击了按钮就让按钮禁用 （避免正常情况下多次触发定时器事件）
@@ -343,11 +301,19 @@ Page({
     })
   },
 
-  bindDateChange: function(e){
-    const value = e.detail.value
-    this.setData({
-      'form.birthdate': value,
-    })
+  getBirthdayFromIdCard : function(idCard) {  
+    var birthday = "";  
+    if(idCard != null && idCard != ""){  
+        if(idCard.length == 15){  
+            birthday = "19"+idCard.substr(6,6);  
+        } else if(idCard.length == 18){  
+            birthday = idCard.substr(6,8);  
+        }  
+      
+        birthday = birthday.replace(/(.{4})(.{2})/,"$1-$2-");  
+    }  
+      
+    return birthday;  
   },
 
   formSubmit: function (e) {
@@ -368,11 +334,14 @@ Page({
         return false
       }
     }
+    const birthdate = this.getBirthdayFromIdCard(e.detail.value.idcard)
+    this.setData({'form.birthdate': birthdate})
     const formData = Object.assign(this.data.form, e.detail.value);
     console.log(formData)
     wx.request({
       url: apiUrl + 'register',
       data: formData,
+      method: 'POST',
       success: function (res) {
         console.log(res)
         wx.switchTab({
@@ -386,8 +355,6 @@ Page({
     const params = {
       tel: this.data.form.tel,
       regcode: this.data.form.regcode,
-      password: this.data.form.password,
-      confirmPassword: this.data.form.confirmPassword,
       role: this.data.form.role
     };
 
