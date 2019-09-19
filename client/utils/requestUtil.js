@@ -28,11 +28,21 @@ const verifyCode = (obj, successCallback, failCallback) =>{
     successCallback();
 }
 
+const register =  (obj, successCallback, failCallback) => {
+    return request({
+        url: "register", 
+        data: obj,
+        success: successCallback,
+        fail: failCallback,
+        method: "POST"
+    });
+}
 
 module.exports = {
     getProfile,
     updateProfile,
     getVerifyCode,
-    verifyCode
+    verifyCode,
+    register
 }
   
