@@ -2,6 +2,8 @@ import WxValidate from '../../utils/WxValidate.js';
 const { register} = require('../../utils/requestUtil.js');
 const apiUrl = require('../../config.js').apiUrl;
 
+const app = getApp();
+
 //配置规则
 const rules1 = {
   tel: {
@@ -348,12 +350,14 @@ Page({
         icon: 'success',
         duration: 300
       });
+      wx.setStorageSync('is_register', true)
     },(err)=>{
       wx.showModal({
         showCancel: false,
         title: '注册失败',
         content: err || "网络失败，请稍候再试"
       });  
+      wx.setStorageSync('is_register', false)
     });
   },
 

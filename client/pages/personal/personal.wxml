@@ -1,22 +1,29 @@
 <!--pages/personal/personal.wxml-->
 <view class="personal_container">
     <view class="personal_header">
-        <view class="left_part">
+        <view class="center_part">
             <view class="avatar"><image src="{{avatarUrl}}" /></view>
-            <view class="username_info" wx:if='{{userInfo}}'>{{userInfo.name}}</view>
+            <view class="username_info" wx:if='{{userInfo}}'>{{userInfo.name}} <text>{{userInfo.role}}</text></view>
             <view class="personal_status" wx:else>
                 <view class="register_login">
-                    <button size="mini" class="login_btn" bindtap="login_register">登陆/注册</button>
+                    <button size="mini" class="login_btn" bindtap="register">注册</button>
                 </view>
             </view>
         </view>
-        <view class="updateProfile" wx:if='{{userInfo}}'>
+        <!-- <view class="updateProfile">
             <button size="mini" class="updateProfile_btn" bindtap="updateProfile">更新信息</button>
-        </view>
+        </view> -->
     </view>
     <view class="personal_body">
-        <text wx:if='{{userInfo}}'></text>
-        <text wx:else>甲方：NGO
+        <view class="userinfo_list" wx:if='{{userInfo}}'>
+            <block wx:for='{{userInfoList}}' wx:key='{{item.index}}'>
+                <view class="userinfoItem" bindtap="{{item.action}}">
+                    <view class="labelName"><image src="{{item.icon}}" />{{item.label}}</view>
+                    <view class='arrow'/>
+                </view>
+            </block>
+        </view>
+        <text class="agreement" wx:else>甲方：NGO
 乙方：
 根据《中华人民共和国民法通则》、《中华人民共和国合同法》和有关规定，甲乙双方经平等协商一致，自愿签订本志愿者劳务协议，共同遵守本协议所列条款。
 本岗位性质：公益组织志愿者岗位。
