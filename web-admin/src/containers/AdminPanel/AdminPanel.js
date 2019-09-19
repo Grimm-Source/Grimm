@@ -7,6 +7,7 @@ import addIcon from './add.svg';
 import removeIcon from './delete.svg';
 import { removeAdmin, switchAdminPanel, switchAdminFormType} from '../../actions';
 import { ADMIN_PANEL_TYPE, ADMIN_FORM_TYPE } from "../../constants";
+import { message } from 'antd';
 import { connect } from 'react-redux';
 
 class AdminPanel extends React.Component {
@@ -15,7 +16,7 @@ class AdminPanel extends React.Component {
     if(this.props.mode === ADMIN_PANEL_TYPE.ADD){
       return;
     }
-    this.props.removeAdmin(this.props.adminId);
+    this.props.removeAdmin(this.props.admin);
   }
 
   getDetail = ()=>{
@@ -41,13 +42,14 @@ class AdminPanel extends React.Component {
                 src={addIcon}
                 onClick={this.props.onClickAdd}
             />
+            {(this.props.admin && this.props.admin.type) === "root"? null:
             <img
                 className="admin-action-icon"
                 width={50}
                 alt="deleteUser"
                 src={removeIcon}
                 onClick={this.onClickRemove}
-            />
+            />}
           </div>
         </div>
     );
@@ -56,7 +58,7 @@ class AdminPanel extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
   mode: state.ui.adminPanelType,
-  adminId: state.ui.admin && state.ui.admin.id
+  admin: state.ui.admin
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -64,8 +66,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(switchAdminPanel(ADMIN_PANEL_TYPE.ADD));
     dispatch(switchAdminFormType(ADMIN_FORM_TYPE.CREATE));
   },
-  removeAdmin: (adminId)=>{
-    dispatch(removeAdmin(adminId));
+  removeAdmin: (admin)=>{
+    if(admin.type === "root"){
+      message.error("无法删除超级用户");
+    }
+    dispatch(removeAdmin(admin.id));
   }
 })
 
