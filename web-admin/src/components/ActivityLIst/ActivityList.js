@@ -1,5 +1,6 @@
 import { List, Skeleton } from 'antd';
 import React from 'react';
+import moment from 'moment';
 import { showActivityModal, getActivityList, removeActivity} from '../../actions';
 import { connect } from 'react-redux';
 import './Activity.css'
@@ -22,7 +23,7 @@ class ActivityList extends React.Component {
           >
             <Skeleton avatar title={false} loading={this.props.loading} active>
               <List.Item.Meta
-                title={<span>{item.title}</span>}
+                title={<span><span>{(item.date.split("T"))[0]}</span> | <span>{item.title}</span> | <span>{item.location}</span></span>}
                 description={item.content}
                 className = "activity-content"
                 onClick={this.props.onClickActivity.bind(this,item)}
