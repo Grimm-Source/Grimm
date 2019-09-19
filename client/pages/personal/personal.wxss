@@ -13,27 +13,26 @@ page{
     background: linear-gradient(#6badff, #92ccfe);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
 
-.personal_header .left_part{
+.personal_header .center_part{
     display: flex;
     align-items: center;
+    flex-direction: column;
+    margin-bottom: 20rpx;
 }
 
-.personal_header .register_login{
-    display: flex;
-}
-
-.personal_header .register_login .login_btn{
-    margin-right:20rpx;
+.register_login{
+    margin-top: 10rpx;
 }
 
 .personal_header .register_login button{
     background-color: transparent;
     color: white;
     border: 2rpx solid white;
-    padding: 0 30rpx;
+    height: 45rpx;
+    line-height: 45rpx;
 }
 
 .personal_body{
@@ -49,13 +48,14 @@ page{
     font-size: 20rpx;
     overflow: auto;
 }
+.personal_body .agreement{
+    padding-bottom: 200rpx;
+}
 
 .avatar{
-    width: 120rpx;
-    height: 120rpx;
-    border-radius: 60rpx;
-    margin-left: 50rpx;
-    margin-right: 30rpx;
+    width: 140rpx;
+    height: 140rpx;
+    border-radius: 70rpx;
 }
 .avatar image {
     width: 100%;
@@ -75,3 +75,40 @@ page{
     border: 1rpx solid white;
     color: white;
 }
+
+.username_info {
+    color: white;
+}
+
+.userinfoItem image{
+    width: 40rpx;
+    height: 40rpx;
+    margin-right: 10rpx;
+}
+.username_info text{
+    font-size: 22rpx;
+}
+
+.labelName{
+    display: flex;
+    align-items: center;
+}
+
+.userinfoItem{
+    display: flex;
+    justify-content: space-between;
+    font-size: 30rpx;
+    align-items: center;
+    padding: 10rpx;
+}
+.userinfo_list{
+    padding-top: 50rpx;
+}
+
+.arrow{
+    width: 10rpx;
+    height: 10rpx;
+    border-top: 2rpx solid #999;
+    border-right: 2rpx solid #999;
+    transform: rotate(45deg);
+  }

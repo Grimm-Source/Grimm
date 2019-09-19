@@ -55,11 +55,7 @@
         <view class="weui-label" aria-label="出生年月">出生年月</view>
       </view>
       <view class="weui-cell__bd">
-        <picker mode="date" value="{{userInfo.birthDate}}" start="{{meta.birthdayStartDate}}" end="{{meta.birthdayEndDate}}" data-info-key="birthDate" bindchange="bindInputChange">
-            <view class="weui-input" aria-valuenow="{{userInfo.birthDate}}">
-            {{userInfo.birthDate}}
-            </view>
-        </picker>
+        <input class="weui-input" disabled aria-readonly aria-valuenow="{{userInfo.birthDate}}" aria-readonly value="{{userInfo.birthDate}}"/>
       </view>
     </view>
     
