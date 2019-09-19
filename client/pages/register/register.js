@@ -1,4 +1,5 @@
 import WxValidate from '../../utils/WxValidate.js';
+const { register} = require('../../utils/requestUtil.js');
 const apiUrl = require('../../config.js').apiUrl;
 
 //配置规则
@@ -338,17 +339,22 @@ Page({
     this.setData({'form.birthdate': birthdate})
     const formData = Object.assign(this.data.form, e.detail.value);
     console.log(formData)
-    wx.request({
-      url: apiUrl + 'register',
-      data: formData,
-      method: 'POST',
-      success: function (res) {
-        console.log(res)
-        wx.switchTab({
-          url: '../home/home',
-        });
-      }
-    })
+    register(formData, (res)=>{
+      wx.switchTab({
+        url: '../home/home',
+      });
+      wx.showToast({
+        title: '注册成功',
+        icon: 'success',
+        duration: 300
+      });
+    },(err)=>{
+      wx.showModal({
+        showCancel: false,
+        title: '注册失败',
+        content: err || "网络失败，请稍候再试"
+      });  
+    });
   },
 
   nextStep: function(e){
