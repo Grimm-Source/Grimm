@@ -25,6 +25,13 @@ const request = (option, isManualLoading = false) => {
                     if(res.data.error){
                         reject(res.data.error);
                     }else{
+                        if(res.data.status === "failure" ){
+                            reject(res.data.message);
+                            return;
+                        }else if(res.data.status === "success"){
+                            resolve();
+                            return;
+                        }
                         resolve(res.data);
                     }
                 }
