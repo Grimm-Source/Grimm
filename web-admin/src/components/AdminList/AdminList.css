@@ -31,3 +31,16 @@
 .admin-list .ant-list-items .ant-list-item:hover{
     border-left: 6px solid #1990ff5c;
 }
+
+.admin-list .ant-list-item-meta{
+    width: 70%;
+}
+
+.admin-list .ant-list-item-meta .ant-list-item-meta-content{
+    width: 100%;
+}
+
+.admin-list .ant-list-item-meta .ant-list-item-meta-content .ant-list-item-meta-title{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

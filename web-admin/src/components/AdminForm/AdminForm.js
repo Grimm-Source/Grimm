@@ -51,7 +51,7 @@ class AdminForm extends React.Component {
                 },
                 {
                     validator: this.validatePassword,
-                    message: "密码为6~20位!"
+                    message: "密码为8~21位!"
                 }],
             })(
                 <Input
