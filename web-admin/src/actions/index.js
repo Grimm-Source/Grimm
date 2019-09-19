@@ -231,7 +231,6 @@ const fetchAdmin = id => dispatch => {
 
 export const getAdminList = () => (dispatch, getState) => {
     dispatch(loading());
-    dispatch(setAdmin({}));
     return dispatch(fetchAdminList())
 };
 
@@ -240,10 +239,14 @@ const fetchAdminList = () => dispatch => {
         path: "admins"
     }).then(admins => {
         dispatch(setAdmins(admins));
+        
         if( admins.length > 0){
+            dispatch(setAdmin(admins[0]));
             dispatch(getAdmin(admins[0]["id"]));
             return true;
         }
+        
+        setAdmin({});
         return false;
     }).finally((needHideLoading)=>{
         if( !needHideLoading){
