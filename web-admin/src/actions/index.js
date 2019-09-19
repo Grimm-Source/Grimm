@@ -86,11 +86,12 @@ const postActivity = activity => dispatch => {
         dispatch(setActivity({})); 
         dispatch(fetchActivityList());
         message.success('活动发布成功');   
-    }, ()=>{
+    }, (errorMessage)=>{
+        message.error(`活动发布失败，${errorMessage}`);
         dispatch(hideLoading());
     }).finally(()=>{
 
-    });;
+    });
 }
 
 const updateActivity = activity => dispatch => {
@@ -102,11 +103,12 @@ const updateActivity = activity => dispatch => {
         dispatch(setActivity({})); 
         dispatch(fetchActivityList());
         message.success('活动发布成功');   
-    }, ()=>{
+    }, (errorMessage)=>{
+        message.error(`活动发布失败，${errorMessage}`);
         dispatch(hideLoading());
     }).finally(()=>{
 
-    });;
+    });
 }
 
 export const getActivity = (id) => (dispatch, getState) => {
@@ -182,6 +184,9 @@ const postAdmin = admin => dispatch => {
         dispatch(getAdminList());
         dispatch(switchAdminPanel(ADMIN_PANEL_TYPE.DETAIL));
         message.success('管理员创建成功');
+    }, (errorMessage)=>{
+        message.error(`管理员创建失败，${errorMessage}`);
+        dispatch(hideLoading());
     });
 }
 
@@ -226,7 +231,6 @@ const fetchAdmin = id => dispatch => {
 
 export const getAdminList = () => (dispatch, getState) => {
     dispatch(loading());
-    dispatch(setAdmin({}));
     return dispatch(fetchAdminList())
 };
 
@@ -235,10 +239,14 @@ const fetchAdminList = () => dispatch => {
         path: "admins"
     }).then(admins => {
         dispatch(setAdmins(admins));
+        
         if( admins.length > 0){
+            dispatch(setAdmin(admins[0]));
             dispatch(getAdmin(admins[0]["id"]));
             return true;
         }
+        
+        setAdmin({});
         return false;
     }).finally((needHideLoading)=>{
         if( !needHideLoading){

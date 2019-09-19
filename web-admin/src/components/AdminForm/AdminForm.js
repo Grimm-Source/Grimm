@@ -21,6 +21,13 @@ class AdminForm extends React.Component {
         });
     };
 
+    validatePassword = (rule, passward) => {
+        if(this.props.type === ADMIN_FORM_TYPE.LOGIN){
+            return true;
+        }
+        return passward.length >= 6 && passward.length <= 20;
+    }
+
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
@@ -38,7 +45,14 @@ class AdminForm extends React.Component {
             </Form.Item>
             <Form.Item>
             {getFieldDecorator('password', {
-                rules: [{ required: true, message: '请输入密码!' }],
+                rules: [{ 
+                    required: true, 
+                    message: '请输入密码!'
+                },
+                {
+                    validator: this.validatePassword,
+                    message: "密码为6~20位!"
+                }],
             })(
                 <Input
                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}

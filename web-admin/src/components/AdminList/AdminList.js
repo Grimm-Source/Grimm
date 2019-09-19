@@ -19,7 +19,7 @@ class AdminList extends React.Component {
                 dataSource={this.props.admins}
                 renderItem={item => (
                 <List.Item
-                    actions={[<span key="delete"  className="list-item-button" onClick={this.props.onClickRemoveAdmin.bind(this, item)}>删除</span>]}
+                    actions={[<span key="delete"  style={{display: (item.type==="root") ? "none" : "inline-block"}} className="list-item-button" onClick={this.props.onClickRemoveAdmin.bind(this, item)}>删除</span>]}
                     onClick={this.props.onClickAdmin.bind(this, item)}
                 >
                     <Skeleton title={false} loading={this.props.loading} active>
