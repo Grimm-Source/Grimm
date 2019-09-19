@@ -28,22 +28,6 @@
             <input class="weui-input" placeholder="请输入验证码" type="number" bindinput="inputVcode" name="regcode" value="{{form.regcode}}"/>
           </view>
         </view> 
-        <view class="weui-cell weui-cell_input">
-          <view class="weui-cell__hd">
-            <view class="weui-label">密码<span class="specialChar">*</span></view>
-          </view>
-          <view class="weui-cell__bd">
-            <input class="weui-input" type="password" placeholder="请输入密码" bindinput="inputPassword" name="password" value="{{form.password}}"/>
-          </view>
-        </view> 
-        <view class="weui-cell weui-cell_input">
-          <view class="weui-cell__hd">
-            <view class="weui-label">确认密码<span class="specialChar">*</span></view>
-          </view>
-          <view class="weui-cell__bd">
-            <input class="weui-input" type="password" placeholder="请确认密码" bindinput="inputConfirmPass" name="confirmPassword" value="{{form.confirmPassword}}"/>
-          </view>
-        </view> 
         <view class="weui-cell">
           <view class="weui-cell__hd">
             <view class="weui-label">注册身份<span class="specialChar">*</span></view>
@@ -85,26 +69,22 @@
             </radio-group>
           </view>
         </view>
-        <view class="weui-cell">
-          <view class="weui-cell__hd">
-            <view class="weui-label">出生年月<span class="specialChar">*</span></view>
-          </view>
-          <view class="weui-cell__bd">
-            <picker name="birthdate" mode="date" value="{{form.birthdate}}" start="1900-01-01" end="{{currentDate}}" bindchange="bindDateChange">
-              <view class="picker">
-                当前选择:{{form.birthdate}}
-              </view>
-            </picker>
-          </view>
-        </view>
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
             <view class="weui-label">身份证号码<span class="specialChar">*</span></view>
           </view>
           <view class="weui-cell__bd">
-            <input name="idcard" value="{{form.idcard}}" class="weui-input" type="idcard" placeholder="请输入身份证号码" />
+            <input name="idcard" value="{{form.idcard}}" class="weui-input" type="idcard" placeholder="请输入身份证号码" bindinput="inputIdCard" />
           </view>
         </view>
+        <!-- <view class="weui-cell">
+          <view class="weui-cell__hd">
+            <view class="weui-label">出生年月<span class="specialChar">*</span></view>
+          </view>
+          <view class="weui-cell__bd">
+            <input disabled="{{true}}" value="{{form.birthdate}}"/>
+          </view>
+        </view> -->
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
             <view class="weui-label">联系地址<span class="specialChar">*</span></view>

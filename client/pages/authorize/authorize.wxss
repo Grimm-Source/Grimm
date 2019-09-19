@@ -9,7 +9,12 @@
 }
 
 .bottom {
-    border-radius: 80rpx;
-    margin: 0rpx 100rpx 0rpx 100rpx;
+    margin: 0rpx 50rpx;
     font-size: 35rpx;
+    width: 200rpx;
+}
+
+.btn-group{
+  display: flex;
+  justify-content: center;
 }

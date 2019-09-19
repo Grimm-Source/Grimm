@@ -225,7 +225,7 @@ Page({
   },
 
   __getProfile: function(){
-    return getProfile(this.data.id, (data) => {
+    return getProfile((data) => {
       this.setData({
         userInfo: data
       });
