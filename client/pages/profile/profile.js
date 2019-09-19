@@ -178,6 +178,7 @@ Page({
     mobile = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
     phone = /^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/;
     switch(key) {
+      
       case "emergencyPerson":
           if(this.data.userInfo.role !== "视障人士"){
             return true;
@@ -191,6 +192,10 @@ Page({
         }
       case "linktel":
         return !!value && (mobile.test(value) || phone.test(value));
+      case "disabledID":
+        if(this.data.userInfo.role !== "视障人士"){
+          return true;
+        }
       default:
         return !!value
     }
