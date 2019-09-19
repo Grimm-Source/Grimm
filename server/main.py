@@ -35,7 +35,6 @@ class grimmdb():
             res = self.cursor.fetchone()
             self.db.close()
         except Exception as e:
-            print("query fail!")
             print("XTYDBG_ERR:", e)
         return res
     
@@ -47,7 +46,6 @@ class grimmdb():
             res = self.cursor.fetchall()
             self.db.close()
         except Exception as e:
-            print("query fail!")
             print("XTYDBG_ERR:", e)
         return res
 
@@ -68,7 +66,7 @@ class grimmdb():
             self.db.commit()
             self.db.close()
         except IntegrityError:
-            print('XTYDBG:IntegrityError')
+            print('XTYDBG_ERR: edit error')
             self.db.rollback()
         return res
 
@@ -90,72 +88,50 @@ def wx_jscode2session():
         response_data = response.data
         json_data = json.loads(response_data)
         json_data['server_errcode'] = 0
-        json_data['is_register'] = False # make it True for debug
+        json_data['is_register'] = False
         openid = json_data['openid']
         sql = "SELECT * from mainInfo where openid = %s"
         res = grimmdb.get_one(sql, openid)
         if res is not None:
             json_data['is_register'] = True
-            print('xtydbug:', res)
         ret_data_str = json.dumps(json_data)
-        print('response_data: ', ret_data_str)
     else:
-        json_data = json.loads('{"server_errcode": -1}')
-        ret_data_str = json.dumps(json_data)
+        ret_data_str = json.dumps({'status':'failure'})
     return ret_data_str
     
-@app.route('/register', methods=['POST', 'GET'])
-def maininfoset():
-    data = json.loads('{}')
-    if request.method == 'GET':
-        data['openid']           = request.args.get('openid')
-        data['birthDate']        = request.args.get("birthdate") #the name different here
-        data['usercomment']      = request.args.get("usercomment")
-        data['disabledID']       = request.args.get("disabledID")
-        data['emergencyPerson']  = request.args.get("emergencyPerson")
-        data['emergencyTel']     = request.args.get("emergencyTel")
-        data['gender']           = request.args.get("gender")
-        data['idcard']           = request.args.get("idcard")
-        data['linkaddress']      = request.args.get("linkaddress")
-        data['linktel']          = request.args.get("linktel")
-        data['name']             = request.args.get("name")
-        data['password']         = request.args.get('password')
-        data['role']             = request.args.get('role')
-        data['tel']              = request.args.get('tel')
-    else:
-        data['openid']           = request.form.get("openid")
-        data['birthDate']        = request.form.get("birthdate")
-        data['usercomment']      = request.form.get("usercomment")
-        data['disabledID']       = request.form.get("disabledID")
-        data['emergencyPerson']  = request.form.get("emergencyPerson")
-        data['emergencyTel']     = request.form.get("emergencyTel")
-        data['gender']           = request.form.get("gender")
-        data['idcard']           = request.form.get("idcard")
-        data['linkaddress']      = request.form.get("linkaddress")
-        data['linktel']          = request.form.get("linktel")
-        data['name']             = request.form.get("name")
-        data['password']         = request.form.get('password')
-        data['role']             = request.form.get('role')
-        data['tel']              = request.form.get('tel')
+@app.route('/register', methods=['POST'])
+def register():
+    newdata = {}
+    data = request.get_data() # get the POST data bytes format
+    s_data = str(data, encoding = "utf-8") # decode it to string
+    j_data = json.loads(s_data) # make it a dict
+    newdata['openid']           = request.headers.get('Authorization')
+    newdata['birthDate']        = j_data['birthdate']
+    newdata['usercomment']      = j_data['comment']
+    newdata['disabledID']       = j_data['disabledID']
+    newdata['emergencyPerson']  = j_data['emergencyPerson']
+    newdata['emergencyTel']     = j_data['emergencyTel']
+    newdata['gender']           = j_data['gender']
+    newdata['idcard']           = j_data['idcard']
+    newdata['linkaddress']      = j_data['linkaddress']
+    newdata['linktel']          = j_data['linktel']
+    newdata['name']             = j_data['name']
+    newdata['role']             = j_data['role']
+    newdata['tel']              = j_data['tel']
     sql = "INSERT INTO mainInfo (openid, birthDate, usercomment, disabledID, emergencyPerson, emergencyTel, gender, idcard, linkaddress,\
-           linktel, name, password, role, tel) VALUES (%(openid)s, %(birthDate)s, %(usercomment)s, %(disabledID)s, %(emergencyPerson)s, %(emergencyTel)s,\
-           %(gender)s, %(idcard)s, %(linkaddress)s, %(linktel)s, %(name)s, %(password)s, %(role)s, %(tel)s)"
-    try:
-        grimmdb.insert(sql, data)
-    except Exception as e:
-        print('XTYDBG:', e)
-        return('XTYDBG: error happen in maininfoset')
-    return 'mainInfo set success!'
+           linktel, name, role, tel) VALUES (%(openid)s, %(birthDate)s, %(usercomment)s, %(disabledID)s, %(emergencyPerson)s, %(emergencyTel)s,\
+           %(gender)s, %(idcard)s, %(linkaddress)s, %(linktel)s, %(name)s, %(role)s, %(tel)s)"
+    grimmdb.insert(sql, newdata)
+    return json.dumps({'status':'success'})
 
 @app.route('/profile', methods=['POST', 'GET'])
 def profile():
     if request.method =='GET':
         openid = request.headers.get('Authorization')
         sql = "SELECT * from mainInfo where openid = %s"
-        res = grimmdb.get_one(sql, openid) # it's a bug need to fix gracefully later
-        print(res)
-        birthDate = (res[1]).isoformat() # because date is not json serializable
+        res = grimmdb.get_one(sql, openid)
         if res is not None:
+            birthDate = (res[1]).isoformat() # because date is not json serializable
             data = json.loads('{}')
             data['openid']           = res[0]
             data['birthDate']        = birthDate
@@ -168,24 +144,19 @@ def profile():
             data['linkaddress']      = res[8]
             data['linktel']          = res[9]
             data['name']             = res[10]
-            data['password']         = res[11]
-            data['role']             = res[12]
-            data['tel']              = res[13]
-            print(data)
+            data['role']             = res[11]
+            data['tel']              = res[12]
             ret_data_str = json.dumps(data)
         else:
-            print('XTYDBG: query error')
-            json_data = json.loads('{"server_errcode": -2}')
-            ret_data_str = json.dumps(json_data)
+            print('XTYDBG_INFO: GET profile failed.')
+            ret_data_str = json.dumps({'status':'failure'})
         return ret_data_str
     else:
         data = request.get_data() # get the POST data bytes format
         s_data = str(data, encoding = "utf-8") # decode it to string
         j_data = json.loads(s_data) # make it a json
         openid = j_data['openid']
-        print('XTYDBG: new data:', j_data)
-        print('XTYDBG:', openid)
-        newdata = json.loads('{}')
+        newdata = {}
         newdata['tel']                 = j_data['tel']
         newdata['gender']              = j_data['gender']
         newdata['birthDate']           = j_data['birthDate']
@@ -195,67 +166,55 @@ def profile():
         newdata['emergencyTel']        = j_data['emergencyTel']
         newdata['usercomment']         = j_data['usercomment']
         newdata['openid']              = j_data['openid']
-        print("XTYDBG:", newdata)
         sql = "UPDATE mainInfo SET tel=%(tel)s, gender=%(gender)s, birthDate=%(birthDate)s, linktel=%(linktel)s, linkaddress=%(linkaddress)s,\
                emergencyPerson=%(emergencyPerson)s, emergencyTel=%(emergencyTel)s, usercomment=%(usercomment)s WHERE openid=%(openid)s"
-        try:
-            grimmdb.update(sql, newdata)
-        except Exception as e:
-            print('XTYDBG_ERR:', e)
-            return('{"server_errcode": -3}')
-        return 'mainInfo set success!'
+        print(data)
+        grimmdb.update(sql, newdata)
+        return json.dumps({'status':'success'})
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login', methods=['POST'])
 def adminlogin():
-    if request.method == 'GET':
-        return "failure"
+    newdata = {}
+    data = request.get_data()
+    s_data = str(data, encoding = "utf-8")
+    j_data = json.loads(s_data)
+    email = j_data['email']
+    sql = "SELECT * from admin where email = %s"
+    res = grimmdb.get_one(sql, email)
+    if res is None:
+        newdata['status'] = "failure"
+        newdata['message'] = "邮箱错误！"
+        ret_data_str = json.dumps(newdata)
+        return ret_data_str
+    password = res[2]
+    if password == j_data['password']:
+        newdata['id'] = res[0]
+        newdata['email'] = res[1]
+        newdata['type'] = res[3]
     else:
-        newdata = json.loads('{}')
-        data = request.get_data()
-        s_data = str(data, encoding = "utf-8")
-        j_data = json.loads(s_data)
-        email = j_data['email']
-        print('XTYDBG', email)
-        sql = "SELECT * from admin where email = %s"
-        res = grimmdb.get_one(sql, email)
-        print('XTYDBG', res)
-        print("XTYDBG", j_data['password'])
-        if res is None:
-            newdata['status'] = "failure" # per xiaoting's request 2019-Sep-10
-            newdata['message'] = "email error"
-            ret_data_str = json.dumps(newdata) # convert to json object
-            return ret_data_str
-        password = res[2]
-        if password == j_data['password']:
-            newdata['id'] = res[0]
-            newdata['email'] = res[1]
-            newdata['type'] = res[3]
-        else:
-            newdata['status'] = "failure" # per xiaoting's request 2019-Sep-10
-            newdata['message'] = "password error"
-        ret_data_str = json.dumps(newdata) # convert to json object
-        return ret_data_str
+        newdata['status'] = "failure" # per xiaoting's request 2019-Sep-10
+        newdata['message'] = "密码错误！"
+    ret_data_str = json.dumps(newdata)
+    return ret_data_str
 
-@app.route('/admins', methods=['POST', 'GET'])
+@app.route('/admins', methods=['GET'])
 def admins():
-    if request.method == 'GET':
-        sql = "SELECT * from admin"
-        data = None
-        res = grimmdb.get_all(sql, data)
-        ret_data = []
-        for admin in res:
-            if admin is not None:
-                newdata = json.loads('{}')
-                newdata['id']    = admin[0]
-                newdata['email'] = admin[1]
-                newdata['type']  = admin[3]
-                print("XXXXXXX", newdata)
-                ret_data.append(newdata)
-        print('XTYDBG', ret_data)
-        ret_data_str = json.dumps(ret_data)
-        return ret_data_str
+    sql = "SELECT * from admin"
+    data = None
+    res = grimmdb.get_all(sql, data)
+    ret_data = []
+    for admin in res:
+        if admin is not None:
+            newdata = json.loads('{}')
+            newdata['id']    = admin[0]
+            newdata['email'] = admin[1]
+            newdata['type']  = admin[3]
+            print("XXXXXXX", newdata)
+            ret_data.append(newdata)
+    ret_data_str = json.dumps(ret_data)
+    return ret_data_str
 
-@app.route('/admin/<int:id>', methods=['POST', 'GET', 'DELETE'])
+@app.route('/admin/<int:id>', methods=['GET', 'DELETE'])
 def update_admin(id):
     if request.method == 'GET':
         sql = "SELECT * from admin where id = %s"
@@ -272,27 +231,29 @@ def update_admin(id):
         if id != 520:
             sql = "DELETE from admin where id = %s"
             grimmdb.delete(sql, id)
-        return json.dumps({"status": "delete successful"})
+        return json.dumps({"status": "success"})
 
-@app.route('/admin', methods=['POST', 'GET'])
+# admin register
+@app.route('/admin', methods=['POST'])
 def admin():
-    if request.method == 'GET':
-        return "OK"
-    else:
-        data = request.get_data()
-        s_data = str(data, encoding = "utf-8")
-        j_data = json.loads(s_data)
-        newdata = json.loads('{}')
-        newdata['email']      = j_data['email']
-        newdata['password']   = j_data['password']
-        newdata['admintype']  = "normal"
+    data = request.get_data()
+    s_data = str(data, encoding = "utf-8")
+    j_data = json.loads(s_data)
+    newdata = json.loads('{}')
+    newdata['email']      = j_data['email']
+    newdata['password']   = j_data['password']
+    newdata['admintype']  = "normal"
+    sql = "SELECT * from admin where email = %s"
+    res = grimmdb.get_one(sql, newdata['email'])
+    if res is None:
         sql = "INSERT INTO admin (email, password, admintype) VALUES\
                (%(email)s, %(password)s, %(admintype)s)"
-        try:
-            grimmdb.insert(sql, newdata)
-        except Exception as e:
-            print('XTYDBG:', e)
-        return data
+        grimmdb.insert(sql, newdata)
+        ret_data_str = json.dumps({'status': 'success'})
+        return ret_data_str
+    else:
+        ret_data_str = json.dumps({'status': 'failure', 'message': '邮箱重复！'})
+        return ret_data_str
 
 @app.route('/admin/delete', methods=['POST', 'GET'])
 def delete_admin():
@@ -420,16 +381,16 @@ def delete_activity():
         try:
             grimmdb.delete(sql, activityid)
             print("***********XTYDBG", 'delete successful', activityid)
-            return json.dumps({"status": "delete successful"})
+            return json.dumps({"status": "success"})
         except Exception as e:
             print("*********XTYDBG activity delete failure", e)
-            return "failure" # need to define a better protocol to communicate with frontend
+            return json.dumps({'status':'failure', 'message':'删除活动失败！'}) # need to define a better protocol to communicate with frontend
 
 
 @app.route('/activities', methods=['POST', 'GET'])
 def get_activities():
     if request.method == 'GET':
-        sql = "SELECT * from activity"
+        sql = "SELECT * from activity ORDER by activitydate"
         data = None
         res = grimmdb.get_all(sql, data)
 #        newdata = json.loads('{}')
@@ -454,7 +415,7 @@ def get_activities():
         ret_data_str = json.dumps(ret_data)
         return ret_data_str
     else:
-        return('XTYDBG: set sucessful')
+        return json.dumps({'status':'failure', 'message':'unknow failure'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
