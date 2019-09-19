@@ -255,6 +255,9 @@ Page({
         icon: 'success',
         duration: 300
       });
+      wx.switchTab({
+        url: '../personal/personal',
+      });
     },(err)=>{
       wx.showModal({
         showCancel: false,

@@ -342,13 +342,13 @@ Page({
     const formData = Object.assign(this.data.form, e.detail.value);
     console.log(formData)
     register(formData, (res)=>{
-      wx.switchTab({
-        url: '../home/home',
-      });
       wx.showToast({
         title: '注册成功',
         icon: 'success',
         duration: 300
+      });
+      wx.switchTab({
+        url: '../home/home',
       });
       wx.setStorageSync('is_register', true)
     },(err)=>{
