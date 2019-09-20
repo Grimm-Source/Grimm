@@ -21,11 +21,20 @@ class AdminForm extends React.Component {
         });
     };
 
+    validateEmail = (rule, email) => {
+        if(this.props.type === ADMIN_FORM_TYPE.LOGIN){
+            return true;
+        }
+        let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        return reg.test(email);
+    }
+
     validatePassword = (rule, passward) => {
         if(this.props.type === ADMIN_FORM_TYPE.LOGIN){
             return true;
         }
-        return passward.length >= 6 && passward.length <= 20;
+        let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,21}/;
+        return reg.test(passward);
     }
 
     render() {
@@ -34,7 +43,8 @@ class AdminForm extends React.Component {
         <Form onSubmit={this.handleSubmit} className="admin-form">
             <Form.Item>
             {getFieldDecorator('email', {
-                rules: [{ required: true, message: '请输入邮箱!' }],
+                rules: [{ required: true, message: '请输入邮箱!' },
+                {validator: this.validateEmail, message: "请输入正确的邮箱！"}],
             })(
                 <Input
                 type="email"
@@ -51,7 +61,7 @@ class AdminForm extends React.Component {
                 },
                 {
                     validator: this.validatePassword,
-                    message: "密码为8~21位!"
+                    message: "密码为8~21位，至少包含一个大小字母，一个小写字母及一个特殊字符！"
                 }],
             })(
                 <Input
