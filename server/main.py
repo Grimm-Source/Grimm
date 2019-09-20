@@ -390,7 +390,7 @@ def delete_activity():
 @app.route('/activities', methods=['POST', 'GET'])
 def get_activities():
     if request.method == 'GET':
-        sql = "SELECT * from activity ORDER by activitydate"
+        sql = "SELECT * from activity ORDER by activitydate desc"
         data = None
         res = grimmdb.get_all(sql, data)
 #        newdata = json.loads('{}')
