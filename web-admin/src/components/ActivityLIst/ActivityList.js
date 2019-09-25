@@ -1,9 +1,8 @@
 import { List, Skeleton } from 'antd';
 import React from 'react';
-import moment from 'moment';
 import { showActivityModal, getActivityList, removeActivity} from '../../actions';
 import { connect } from 'react-redux';
-import './Activity.css'
+import './ActivityList.css'
 
 class ActivityList extends React.Component {
   componentDidMount () {

@@ -19,10 +19,16 @@ const initialState = {
         user: user || {},
     },
     admin: {
-        list: []
+        admins: []
     },
     activity: {
-        list: []
+        activities: []
+    },
+    user: {
+        users: []
+    },
+    notice: {
+        notices: []
     }
 }
 

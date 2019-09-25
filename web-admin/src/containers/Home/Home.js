@@ -3,10 +3,11 @@ import Header from '../../components/Header/Header.js';
 import Login from '../Login/Login.js';
 import AdminPanel from '../AdminPanel/AdminPanel.js';
 import Activity from '../Activity/Activity.js';
-import ActivityList from '../../components/ActivityLIst/ActivityList.js';
+import ActivityList from '../../components/ActivityList/ActivityList.js';
 import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import { Spin } from 'antd';
+// import client from 'socket.io-client';
 import './Home.css';
 
 class Home extends React.Component {
@@ -15,6 +16,13 @@ class Home extends React.Component {
             case HOME_TAG_TYPE.ADMIN: return <AdminPanel/>;
             default: return <ActivityList/>;
         }
+    }
+
+    componentDidMount(){
+        // let io = client.connect("http://127.0.0.1:5000");
+        // io.on('connect',function() {
+        //     io.emit("test",{data: 'I\'m connected!'});
+        // });
     }
   
     render() {        
