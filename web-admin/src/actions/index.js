@@ -36,12 +36,12 @@ export const hideActivityModal = () =>({
     type: ACTION_TYPES.UI_ACTIVITY_HIDE
 });
 
-export const showHomeSider = () =>({ 
-    type: ACTION_TYPES.UI_HOMESIDER_SHOW
+export const showDrawer = () =>({ 
+    type: ACTION_TYPES.UI_DRAWER_SHOW
 });
 
-export const hideHomeSider = () =>({ 
-    type: ACTION_TYPES.UI_HOMESIDER_HIDE
+export const hideDrawer = () =>({ 
+    type: ACTION_TYPES.UI_DRAWER_HIDE
 });
 
 export const showUserDetail = (user) =>({ 

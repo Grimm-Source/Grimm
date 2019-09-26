@@ -1,6 +1,6 @@
 import React from 'react';
 import { PageHeader, Tag, Tabs, Button, Menu, Dropdown, Icon } from 'antd';
-import { switchHomeTag, logout , showActivityModal, switchAdminFormType, showHomeSider} from '../../actions';
+import { switchHomeTag, logout , showActivityModal, switchAdminFormType, showDrawer} from '../../actions';
 import { HOME_TAG_TYPE, ADMIN_FORM_TYPE } from "../../constants";
 import notice from '../../images/notice.svg';
 import { connect } from 'react-redux';
@@ -87,7 +87,7 @@ class Header extends React.Component {
       // dispatch(login());
     },
     onClickNotice: () =>{
-      dispatch(showHomeSider());
+      dispatch(showDrawer());
     },
     onClickLogout: () => {
       dispatch(switchAdminFormType(ADMIN_FORM_TYPE.LOGIN));

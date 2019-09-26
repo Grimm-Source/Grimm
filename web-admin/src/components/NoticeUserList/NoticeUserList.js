@@ -1,6 +1,6 @@
 import { List, Skeleton } from 'antd';
 import React from 'react';
-import { hideHomeSider, switchHomeTag, setNoticeUsers} from '../../actions';
+import { hideDrawer, switchHomeTag, setNoticeUsers} from '../../actions';
 import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 
@@ -46,7 +46,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onClickNewUser : (user) => {
-    dispatch(hideHomeSider());
+    dispatch(hideDrawer());
     dispatch(switchHomeTag( HOME_TAG_TYPE.USER))
     dispatch(setNoticeUsers([]));
   }

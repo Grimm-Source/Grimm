@@ -17,15 +17,15 @@ const ui = (state = [], action) => {
           ...state,
           homeTagType: action.activeKey 
         };
-      case ACTION_TYPES.UI_HOMESIDER_SHOW:
+      case ACTION_TYPES.UI_DRAWER_SHOW:
         return {
           ...state,
-          isShowHomeSider: true
+          isShowDrawer: true
         };
-      case ACTION_TYPES.UI_HOMESIDER_HIDE:
+      case ACTION_TYPES.UI_DRAWER_HIDE:
         return {
           ...state,
-          isShowHomeSider: false
+          isShowDrawer: false
       };
       case ACTION_TYPES.UI_USER_DETAIL_SHOW:
         return {

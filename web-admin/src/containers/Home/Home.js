@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../../components/Header/Header.js';
 import Login from '../Login/Login.js';
-import HomeSider from '../HomeSider/HomeSider.js';
+import Drawer from '../Drawer/Drawer.js';
 import AdminPanel from '../AdminPanel/AdminPanel.js';
 import User from '../User/User.js';
 import Activity from '../Activity/Activity.js';
@@ -31,7 +31,7 @@ class Home extends React.Component {
                 <div className="content-wrapper" >{content}</div>
                 <Login/>
                 <Activity/>
-                <HomeSider/>
+                <Drawer/>
                 {this.props.loading? <Spin size="large" />: null}
             </div>
         );

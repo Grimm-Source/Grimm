@@ -19,7 +19,6 @@ class UserDetail extends React.Component {
 
     return (
         <Form className="user-detail" {...formItemLayout}>
-            <Form.Item label="姓名">{this.props.user.name}</Form.Item>
             <Form.Item label="身份证">{this.props.user.idCard}</Form.Item>
             <Form.Item label="手机号">{this.props.user.tel}</Form.Item>
             <Form.Item label="联系电话">{this.props.user.linkTel}</Form.Item>

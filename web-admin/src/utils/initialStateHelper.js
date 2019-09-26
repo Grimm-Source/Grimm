@@ -7,7 +7,7 @@ let user = sessionStorage.getItem("user") && JSON.parse(sessionStorage.getItem("
 const initialState = {
     ui: {
         isShowActivityModal: false,
-        isShowHomeSider: false,
+        isShowDrawer: false,
         isShowUserDetail: false,
         activityId: null,
         user: {},
