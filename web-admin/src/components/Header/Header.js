@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 // import client from 'socket.io-client';
 
-import './Header.css';
+import './Header.less';
 
 const { TabPane } = Tabs;
 

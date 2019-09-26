@@ -3,7 +3,7 @@ import React from 'react';
 import { showUserDetail, hideUserDetail, getVolunteerList } from '../../actions';
 import UserDetail from '../UserDetail/UserDetail';
 import { connect } from 'react-redux';
-import './UserTable.css';
+import './UserTable.less';
 
 
 class UserTable extends React.Component {

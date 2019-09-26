@@ -1,7 +1,7 @@
 import React from 'react';
-import { } from '../../actions';
 import { connect } from 'react-redux';
-import './TableHeader.css'
+
+import './TableHeader.less'
 
 class TableHeader extends React.Component {
   render() {

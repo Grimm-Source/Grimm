@@ -3,7 +3,8 @@ import React from 'react';
 import { getAdminList, getAdmin, removeAdmin, switchAdminPanel} from '../../actions';
 import { ADMIN_PANEL_TYPE } from "../../constants";
 import { connect } from 'react-redux';
-import './AdminList.css';
+
+import './AdminList.less';
 
 class AdminList extends React.Component {
   componentDidMount(){

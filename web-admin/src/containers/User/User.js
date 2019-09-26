@@ -5,7 +5,7 @@ import refresh from '../../images/refresh.svg';
 import TableHeader from '../../components/TableHeader/TableHeader';
 import UserTable from '../../components/UserTable/UserTable';
 
-import './User.css';
+import './User.less';
 
 class User extends React.Component {  
   render() {

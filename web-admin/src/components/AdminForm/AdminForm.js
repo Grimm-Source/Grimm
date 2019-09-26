@@ -4,7 +4,8 @@ import { Form, Icon, Input, Button } from 'antd';
 import { loginAccount, publishAdmin } from '../../actions';
 import { ADMIN_FORM_TYPE } from "../../constants";
 import { connect } from 'react-redux';
-import "./AdminForm.css";
+
+import "./AdminForm.less";
 
 class AdminForm extends React.Component {
 

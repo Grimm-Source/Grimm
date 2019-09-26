@@ -4,7 +4,7 @@ import React from 'react';
 import { hideActivityModal, getActivity, publishActivity} from '../../actions';
 import { connect } from 'react-redux';
 
-import './ActivityDetail.css';
+import './ActivityDetail.less';
 
 class ActivityDetail extends React.Component {
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Descriptions} from 'antd';
 import { connect } from 'react-redux';
-import './AdminDetail.css'
+
+import './AdminDetail.less'
 
 const Item = Descriptions.Item;
 

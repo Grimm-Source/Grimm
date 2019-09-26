@@ -10,7 +10,7 @@ import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import { Spin } from 'antd';
 
-import './Home.css';
+import './Home.less';
 
 class Home extends React.Component {
     getContent = () => {

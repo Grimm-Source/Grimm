@@ -2,13 +2,14 @@ import React from 'react';
 import AdminForm from '../../components/AdminForm/AdminForm';
 import AdminList from '../../components/AdminList/AdminList';
 import AdminDetail from '../../components/AdminDetail/AdminDetail';
-import './AdminPanel.css';
 import addIcon from '../../images/add.svg';
 import removeIcon from '../../images/delete.svg';
 import { removeAdmin, switchAdminPanel, switchAdminFormType} from '../../actions';
 import { ADMIN_PANEL_TYPE, ADMIN_FORM_TYPE } from "../../constants";
 import { message } from 'antd';
 import { connect } from 'react-redux';
+
+import './AdminPanel.less';
 
 class AdminPanel extends React.Component {
 

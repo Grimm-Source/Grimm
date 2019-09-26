@@ -1,8 +1,7 @@
 import { Form } from 'antd';
 import React from 'react';
-import { } from '../../actions';
 import { connect } from 'react-redux';
-import './UserDetail.css'
+import './UserDetail.less'
 
 class UserDetail extends React.Component {
   render() {

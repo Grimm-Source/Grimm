@@ -4,7 +4,7 @@ import { Modal } from 'antd';
 import { connect } from 'react-redux';
 import AdminForm from '../../components/AdminForm/AdminForm';
 
-import './Login.css';
+import './Login.less';
 
 class Login extends React.Component {  
 

@@ -2,7 +2,8 @@ import { List, Skeleton } from 'antd';
 import React from 'react';
 import { showActivityModal, getActivityList, removeActivity} from '../../actions';
 import { connect } from 'react-redux';
-import './ActivityList.css'
+
+import './ActivityList.less'
 
 class ActivityList extends React.Component {
   componentDidMount () {

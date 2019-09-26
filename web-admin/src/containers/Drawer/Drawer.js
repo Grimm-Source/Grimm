@@ -5,7 +5,7 @@ import NoticeUserList from '../../components/NoticeUserList/NoticeUserList';
 
 import user from '../../images/user.svg';
 
-import './Drawer.css';
+import './Drawer.less';
 
 class Drawer extends React.Component {  
     render() {
@@ -15,10 +15,16 @@ class Drawer extends React.Component {
                                 src={user}
                             />}];
         const contentList = contents.map((item) => {
-                return <div className="content-block" key={item.key }><div className="title"><span className="left" >{item.title}{item.icon}</span><span className="remove-all" onClick={this.props.onClickRemoveAll}>清空用户消息</span></div><div className="list">{item.component}</div></div>
+                return <div className="content-block" key={item.key }>
+                            <div className="title">
+                                <span className="left" >{item.title}{item.icon}</span>
+                                <span className="remove-all" onClick={this.props.onClickRemoveAll}>清空用户消息</span>
+                            </div>
+                            <div className="list">{item.component}</div>
+                        </div>
             }
         )
-        return  (this.props.isSiderVisible?<div className="home-sider" onClick={this.props.onClickDrawer}>
+        return  (this.props.isSiderVisible?<div className="drawer" onClick={this.props.onClickDrawer}>
                     <div className="content"> 
                     <div className="notice-title">通知</div>
                     
@@ -34,7 +40,7 @@ class Drawer extends React.Component {
 
   const mapDispatchToProps = (dispatch, ownProps) => ({
     onClickDrawer: (event)=>{
-        if(event.target && event.target.className === "home-sider" ){
+        if(event.target && event.target.className === "drawer" ){
             dispatch(hideDrawer());
         }  
     },

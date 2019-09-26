@@ -4,7 +4,7 @@ import { hideDrawer, switchHomeTag, setNoticeUsers} from '../../actions';
 import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 
-import './NoticeUserList.css';
+import './NoticeUserList.less';
 
 class NoticeUserList extends React.Component {
   render() {
