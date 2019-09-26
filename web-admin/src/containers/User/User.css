@@ -2,6 +2,12 @@
     margin: 0 0 20px 0;
 }
 
-.user .table-header button{
+.user .table-header button, .user .table-header img{
     margin: 0 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.user .table-header img{
+    margin: 0 10px;
 }
