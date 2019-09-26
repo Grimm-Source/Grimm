@@ -6,3 +6,8 @@
 .user-detail-modal .ant-modal-footer{
     display: none;
 }
+
+
+.user-table-wrapper .user-table table{
+    box-shadow: 5px 5px 10px #00000045;
+}
