@@ -36,6 +36,23 @@ export const hideActivityModal = () =>({
     type: ACTION_TYPES.UI_ACTIVITY_HIDE
 });
 
+export const showHomeSider = () =>({ 
+    type: ACTION_TYPES.UI_HOMESIDER_SHOW
+});
+
+export const hideHomeSider = () =>({ 
+    type: ACTION_TYPES.UI_HOMESIDER_HIDE
+});
+
+export const showUserDetail = (user) =>({ 
+    type: ACTION_TYPES.UI_USER_DETAIL_SHOW,
+    user
+});
+
+export const hideUserDetail = () =>({ 
+    type: ACTION_TYPES.UI_USER_DETAIL_HIDE
+});
+
 //account section
 export const loginAccount = (user) => (dispatch, getState) => {
     dispatch(loading());
@@ -259,5 +276,30 @@ const fetchAdminList = () => dispatch => {
 export const setAdmins = admins =>({
     type: ACTION_TYPES.ADMIN_LIST_SET,
     admins
+});
+
+export const getVolunteerList = () => (dispatch, getState) => {
+    dispatch(loading());
+    return dispatch(fetchVolunteerList())
+};
+
+const fetchVolunteerList = () => dispatch => {
+    return request({
+        path: "users?role='志愿者'"
+    }).then(users => {
+        dispatch(setUsers(users));
+    }).finally(()=>{
+        dispatch(hideLoading());
+    });
+}
+
+export const setUsers = users =>({
+    type: ACTION_TYPES.USER_LIST_SET,
+    users
+});
+
+export const setNoticeUsers = users =>({
+    type: ACTION_TYPES.NOTICE_NEW_USERS_SET,
+    users
 });
 

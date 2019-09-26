@@ -1,0 +1,8 @@
+.new-user-list .ant-list-item{
+    padding: 0;
+    cursor: pointer;
+}
+
+.new-user-list .ant-list-item .ant-list-item-meta-title:hover{
+    color: #40a9ff;
+}

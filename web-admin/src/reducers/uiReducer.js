@@ -1,7 +1,5 @@
 import {ACTION_TYPES} from '../actions/actionTypes.js'
 
-
-
 const ui = (state = [], action) => {
     switch (action.type) {
       case ACTION_TYPES.UI_LOADING:
@@ -18,6 +16,28 @@ const ui = (state = [], action) => {
         return {
           ...state,
           homeTagType: action.activeKey 
+        };
+      case ACTION_TYPES.UI_HOMESIDER_SHOW:
+        return {
+          ...state,
+          isShowHomeSider: true
+        };
+      case ACTION_TYPES.UI_HOMESIDER_HIDE:
+        return {
+          ...state,
+          isShowHomeSider: false
+      };
+      case ACTION_TYPES.UI_USER_DETAIL_SHOW:
+        return {
+          ...state,
+          isShowUserDetail: true,
+          user: action.user
+        };
+      case ACTION_TYPES.UI_USER_DETAIL_HIDE:
+        return {
+          ...state,
+          isShowUserDetail: false,
+          user: {}
         };
       case ACTION_TYPES.UI_ACTIVITY_SHOW:
         return {

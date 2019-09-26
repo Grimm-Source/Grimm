@@ -20,3 +20,26 @@
     background: #FFF !important;
     padding: 16px 24px 0 24px !important;
 }
+
+.header .notice{
+    cursor: pointer;
+    margin: 0 20px;
+}
+
+.header .notice img:hover{
+    cursor: pointer;
+    transform:rotate(9deg);
+}
+
+.header .notice-count{
+    color: #FFF;
+    background: red;
+    border-radius: 5px;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    position: relative;
+    left: -10px;
+    top: -5px;
+}
+

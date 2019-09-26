@@ -1,13 +1,25 @@
 import React from 'react';
 import { PageHeader, Tag, Tabs, Button, Menu, Dropdown, Icon } from 'antd';
-import { switchHomeTag, logout , showActivityModal, switchAdminFormType} from '../../actions';
+import { switchHomeTag, logout , showActivityModal, switchAdminFormType, showHomeSider} from '../../actions';
 import { HOME_TAG_TYPE, ADMIN_FORM_TYPE } from "../../constants";
+import notice from '../../images/notice.svg';
 import { connect } from 'react-redux';
+
+// import client from 'socket.io-client';
+
 import './Header.css';
 
 const { TabPane } = Tabs;
 
 class Header extends React.Component {
+
+    componentDidMount(){
+        // let io = client.connect("http://127.0.0.1:5000");
+        // io.on('connect',function() {
+        //     io.emit("test",{data: 'I\'m connected!'});
+        // });
+    }
+
     onClickCreateActivity = () =>{
         this.props.onClickCreateActivity();
     }
@@ -40,10 +52,18 @@ class Header extends React.Component {
                     <Button key="new-activity" type="primary" onClick={this.props.onClickCreateActivity}>
                       发布新活动
                     </Button>,
-                  ]}
+                    <span key="notice" className="notice" onClick={this.props.onClickNotice}>
+                      <img 
+                        width={25}
+                        alt="notice"
+                        src={notice}
+                      />
+                      {this.props.notices.length > 0? <span className="notice-count"/> : null }
+                    </span>]}
                   footer={
                     <Tabs  onChange={this.props.onChangeTab} activeKey={this.props.activeKey}>
                       <TabPane tab="志愿者活动" key={HOME_TAG_TYPE.ACTIVITY} />
+                      <TabPane tab="微信用户" key={HOME_TAG_TYPE.USER}/>
                       {this.props.user && this.props.user.type === "root"? <TabPane tab="管理员" key={HOME_TAG_TYPE.ADMIN} />: null}
                     </Tabs>
                   }
@@ -55,7 +75,8 @@ class Header extends React.Component {
 
   const mapStateToProps = (state, ownProps) => ({
     user: state.account.user,
-    activeKey: state.ui.homeTagType
+    activeKey: state.ui.homeTagType,
+    notices: [1] || state.notice.notices //temp
   });
   
   const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -64,6 +85,9 @@ class Header extends React.Component {
     },
     onClickLogin: () => {
       // dispatch(login());
+    },
+    onClickNotice: () =>{
+      dispatch(showHomeSider());
     },
     onClickLogout: () => {
       dispatch(switchAdminFormType(ADMIN_FORM_TYPE.LOGIN));

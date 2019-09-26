@@ -7,7 +7,10 @@ let user = sessionStorage.getItem("user") && JSON.parse(sessionStorage.getItem("
 const initialState = {
     ui: {
         isShowActivityModal: false,
+        isShowHomeSider: false,
+        isShowUserDetail: false,
         activityId: null,
+        user: {},
         activity: {},
         admin: {},
         loading: false,
@@ -16,7 +19,7 @@ const initialState = {
         adminFormType: ADMIN_FORM_TYPE.LOGIN
     },
     account:{
-        user: user || {},
+        user: user || {}
     },
     admin: {
         admins: []
@@ -28,7 +31,7 @@ const initialState = {
         users: []
     },
     notice: {
-        notices: []
+        newUsers: []
     }
 }
 

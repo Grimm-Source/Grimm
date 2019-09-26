@@ -12,7 +12,7 @@ class Activity extends React.Component {
         <Modal
           className="activity-modal"
           title="编辑活动"
-          visible={this.props.visible}
+          visible={this.props.isActivityVisible}
           destroyOnClose={true}
           maskClosable={false}
           onCancel = {this.props.onCancel}
@@ -26,7 +26,7 @@ class Activity extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  visible: state.ui.isShowActivityModal
+  isActivityVisible: state.ui.isShowActivityModal
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
