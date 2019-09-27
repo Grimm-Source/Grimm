@@ -1,9 +1,10 @@
-import { List, Skeleton } from 'antd';
+import { List, Skeleton, Modal } from 'antd';
 import React from 'react';
 import { showActivityModal, getActivityList, removeActivity} from '../../actions';
 import { connect } from 'react-redux';
 
 import './ActivityList.less'
+const { confirm } = Modal;
 
 class ActivityList extends React.Component {
   componentDidMount () {
@@ -46,7 +47,18 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(showActivityModal(activityInfo.id));
   },
   onClickRemoveActivity: (activityInfo)=>{
-    dispatch(removeActivity(activityInfo.id));
+    confirm({
+      title: '确定删除该活动吗?',
+      okText: '确定',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        dispatch(removeActivity(activityInfo.id));
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   },
   getActivityList : () => {
     dispatch(getActivityList());

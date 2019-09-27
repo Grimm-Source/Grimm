@@ -6,10 +6,13 @@ import addIcon from '../../images/add.svg';
 import removeIcon from '../../images/delete.svg';
 import { removeAdmin, switchAdminPanel, switchAdminFormType} from '../../actions';
 import { ADMIN_PANEL_TYPE, ADMIN_FORM_TYPE } from "../../constants";
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 import { connect } from 'react-redux';
-
 import './AdminPanel.less';
+
+const { confirm } = Modal;
+
+
 
 class AdminPanel extends React.Component {
 
@@ -71,7 +74,18 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     if(admin.type === "root"){
       message.error("无法删除超级用户");
     }
-    dispatch(removeAdmin(admin.id));
+    confirm({
+      title: '确定删除该用户吗?',
+      okText: '确定',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        dispatch(removeAdmin(admin.id));
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   }
 })
 

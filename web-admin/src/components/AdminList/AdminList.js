@@ -1,10 +1,11 @@
-import { List, Skeleton } from 'antd';
+import { List, Skeleton, Modal } from 'antd';
 import React from 'react';
 import { getAdminList, getAdmin, removeAdmin, switchAdminPanel} from '../../actions';
 import { ADMIN_PANEL_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 
 import './AdminList.less';
+const { confirm } = Modal;
 
 class AdminList extends React.Component {
   componentDidMount(){
@@ -46,7 +47,18 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(getAdmin(adminInfo.id));
   },
   onClickRemoveAdmin: (adminInfo)=>{
-    dispatch(removeAdmin(adminInfo.id));
+    confirm({
+      title: '确定删除该用户吗?',
+      okText: '确定',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        dispatch(removeAdmin(adminInfo.id));
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   },
   getAdminList : () => {
     dispatch(getAdminList());
