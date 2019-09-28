@@ -1,5 +1,5 @@
 #
-# File: email.py
+# File: email_verify.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
