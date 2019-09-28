@@ -30,11 +30,11 @@ if not os.path.isdir('../log'):
     os.mkdir('../log')
 fh = logging.FileHandler('../log/sys.log', mode='a', encoding='utf8')
 fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
-fmter = logging.Formatter(fmt)
-fh.setFormatter(fmter)
+fmtter = logging.Formatter(fmt)
+fh.setFormatter(fmtter)
 sys_logger.addHandler(fh)
 
-del fh, fmt, fmter
+del fh, fmt, fmtter
 
 
 # check package dependency
@@ -54,13 +54,13 @@ except ImportError as e:
 
 
 # check python version
-from core.exception import PyVersionNotSupported
+from server.core.exceptions import PyVersionNotSupported
 PY_MAJOR = sys.version_info.major
 PY_MINOR = sys.version_info.minor
 PY_MICRO = sys.version_info.micro
 PY_VERSION = '.'.join([str(PY_MAJOR), str(PY_MINOR), str(PY_MICRO)])
 
-if PY_MAJOR < 3 or PY_MINOR < 6 or PY_MICRO < 5:
+if PY_VERSION < '3.6.5':
     e = PyVersionNotSupported(PY_VERSION)
     sys_logger.error('Unsupported Python: (%d, %s)', e.ecode, e.emsg)
     raise e
