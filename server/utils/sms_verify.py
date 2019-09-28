@@ -1,5 +1,5 @@
 #
-# File: sms.py
+# File: sms_verify.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
@@ -68,7 +68,7 @@ def send(phone_numbers, sign_name, template_code, template_param=None):
     return smsResponse
 
 
-class VRF_Token(object):
+class SMS_VRF_Token(object):
     '''verification token class'''
     def __init__(self, phone_number, expiry=120,
                  access_id=const.ACCESS_KEY_ID,
