@@ -42,3 +42,6 @@ Package List
 - inspect
 - re
 - json
+- flask-cors
+- aliyunsdkcore
+- aliyunsdkdysmsapi
