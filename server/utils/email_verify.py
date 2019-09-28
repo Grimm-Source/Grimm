@@ -21,6 +21,5 @@
 
 
 from itsdangerous import URLSafeTimedSerializer
-from core.grimm import wxapp
 
 

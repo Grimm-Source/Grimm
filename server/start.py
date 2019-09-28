@@ -18,9 +18,14 @@
 #
 
 
+import sys
 import argparse
-from core.grimm import wxapp
+# jump out to upper directory, then `server` can be regarded as a pure python package
+if '..' not in sys.path:
+    sys.path.append('..')
 
+import server
+from server.core.wxapp import wxgrimm
 
 parser = argparse.ArgumentParser(description='Load Grimm back-end service',
                                  add_help=False)
@@ -32,4 +37,4 @@ parser.add_argument('-p', '--port', metavar='Port Num', nargs='?',
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    wxapp.run(host=args.host, port=args.port)
+    wxgrimm.run(host=args.host, port=args.port)
