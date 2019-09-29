@@ -26,9 +26,8 @@ GRIMM_EXCEPTION_CLS = None
 
 
 GRIMM_EXCEPTION_CODE = {
-             'OtherErrCode': -1,
-          'InternalErrCode': 0,
-       'UserRelatedErrCode': 1,
+            'InternalError': 0,
+                'UserError': 1,
              'UserNotFound': 2,
            'AppLoginFailed': 3,
        'UserRegisterFailed': 4,
@@ -37,7 +36,7 @@ GRIMM_EXCEPTION_CODE = {
       'UserExpiredPassword': 7,
       'UserInvalidPassword': 8,
          'UserInvalidEmail': 9,
-                        }
+                          }
 
 
 __all__ = list(GRIMM_EXCEPTION_CODE.keys()) + ['exception_handler']
@@ -291,7 +290,7 @@ class UserInvalidEmail(UserError):
             self.emsg = f'Current input email is invalid, reason: {reason}'
         else:
             self.emsg = f'User {user} input email is invalid, reason: {reason}'
-        self.ecode = GRIMM_EXCEPTION_CODE['UserInvalidPassword']
+        self.ecode = GRIMM_EXCEPTION_CODE['UserInvalidEmail']
         self.args = (self.ecode, self.emsg)
 
     def __str__(self):
