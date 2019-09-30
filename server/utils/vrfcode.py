@@ -72,3 +72,8 @@ def check_vrfcode_expiry(code, limit=600):
         del VRFCODES[code]
         return False
     return True
+
+
+def new_vrflink():
+    '''generate new verification email link'''
+    pass

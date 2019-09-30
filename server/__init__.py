@@ -21,20 +21,31 @@
 import sys
 import os
 import logging
+from server.utils.misctools import get_pardir
 
+
+if '..' not in sys.path:
+    sys.path.append('..')
+
+if '../..' not in sys.path:
+    sys.path.append('../..')
 
 # initialize system logger
-sys_logger = logging.getLogger('sys-logger')
-sys_logger.setLevel(logging.DEBUG)
-if not os.path.isdir('../log'):
-    os.mkdir('../log')
-fh = logging.FileHandler('../log/sys.log', mode='a', encoding='utf8')
-fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
-fmtter = logging.Formatter(fmt)
-fh.setFormatter(fmtter)
-sys_logger.addHandler(fh)
+sys_logger = None
+if sys_logger is None:
+    sys_logger = logging.getLogger('sys-logger')
+    sys_logger.setLevel(logging.DEBUG)
+    log_dir = get_pardir(os.path.abspath(__file__)) + '/log'
+    sys_log_path = log_dir + '/sys.log'
+    if not os.path.isdir(log_dir):
+        os.mkdir(log_dir)
+    fh = logging.FileHandler(sys_log_path, mode='a', encoding='utf8')
+    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fmtter = logging.Formatter(fmt)
+    fh.setFormatter(fmtter)
+    sys_logger.addHandler(fh)
 
-del fh, fmt, fmtter
+    del fh, fmt, fmtter, get_pardir, sys_log_path, log_dir
 
 
 # check package dependency
