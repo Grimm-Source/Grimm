@@ -1,5 +1,5 @@
 #
-# File: sms.py
+# File: sms_verify.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
@@ -21,7 +21,9 @@
 import sys
 import json
 import time
+from datetime import datetime
 from dysms.aliyunsdkdysmsapi.request.v20170525 import SendSmsRequest
+from aliyunsdkdysmsapi.request.v20170525 import QuerySendDetailsRequest
 import dysms.const as const
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.profile import region_provider
@@ -49,9 +51,9 @@ region_provider.add_endpoint(const.PRODUCT_NAME, const.REGION, const.DOMAIN)
 SENT_VRFCODE_PAIRS = {}
 
 
-def send(phone_numbers, sign_name, template_code, template_param=None):
+def send(serial_no, phone_numbers, sign_name, template_code, template_param=None):
     '''send sms message to phone numbers'''
-    serial_id = vrf_code.new_serial_number()
+    serial_id = serial_no
     smsRequest = SendSmsRequest.SendSmsRequest()
     smsRequest.set_TemplateCode(template_code)
     if template_param is not None:
@@ -68,7 +70,7 @@ def send(phone_numbers, sign_name, template_code, template_param=None):
     return smsResponse
 
 
-class VRF_Token(object):
+class SMS_VRF_Token(object):
     '''verification token class'''
     def __init__(self, phone_number, expiry=120,
                  access_id=const.ACCESS_KEY_ID,
@@ -80,12 +82,14 @@ class VRF_Token(object):
             self.__phone_number = phone_number
             self.__expiry = expiry
             self.__vrfcode = vrf_code.new_vrfcode()
+            self.__serial_no = vrf_code.new_serial_number()
             self.__access_id = access_id
             self.__access_secret = access_secret
             self.__signature = signature
             self.__template_code = template_code
             self.__start_time = int(time.time())
-            self.sms_reponse = None
+            self.sms_response = None
+            self.__send_date = None
             self.__valid = True
         else:
             raise TypeError('invalid value type to initializing a token')
@@ -94,6 +98,11 @@ class VRF_Token(object):
     def vrfcode(self):
         '''get token verification code'''
         return self.__vrfcode
+
+    @property
+    def serial_no(self):
+        '''get token serial number'''
+        return self.__serial_no
 
     @property
     def phone_number(self):
@@ -132,17 +141,26 @@ class VRF_Token(object):
         if new_expiry > self.expiry:
             self.__expiry = new_expiry
 
+    @property
+    def duration(self):
+        '''get verification token instant duration'''
+        return time.time() - self.__start_time
+
     def send_sms(self):
         '''send sms message'''
         if self.__valid and not self.expired:
-            out = send(self.phone_number,
+            out = send(self.serial_no,
+                       self.phone_number,
                        self.__signature,
                        self.__template_code,
                        '{"code": "%s"}' % (self.vrfcode))
             sys_logger.info('send verification code %s to phone %s', self.vrfcode, self.phone_number)
             response = json.loads(out)
 
+            self.sms_response = response
             if response['Code'] == 'OK':
+                date = datetime.now()
+                self.__send_date = date.strftime('%Y%m%d')
                 return True
             err_msg = 'Failed to send verification code %s to phone %s: %s' % (self.vrfcode,
                                                                                self.phone_number,
@@ -189,7 +207,22 @@ class VRF_Token(object):
             return 'Failed: expired verification code'
 
         self.__valid = False
+        sys_logger.info('phone %s user sms validate success', self.phone_number)
         return 'Success: OK'
+
+    def query_sms(self, current_page=1, page_size=10):
+        '''query query verification token sms sent status'''
+        if self.__send_date is not None:
+            query = QuerySendDetailsRequest.QuerySendDetailsRequest()
+            query.set_PhoneNumber(self.phone_number)
+            query.set_BizId(self.serial_no)
+            query.set_SendDate(self.__send_date)
+            query.set_CurrentPage(current_page)
+            query.set_PageSize(page_size)
+            response = ACS_CLIENT.do_action_with_exception(query)
+
+            return response
+
 
 
 # def send_vrfcode(phone_numbers, vrfcode=None):

@@ -1,5 +1,5 @@
 #
-# File: core/__init__.py
+# File: core/route/web/__init__.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
@@ -17,15 +17,8 @@
 #   1. 2019/08/19, Ming, create first revision.
 #
 
-
 import sys
 
 
-if '../..' not in sys.path:
-    sys.path.append('../..')
-
-if '..' not in sys.path:
-    sys.path.append('..')
-
-
-
+if '../../../..' not in sys.path:
+    sys.path.append('../../../..')

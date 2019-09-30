@@ -25,6 +25,7 @@ import getpass
 import logging
 import pymysql
 from exceptions import SQLValueError, SQLConnectionError
+from server.utils.misctools import get_pardir
 
 
 __all__ = ['expr_query', 'expr_update', 'expr_insert', 'expr_delete',
@@ -35,11 +36,12 @@ __all__ = ['expr_query', 'expr_update', 'expr_insert', 'expr_delete',
 
 
 # db configs
-DB_CONFIG_FILE = '../config/db.config'
+pardir = get_pardir(get_pardir(os.path.abspath(__file__)))
+DB_CONFIG_FILE = pardir + '/config/db.config'
 DB_NAME = None
 
 # db logger configs
-DB_LOGGER_FILE = '../../log/db.log'
+DB_LOGGER_FILE = pardir + '/log/db.log'
 DB_LOGGER_NAME = 'db-transaction-logger'
 db_logger = None
 
@@ -49,19 +51,6 @@ SQL_QUOTED_TYPES = ('char', 'varchar', 'datetime', 'date',
 
 # db session connection
 session_connection = None
-
-
-# get parent directory
-def get_pardir(_dir):
-    '''truncate path to get parent directory path'''
-    if _dir[-1] is os.path.sep:
-        _dir = _dir.rstrip(os.path.sep)
-    d = _dir.split(os.path.sep)
-    d.pop()
-    pd = os.path.sep.join(d)
-
-    return pd
-
 
 # close session database connection
 def close_connection():
@@ -97,7 +86,7 @@ signal.signal(signal.SIGTERM, sig_handler)
 
 
 # initialize database connection
-def init_connection(need_init_config=False):
+def init_connection(force=False):
     '''initialize database connection of server process'''
     global DB_NAME, session_connection, db_logger
     db_config_items = ['Host', 'Port', 'DB', 'Charset', 'User']
@@ -146,7 +135,7 @@ def init_connection(need_init_config=False):
 
     # create and initialize db connection
     if session_connection is None:
-        if need_init_config is True:
+        if force is True:
             db_config = collect_db_config()
         else:
             if os.path.isfile(DB_CONFIG_FILE):
@@ -219,10 +208,10 @@ def reset_connection(soft=True):
     '''reset current session database connection, both soft and hard resets'''
     if soft is True:
         close_connection()
-        init_connection(need_init_config=False)
+        init_connection(force=False)
     else:
         destory_connection()
-        init_connection(need_init_config=True)
+        init_connection(force=True)
 
 
 #
