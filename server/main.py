@@ -4,11 +4,12 @@ import json
 import pymysql
 from pymysql import IntegrityError
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-with open('config/wxapp.config', 'r') as fp:
+with open(os.path.dirname(__file__) + '/config/wxapp.config', 'r') as fp:
     config = json.load(fp=fp, encoding='utf8')
 
 wx_appid = config['appid']
@@ -70,7 +71,7 @@ class grimmdb():
             self.db.rollback()
         return res
 
-grimmdb = grimmdb('localhost', 'root', '123Xty1.', 'grimm')
+grimmdb = grimmdb('localhost', 'root', 'pass', 'grimm')
 
 @app.route('/jscode2session')
 def wx_jscode2session():
