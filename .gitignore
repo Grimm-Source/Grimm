@@ -24,3 +24,5 @@ MANIFEST
 # cscope and ctags file
 tags
 cscope*
+# IDE
+.vscode
