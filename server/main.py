@@ -4,11 +4,14 @@ import json
 import pymysql
 from pymysql import IntegrityError
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-with open('config/wxapp.config', 'r') as fp:
+execDir = os.path.dirname(__file__)
+confFile = (execDir if execDir else ".") + '/config/wxapp.config'
+with open(confFile, 'r') as fp:
     config = json.load(fp=fp, encoding='utf8')
 
 wx_appid = config['appid']
