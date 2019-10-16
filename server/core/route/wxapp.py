@@ -186,7 +186,7 @@ def send_smscode():
         return json.dumps({'status': 'success'}, encoding='utf8')
 
 
-@app.route('confirm-smscode', methods=['GET'])
+@app.route('/confirm-smscode', methods=['GET'])
 def confirm_smscode():
     '''view function to confirm sms verification code'''
     if request.method == 'GET':

@@ -1,5 +1,5 @@
 #
-# File: id_code.py
+# File: vrfcode.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------

@@ -265,7 +265,7 @@ def new_activity():
         return json.dumps(feedback, encoding='utf8')
 
 
-@app.route('activity/<int:activity_id>', methods=['POST', 'GET', 'DELETE'])
+@app.route('/activity/<int:activity_id>', methods=['POST', 'GET', 'DELETE'])
 def update_activity(activity_id):
     '''view function for the activity raiser to update activity info'''
     if request.method == 'GET':
@@ -328,7 +328,7 @@ def update_activity(activity_id):
         return json.dumps(feedback, encoding='utf8')
 
 
-@app.route('activity/delete', methods=['DELETE'])
+@app.route('/activity/delete', methods=['DELETE'])
 def delete_activity_with_id():
     '''view function to detele activity with id'''
     if request.method == 'DELETE':
