@@ -110,7 +110,7 @@ class SMSVerifyToken(object):
                  access_id=const.ACCESS_KEY_ID,
                  access_secret=const.ACCESS_KEY_SECRET,
                  signature=SIGNATURE,
-                 template_code=TEMPLATE_CODES['AUTHENTICATE_ID']):
+                 template='AUTHENTICATE_ID'):
         '''initialize sms verification token objects'''
         if isinstance(phone_number, str) and isinstance(expiry, int):
             if verify_phone_number_regex(phone_number):
@@ -121,7 +121,8 @@ class SMSVerifyToken(object):
             self.__access_id = access_id
             self.__access_secret = access_secret
             self.__signature = signature
-            self.__template_code = template_code
+            self.__template = template
+            self.__template_code = TEMPLATE_CODES[template]
             self.sms_response = None
             self.__send_time = None
             self.__valid = True
@@ -132,6 +133,12 @@ class SMSVerifyToken(object):
     def vrfcode(self):
         '''get sms token verification code'''
         return self.__vrfcode
+
+    @vrfcode.setter
+    def vrfcode(self, msg):
+        '''reset vrfcode as some other sms message'''
+        if self.__template != 'AUTHENTICATE_ID':
+            self.__vrfcode = msg
 
     @property
     def serial_no(self):
@@ -144,15 +151,16 @@ class SMSVerifyToken(object):
         return self.__phone_number
 
     @property
-    def template_code(self):
+    def template(self):
         '''get sms token template code'''
-        return self.__template_code
+        return self.__template
 
-    @template_code.setter
-    def template_code(self, new_template_code):
+    @template.setter
+    def template(self, new_template):
         '''set new sms token template code'''
-        if new_template_code in TEMPLATE_CODES.values():
-            self.__template_code = new_template_code
+        if new_template in TEMPLATE_CODES.keys():
+            self.__template = new_template
+            self.__template_code = TEMPLATE_CODES[new_template]
 
     @property
     def duration(self):

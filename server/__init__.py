@@ -109,6 +109,25 @@ if sys_logger is None:
     del fh, fmt, fmtter, sys_log_path, log_dir
 print('system logger initialized successfully !')
 
+# initialize admin logger
+print('initializing admin logger...')
+admin_logger = None
+if admin_logger is None:
+    admin_logger = logging.getLogger('admin-logger')
+    admin_logger.setLevel(logging.DEBUG)
+    log_dir = get_pardir(os.path.abspath(__file__)) + '/log'
+    admin_log_path = log_dir + '/admin.log'
+    if not os.path.isdir(log_dir):
+        os.mkdir(log_dir)
+    fh = logging.FileHandler(admin_log_path, mode='a', encoding='utf8')
+    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fmtter = logging.Formatter(fmt)
+    fh.setFormatter(fmtter)
+    admin_logger.addHandler(fh)
+
+    del fh, fmt, fmtter, admin_log_path, log_dir
+print('admin logger initialized successfully !')
+
 # initialize user logger
 print('initializing user logger...')
 user_logger = None

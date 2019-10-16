@@ -57,12 +57,12 @@ def wxjscode2session():
             return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')
         if info:
             feedback['is_register'] = False
-            if info['approval_status'] == 0:
-                feedback['approval_status'] = 'proceeding'
-            elif info['approval_status'] == 1:
-                feedback['approval_status'] = 'approved'
-            else:
-                feedback['approval_status'] = 'rejected'
+            if info['audit_status'] == 0:
+                feedback['audit_status'] = 'proceeding'
+            elif info['audit_status'] == 1:
+                feedback['audit_status'] = 'approved'
+            elif info['audit_status'] == -1:
+                feedback['audit_status'] = 'rejected'
         else:
             feedback['is_register'] = True
         feedback['status'] = 'success'
@@ -137,6 +137,7 @@ def profile():
             feedback['name'] = userinfo['name']
             feedback['role'] = "志愿者" if userinfo['role'] == 0 else "视障人士"
             feedback['tel'] = userinfo['phone']
+            feedback['registrationDate'] = userinfo['registration_date']
 
             return json.dumps(feedback, encoding='utf8')
 
@@ -175,13 +176,15 @@ def send_smscode():
         info = json.loads(request.get_data().decode('utf8'))
         sms_verify.drop_token(info['tel'])  # drop old token if it exists
         try:
-            token = sms_verify.SMSVerifyToken(phone_number=info['tel'],
-                                              expiry=SMS_VRF_EXPIRY,
-                                              template_code=sms_verify.TEMPLATE_CODES['REGISTER_USER'])
-            token.send_sms()
+            sms_token = sms_verify.SMSVerifyToken(phone_number=info['tel'],
+                                                  expiry=SMS_VRF_EXPIRY,
+                                                  template='REGISTER_USER')
+            if not sms_token.send_sms():
+                user_logger.warning('%s, unable to send sms to number', info['tel'])
+                return json.dumps({'status': 'failure', 'message': '发送失败'}, encoding='utf8')
         except Exception as err:
             return json.dumps({'status': 'failure', 'message': err.args[1]}, encoding='utf8')
-        sms_verify.append_token(token)
+        sms_verify.append_token(sms_token)
 
         return json.dumps({'status': 'success'}, encoding='utf8')
 
@@ -191,9 +194,9 @@ def confirm_smscode():
     '''view function to confirm sms verification code'''
     if request.method == 'GET':
         info = json.loads(request.get_data().decode('utf8'))
-        token = sms_verify.fetch_token(info['tel'])
-        if token is None:
+        sms_token = sms_verify.fetch_token(info['tel'])
+        if sms_token is None:
             return json.dumps({'status': 'failure', 'message': '未向该用户发送验证短信'}, encoding='utf8')
-        if not token.validate(phone_number=token.phone_number, vrfcode=info['vrfcode']):
+        if not sms_token.validate(phone_number=info['tel'], vrfcode=info['vrfcode']):
             return json.dumps({'status': 'failure', 'message': '验证未通过' }, encoding='utf8')
         return json.dumps({'status': 'success'}, encoding='utf8')
