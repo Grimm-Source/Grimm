@@ -30,7 +30,68 @@ if '..' not in sys.path:
 if '../..' not in sys.path:
     sys.path.append('../..')
 
+VERSION = '1.0'
+
+# parse user command argument, host/port
+import argparse
+parser = argparse.ArgumentParser(prog='Grimm-backend',
+                                 description='Load Grimm back-end service',
+                                 add_help=False)
+parser.add_argument('-v', '--version', action='version',
+                    version='%(prog)s ' + VERSION,
+                    help='Show %(prog)s version string and exit.')
+parser.add_argument('-?', '--help', action='help',
+                    help='Show this help message and exit.')
+parser.add_argument('-h', '--host', metavar='Host IP', nargs='?',
+                    default='0.0.0.0', dest='host',
+                    help='Customize server host address.')
+parser.add_argument('-p', '--port', metavar='Port Num', nargs='?',
+                    default=5000, type=int, dest='port',
+                    help='Customize service\'s listening port.')
+parser.add_argument('-f', '--force', dest='force', action='store_true',
+                    help='Force database connection when start')
+
+CMDARGS = parser.parse_args()
+HOST = CMDARGS.host
+PORT = CMDARGS.port
+FORCE = CMDARGS.force
+
+del parser, argparse
+
+# check python version
+print('checking python version...')
+from server.core.exceptions import PyVersionNotSupported
+PY_MAJOR = sys.version_info.major
+PY_MINOR = sys.version_info.minor
+PY_MICRO = sys.version_info.micro
+PY_VERSION = '.'.join([str(PY_MAJOR), str(PY_MINOR), str(PY_MICRO)])
+
+if PY_VERSION < '3.6.5':
+    raise PyVersionNotSupported(PY_VERSION)
+
+del PyVersionNotSupported
+print('check python version successfully !')
+
+
+# check package dependency
+print('checking package dependency...')
+try:
+    import re
+    import json
+    import pymysql
+    import urllib3
+    import bcrypt
+    import email
+    import getpass
+    import inspect
+    import flask
+except ImportError as err:
+    raise err
+print('check package dependency successfully !')
+
+
 # initialize system logger
+print('initializing system logger...')
 sys_logger = None
 if sys_logger is None:
     sys_logger = logging.getLogger('sys-logger')
@@ -45,37 +106,24 @@ if sys_logger is None:
     fh.setFormatter(fmtter)
     sys_logger.addHandler(fh)
 
-    del fh, fmt, fmtter, get_pardir, sys_log_path, log_dir
+    del fh, fmt, fmtter, sys_log_path, log_dir
+print('system logger initialized successfully !')
 
+# initialize user logger
+print('initializing user logger...')
+user_logger = None
+if user_logger is None:
+    user_logger = logging.getLogger('user-logger')
+    user_logger.setLevel(logging.DEBUG)
+    log_dir = get_pardir(os.path.abspath(__file__)) + '/log'
+    user_log_path = log_dir + '/user.log'
+    if not os.path.isdir(log_dir):
+        os.mkdir(log_dir)
+    fh = logging.FileHandler(user_log_path, mode='a', encoding='utf8')
+    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fmtter = logging.Formatter(fmt)
+    fh.setFormatter(fmtter)
+    user_logger.addHandler(fh)
 
-# check package dependency
-try:
-    import re
-    import json
-    import pymysql
-    import urllib3
-    import bcrypt
-    import email
-    import getpass
-    import inspect
-    import flask
-except ImportError as e:
-    sys_logger.error('Lack package dependency: %s', e.msg)
-    raise e
-
-
-# check python version
-from server.core.exceptions import PyVersionNotSupported
-PY_MAJOR = sys.version_info.major
-PY_MINOR = sys.version_info.minor
-PY_MICRO = sys.version_info.micro
-PY_VERSION = '.'.join([str(PY_MAJOR), str(PY_MINOR), str(PY_MICRO)])
-
-if PY_VERSION < '3.6.5':
-    e = PyVersionNotSupported(PY_VERSION)
-    sys_logger.error('Unsupported Python: (%d, %s)', e.ecode, e.emsg)
-    raise e
-
-del PyVersionNotSupported
-
-
+    del fh, fmt, fmtter, user_log_path, log_dir
+print('user logger initialized successfully !')

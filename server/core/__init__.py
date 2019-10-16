@@ -20,7 +20,6 @@
 
 import sys
 
-
 if '../..' not in sys.path:
     sys.path.append('../..')
 
@@ -28,4 +27,38 @@ if '..' not in sys.path:
     sys.path.append('..')
 
 
+grimm = None
+grimm_ext = None
+wxappid = None
+wxsecret = None
 
+# initialize grimm back-end service
+if grimm is None:
+    import os
+    import uuid
+    import json
+    from flask import Flask
+    from flask_cors import CORS
+    from server.utils.misctools import get_pardir
+
+    grimm = Flask('grimm')
+    grimm_ext = CORS(grimm)
+
+    grimm.secret_key = os.urandom(24)
+    grimm.config['SECURITY_PASSWORD_SALT'] = uuid.uuid4().hex
+    path = get_pardir(get_pardir(os.path.abspath(__file__)))
+    with open(path + '/config/wxapp.config', mode='r') as fp:
+        wxconfig = json.load(fp=fp, encoding='utf8')
+
+    wxappid = wxconfig['appid']
+    wxsecret = wxconfig['secret']
+
+    del wxconfig, get_pardir, path
+
+# initialize database connection
+import server.core.db as db
+from server import FORCE
+if db.session_connection is None:
+    db.init_connection(force=True if FORCE is True else False)
+
+del db, FORCE
