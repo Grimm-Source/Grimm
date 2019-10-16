@@ -19,50 +19,67 @@
 
 import re
 import bcrypt
-from core.db import expr_query, expr_update
-from core.exceptions import UserNotFound, UserInvalidPassword
+import server.core.db as db
 
-from core.grimm import wxapp
+from server import sys_logger
 
+PASSWORD_SALT = 5
 
-# Bigger this value is, more time the method takes, more security it offers.
-
-
-def update_usr_passwd(usr, input_passwd):
-    '''update user password'''
-    salt = bcrypt.gensalt(wxapp.config['SECURITY_PASSWORD_SALT'])
-    bcrypt_passwd = bcrypt.hashpw(input_passwd, salt)
-    new_info = {'passwd': bcrypt_passwd}
-    return expr_update(tbl=usr.role, account=usr.account, pairs=new_info)
-
-
-def verify_usr_passwd(usr, input_passwd):
-    '''verify user password when login or register'''
-    col = 'passwd'
-    data = expr_query(tbls=usr.role, cols=col, account=usr.account)
-    if len(data) == 1:
-        bcrypt_passwd = data[0][col]
-        return bcrypt.checkpw(input_passwd, bcrypt_passwd)
-    raise UserNotFound(usr.account)
-
-
-def check_passwd_policy(input_passwd):
+def check_password_policy(password):
     '''check password policy to ensure strong policy password'''
-    if isinstance(input_passwd, bytes):
-        input_passwd = input_passwd.decode('utf8')
+    if isinstance(password, bytes):
+        password = password.decode('utf8')
 
-    if not isinstance(input_passwd, str):
-        raise UserInvalidPassword('invalid arguement type')
+    if not isinstance(password, str):
+        return False
 
     rules = [lambda s: any(c.isupper() for c in s) or 'no uppercase character',       # check uppercase
              lambda s: any(c.islower() for c in s) or 'no lowercase character',       # check lowercase
              lambda s: any(c.isdigit() for c in s) or 'no digit character',           # check digit character
              lambda s: not re.match("^[a-zA-Z0-9_]*$", s) or 'no special character',  # check special character
-             lambda s: len(s) > 8 or 'password too short',                            # check short length
-             lambda s: len(s) < 21 or 'password too long']                            # check long length
+             lambda s: len(s) > 7 or 'password too short',                            # check short length
+             lambda s: len(s) < 17 or 'password too long']                            # check long length
 
-    result = [rule(input_passwd) for rule in rules]
-
+    result = [rule(password) for rule in rules]
     final = [x for x in result if x is not True]
 
-    return True if not final else tuple(final)
+    return True if not final else False
+
+
+def update_password(tbl, password, **kwargs):
+    '''update user password'''
+    if kwargs is None or len(kwargs) > 1:
+        sys_logger.error('password.update_password: invalid argument')
+        return False
+
+    for key, val in kwargs.items():
+        pass
+    typeinfo = db.query_tbl_fields_datatype(tbl, key)
+    need_quote = True if typeinfo[key] in db.QUOTED_TYPES else False
+    kwargs[key] = f"'{val}'" if need_quote and isinstance(val, str) and val[0] not in '\'"' else val
+
+    policy_check = check_password_policy(password)
+    if policy_check is True:
+        salt = bcrypt.gensalt(PASSWORD_SALT)
+        bcrypt_passcode = bcrypt.hashpw(password, salt)
+        passcode = {'password': bcrypt_passcode}
+        try:
+            if db.expr_update(tbl=tbl, vals=passcode, **kwargs) == 1:
+                return True
+        except:
+            pass
+
+    return False
+
+
+def verify_password(tbl, password, **kwargs):
+    '''verify user password when login or register'''
+    try:
+        query = db.expr_query(tbl, 'password', kwargs)
+        if len(query) == 1:
+            bcrypt_password = query[0]['password']
+            return bcrypt.checkpw(password, bcrypt_password)
+    except:
+        pass
+
+    return False

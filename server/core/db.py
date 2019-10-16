@@ -24,7 +24,7 @@ import getpass
 
 import logging
 import pymysql
-from exceptions import SQLValueError, SQLConnectionError
+from server.core.exceptions import SQLValueError, SQLConnectionError
 from server.utils.misctools import get_pardir
 
 
@@ -32,7 +32,7 @@ __all__ = ['expr_query', 'expr_update', 'expr_insert', 'expr_delete',
            'query', 'update', 'delete', 'insert', 'query_tbl_fields',
            'execute', 'query_tbl_fields_datatype',
            'exist_fields', 'init_connection', 'close_connection',
-           'reset_connection', 'destory_connection']
+           'reset_connection', 'destory_connection', 'exist_rows']
 
 
 # db configs
@@ -45,8 +45,27 @@ DB_LOGGER_FILE = pardir + '/log/db.log'
 DB_LOGGER_NAME = 'db-transaction-logger'
 db_logger = None
 
+# initialize database logger
+if db_logger is None:
+    print('initialize database logger...')
+    db_logger = logging.getLogger(DB_LOGGER_NAME)
+    # set logging level as default DEBUG level.
+    db_logger.setLevel(logging.DEBUG)
+    log_dir = get_pardir(DB_LOGGER_FILE)
+    if not os.path.isdir(log_dir):
+        os.mkdir(log_dir)
+    # create logging file handler.
+    fh = logging.FileHandler(DB_LOGGER_FILE, mode='a', encoding='utf8')
+    # format
+    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fmter = logging.Formatter(fmt)
+    fh.setFormatter(fmter)
+    # add file handler
+    db_logger.addHandler(fh)
+    print('database logger initialized successfully !')
+
 # SQL datatypes which need check quotes
-SQL_QUOTED_TYPES = ('char', 'varchar', 'datetime', 'date',
+QUOTED_TYPES = ('char', 'varchar', 'datetime', 'date',
                     'timestamp', 'text', 'binary')
 
 # db session connection
@@ -88,10 +107,11 @@ signal.signal(signal.SIGTERM, sig_handler)
 # initialize database connection
 def init_connection(force=False):
     '''initialize database connection of server process'''
+    print('start initialize database connection...')
     global DB_NAME, session_connection, db_logger
     db_config_items = ['Host', 'Port', 'DB', 'Charset', 'User']
 
-    def collect_db_userinfo(usr=None):
+    def collect_db_pass(usr=None):
         if usr is not None:
             print('{:^10}: '.format('User'), usr)
         return getpass.getpass(prompt='%10s: ' % ('Password'))
@@ -102,8 +122,17 @@ def init_connection(force=False):
         config = {}
         for item in db_config_items:
             _input = input('{:^10}: '.format(item)).strip()
-            _input = int(_input) if item == 'Port' else _input
-            config[item] = _input
+            _input = int(_input) if item == 'Port' and _input else _input
+            if item == 'Charset':
+                config[item] = _input if _input else 'utf8mb4'
+            elif item == 'Host':
+                config[item] = _input if _input else 'localhost'
+            elif item == 'Port':
+                config[item] = _input if _input else 3306
+            elif item == 'DB':
+                config[item] = _input if _input else 'grimmdb'
+            elif item == 'User':
+                config[item] = _input if _input else 'root'
 
         config_dir = get_pardir(DB_CONFIG_FILE)
         if not os.path.isdir(config_dir):
@@ -111,27 +140,10 @@ def init_connection(force=False):
         with open(DB_CONFIG_FILE, "w") as fp:
             json.dump(obj=config, fp=fp, ensure_ascii=False, indent=4)
 
-        config['Password'] = collect_db_userinfo()
+        config['Password'] = collect_db_pass()
 
         print('\nDone!')
         return config
-
-    # initialize database logger
-    if db_logger is None:
-        db_logger = logging.getLogger(DB_LOGGER_NAME)
-        # set logging level as default DEBUG level.
-        db_logger.setLevel(logging.DEBUG)
-        log_dir = get_pardir(DB_LOGGER_FILE)
-        if not os.path.isdir(log_dir):
-            os.mkdir(log_dir)
-        # create logging file handler.
-        fh = logging.FileHandler(DB_LOGGER_FILE, mode='a', encoding='utf8')
-        # format
-        fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
-        fmter = logging.Formatter(fmt)
-        fh.setFormatter(fmter)
-        # add file handler
-        db_logger.addHandler(fh)
 
     # create and initialize db connection
     if session_connection is None:
@@ -143,7 +155,7 @@ def init_connection(force=False):
                     with open(DB_CONFIG_FILE, 'r') as fp:
                         db_config = json.load(fp=fp, encoding='utf8')
                     print('\nMySQL Login >>>\n')
-                    db_config['Password'] = collect_db_userinfo(usr=db_config['User'])
+                    db_config['Password'] = collect_db_pass(usr=db_config['User'])
                 except Exception as e:
                     db_logger.error('load json config failed: (%d, %s)', e.args[0], e.args[1])
                     db_config = collect_db_config()
@@ -173,9 +185,10 @@ def init_connection(force=False):
                                                      write_timeout=10)
             except Exception as e:
                 db_logger.error('%dth connect DB failed: %s', 3-retry, e.args[0])
-                if e.args[0] == 'cryptography is required for sha256_password or caching_sha2_password':
+                if e.args[0] == 'cryptography is required for sha256_password or caching_sha2_password' or\
+                        'Access denied for user' in e.args[1]:
                     print('\nProbably, a wrong password caused an invalid connection!\n')
-                    db_config['Password'] = collect_db_userinfo()
+                    db_config['Password'] = collect_db_pass()
                 connection_error = e
                 retry -= 1
                 continue
@@ -189,7 +202,7 @@ def init_connection(force=False):
 
         # logging
         if session_connection is not None:
-            print('\nConnected to DB: %s!' % (DB_NAME))
+            print('\nConnected to DB: %s!\n' % (DB_NAME))
             db_logger.info('Database Connected, Host: %s, Port: %d, User: %s, DB_Name: %s',
                            db_config['Host'], db_config['Port'], db_config['User'], DB_NAME)
 
@@ -224,7 +237,7 @@ def execute(_execute):
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
-
+    # execute
     if isinstance(_execute, bytes):
         _execute.decode('utf8')
     if not isinstance(_execute, str):
@@ -253,14 +266,52 @@ def formatter(record):
     return record
 
 
+# parse **kwargs where clauses
+def parse_kwargs_clause(tbls, fields='*', **kwargs):
+    expr_operator = '='
+    expr_connector = 'and'
+    where_clause = ''
+    # check tbls argument
+    if isinstance(tbls, (bytes, str)):
+        table_count = 1
+    elif isinstance(tbls, (tuple, list)):
+        table_count = len(tbls)
+    else:
+        table_count = 0
+
+    if table_count > 0 and kwargs is not None:
+        if table_count == 1:
+            if isinstance(fields, str) and fields != '*':
+                fields = [fields, ]
+            if isinstance(fields, (list, tuple)):
+                fields = list(fields) + [k for k in kwargs.keys()]
+            # fetch all fields datatype info to check if need check quotes
+            typeinfo = query_tbl_fields_datatype(tbls, fields)
+        for k, v in kwargs.items():
+            if isinstance(v, bytes):
+                v = v.decode('utf8')
+            # add quotes for values
+            if isinstance(v, str) and v.strip()[0] not in '\'"':
+                if table_count == 1 and typeinfo[k] not in QUOTED_TYPES:
+                    v = v.strip()
+                else:
+                    v = f"'{v.strip()}'"
+
+            expr = f'{k} {expr_operator} {v}'
+            where_clause = f'{where_clause} {expr_connector} {expr}' if where_clause else expr
+
+    return where_clause
+
+
 # get all table column names
 def query_tbl_fields(tbl):
     '''fetch all fields names into a tuple of given table'''
+    # check database connection session status
     if session_connection is None or session_connection.open is False:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
-
+    # check table argument
     if isinstance(tbl, bytes):
         tbl = tbl.decode('utf8')
     if not isinstance(tbl, (str, tuple, list)):
@@ -277,7 +328,7 @@ def query_tbl_fields(tbl):
         e = SQLValueError('query field names', 'null table')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
-
+    # do query
     _query = f"SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` \
         WHERE `TABLE_SCHEMA` = '{DB_NAME}' AND `TABLE_NAME` = '{table}'"
     db_logger.info('SQL table fields querying: %s', _query)
@@ -299,11 +350,12 @@ def query_tbl_fields(tbl):
 # get table columns data type
 def query_tbl_fields_datatype(tbl, fields='*'):
     '''query fields\' datatypes of one table, default is all *'''
+    # check database connection session status
     if session_connection is None or session_connection.open is False:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
-
+    # check table argument
     if isinstance(tbl, bytes):
         tbl = tbl.decode('utf8')
     if not isinstance(tbl, (str, tuple, list)):
@@ -320,7 +372,7 @@ def query_tbl_fields_datatype(tbl, fields='*'):
         e = SQLValueError('query fields datatype', 'null table')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
-
+    # check fields argument
     if isinstance(fields, bytes):
         fields = fields.decode('utf8')
     if not isinstance(fields, (str, tuple, list)):
@@ -338,7 +390,7 @@ def query_tbl_fields_datatype(tbl, fields='*'):
     else:
         columns = tuple([c.strip('\'"') if isinstance(c, str) else str(c) for c in fields])
         opcode = 'IN'
-
+    # do query
     _query = f"SELECT `COLUMN_NAME`,`DATA_TYPE` FROM `INFORMATION_SCHEMA`.`COLUMNS` \
                 WHERE `TABLE_NAME` = '{table}' AND `COLUMN_NAME` {opcode} {columns}"
     db_logger.info('SQL fields datatype querying: %s', _query)
@@ -358,20 +410,26 @@ def query_tbl_fields_datatype(tbl, fields='*'):
     return dict(zip(db_fields, db_typeinfo))
 
 
+#
 # check if some fields exists in table
+#   1. tbl,  table name from which to the query
+#   2. fields,  fields that need to be checked
+#
+# Return all fields that exist in the table else None.
 def exist_fields(tbl, fields):
     '''check if fields existence'''
+    # check database connection session status
     if session_connection is None or session_connection.open is False:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
-
+    # check table argument
     if isinstance(tbl, bytes):
         tbl = tbl.decode('utf8')
     if not isinstance(tbl, (str, tuple, list)):
         e = SQLValueError('check field existence', 'invalid table name')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
-        raise e
+        return None
     if isinstance(tbl, (tuple, list)):
         if len(tbl) > 1:
             db_logger.warning('check multiple table existence: %s', ','.join(tbl))
@@ -381,23 +439,76 @@ def exist_fields(tbl, fields):
     if not table:
         e = SQLValueError('check fields existence', 'null table')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
-        raise e
-
+        return None
+    # check field argument
     if isinstance(fields, bytes):
         fields = fields.decode('utf8')
     if not isinstance(fields, (str, tuple, list)):
-        e = SQLValueError('check field existence', 'invalid field names')
+        e = SQLValueError('check fields existence', 'invalid field names')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
-        raise e
+        return None
 
     if isinstance(fields, str):
         fields = (fields, )
-
+    # do query
     columns = query_tbl_fields(table)
 
-    exists = [field for field in fields if field in columns]
+    existences = [field for field in fields if field in columns]
 
-    return tuple(exists)
+    return tuple(existences)
+
+
+#
+# MySQL API check item existence.
+#   1. tbl: which table to query
+#   2. kwargs: not null, used as query condition.
+#
+# Return row count if some rows are found else None
+#
+def exist_row(tbl, **kwargs):
+    '''standard SQL API for checking item existence using SQL script'''
+    # check database connection session status
+    if session_connection is None or session_connection.open is False:
+        e = SQLConnectionError()
+        db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
+        raise e
+    # check table argument
+    if isinstance(tbl, bytes):
+        tbl = tbl.decode('utf8')
+    if not isinstance(tbl, (str, tuple, list)):
+        e = SQLValueError('check rows existence', 'invalid table name')
+        db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
+        return None
+    if isinstance(tbl, (tuple, list)):
+        if len(tbl) > 1:
+            db_logger.warning('check multiple table existence: %s', ','.join(tbl))
+        table = str(tbl[0]) if not isinstance(tbl[0], str) else tbl[0].strip()
+    else:
+        table = tbl.strip('\'" ')
+    if not table:
+        e = SQLValueError('check rows existence', 'null table')
+        db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
+        return None
+    # check kwargs argument
+    if kwargs is None:
+        err = SQLValueError('check rows existence', 'invalid kwargs query condition')
+        db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
+        return None
+
+    where_clause = parse_kwargs_clause(tbls=tbl, **kwargs)
+    # do query and check existence
+    _query = f"select * from {tbl} where {where_clause}"
+    print('query row existence:', _query)
+    cursor = session_connection.cursor()
+    try:
+        result = cursor.execute(_query)
+        cursor.close()
+        session_connection.commit()
+    except pymysql.err.Error as e:
+        db_logger.error('SQL query row existence error: (%d, %s)', e.args[0], e.args[1])
+        return None
+
+    return cursor.rowcount if cursor.rowcount > 0 else None
 
 
 # connect exprs where clause exprs list
@@ -411,39 +522,6 @@ def join_exprs_clause(clauses):
     if isinstance(clauses, (tuple, list)):
         clauses = ' '.join(clauses)
     return clauses
-
-
-# parse **kwargs where clauses
-def parse_kwargs_clause(tbls, fields='*', **kwargs):
-    expr_operator = '='
-    expr_connector = 'and'
-    where_clause = ''
-
-    if isinstance(tbls, bytes):
-        tbls = tbls.decode('utf8')
-    if isinstance(tbls, str):
-        table_count = 1
-    elif isinstance(tbls, (tuple, list)):
-        table_count = len(tbls)
-    else:
-        table_count = 0
-    if table_count > 0:
-        if table_count == 1:
-            typeinfo = query_tbl_fields_datatype(tbls, fields)
-        for k, v in kwargs.items():
-            if isinstance(v, bytes):
-                v = v.decode('utf8')
-            # add quotes for words
-            if isinstance(v, str) and v.strip()[0] not in '\'"':
-                if table_count == 1 and typeinfo[k] not in SQL_QUOTED_TYPES:
-                    v = v.strip()
-                else:
-                    v = f"'{v.strip()}'"
-
-            expr = f'{k} {expr_operator} {v}'
-            where_clause = f'{where_clause} {expr_connector} {expr}' if where_clause else expr
-
-    return where_clause
 
 
 #
@@ -469,14 +547,14 @@ def parse_kwargs_clause(tbls, fields='*', **kwargs):
 #           DON'T OMIT THE EXPRESSION CONNECTORS.
 #           DON'T FORGET THE QUOTES FOR VALUES IN MYSQL EXPRS!!!
 #        Note:
-#           If this arguement is provided, **kwargs will be omitted.
+#           If this argument is provided, **kwargs will be omitted.
 #
 #     4. **kwargs: specify `where clause` info, expression operator is '=',
 #        expression connector is 'and' only.
 #           eg: expr_query(..., age=40, gender='male')
 #           which means: "where age=40 and gender='male'"
 #        Note:
-#           This is for simple cases, for complicated cases, use arguement
+#           This is for simple cases, for complicated cases, use argument
 #           `clauses` as above instead.
 #
 def expr_query(tbls, fields='*', clauses=None, **kwargs):
@@ -530,12 +608,12 @@ def expr_query(tbls, fields='*', clauses=None, **kwargs):
         columns = ','.join(fields)
 
     # parse clause, including kwargs clause & dictionary clause
-    # function arguement clause
+    # function argument clause
     if clauses is not None:
         where_clause = join_exprs_clause(clauses)
         kwargs = None
 
-    # **kwargs arguement clause
+    # **kwargs argument clause
     if kwargs is not None:
         where_clause = parse_kwargs_clause(tbls=tbls, fields=fields, **kwargs)
 
@@ -582,7 +660,7 @@ def expr_query(tbls, fields='*', clauses=None, **kwargs):
 #     Notes:
 #       Also see `MySQL expr_query API`
 #
-def expr_update(tbl, pairs, clauses=None, **kwargs):
+def expr_update(tbl, vals, clauses=None, **kwargs):
     '''standard SQL API for database update operation using expressions'''
     if session_connection is None or session_connection.open is False:
         e = SQLConnectionError()
@@ -609,13 +687,13 @@ def expr_update(tbl, pairs, clauses=None, **kwargs):
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
 
-    if not isinstance(pairs, dict) or len(pairs) == 0:
-        e = SQLValueError('expression update', 'invalid new pairs')
+    if not isinstance(vals, dict) or len(vals) == 0:
+        e = SQLValueError('expression update', 'invalid new vals')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
 
     # parse clause, including kwargs clause & dictionary clause
-    # function arguement clause
+    # function argument clause
     if clauses is None and not kwargs:
         e = SQLValueError('expression update', 'need to specify where clause')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
@@ -624,33 +702,31 @@ def expr_update(tbl, pairs, clauses=None, **kwargs):
         where_clause = join_exprs_clause(clauses)
         kwargs = None
 
-    # **kwargs arguement clause
+    # **kwargs argument clause
     typeinfo = query_tbl_fields_datatype(table, '*')
     if kwargs is not None:
         where_clause = parse_kwargs_clause(tbls=tbl, **kwargs)
 
-    # parse update pairs
-    for k, v in pairs.items():
+    # parse update vals
+    for k, v in vals.items():
         k = k.strip('\'" ') if isinstance(k, str) else k
         if isinstance(v, bytes):
             v = v.decode('utf8')
         # add quotes for words
         if isinstance(v, str) and v.strip()[0] not in '\'"':
-            print('value %s not quoted' %(v))
-            if typeinfo[k] in SQL_QUOTED_TYPES:
+            if typeinfo[k] in QUOTED_TYPES:
                 v = f"'{v.strip()}'"
             else:
                 v = v.strip()
 
         update_exprs += [f'{k}={v}']
-    print('update_exprs:', update_exprs)
-    update_pairs = ','.join(update_exprs)
+    update_vals = ','.join(update_exprs)
 
     # do update
     if where_clause:
-        _update = f'update {table} set {update_pairs} where {where_clause}'
+        _update = f'update {table} set {update_vals} where {where_clause}'
     else:
-        _update = f'update {table} set {update_pairs}'
+        _update = f'update {table} set {update_vals}'
     print('expression update: ', _update)
     db_logger.info('SQL expression updating: %s', _update)
     cursor = session_connection.cursor()
@@ -662,7 +738,7 @@ def expr_update(tbl, pairs, clauses=None, **kwargs):
         db_logger.error('SQL expression update execution error: (%d, %s)', e.args[0], e.args[1])
         raise e
 
-    return result
+    return result if result > 0 else False
 
 
 #
@@ -678,10 +754,10 @@ def expr_update(tbl, pairs, clauses=None, **kwargs):
 #       The second form requires values order corresponds to
 #       the columns order in database table.
 #     3. **kwargs: specify column-value pairs to be inserted.
-#        Works the same way with arguement `vals`'s dict form.
+#        Works the same way with argument `vals`'s dict form.
 #
 #     Note:
-#       If `vals` arguement is provided, **kwargs will be omitted.
+#       If `vals` argument is provided, **kwargs will be omitted.
 #
 def expr_insert(tbl, vals=None, **kwargs):
     '''standard SQL API for database insert operation using expressions'''
@@ -746,7 +822,7 @@ def expr_insert(tbl, vals=None, **kwargs):
         db_logger.error('SQL expression insert execution error: (%d, %s)', e.args[0], e.args[1])
         raise e
 
-    return result
+    return result if result > 0 else False
 
 
 #
@@ -769,12 +845,12 @@ def expr_insert(tbl, vals=None, **kwargs):
 #           DON'T OMIT THE EXPRESSION CONNECTORS.
 #           DON'T FORGET THE QUOTES FOR VALUES IN MYSQL EXPRS!!!
 #        Note:
-#           If this arguement is provided, **kwargs will be omitted.
+#           If this argument is provided, **kwargs will be omitted.
 #
 #     3. **kwargs: specify `where clause` info, expression operator is '=',
 #        expression connector is 'and' only.
 #     Note:
-#       If `clauses` arguement is provided, **kwargs will be omitted.
+#       If `clauses` argument is provided, **kwargs will be omitted.
 #
 def expr_delete(tbl, clauses=None, **kwargs):
     '''standard SQL API for database delete operation using expressions'''
@@ -804,12 +880,12 @@ def expr_delete(tbl, clauses=None, **kwargs):
         raise e
 
     # parse clause, including kwargs clause & dictionary clause
-    # function arguement clause
+    # function argument clause
     if clauses is not None:
         where_clause = join_exprs_clause(clauses)
         kwargs = None
 
-    # **kwargs arguement clause
+    # **kwargs argument clause
     if kwargs is not None:
         where_clause = parse_kwargs_clause(tbls=tbl, **kwargs)
 
@@ -828,7 +904,7 @@ def expr_delete(tbl, clauses=None, **kwargs):
         db_logger.error('SQL delete execution error: (%d, %s)', e.args[0], e.args[1])
         raise e
 
-    return result
+    return result if result > 0 else False
 
 
 #
@@ -875,7 +951,7 @@ def update(_update):
         db_logger.error('SQL script update execution error: (%d, %s)', e.args[0], e.args[1])
         raise e
 
-    return cursor.rowcount
+    return cursor.rowcount if cursor.rowcount > 0 else False
 
 
 #
@@ -893,7 +969,7 @@ def insert(_insert):
         db_logger.error('SQL script insert execution error: (%d, %s)', e.args[0], e.args[1])
         raise e
 
-    return cursor.rowcount
+    return cursor.rowcount if cursor.rowcount > 0 else False
 
 
 #
@@ -911,4 +987,4 @@ def delete(_delete):
         db_logger.error('SQL script delete execution error: (%d, %s)', e.args[0], e.args[1])
         raise e
 
-    return cursor.rowcount
+    return cursor.rowcount if cursor.rowcount > 0 else False

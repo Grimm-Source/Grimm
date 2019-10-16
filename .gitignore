@@ -21,6 +21,7 @@ MANIFEST
 *~
 *.bak
 *.orig
+.*rej
 # cscope and ctags file
 tags
 cscope*

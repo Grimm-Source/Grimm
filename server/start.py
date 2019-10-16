@@ -19,22 +19,22 @@
 
 
 import sys
-import argparse
-# jump out to upper directory, then `server` can be regarded as a pure python package
+import signal
+# jump out to upper directory, then `server` becomes a pure python package.
+# must be placed ahead of other imports !!!
 if '..' not in sys.path:
     sys.path.append('..')
 
 import server
-from server.core.wxapp import wxgrimm
-
-parser = argparse.ArgumentParser(description='Load Grimm back-end service',
-                                 add_help=False)
-parser.add_argument('-h', '--host', metavar='Host IP', nargs='?',
-                    default='0.0.0.0', dest='host')
-parser.add_argument('-p', '--port', metavar='Port Num', nargs='?',
-                    default=5000, type=int, dest='port')
+from server import HOST, PORT
+from server.core import grimm
+from server.core.exit import exit_grimm
 
 
 if __name__ == '__main__':
-    args = parser.parse_args()
-    wxgrimm.run(host=args.host, port=args.port)
+    # register signal handler
+    signal.signal(signal.SIGINT, exit_grimm)
+    signal.signal(signal.SIGQUIT, exit_grimm)
+    signal.signal(signal.SIGTERM, exit_grimm)
+    # start grimm back-end
+    grimm.run(host=HOST, port=PORT)

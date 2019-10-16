@@ -18,37 +18,71 @@
 #
 
 
-import sys
 import json
 import time
+import re
 from datetime import datetime
+import dysms.const as const
 from dysms.aliyunsdkdysmsapi.request.v20170525 import SendSmsRequest
 from aliyunsdkdysmsapi.request.v20170525 import QuerySendDetailsRequest
-import dysms.const as const
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.profile import region_provider
 from aliyunsdkcore.http import method_type as MT
 from aliyunsdkcore.http import format_type as FT
 
-
 import vrfcode as vrf_code
 from server import sys_logger
+from server.core.exceptions import UserPhoneError
 
 
 SIGNATURE = '视障人士志愿者平台'
 TEMPLATE_CODES = {
-     'ID_AUTHENTICATION': 'SMS_134125051',
-    'USER_LOGIN_CONFIRM': 'SMS_134125050',
-     'USER_REGISTRATION': 'SMS_134125048',
-       'CHANGE_PASSWORD': 'SMS_134125047',
-           'UPDATE_INFO': 'SMS_134125046'
-    }
+    'AUTHENTICATE_ID': 'SMS_134125051',
+    'CONFIRM_LOGIN': 'SMS_134125050',
+    'REGISTER_USER': 'SMS_134125048',
+    'NOTIFY_APPROVED': 'SMS_175400063',
+    'NOTIFY_REJECTED': 'SMS_175405604'
+}
 
 ACS_CLIENT = AcsClient(const.ACCESS_KEY_ID, const.ACCESS_KEY_SECRET, const.REGION)
 region_provider.add_endpoint(const.PRODUCT_NAME, const.REGION, const.DOMAIN)
 
 
-SENT_VRFCODE_PAIRS = {}
+SMS_TOKEN_POOL = {}
+
+
+def append_token(token):
+    '''append sms verification token to be verified in pool'''
+    global SMS_TOKEN_POOL
+    if token.phone_number not in SMS_TOKEN_POOL:
+        SMS_TOKEN_POOL[token.phone_number] = token
+
+
+def fetch_token(phone_number):
+    '''fetch token with user phone number'''
+    return None if phone_number not in SMS_TOKEN_POOL else SMS_TOKEN_POOL[phone_number]
+
+
+def drop_token(phone_number):
+    '''drop used token in pool'''
+    global SMS_TOKEN_POOL
+    token = fetch_token(phone_number)
+    if token is not None and \
+            (token.expired or not token.valid):
+        if token.vrfcode in vrf_code.VRFCODE_POOL:
+            del vrf_code.VRFCODE_POOL[token.vrfcode]
+        del SMS_TOKEN_POOL[token.phone_number]
+
+
+def verify_phone_number_regex(phone_number):
+    '''verify phone number regex format'''
+    regex = r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$'
+    if re.match(regex, phone_number) is None:
+        err = UserPhoneError('invalid phone number')
+        sys_logger.error(err.emsg)
+        return False
+
+    return True
 
 
 def send(serial_no, phone_numbers, sign_name, template_code, template_param=None):
@@ -70,16 +104,17 @@ def send(serial_no, phone_numbers, sign_name, template_code, template_param=None
     return smsResponse
 
 
-class SMS_VRF_Token(object):
-    '''verification token class'''
+class SMSVerifyToken(object):
+    '''sms verification token class'''
     def __init__(self, phone_number, expiry=120,
                  access_id=const.ACCESS_KEY_ID,
                  access_secret=const.ACCESS_KEY_SECRET,
                  signature=SIGNATURE,
-                 template_code=TEMPLATE_CODES['ID_AUTHENTICATION']):
-        '''initialize verification token objects'''
+                 template_code=TEMPLATE_CODES['AUTHENTICATE_ID']):
+        '''initialize sms verification token objects'''
         if isinstance(phone_number, str) and isinstance(expiry, int):
-            self.__phone_number = phone_number
+            if verify_phone_number_regex(phone_number):
+                self.__phone_number = phone_number
             self.__expiry = expiry
             self.__vrfcode = vrf_code.new_vrfcode()
             self.__serial_no = vrf_code.new_serial_number()
@@ -87,68 +122,71 @@ class SMS_VRF_Token(object):
             self.__access_secret = access_secret
             self.__signature = signature
             self.__template_code = template_code
-            self.__start_time = int(time.time())
             self.sms_response = None
-            self.__send_date = None
+            self.__send_time = None
             self.__valid = True
         else:
-            raise TypeError('invalid value type to initializing a token')
+            raise TypeError('invalid value type to initialize sms token')
 
     @property
     def vrfcode(self):
-        '''get token verification code'''
+        '''get sms token verification code'''
         return self.__vrfcode
 
     @property
     def serial_no(self):
-        '''get token serial number'''
+        '''get sms token serial number'''
         return self.__serial_no
 
     @property
     def phone_number(self):
-        '''get token phone number'''
+        '''get sms token phone number'''
         return self.__phone_number
 
     @property
     def template_code(self):
-        '''get current token template code'''
+        '''get sms token template code'''
         return self.__template_code
 
     @template_code.setter
     def template_code(self, new_template_code):
-        '''set new token template code'''
+        '''set new sms token template code'''
         if new_template_code in TEMPLATE_CODES.values():
             self.__template_code = new_template_code
-        else:
-            raise ValueError('invalid template code')
 
     @property
-    def expired(self):
-        '''get verification token status, reture True if expired, otherwise False'''
-        duration = time.time() - self.__start_time
-        return True if duration > self.__expiry else False
+    def duration(self):
+        '''get sms verification token instant duration'''
+        if self.__send_time is not None:
+            return time.time() - self.__send_time.timestamp()
+        return 0.0
 
     @property
     def expiry(self):
-        '''get verification token expiry seconds value'''
+        '''get sms verification token expiry seconds const'''
         return self.__expiry
 
     @expiry.setter
     def expiry(self, new_expiry):
         '''set new expiry time'''
-        if not isinstance(new_expiry, int):
-            raise TypeError('set expiry with number of seconds')
-        if new_expiry > self.expiry:
+        if isinstance(new_expiry, int) and new_expiry > self.expiry:
             self.__expiry = new_expiry
 
     @property
-    def duration(self):
-        '''get verification token instant duration'''
-        return time.time() - self.__start_time
+    def expired(self):
+        '''get sms verification token expiration status, reture True if expired else False'''
+        if self.__send_time is not None:
+            return True if self.duration > self.expiry else False
+        return False
+
+    @property
+    def valid(self):
+        '''get sms verification token validation status, return True if valid else False'''
+        return self.__valid
 
     def send_sms(self):
         '''send sms message'''
-        if self.__valid and not self.expired:
+        if self.valid and not self.expired:
             out = send(self.serial_no,
                        self.phone_number,
                        self.__signature,
@@ -159,64 +197,61 @@ class SMS_VRF_Token(object):
 
             self.sms_response = response
             if response['Code'] == 'OK':
-                date = datetime.now()
-                self.__send_date = date.strftime('%Y%m%d')
+                self.__send_time = datetime.now()
                 return True
-            err_msg = 'Failed to send verification code %s to phone %s: %s' % (self.vrfcode,
-                                                                               self.phone_number,
-                                                                               out.decode('utf8'))
-            sys_logger.error(err_msg)
-            print(err_msg)
-            raise RuntimeError(err_msg)
+
+            err = UserPhoneError('Failed to send SMS code %s to %s: %s',
+                                 self.vrfcode,
+                                 self.phone_number,
+                                 out.decode('utf8'))
+            sys_logger.error(err.emsg)
         else:
             sys_logger.error('Try to send sms to phone %s with invalid or expired token', self.phone_number)
-            raise ValueError('invalid or expired token')
+        return False
 
-    def refresh(self, force=False):
-        '''refresh token verification code'''
-        if self.__valid:
-            if force or self.expired:
-                if self.vrfcode in vrf_code.VRFCODES:
-                    del vrf_code.VRFCODES[self.vrfcode]
-                self.__vrfcode = vrf_code.new_vrfcode()
-                self.__start_time = int(time.time())
-                return self.send_sms()
-
-            return True
-        else:
-            sys_logger.error('Try to send sms to phone %s with invalid or expired token', self.phone_number)
-            raise ValueError('invalid or expired token')
-
+#    def refresh(self, force=False):
+#        '''refresh sms token verification code'''
+#        if self.valid:
+#            if force or self.expired:
+#                if self.vrfcode in vrf_code.VRFCODE_POOL:
+#                    del vrf_code.VRFCODE_POOL[self.vrfcode]
+#                self.__vrfcode = vrf_code.new_vrfcode()
+#                return self.send_sms()
+#            return True
+#
+#        sys_logger.error('Try to send sms to phone %s with invalid or expired token', self.phone_number)
+#        return False
+#
     def validate(self, phone_number, vrfcode):
         '''validate verification code'''
         if not isinstance(vrfcode, (str, int)):
-            raise TypeError('invalied value type for vrfcode')
+            return 'Failed: 错误代码格式'
         if isinstance(vrfcode, int):
             vrfcode = '%06d' % (vrfcode)
 
-        if not self.__valid:
-            return 'Failed: token validated already'
+        if not self.valid:
+            return 'Failed: 无效验证请求'
 
         if phone_number != self.phone_number:
-            return 'Failed: wrong phone number: ' + phone_number
+            return 'Failed: 无效电话号码'
 
         if vrfcode != self.vrfcode:
-            return 'Failed: wrong verification code: ' + vrfcode
+            return 'Failed: 无效验证代码'
 
         if self.expired:
-            return 'Failed: expired verification code'
+            return 'Failed: 过期验证代码'
 
         self.__valid = False
         sys_logger.info('phone %s user sms validate success', self.phone_number)
-        return 'Success: OK'
+        return True
 
     def query_sms(self, current_page=1, page_size=10):
-        '''query query verification token sms sent status'''
-        if self.__send_date is not None:
+        '''query sms verification token sms sent status'''
+        if self.__send_time is not None:
             query = QuerySendDetailsRequest.QuerySendDetailsRequest()
             query.set_PhoneNumber(self.phone_number)
             query.set_BizId(self.serial_no)
-            query.set_SendDate(self.__send_date)
+            query.set_SendDate(self.__send_time.strftime('%Y%m%d'))
             query.set_CurrentPage(current_page)
             query.set_PageSize(page_size)
             response = ACS_CLIENT.do_action_with_exception(query)
@@ -227,7 +262,7 @@ class SMS_VRF_Token(object):
 
 # def send_vrfcode(phone_numbers, vrfcode=None):
 #     '''send verification codes to phone numbers'''
-#     global SENT_VRFCODE_PAIRS
+#     global SMS_TOKEN_POOL
 #     response_queue = []
 #     vrfcodes = []
 #
@@ -245,7 +280,7 @@ class SMS_VRF_Token(object):
 #
 #     if vrfcode is not None:
 #         if isinstance(phone_numbers, str) and isinstance(vrfcode, str):
-#             out = send(phone_numbers, SIGNATURE, TEMPLATE_CODES['ID_AUTHENTICATION'], '{"code": "%s"}' %(vrfcode))
+#             out = send(phone_numbers, SIGNATURE, TEMPLATE_CODES['AUTHENTICATE_ID'], '{"code": "%s"}' %(vrfcode))
 #             sys_logger.info('Send verification code %s to phone %s', vrfcode, phone_numbers)
 #             response = json.loads(out)
 #             if response['Code'] != 'OK':
@@ -254,7 +289,7 @@ class SMS_VRF_Token(object):
 #                 print(out.decode('utf8'))
 #                 raise RuntimeError('Sending verification code failed')
 #
-#             SENT_VRFCODE_PAIRS[phone_numbers] = vrfcode
+#             SMS_TOKEN_POOL[phone_numbers] = vrfcode
 #             return ({phone_numbers: 'OK'},)
 #
 #         if isinstance(phone_numbers, (tuple, list)) and \
@@ -262,12 +297,12 @@ class SMS_VRF_Token(object):
 #                 len(phone_numbers) == len(vrfcode):
 #             pairs = dict(zip(phone_numbers, vrfcode))
 #             for phone, code in pairs.items():
-#                 out = send(phone, SIGNATURE, TEMPLATE_CODES['ID_AUTHENTICATION'], '{"code": "%s"}' %(code))
+#                 out = send(phone, SIGNATURE, TEMPLATE_CODES['AUTHENTICATE_ID'], '{"code": "%s"}' %(code))
 #                 sys_logger.info('Send verification code %s to phone %s', code, phone)
 #                 response = json.loads(out)
 #                 response_queue.append({phone: response['Code']})
 #                 if response['Code'] == 'OK':
-#                     SENT_VRFCODE_PAIRS[phone] = code
+#                     SMS_TOKEN_POOL[phone] = code
 #
 #             return tuple(response_queue)
 #
@@ -281,32 +316,32 @@ class SMS_VRF_Token(object):
 #         pairs = dict(zip(phone_numbers, vrfcodes))
 #
 #     for phone, code in pairs.items():
-#         out = send(phone, SIGNATURE, TEMPLATE_CODES('ID_AUTHENTICATION'), '{"code": "%s"}' %(code))
+#         out = send(phone, SIGNATURE, TEMPLATE_CODES('AUTHENTICATE_ID'), '{"code": "%s"}' %(code))
 #         sys_logger.info('Send verification code %s to phone %s', code, phone)
 #         response = json.loads(out)
 #         response_queue.append({phone: response['Code']})
 #         if response['Code'] == 'OK':
-#             SENT_VRFCODE_PAIRS[phone] = code
+#             SMS_TOKEN_POOL[phone] = code
 #
 #     return tuple(response_queue)
 #
 #
 # def fetch_vrfcode(phone_number):
 #     '''fetch sent verification code by giving phone_number'''
-#     return SENT_VRFCODE_PAIRS[phone_number] if phone_number in SENT_VRFCODE_PAIRS else None
+#     return SMS_TOKEN_POOL[phone_number] if phone_number in SMS_TOKEN_POOL else None
 #
 #
 # def validate_vrfcode(phone_number, vrfcode):
 #     '''validate verification code with phone number'''
-#     global SENT_VRFCODE_PAIRS
+#     global SMS_TOKEN_POOL
 #
-#     if vrfcode in vrf_code.VRFCODES:
+#     if vrfcode in vrf_code.VRFCODE_POOL:
 #         step1 = True
 #     else:
 #         step1 = False
 #         msg1 = 'invalid verification code'
 #
-#     if phone_number in SENT_VRFCODE_PAIRS:
+#     if phone_number in SMS_TOKEN_POOL:
 #         step2 = True
 #     else:
 #         step2 = False
@@ -318,15 +353,15 @@ class SMS_VRF_Token(object):
 #         step3 = False
 #         msg3 = 'expired verification code'
 #
-#     if SENT_VRFCODE_PAIRS[phone_number] == vrfcode:
+#     if SMS_TOKEN_POOL[phone_number] == vrfcode:
 #         step4 = True
 #     else:
 #         step4 = False
 #         msg4 = 'validation failed'
 #
 #     if step1 and step2 and step3 and step4:
-#         del vrf_code.VRFCODES[vrfcode]
-#         del SENT_VRFCODE_PAIRS[phone_number]
+#         del vrf_code.VRFCODE_POOL[vrfcode]
+#         del SMS_TOKEN_POOL[phone_number]
 #         return 'OK'
 #
 #     return 'Failed: %s, %s, %s, %s' % (msg1, msg2, msg3, msg4)
@@ -335,9 +370,9 @@ class SMS_VRF_Token(object):
 # def check_phone_vrfcode_expiry(phone_number):
 #     '''check vrfcode expiry with phone number'''
 #
-#     if phone_number not in SENT_VRFCODE_PAIRS:
+#     if phone_number not in SMS_TOKEN_POOL:
 #         return False
 #
-#     vrfcode = SENT_VRFCODE_PAIRS[phone_number]
+#     vrfcode = SMS_TOKEN_POOL[phone_number]
 #
 #     return vrf_code.check_vrfcode_expiry(vrfcode)

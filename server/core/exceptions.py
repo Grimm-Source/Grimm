@@ -26,17 +26,18 @@ GRIMM_EXCEPTION_CLS = None
 
 
 GRIMM_EXCEPTION_CODE = {
-            'InternalError': 0,
-                'UserError': 1,
-             'UserNotFound': 2,
-           'AppLoginFailed': 3,
-       'UserRegisterFailed': 4,
-          'UserLoginFailed': 5,
-     'UserUpdateInfoFailed': 6,
-      'UserExpiredPassword': 7,
-      'UserInvalidPassword': 8,
-         'UserInvalidEmail': 9,
-                          }
+    'InternalError': 0,
+    'UserError': 1,
+    'UserNotFound': 2,
+    'AppLoginFailed': 3,
+    'UserRegisterFailed': 4,
+    'UserLoginFailed': 5,
+    'UserUpdateInfoFailed': 6,
+    'UserExpiredPassword': 7,
+    'UserInvalidPassword': 8,
+    'UserEmailError': 9,
+    'UserPhoneError': 10,
+    }
 
 
 __all__ = list(GRIMM_EXCEPTION_CODE.keys()) + ['exception_handler']
@@ -78,7 +79,7 @@ class InternalError(Exception):
     '''
     def __init__(self):
         super().__init__()
-        self.ecode = GRIMM_EXCEPTION_CODE['InternalErrCode']
+        self.ecode = GRIMM_EXCEPTION_CODE['InternalError']
         self.emsg = 'Some internal error encountered'
 
 
@@ -104,7 +105,7 @@ class UserError(ExternalError):
     '''
     def __init__(self):
         super().__init__()
-        self.ecode = GRIMM_EXCEPTION_CODE['UserRelatedErrCode']
+        self.ecode = GRIMM_EXCEPTION_CODE['UserError']
         self.emsg = 'Some user related error encountered'
 
 
@@ -280,17 +281,35 @@ class UserInvalidPassword(UserError):
     __repr__ = __str__
 
 
-class UserInvalidEmail(UserError):
+class UserEmailError(UserError):
     '''
-    email inputted from user is an invalid address.
+    something goes wrong with user email process.
     '''
     def __init__(self, reason, user=None):
         super().__init__()
         if user is None:
-            self.emsg = f'Current input email is invalid, reason: {reason}'
+            self.emsg = f'User email process failed, reason: {reason}'
         else:
-            self.emsg = f'User {user} input email is invalid, reason: {reason}'
-        self.ecode = GRIMM_EXCEPTION_CODE['UserInvalidEmail']
+            self.emsg = f'User {user} email process failed, reason: {reason}'
+        self.ecode = GRIMM_EXCEPTION_CODE['UserEmailError']
+        self.args = (self.ecode, self.emsg)
+
+    def __str__(self):
+        return '({0}, {1})'.format(self.ecode, self.emsg)
+    __repr__ = __str__
+
+
+class UserPhoneError(UserError):
+    '''
+    something goes wrong with user phone process.
+    '''
+    def __init__(self, reason, user=None):
+        super().__init__()
+        if user is None:
+            self.emsg = f'User phone process failed, reason: {reason}'
+        else:
+            self.emsg = f'User {user} phone process failed, reason: {reason}'
+        self.ecode = GRIMM_EXCEPTION_CODE['UserPhoneError']
         self.args = (self.ecode, self.emsg)
 
     def __str__(self):
@@ -308,7 +327,7 @@ class SQLValueError(InternalError):
             self.emsg = f'SQL syntax error found at process {operation}'
         else:
             self.emsg = f'SQL syntax error found at process {operation}, {msg}'
-        self.ecode = GRIMM_EXCEPTION_CODE['InternalErrCode']
+        self.ecode = GRIMM_EXCEPTION_CODE['InternalError']
         self.args = (self.ecode, self.emsg)
 
     def __str__(self):
@@ -326,7 +345,7 @@ class SQLConnectionError(InternalError):
             self.emsg = f'database connection is uninitialized or invalid'
         else:
             self.emsg = f'database connection is uninitialized or invalid, reason: {reason}'
-        self.ecode = GRIMM_EXCEPTION_CODE['InternalErrCode']
+        self.ecode = GRIMM_EXCEPTION_CODE['InternalError']
         self.args = (self.ecode, self.emsg)
 
     def __str__(self):
