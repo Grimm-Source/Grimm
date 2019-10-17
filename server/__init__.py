@@ -60,16 +60,14 @@ del parser, argparse
 
 # check python version
 print('checking python version...')
-from server.core.exceptions import PyVersionNotSupported
 PY_MAJOR = sys.version_info.major
 PY_MINOR = sys.version_info.minor
 PY_MICRO = sys.version_info.micro
 PY_VERSION = '.'.join([str(PY_MAJOR), str(PY_MINOR), str(PY_MICRO)])
 
 if PY_VERSION < '3.6.5':
-    raise PyVersionNotSupported(PY_VERSION)
-
-del PyVersionNotSupported
+    print("Python %s is not supported, upgrade to 3.6.5 or later!" % (PY_VERSION))
+    sys.exit(-1)
 print('check python version successfully !')
 
 

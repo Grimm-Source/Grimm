@@ -26,3 +26,5 @@ if '../..' not in sys.path:
 
 if '..' not in sys.path:
     sys.path.append('..')
+
+sys.path.append('utils')

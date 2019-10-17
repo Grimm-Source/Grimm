@@ -29,13 +29,13 @@ from itsdangerous import URLSafeTimedSerializer
 from server import sys_logger
 from server.core import grimm
 from server import HOST, PORT
-from server.utils.email_verify import PROTOCOL
 
 
 VRFCODE_POOL = {}
 SERIAL_BYTES = 32
 VRFCODE_BYTES = 6
 
+PROTOCOL = 'http'
 
 def new_serial_number(_bytes=SERIAL_BYTES):
     '''generate new serial number'''
