@@ -28,7 +28,7 @@ from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
-from flask import abort, redirect
+from flask import abort, redirect, url_for
 
 import vrfcode
 import server.core.db as db
@@ -328,10 +328,11 @@ def validate_email(token):
         token = fetch_token(addr)
         if token is not None and db.exist_row('admin', email=addr):
             if token.valid and not token.expired:
-                val = {'email_verified': 1}
-                db.expr_update('admin', val, email=addr)
-                redirect('admin_login')
-                return True
-
+                try:
+                    if db.expr_update('admin', {'email_verified': 1}, email=addr) == 1:
+                        redirect(url_for('admin_login'))
+                        return True
+                except:
+                    pass
     abort(404)
     return False
