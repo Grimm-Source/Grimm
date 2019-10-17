@@ -30,7 +30,7 @@ from aliyunsdkcore.profile import region_provider
 from aliyunsdkcore.http import method_type as MT
 from aliyunsdkcore.http import format_type as FT
 
-import vrfcode as vrf_code
+import server.utils.vrfcode as vrf_code
 from server import sys_logger
 from server.core.exceptions import UserPhoneError
 

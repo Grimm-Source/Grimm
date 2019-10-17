@@ -30,11 +30,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 from flask import abort, redirect, url_for
 
-import vrfcode
+import server.utils.vrfcode as vrfcode
 import server.core.db as db
 from server import sys_logger
 from server.core.exceptions import UserEmailError
-from misctools import get_pardir
+from server.utils.misctools import get_pardir
 
 
 RGX = r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$'
@@ -45,7 +45,6 @@ smtp_port = 465
 passcode = 'tgpaibcvklzabiah'
 
 SMTP_CONNECTION = None
-PROTOCOL = 'http'
 
 EMAIL_TOKEN_POOL = {}
 

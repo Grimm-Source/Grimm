@@ -52,9 +52,9 @@ def wxjscode2session():
         openid = feedback['openid']
         # query user in database
         try:
-            info = db.expr_query('user', openid=openid)
+            info = db.expr_query('user', openid=openid)[0]
         except:
-            return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')
+            return json.dumps({'status': 'failure', 'message': '未知错误'})
         if info:
             feedback['is_register'] = False
             if info['audit_status'] == 0:
@@ -71,14 +71,14 @@ def wxjscode2session():
         user_logger.error('%s: wxapp authorization failed', openid)
         feedback['status'] = 'failure'
 
-    return json.dumps(feedback, encoding='utf8')
+    return json.dumps(feedback)
 
 
 @app.route('/register', methods=['POST'])
 def register():
     '''view function for registering new user to database'''
     if request.method == 'POST':
-        userinfo = feedback = {}
+        userinfo = {}
         info = json.loads(request.get_data().decode('utf8'))  # get http POST data bytes format
         # fetch data from front end
         userinfo['openid'] = request.headers.get('Authorization')
@@ -101,16 +101,15 @@ def register():
             try:
                 if db.expr_insert('user', userinfo) != 1:
                     user_logger.error('%s: user register failed', userinfo['openid'])
-                    return json.dumps({'status': 'failure', 'message': '录入用户失败'}, encoding='utf8')
+                    return json.dumps({'status': 'failure', 'message': '录入用户失败'})
             except:
                 user_logger.error('%s: user register failed', userinfo['openid'])
-                return json.dumps({'status': 'failure', 'message': '注册失败，请重新注册'}, encoding='utf8')
+                return json.dumps({'status': 'failure', 'message': '注册失败，请重新注册'})
             user_logger.info('%s: user register success', userinfo['openid'])
-            return json.dumps({'status': 'success'}, encoding='utf8')
+            return json.dumps({'status': 'success'})
 
-        feedback['status'] = 'failure'
-        feedback['message'] = '用户已注册'
-        return json.dumps(feedback, encoding='utf8')
+        user_logger.error('%s: user registered already', userinfo['openid'])
+        return json.dumps({'status': 'failure', 'message': '用户已注册'})
 
 
 @app.route('/profile', methods=['POST', 'GET'])
@@ -121,9 +120,9 @@ def profile():
         openid = request.headers.get('Authorization')
         if db.exist_row('user', openid=openid):
             try:
-                userinfo = db.expr_query('user', openid=openid)
+                userinfo = db.expr_query('user', openid=openid)[0]
             except:
-                return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')
+                return json.dumps({'status': 'failure', 'message': '未知错误'})
             feedback['openid'] = userinfo['openid']
             feedback['birthDate'] = userinfo['birth']
             feedback['usercomment'] = userinfo['remark']
@@ -138,12 +137,11 @@ def profile():
             feedback['role'] = "志愿者" if userinfo['role'] == 0 else "视障人士"
             feedback['tel'] = userinfo['phone']
             feedback['registrationDate'] = userinfo['registration_date']
+            user_logger('%s: user login successfully', userinfo['openid'])
+            return json.dumps(feedback)
 
-            return json.dumps(feedback, encoding='utf8')
-
-        feedback['status'] = 'failure'
-        feedback['message'] = "未注册用户"
-        return json.dumps(feedback, encoding='utf8')
+        user_logger('%s: user not registered', userinfo['openid'])
+        return json.dumps({'status': 'failure', 'message': '用户未注册'})
 
     if request.method == 'POST':
         newinfo = json.loads(request.get_data().decode('utf8'))  # get request POST user data
@@ -161,12 +159,12 @@ def profile():
         try:
             if db.expr_update('user', userinfo, openid=userinfo['openid']) != 1:
                 user_logger.error('%s: user update info failed', userinfo['openid'])
-                return json.dumps({'status': 'failure', 'message': "更新失败，请重新输入"}, encoding='utf8')
+                return json.dumps({'status': 'failure', 'message': "更新失败，请重新输入"})
         except:
-            return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')
+            return json.dumps({'status': 'failure', 'message': '未知错误'})
 
         user_logger.info('%s: user update info successfully', userinfo['openid'])
-        return json.dumps({'status': 'success'}, encoding='utf8')
+        return json.dumps({'status': 'success'})
 
 
 @app.route('/send-smscode', methods=['GET'])
@@ -181,13 +179,13 @@ def send_smscode():
                                                   template='REGISTER_USER')
             if not sms_token.send_sms():
                 user_logger.warning('%s, unable to send sms to number', info['tel'])
-                return json.dumps({'status': 'failure', 'message': '发送失败'}, encoding='utf8')
+                return json.dumps({'status': 'failure', 'message': '发送失败'})
         except Exception as err:
-            return json.dumps({'status': 'failure', 'message': err.args[1]}, encoding='utf8')
+            return json.dumps({'status': 'failure', 'message': err.args[1]})
         sms_verify.append_token(sms_token)
 
         user_logger.info('%s: send sms to number successfully', info['tel'])
-        return json.dumps({'status': 'success'}, encoding='utf8')
+        return json.dumps({'status': 'success'})
 
 
 @app.route('/confirm-smscode', methods=['GET'])
@@ -198,15 +196,15 @@ def confirm_smscode():
         sms_token = sms_verify.fetch_token(info['tel'])
         if sms_token is None:
             user_logger.warning('%s: no such a sms token for the number', info['tel'])
-            return json.dumps({'status': 'failure', 'message': '未向该用户发送验证短信'}, encoding='utf8')
+            return json.dumps({'status': 'failure', 'message': '未向该用户发送验证短信'})
         if not sms_token.validate(phone_number=info['tel'], vrfcode=info['vrfcode']):
             user_logger.warning('%s, %s: sms code validate failed', info['tel'], info['vrfcode'])
-            return json.dumps({'status': 'failure', 'message': '验证未通过' }, encoding='utf8')
+            return json.dumps({'status': 'failure', 'message': '验证未通过' })
         try:
             if db.expr_update('user', {'phone_verified': 1}, openid=info['openid']) == 1:
                 user_logger.info('%s, %s: sms code validate successfully', info['tel'], info['vrfcode'])
-                return json.dumps({'status': 'success'}, encoding='utf8')
+                return json.dumps({'status': 'success'})
         except:
             pass
         user_logger.warning('%s, %s: sms code validate failed', info['tel'], info['vrfcode'])
-        return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')
+        return json.dumps({'status': 'failure', 'message': '未知错误'})

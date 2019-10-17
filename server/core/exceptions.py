@@ -108,7 +108,7 @@ class UserError(ExternalError):
         self.ecode = GRIMM_EXCEPTION_CODE['UserError']
         self.emsg = 'Some user related error encountered'
 
-
+"""
 # define specific error types.
 class PyVersionNotSupported(InternalError):
     '''
@@ -124,7 +124,6 @@ class PyVersionNotSupported(InternalError):
     __repr__ = __str__
 
 
-"""
 class PkgNotInstalled(InternalError):
     '''
     some dependencies pkgs are not installed.
