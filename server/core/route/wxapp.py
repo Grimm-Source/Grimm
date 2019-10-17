@@ -186,6 +186,7 @@ def send_smscode():
             return json.dumps({'status': 'failure', 'message': err.args[1]}, encoding='utf8')
         sms_verify.append_token(sms_token)
 
+        user_logger.info('%s: send sms to number successfully', info['tel'])
         return json.dumps({'status': 'success'}, encoding='utf8')
 
 
@@ -196,7 +197,16 @@ def confirm_smscode():
         info = json.loads(request.get_data().decode('utf8'))
         sms_token = sms_verify.fetch_token(info['tel'])
         if sms_token is None:
+            user_logger.warning('%s: no such a sms token for the number', info['tel'])
             return json.dumps({'status': 'failure', 'message': '未向该用户发送验证短信'}, encoding='utf8')
         if not sms_token.validate(phone_number=info['tel'], vrfcode=info['vrfcode']):
+            user_logger.warning('%s, %s: sms code validate failed', info['tel'], info['vrfcode'])
             return json.dumps({'status': 'failure', 'message': '验证未通过' }, encoding='utf8')
-        return json.dumps({'status': 'success'}, encoding='utf8')
+        try:
+            if db.expr_update('user', {'phone_verified': 1}, openid=info['openid']) == 1:
+                user_logger.info('%s, %s: sms code validate successfully', info['tel'], info['vrfcode'])
+                return json.dumps({'status': 'success'}, encoding='utf8')
+        except:
+            pass
+        user_logger.warning('%s, %s: sms code validate failed', info['tel'], info['vrfcode'])
+        return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')

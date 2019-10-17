@@ -22,7 +22,7 @@ import os
 import time
 from datetime import datetime
 import json
-from flask import request, url_for, redirect
+from flask import request
 import urllib3
 
 import server.core.db as db
@@ -116,18 +116,16 @@ def manage_admin(admin_id):
     if request.method == 'DELETE':
         if admin_id != 0:
             try:
-                if db.expr_delete('admin', admin_id=admin_id) != 1:
-                    feedback['status'] = 'failure'
-                    feedback['message'] = '删除失败'
+                if db.expr_delete('admin', admin_id=admin_id) == 1:
+                    admin_logger.info('%d: admin deleted successfully', admin_id)
+                    return json.dumps({'status': 'success'}, encoding='utf8')
             except:
                 admin_logger.error('Critical: database delete failed !')
                 feedback = {'status': 'failure', 'message': '未知错误'}
         else:
             admin_logger.warning('try to delete root user!')
-            feedback['status'] = 'failure'
-            feedback['message'] = '不能删除root用户'
+            feedback = {'status': 'failure', 'message': '不能删除root用户'}
 
-        admin_logger.info('%d: admin deleted successfully', admin_id)
         return json.dumps(feedback, encoding='utf8')
 
 
@@ -157,11 +155,10 @@ def new_admin():
             except:
                 admin_logger.error('Critical: database insert failed !')
                 return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')
-            admin_logger.info('%d, %s: create new admin successfully', admininfo['admin_id'], admininfo['name'])
             # update passcode
             if not password.update_password('admin', info['password'], admin_id=admininfo['admin_id']):
                 admin_logger.warning('%d, %s: not strong policy password', admininfo['admin_id'], admininfo['name'])
-                return json.dumps({'status': 'failure', 'message': '密码不符合规范'}, encoding='utf8')
+                return json.dumps({'status': 'failure', 'message': '密码不合规范'}, encoding='utf8')
             # send confirm email
             email_verify.drop_token(admininfo['email'])
             try:
@@ -174,7 +171,7 @@ def new_admin():
                 return json.dumps({'status': 'failure', 'message': err.args[1]}, encoding='utf8')
             admin_logger.info('%d, %s: send confirm email successfully', admininfo['admin_id'], admininfo['name'])
             email_verify.append_token(email_token)
-            admin_logger.info('%d, %s: create new admin procedure completed', admininfo['admin_id'], admininfo['name'])
+            admin_logger.info('%d, %s: create new admin procedure completed successfully', admininfo['admin_id'], admininfo['name'])
             return json.dumps({'status': 'success'}, encoding='utf8')
 
         admin_logger.warning('%s: create new admin with duplicated email account', admininfo['email'])
@@ -222,23 +219,21 @@ def confirm_email(token):
 def delete_admin():
     '''view function for root to delete admins'''
     if request.method == 'POST':
-        feedback = {'status': 'success'}
         admin_id = json.loads(request.get_data().decode('utf8'))['id']
         if admin_id != 0:
             try:
-                if db.expr_delete('admin', admin_id=admin_id) != 1:
-                    admin_logger.warning('%d: delete admin failed', admin_id)
-                    feedback['status'] = 'failure'
-                    feedback['message'] = '删除管理员失败'
+                if db.expr_delete('admin', admin_id=admin_id) == 1:
+                    admin_logger.info('%d: admin deleted successfully', admin_id)
+                    return json.dumps({'status': 'success'}, encoding='utf8')
             except:
+                admin_logger.error('Critical: database delete failed !')
                 feedback = {'status': 'failure', 'message': '未知错误'}
         else:
             admin_logger.warning('try to delete root user!')
-            feedback['status'] = 'failure'
-            feedback['message'] = '不能删除root用户'
+            feedback = {'status': 'failure', 'message': '不能删除root用户'}
 
-        admin_logger.info('%d: delete admin successfully', admin_id)
         return json.dumps(feedback, encoding='utf8')
+
 
 @app.route('/activity', methods=['POST'])
 def new_activity():
@@ -255,15 +250,15 @@ def new_activity():
         activity_info['notice'] = info['notice']
         activity_info['others'] = info['others']
         activity_info['admin_raiser'] = info['adminId']
-
         try:
-            feedback = {'status': 'success'} if db.expr_insert('activity', activity_info) == 1 else {'status': 'failure', 'message': '录入失败'}
+            if db.expr_insert('activity', activity_info) == 1:
+                admin_logger.info('%s: create new activity successfully', activity_info['title'])
+                return json.dumps({'status': 'success'}, encoding='utf8')
         except:
-            admin_logger.warning('%s: create new activity failed', activity_info['title'])
-            feedback = {'status': 'failure', 'message': '未知错误'}
+            pass
 
-        admin_logger.info('%s: create new activity successfully', activity_info['title'])
-        return json.dumps(feedback, encoding='utf8')
+        admin_logger.warning('%s: create new activity failed', activity_info['title'])
+        return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')
 
 
 @app.route('/activity/<int:activity_id>', methods=['POST', 'GET', 'DELETE'])
@@ -298,13 +293,14 @@ def update_activity(activity_id):
 
     if request.method == 'DELETE':
         try:
-            feedback = {'status': 'success'} if db.expr_delete('activity', activity_id=activity_id) == 1 else {'status': 'failure', 'message': '删除失败'}
+            if db.expr_delete('activity', activity_id=activity_id) == 1:
+                admin_logger.info('%d: delete new activity successfully', activity_id)
+                return json.dumps({'status': 'success'}, encoding='utf8')
         except:
-            admin_logger.warning('%d: delete activity failed', activity_id)
-            feedback = {'status': 'failure', 'message': '未知错误'}
+            pass
 
-        admin_logger.info('%d: delete activity successfully', activity_id)
-        return json.dumps(feedback, encoding='utf8')
+        admin_logger.warning('%d: delete new activity failed', activity_id)
+        return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')
 
     if request.method == 'POST':
         newinfo = json.loads(request.get_data().decode('utf8'))
@@ -320,13 +316,14 @@ def update_activity(activity_id):
         activity_info['activity_id'] = newinfo['id']
         activity_info['admin_raiser'] = newinfo['adminId']
         try:
-            feedback = {'status': 'success'} if db.expr_update('activity', activity_info, activity_id=activity_id) == 1 else {'status': 'failure', 'message': '更新失败'}
+            if db.expr_update('activity', activity_info, activity_id=activity_id) == 1:
+                admin_logger.info('%d: update activity successfully', activity_id)
+                return json.dumps({'status': 'success'}, encoding='utf8')
         except:
-            admin_logger.error('Critical: update database failed')
-            feedback = {'status': 'failure', 'message': '未知错误'}
+            pass
 
-        admin_logger.info('%d: update activity successfully', activity_id)
-        return json.dumps(feedback, encoding='utf8')
+        admin_logger.warning('%d: update activity failed', activity_id)
+        return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')
 
 
 @app.route('/activity/delete', methods=['DELETE'])
@@ -339,13 +336,14 @@ def delete_activity_with_id():
 
         activity_id = int(id_string)
         try:
-            feedback = {'status': 'success'} if db.expr_delete('activity', activity_id=activity_id) == 1 else {'status': 'failure', 'message': '删除失败'}
+            if db.expr_delete('activity', activity_id=activity_id) == 1:
+                admin_logger.info('%d: delete new activity successfully', activity_id)
+                return json.dumps({'status': 'success'}, encoding='utf8')
         except:
-            admin_logger.warning('%d: delete activity failed', activity_id)
-            feedback = {'status': 'failure', 'message': '未知错误'}
+            pass
 
-        admin_logger.info('%d: delete activity successfully', activity_id)
-        return json.dumps(feedback, encoding='utf8')
+        admin_logger.warning('%d: delete new activity failed', activity_id)
+        return json.dumps({'status': 'failure', 'message': '未知错误'}, encoding='utf8')
 
 
 @app.route('/activities', methods=['GET'])
@@ -517,7 +515,7 @@ def admin_audit_user():
                 except:
                     return json.dumps({'status': 'failure', 'message': err.args[1]}, encoding='utf8')
 
-            # update user audit status
+            # update each user audit status
             try:
                 if db.expr_update('user', new_status, openid=openid) != 1:
                     admin_logger.warning('%s, update user audit status failed', openid)
