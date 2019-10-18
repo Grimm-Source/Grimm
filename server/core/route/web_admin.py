@@ -20,7 +20,6 @@
 import sys
 import os
 import urllib3
-import json
 from flask import request
 from datetime import datetime
 
@@ -34,7 +33,6 @@ from server.utils.misctools import json_dump_http_response, json_load_http_reque
 
 
 EMAIL_VRF_EXPIRY = 7200
-
 ROOT_PASSWORD = 'Cisco123456.'
 
 
@@ -163,15 +161,15 @@ def new_admin():
                 admin_logger.warning('%d, %s: not strong policy password', admininfo['admin_id'], admininfo['name'])
                 return json_dump_http_response({'status': 'failure', 'message': '密码不合规范'})
             # send confirm email
-            email_verify.drop_token(admininfo['email'])
             try:
+                email_verify.drop_token(admininfo['email'])
                 email_token = email_verify.EmailVerifyToken(admininfo['email'], expiry=EMAIL_VRF_EXPIRY)  # 2hrs expiry
                 if not email_token.send_email():
                     admin_logger.warning('%d, %s: send confirm email failed', admininfo['admin_id'], admininfo['name'])
                     return json_dump_http_response({'status': 'failure', 'message': '发送验证邮箱失败'})
             except Exception as err:
                 admin_logger.warning('%d, %s: send confirm email failed', admininfo['admin_id'], admininfo['name'])
-                return json_dump_http_response({'status': 'failure', 'message': err.args[1]})
+                return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
             admin_logger.info('%d, %s: send confirm email successfully', admininfo['admin_id'], admininfo['name'])
             email_verify.append_token(email_token)
             admin_logger.info('%d, %s: create new admin procedure completed successfully', admininfo['admin_id'], admininfo['name'])
@@ -188,15 +186,15 @@ def send_vrfemail():
         feedback = {'status': 'success'}
         addr = json_load_http_request(request, keys='email')
         if db.exist_row('admin', email=addr):
-            email_verify.drop_token(admininfo['email'])
             try:
+                email_verify.drop_token(admininfo['email'])
                 email_token = email_verify.EmailVerifyToken(addr, expiry=EMAIL_VRF_EXPIRY)  # 2hrs expiry
                 if not email_token.send_email():
                     admin_logger.warning('%s: send confirm email failed', addr)
                     return json_dump_http_response({'status': 'failure', 'message': '发送验证邮箱失败'})
             except Exception as err:
                 admin_logger.warning('%s: send confirm email failed', addr)
-                return json_dump_http_response({'status': 'failure', 'message': err.args[1]})
+                return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
             admin_logger.info('%s: send confirm email successfully', addr)
             email_verify.append_token(email_token)
             return json_dump_http_response(feedback)
@@ -529,7 +527,7 @@ def admin_audit_user():
                         admin_logger.warning('%s, unable to send sms to number', info['phone'])
                         return json_dump_http_response({'status': 'failure', 'message': '发送失败'})
                 except:
-                    return json_dump_http_response({'status': 'failure', 'message': err.args[1]})
+                    return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
 
             # update each user audit status
             try:

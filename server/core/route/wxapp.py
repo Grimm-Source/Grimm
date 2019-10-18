@@ -140,7 +140,7 @@ def profile():
             user_logger('%s: user login successfully', userinfo['openid'])
             return json_dump_http_response(feedback)
 
-        user_logger('%s: user not registered', userinfo['openid'])
+        user_logger('%s: user not registered', openid)
         return json_dump_http_response({'status': 'failure', 'message': '用户未注册'})
 
     if request.method == 'POST':
@@ -172,8 +172,8 @@ def send_smscode():
     '''view function to send sms verification code to new user'''
     if request.method == 'GET':
         info = json_load_http_request(request)
-        sms_verify.drop_token(info['tel'])  # drop old token if it exists
         try:
+            sms_verify.drop_token(info['tel'])  # drop old token if it exists
             sms_token = sms_verify.SMSVerifyToken(phone_number=info['tel'],
                                                   expiry=SMS_VRF_EXPIRY,
                                                   template='REGISTER_USER')
@@ -181,7 +181,7 @@ def send_smscode():
                 user_logger.warning('%s, unable to send sms to number', info['tel'])
                 return json_dump_http_response({'status': 'failure', 'message': '发送失败'})
         except Exception as err:
-            return json_dump_http_response({'status': 'failure', 'message': err.args[1]})
+            return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
         sms_verify.append_token(sms_token)
 
         user_logger.info('%s: send sms to number successfully', info['tel'])
