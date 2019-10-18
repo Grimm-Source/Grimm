@@ -84,7 +84,7 @@ def new_vrfurl(email):
     '''generate new confirm verification email url'''
     serializer = URLSafeTimedSerializer(grimm.config['SECRET_KEY'])
     token = serializer.dumps(email, salt=grimm.config['SECURITY_PASSWORD_SALT'])
-    vrfurl = PROTOCOL + '://' + str(HOST) + ':' + str(PORT) + '/confrim-email/' + token
+    vrfurl = PROTOCOL + '://' + str(HOST) + ':' + str(PORT) + '/confirm-email/' + token
     return vrfurl
 
 

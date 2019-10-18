@@ -37,6 +37,8 @@ from server import sys_logger
 from server.core.exceptions import UserEmailError
 from server.utils.misctools import get_pardir
 
+import server.core.route.web_admin
+
 
 sender = None
 smtp_domain = None
@@ -79,7 +81,7 @@ def drop_token(addr):
 
 def check_email_addr(addr, verify_exists=False):
     '''verify if a email address exists with server domain'''
-    if re.match(RGX, addr) is None:
+    if re.match(RGX, addr.lower()) is None:
         err = UserEmailError('invalid email address')
         sys_logger.error(err.emsg)
         return False

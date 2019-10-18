@@ -66,7 +66,7 @@ if db_logger is None:
 
 # SQL datatypes which need check quotes
 QUOTED_TYPES = ('char', 'varchar', 'datetime', 'date',
-                    'timestamp', 'text', 'binary')
+                'timestamp', 'text', 'binary', 'time')
 
 # db session connection
 session_connection = None

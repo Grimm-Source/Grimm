@@ -208,10 +208,7 @@ class SMSVerifyToken(object):
                 self.__send_time = datetime.now()
                 return True
 
-            err = UserPhoneError('Failed to send SMS code %s to %s: %s',
-                                 self.vrfcode,
-                                 self.phone_number,
-                                 out.decode('utf8'))
+            err = UserPhoneError('Failed to send SMS code %s to %s: %s' % (self.vrfcode, self.phone_number, out.decode('utf8')))
             sys_logger.error(err.emsg)
         else:
             sys_logger.error('Try to send sms to phone %s with invalid or expired token', self.phone_number)
