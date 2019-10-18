@@ -30,7 +30,7 @@ if '..' not in sys.path:
 if '../..' not in sys.path:
     sys.path.append('../..')
 
-VERSION = '1.0'
+GRIMM_VERSION = '1.0'
 
 # parse user command argument, host/port
 import argparse
@@ -38,7 +38,7 @@ parser = argparse.ArgumentParser(prog='Grimm-backend',
                                  description='Load Grimm back-end service',
                                  add_help=False)
 parser.add_argument('-v', '--version', action='version',
-                    version='%(prog)s ' + VERSION,
+                    version='%(prog)s ' + GRIMM_VERSION,
                     help='Show %(prog)s version string and exit.')
 parser.add_argument('-?', '--help', action='help',
                     help='Show this help message and exit.')
@@ -59,7 +59,10 @@ FORCE = CMDARGS.force
 del parser, argparse
 
 # check python version
-print('checking python version...')
+try:
+    print('checking python version...', end=' ')
+except SyntaxError:
+    print('checking python version...', )
 PY_MAJOR = sys.version_info.major
 PY_MINOR = sys.version_info.minor
 PY_MICRO = sys.version_info.micro
@@ -68,11 +71,11 @@ PY_VERSION = '.'.join([str(PY_MAJOR), str(PY_MINOR), str(PY_MICRO)])
 if PY_VERSION < '3.6.5':
     print("Python %s is not supported, upgrade to 3.6.5 or later!" % (PY_VERSION))
     sys.exit(-1)
-print('check python version successfully !')
+print('Done')
 
 
 # check package dependency
-print('checking package dependency...')
+print('checking package dependency...', end=' ')
 try:
     import re
     import json
@@ -85,11 +88,11 @@ try:
     import flask
 except ImportError as err:
     raise err
-print('check package dependency successfully !')
+print('Done')
 
 
 # initialize system logger
-print('initializing system logger...')
+print('initializing system logger...', end=' ')
 sys_logger = None
 if sys_logger is None:
     sys_logger = logging.getLogger('sys-logger')
@@ -105,10 +108,10 @@ if sys_logger is None:
     sys_logger.addHandler(fh)
 
     del fh, fmt, fmtter, sys_log_path, log_dir
-print('system logger initialized successfully !')
+print('Done')
 
 # initialize admin logger
-print('initializing admin logger...')
+print('initializing admin logger...', end=' ')
 admin_logger = None
 if admin_logger is None:
     admin_logger = logging.getLogger('admin-logger')
@@ -124,10 +127,10 @@ if admin_logger is None:
     admin_logger.addHandler(fh)
 
     del fh, fmt, fmtter, admin_log_path, log_dir
-print('admin logger initialized successfully !')
+print('Done')
 
 # initialize user logger
-print('initializing user logger...')
+print('initializing user logger...', end=' ')
 user_logger = None
 if user_logger is None:
     user_logger = logging.getLogger('user-logger')
@@ -143,4 +146,4 @@ if user_logger is None:
     user_logger.addHandler(fh)
 
     del fh, fmt, fmtter, user_log_path, log_dir
-print('user logger initialized successfully !')
+print('Done')

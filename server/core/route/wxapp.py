@@ -19,17 +19,17 @@
 
 import sys
 import os
-import time
-from datetime import datetime
 import json
-from flask import request, url_for
 import urllib3
+from datetime import datetime
+from flask import request, url_for
 
 import server.core.db as db
 import server.utils.sms_verify as sms_verify
 from server.core import grimm as app
 from server.core import wxappid, wxsecret
 from server import user_logger
+from server.utils.misctools import json_dump_http_response, json_load_http_request
 
 
 SMS_VRF_EXPIRY = 300
@@ -54,7 +54,7 @@ def wxjscode2session():
         try:
             info = db.expr_query('user', openid=openid)[0]
         except:
-            return json.dumps({'status': 'failure', 'message': '未知错误'})
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
         if info:
             feedback['is_register'] = False
             if info['audit_status'] == 0:
@@ -71,7 +71,7 @@ def wxjscode2session():
         user_logger.error('%s: wxapp authorization failed', openid)
         feedback['status'] = 'failure'
 
-    return json.dumps(feedback)
+    return json_dump_http_response(feedback)
 
 
 @app.route('/register', methods=['POST'])
@@ -79,7 +79,7 @@ def register():
     '''view function for registering new user to database'''
     if request.method == 'POST':
         userinfo = {}
-        info = json.loads(request.get_data().decode('utf8'))  # get http POST data bytes format
+        info = json_load_http_request(request)  # get http POST data bytes format
         # fetch data from front end
         userinfo['openid'] = request.headers.get('Authorization')
         if not db.exist_row('user', openid=userinfo['openid']):
@@ -101,15 +101,15 @@ def register():
             try:
                 if db.expr_insert('user', userinfo) != 1:
                     user_logger.error('%s: user register failed', userinfo['openid'])
-                    return json.dumps({'status': 'failure', 'message': '录入用户失败'})
+                    return json_dump_http_response({'status': 'failure', 'message': '录入用户失败'})
             except:
                 user_logger.error('%s: user register failed', userinfo['openid'])
-                return json.dumps({'status': 'failure', 'message': '注册失败，请重新注册'})
+                return json_dump_http_response({'status': 'failure', 'message': '注册失败，请重新注册'})
             user_logger.info('%s: user register success', userinfo['openid'])
-            return json.dumps({'status': 'success'})
+            return json_dump_http_response({'status': 'success'})
 
         user_logger.error('%s: user registered already', userinfo['openid'])
-        return json.dumps({'status': 'failure', 'message': '用户已注册'})
+        return json_dump_http_response({'status': 'failure', 'message': '用户已注册'})
 
 
 @app.route('/profile', methods=['POST', 'GET'])
@@ -122,7 +122,7 @@ def profile():
             try:
                 userinfo = db.expr_query('user', openid=openid)[0]
             except:
-                return json.dumps({'status': 'failure', 'message': '未知错误'})
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             feedback['openid'] = userinfo['openid']
             feedback['birthDate'] = userinfo['birth']
             feedback['usercomment'] = userinfo['remark']
@@ -138,13 +138,13 @@ def profile():
             feedback['tel'] = userinfo['phone']
             feedback['registrationDate'] = userinfo['registration_date']
             user_logger('%s: user login successfully', userinfo['openid'])
-            return json.dumps(feedback)
+            return json_dump_http_response(feedback)
 
         user_logger('%s: user not registered', userinfo['openid'])
-        return json.dumps({'status': 'failure', 'message': '用户未注册'})
+        return json_dump_http_response({'status': 'failure', 'message': '用户未注册'})
 
     if request.method == 'POST':
-        newinfo = json.loads(request.get_data().decode('utf8'))  # get request POST user data
+        newinfo = json_load_http_request(request)  # get request POST user data
         userinfo = {}
         userinfo['phone'] = newinfo['tel']
         userinfo['gender'] = newinfo['gender']
@@ -159,19 +159,19 @@ def profile():
         try:
             if db.expr_update('user', userinfo, openid=userinfo['openid']) != 1:
                 user_logger.error('%s: user update info failed', userinfo['openid'])
-                return json.dumps({'status': 'failure', 'message': "更新失败，请重新输入"})
+                return json_dump_http_response({'status': 'failure', 'message': "更新失败，请重新输入"})
         except:
-            return json.dumps({'status': 'failure', 'message': '未知错误'})
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
         user_logger.info('%s: user update info successfully', userinfo['openid'])
-        return json.dumps({'status': 'success'})
+        return json_dump_http_response({'status': 'success'})
 
 
 @app.route('/send-smscode', methods=['GET'])
 def send_smscode():
     '''view function to send sms verification code to new user'''
     if request.method == 'GET':
-        info = json.loads(request.get_data().decode('utf8'))
+        info = json_load_http_request(request)
         sms_verify.drop_token(info['tel'])  # drop old token if it exists
         try:
             sms_token = sms_verify.SMSVerifyToken(phone_number=info['tel'],
@@ -179,32 +179,32 @@ def send_smscode():
                                                   template='REGISTER_USER')
             if not sms_token.send_sms():
                 user_logger.warning('%s, unable to send sms to number', info['tel'])
-                return json.dumps({'status': 'failure', 'message': '发送失败'})
+                return json_dump_http_response({'status': 'failure', 'message': '发送失败'})
         except Exception as err:
-            return json.dumps({'status': 'failure', 'message': err.args[1]})
+            return json_dump_http_response({'status': 'failure', 'message': err.args[1]})
         sms_verify.append_token(sms_token)
 
         user_logger.info('%s: send sms to number successfully', info['tel'])
-        return json.dumps({'status': 'success'})
+        return json_dump_http_response({'status': 'success'})
 
 
 @app.route('/confirm-smscode', methods=['GET'])
 def confirm_smscode():
     '''view function to confirm sms verification code'''
     if request.method == 'GET':
-        info = json.loads(request.get_data().decode('utf8'))
+        info = json_load_http_request(request)
         sms_token = sms_verify.fetch_token(info['tel'])
         if sms_token is None:
             user_logger.warning('%s: no such a sms token for the number', info['tel'])
-            return json.dumps({'status': 'failure', 'message': '未向该用户发送验证短信'})
+            return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
         if not sms_token.validate(phone_number=info['tel'], vrfcode=info['vrfcode']):
             user_logger.warning('%s, %s: sms code validate failed', info['tel'], info['vrfcode'])
-            return json.dumps({'status': 'failure', 'message': '验证未通过' })
+            return json_dump_http_response({'status': 'failure', 'message': '验证未通过' })
         try:
             if db.expr_update('user', {'phone_verified': 1}, openid=info['openid']) == 1:
                 user_logger.info('%s, %s: sms code validate successfully', info['tel'], info['vrfcode'])
-                return json.dumps({'status': 'success'})
+                return json_dump_http_response({'status': 'success'})
         except:
             pass
         user_logger.warning('%s, %s: sms code validate failed', info['tel'], info['vrfcode'])
-        return json.dumps({'status': 'failure', 'message': '未知错误'})
+        return json_dump_http_response({'status': 'failure', 'message': '未知错误'})

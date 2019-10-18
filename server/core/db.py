@@ -47,7 +47,7 @@ db_logger = None
 
 # initialize database logger
 if db_logger is None:
-    print('initialize database logger...')
+    print('initialize database logger...', end=' ')
     db_logger = logging.getLogger(DB_LOGGER_NAME)
     # set logging level as default DEBUG level.
     db_logger.setLevel(logging.DEBUG)
@@ -62,7 +62,7 @@ if db_logger is None:
     fh.setFormatter(fmter)
     # add file handler
     db_logger.addHandler(fh)
-    print('database logger initialized successfully !')
+    print('Done')
 
 # SQL datatypes which need check quotes
 QUOTED_TYPES = ('char', 'varchar', 'datetime', 'date',

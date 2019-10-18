@@ -24,6 +24,7 @@ import ssl
 import dns.resolver
 import email
 import time
+import json
 from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -37,15 +38,21 @@ from server.core.exceptions import UserEmailError
 from server.utils.misctools import get_pardir
 
 
+sender = None
+smtp_domain = None
+smtp_port = None
+passcode = None
+
+if passcode is None:
+    with open(get_pardir(get_pardir(os.path.abspath(__file__))) + '/config/email.config', mode='r') as fp:
+        email_config = json.load(fp=fp, encoding='utf8')
+        sender = email_config['address']
+        smtp_domain = email_config['server']
+        smtp_port = email_config['port']
+        passcode = email_config['passcode']
+
 RGX = r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$'
-
-sender = '497802561@qq.com'
-smtp_domain = 'smtp.qq.com'
-smtp_port = 465
-passcode = 'tgpaibcvklzabiah'
-
 SMTP_CONNECTION = None
-
 EMAIL_TOKEN_POOL = {}
 
 
@@ -170,8 +177,8 @@ def send_confirm(receiver, vrfurl, email_sample='email_resource/confirm-admin.ht
     plain = """\
     您好，欢迎注册使用视障人士志愿者平台，请点击下方链接完成邮箱认证:
      """
-    if PROTOCOL not in vrfurl:
-        url = PROTOCOL + '://' + vrfurl.strip()
+    if vrfcode.PROTOCOL not in vrfurl:
+        url = vrfcode.PROTOCOL + '://' + vrfurl.strip()
     else:
         url = vrfurl.strip()
 

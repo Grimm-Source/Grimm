@@ -19,6 +19,9 @@
 
 
 import os
+import json
+import werkzeug
+
 
 # get parent directory
 def get_pardir(_dir):
@@ -32,4 +35,26 @@ def get_pardir(_dir):
     return pd
 
 
+# dump json data as response
+def json_dump_http_response(data):
+    '''dump http response json data object to front-end'''
+    if isinstance(data, (list, dict)):
+        return json.dumps(data, sort_keys=True, default=str, ensure_ascii=False)
+    return json.dumps(None)
 
+
+def json_load_http_request(request, keys=None):
+    '''load http request json data object from front-end'''
+    if isinstance(request, werkzeug.local.LocalProxy):
+        data = request.get_data().decode('utf8')
+        info_dict = json.loads(data) if data else {}
+
+    if keys is not None:
+        # get item as value if keys is specified as string key
+        if isinstance(keys, str):
+            return info_dict[keys] if keys in info_dict else None
+        # get item as dict if keys is specified as dict
+        if isinstance(keys, (tuple, list)):
+            return {k: info_dict[k] for k in keys if k in info_dict}
+
+    return info_dict

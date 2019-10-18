@@ -51,7 +51,7 @@ create table admin
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO admin (admin_id, registration_date, password, name, email_verified)
-VALUES (0, NOW(), 'password', 'root', 1);
+VALUES (0, NOW(), 'default', 'root', 1);
 
 /* user table */
 create table user
