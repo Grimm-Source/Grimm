@@ -19,11 +19,10 @@
 
 import sys
 import os
-import time
-from datetime import datetime
+import urllib3
 import json
 from flask import request
-import urllib3
+from datetime import datetime
 
 import server.core.db as db
 import server.utils.password as password
@@ -31,23 +30,26 @@ import server.utils.email_verify as email_verify
 import server.utils.sms_verify as sms_verify
 from server.core import grimm as app
 from server import admin_logger
+from server.utils.misctools import json_dump_http_response, json_load_http_request
 
 
 EMAIL_VRF_EXPIRY = 7200
+
+ROOT_PASSWORD = 'Cisco123456.'
 
 
 @app.route('/login', methods=['POST'])
 def admin_login():
     '''view funciton for admin logging'''
     if request.method == 'POST':
-        info = json.loads(request.get_data().decode('utf8'))  # Get user POST info
+        info = json_load_http_request(request)  # Get user POST info
         feedback = {'status': 'success'}
         if db.exist_row('admin', email=info['email']):
             try:
                 admininfo = db.expr_query('admin', email=info['email'])[0]
             except:
                 admin_logger.error('Critical: database query failed !')
-                return json.dumps({'status': 'failure', 'message': '未知错误'})
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             input_password = info['password']
             if password.verify_password('admin', input_password, email=info['email']):
                 feedback['id'] = admininfo['admin_id']
@@ -64,7 +66,7 @@ def admin_login():
             feedback['message'] = '未注册邮箱'
             admin_logger.warning('%s: no such admin account', info['email'])
 
-        return json.dumps(feedback)
+        return json_dump_http_response(feedback)
 
 
 @app.route('/admins', methods=['GET'])
@@ -75,7 +77,7 @@ def admins():
             adminsinfo = db.expr_query('admin')
         except:
             admin_logger.error('Critical: database query failed !')
-            return json.dumps({'status': 'failure', 'message': '未知错误'})
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
         queries = []
         admin_logger.info('query all admin info successfully')
         for admin in adminsinfo:
@@ -86,7 +88,7 @@ def admins():
             query['name'] = admin['name']
             queries.append(query)
 
-        return json.dumps(queries)
+        return json_dump_http_response(queries)
 
 
 @app.route('/admin/<int:admin_id>', methods=['GET', 'DELETE'])
@@ -99,10 +101,10 @@ def manage_admin(admin_id):
                 admininfo = db.expr_query('admin', admin_id=admin_id)[0]
                 if not admininfo:
                     admin_logger.warning('%d, no such admin id', admin_id)
-                    return json.dumps({'status': 'failure', 'message': '未知管理员'})
+                    return json_dump_http_response({'status': 'failure', 'message': '未知管理员'})
             except:
                 admin_logger.error('Critical: database query failed !')
-                return json.dumps({'status': 'failure', 'message': '未知错误'})
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             feedback['id'] = admininfo['admin_id']
             feedback['email'] = admininfo['email']
             feedback['type'] = 'root' if admininfo['admin_id'] == 0 else 'normal'
@@ -112,14 +114,14 @@ def manage_admin(admin_id):
             feedback['status'] = 'failure'
 
         admin_logger.warning('%d, no such admin', admin_id)
-        return json.dumps(feedback)
+        return json_dump_http_response(feedback)
 
     if request.method == 'DELETE':
         if admin_id != 0:
             try:
                 if db.expr_delete('admin', admin_id=admin_id) == 1:
                     admin_logger.info('%d: admin deleted successfully', admin_id)
-                    return json.dumps({'status': 'success'})
+                    return json_dump_http_response({'status': 'success'})
             except:
                 admin_logger.error('Critical: database delete failed !')
                 feedback = {'status': 'failure', 'message': '未知错误'}
@@ -127,14 +129,14 @@ def manage_admin(admin_id):
             admin_logger.warning('try to delete root user!')
             feedback = {'status': 'failure', 'message': '不能删除root用户'}
 
-        return json.dumps(feedback)
+        return json_dump_http_response(feedback)
 
 
 @app.route('/admin', methods=['POST'])
 def new_admin():
     '''view function to create new admin'''
     if request.method == 'POST':
-        info = json.loads(request.get_data().decode('utf8'))
+        info = json_load_http_request(request)
         admininfo = feedback = {}
         admininfo['email'] = info['email']
         # add new row if current admin is new
@@ -143,7 +145,7 @@ def new_admin():
             try:
                 max_admin_id = db.query(sql)[0]
             except:
-                return json.dumps({'status': 'failure', 'message': '未知错误'})
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             admininfo['admin_id'] = max_admin_id + 1  # new admin id
             admininfo['gender'] = info['gender']
             admininfo['registration_date'] = datetime.now().strftime('%Y-%m-%d')
@@ -152,31 +154,31 @@ def new_admin():
             try:
                 if db.expr_insert('admin', admininfo) != 1:
                     admin_logger.warning('%d, %s: create new admin failed', admininfo['admin_id'], admininfo['name'])
-                    return json.dumps({'status': 'failure', 'message': '录入管理员失败'})
+                    return json_dump_http_response({'status': 'failure', 'message': '录入管理员失败'})
             except:
                 admin_logger.error('Critical: database insert failed !')
-                return json.dumps({'status': 'failure', 'message': '未知错误'})
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             # update passcode
             if not password.update_password('admin', info['password'], admin_id=admininfo['admin_id']):
                 admin_logger.warning('%d, %s: not strong policy password', admininfo['admin_id'], admininfo['name'])
-                return json.dumps({'status': 'failure', 'message': '密码不合规范'})
+                return json_dump_http_response({'status': 'failure', 'message': '密码不合规范'})
             # send confirm email
             email_verify.drop_token(admininfo['email'])
             try:
                 email_token = email_verify.EmailVerifyToken(admininfo['email'], expiry=EMAIL_VRF_EXPIRY)  # 2hrs expiry
                 if not email_token.send_email():
                     admin_logger.warning('%d, %s: send confirm email failed', admininfo['admin_id'], admininfo['name'])
-                    return json.dumps({'status': 'failure', 'message': '发送验证邮箱失败'})
+                    return json_dump_http_response({'status': 'failure', 'message': '发送验证邮箱失败'})
             except Exception as err:
                 admin_logger.warning('%d, %s: send confirm email failed', admininfo['admin_id'], admininfo['name'])
-                return json.dumps({'status': 'failure', 'message': err.args[1]})
+                return json_dump_http_response({'status': 'failure', 'message': err.args[1]})
             admin_logger.info('%d, %s: send confirm email successfully', admininfo['admin_id'], admininfo['name'])
             email_verify.append_token(email_token)
             admin_logger.info('%d, %s: create new admin procedure completed successfully', admininfo['admin_id'], admininfo['name'])
-            return json.dumps({'status': 'success'})
+            return json_dump_http_response({'status': 'success'})
 
         admin_logger.warning('%s: create new admin with duplicated email account', admininfo['email'])
-        return json.dumps({'status': 'failure', 'message': '已注册邮箱'})
+        return json_dump_http_response({'status': 'failure', 'message': '已注册邮箱'})
 
 # 需前端提示发送验证邮件
 @app.route('/send-vrfemail', methods=['GET'])
@@ -184,23 +186,23 @@ def send_vrfemail():
     '''view function to send confirm email to user'''
     if request.method == 'GET':
         feedback = {'status': 'success'}
-        addr = json.loads(request.get_data().decode('utf8'))['email']
+        addr = json_load_http_request(request, keys='email')
         if db.exist_row('admin', email=addr):
             email_verify.drop_token(admininfo['email'])
             try:
                 email_token = email_verify.EmailVerifyToken(addr, expiry=EMAIL_VRF_EXPIRY)  # 2hrs expiry
                 if not email_token.send_email():
                     admin_logger.warning('%s: send confirm email failed', addr)
-                    return json.dumps({'status': 'failure', 'message': '发送验证邮箱失败'})
+                    return json_dump_http_response({'status': 'failure', 'message': '发送验证邮箱失败'})
             except Exception as err:
                 admin_logger.warning('%s: send confirm email failed', addr)
-                return json.dumps({'status': 'failure', 'message': err.args[1]})
+                return json_dump_http_response({'status': 'failure', 'message': err.args[1]})
             admin_logger.info('%s: send confirm email successfully', addr)
             email_verify.append_token(email_token)
-            return json.dumps(feedback)
+            return json_dump_http_response(feedback)
 
         admin_logger.warning('%s: email is not registered', addr)
-        return json.dumps({'status': 'failure', 'message': '邮箱未注册'})
+        return json_dump_http_response({'status': 'failure', 'message': '邮箱未注册'})
 
 
 @app.route('/confirm-email/<token>', methods=['GET'])
@@ -213,19 +215,19 @@ def confirm_email(token):
             feedback = {'status': 'failure'}
 
         admin_logger.info('%s: email verify successfully', password.parse_vrftoken(token))
-        return json.dumps(feedback)
+        return json_dump_http_response(feedback)
 
 
 @app.route('/admin/delete', methods=['POST'])
 def delete_admin():
     '''view function for root to delete admins'''
     if request.method == 'POST':
-        admin_id = json.loads(request.get_data().decode('utf8'))['id']
+        admin_id = json_load_http_request(request, keys='id')
         if admin_id != 0:
             try:
                 if db.expr_delete('admin', admin_id=admin_id) == 1:
                     admin_logger.info('%d: admin deleted successfully', admin_id)
-                    return json.dumps({'status': 'success'})
+                    return json_dump_http_response({'status': 'success'})
             except:
                 admin_logger.error('Critical: database delete failed !')
                 feedback = {'status': 'failure', 'message': '未知错误'}
@@ -233,14 +235,14 @@ def delete_admin():
             admin_logger.warning('try to delete root user!')
             feedback = {'status': 'failure', 'message': '不能删除root用户'}
 
-        return json.dumps(feedback)
+        return json_dump_http_response(feedback)
 
 
 @app.route('/activity', methods=['POST'])
 def new_activity():
     '''view function to add new activity'''
     if request.method == 'POST':
-        info = json.loads(request.get_data().decode('utf8'))
+        info = json_load_http_request(request)
         activity_info = {}
         activity_info['approver'] = info['adminId']
         activity_info['title'] = info['title']
@@ -254,57 +256,57 @@ def new_activity():
         try:
             if db.expr_insert('activity', activity_info) == 1:
                 admin_logger.info('%s: create new activity successfully', activity_info['title'])
-                return json.dumps({'status': 'success'})
+                return json_dump_http_response({'status': 'success'})
         except:
             pass
 
         admin_logger.warning('%s: create new activity failed', activity_info['title'])
-        return json.dumps({'status': 'failure', 'message': '未知错误'})
+        return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
 
 @app.route('/activity/<int:activity_id>', methods=['POST', 'GET', 'DELETE'])
 def update_activity(activity_id):
     '''view function for the activity raiser to update activity info'''
     if request.method == 'GET':
-        if db.exist_row('activity', activity_id='activity'):
+        if db.exist_row('activity', activity_id=activity_id):
             feedback = {'status': 'success'}
             try:
                 activity = db.expr_query('activity', activity_id=activity_id)[0]
                 if not activity:
                     admin_logger.warning('%d: no such activity', activity_id)
-                    return json.dumps({'status': 'failure', 'message': '未知活动ID'})
+                    return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
             except:
                 admin_logger.warning('%d: get activity failed', activity_id)
-                return json.dumps({'status': 'failure', 'message': '未知错误'})
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             feedback['id'] = activity['activity_id']
-            feedback['adminId'] = acitivity['approver']
+            feedback['adminId'] = activity['approver']
             feedback['title'] = activity['title']
             feedback['location'] = activity['location']
-            feedback['date'] = activity['time']
+            feedback['date'] = activity['time'].strftime('%Y-%m-%d %H:%M:%S')
             feedback['duration'] = activity['duration']
             feedback['content'] = activity['content']
             feedback['notice'] = activity['notice']
             feedback['others'] = activity['others']
 
             admin_logger.info('%d: get activity successfully', activity_id)
-            return json.dumps(feedback)
+            return json_dump_http_response(feedback)
 
         admin_logger.warning('%d: no such activity', activity_id)
-        return json.dumps({'status': 'failure', 'message': '无效活动ID'})
+        return json_dump_http_response({'status': 'failure', 'message': '无效活动 ID'})
 
     if request.method == 'DELETE':
         try:
             if db.expr_delete('activity', activity_id=activity_id) == 1:
                 admin_logger.info('%d: delete new activity successfully', activity_id)
-                return json.dumps({'status': 'success'})
+                return json_dump_http_response({'status': 'success'})
         except:
             pass
 
         admin_logger.warning('%d: delete new activity failed', activity_id)
-        return json.dumps({'status': 'failure', 'message': '未知错误'})
+        return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
     if request.method == 'POST':
-        newinfo = json.loads(request.get_data().decode('utf8'))
+        newinfo = json_load_http_request(request)
         activity_info = {}
         activity_info['approver'] = newinfo['adminId']
         activity_info['title'] = newinfo['title']
@@ -319,12 +321,12 @@ def update_activity(activity_id):
         try:
             if db.expr_update('activity', activity_info, activity_id=activity_id) == 1:
                 admin_logger.info('%d: update activity successfully', activity_id)
-                return json.dumps({'status': 'success'})
+                return json_dump_http_response({'status': 'success'})
         except:
             pass
 
         admin_logger.warning('%d: update activity failed', activity_id)
-        return json.dumps({'status': 'failure', 'message': '未知错误'})
+        return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
 
 @app.route('/activity/delete', methods=['DELETE'])
@@ -333,18 +335,18 @@ def delete_activity_with_id():
     if request.method == 'DELETE':
         id_string = request.get_data().decode('utf8')
         if not id_string.isdigit():
-            return json.dumps({'status': 'failure', 'message': '请检查活动ID'})
+            return json_dump_http_response({'status': 'failure', 'message': '请检查活动ID'})
 
         activity_id = int(id_string)
         try:
             if db.expr_delete('activity', activity_id=activity_id) == 1:
                 admin_logger.info('%d: delete new activity successfully', activity_id)
-                return json.dumps({'status': 'success'})
+                return json_dump_http_response({'status': 'success'})
         except:
             pass
 
         admin_logger.warning('%d: delete new activity failed', activity_id)
-        return json.dumps({'status': 'failure', 'message': '未知错误'})
+        return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
 
 @app.route('/activities', methods=['GET'])
@@ -355,7 +357,7 @@ def activities():
             activities_info = db.expr_query('activity')
         except:
             admin_logger.warning('get all activities failed')
-            return json.dumps({'status': 'failure', 'message': '未知错误'})
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
         queries = []
         for activity in activities_info:
             if activity is not None:
@@ -364,7 +366,7 @@ def activities():
                 query['adminId'] = activity['approver']
                 query['title'] = activity['title']
                 query['location'] = activity['location']
-                query['date'] = activity['time']
+                query['date'] = activity['time'].strftime('%Y-%m-%dT%H:%M:%S')
                 query['duration'] = activity['duration']
                 query['content'] = activity['content']
                 query['notice'] = activity['content']
@@ -373,31 +375,31 @@ def activities():
                 queries.append(query)
 
         admin_logger.info('get all activities successfully')
-        return json.dumps(queries)
+        return json_dump_http_response(queries)
 
 
 @app.route('/admin/<int:admin_id>/update-password', methods=['POST'])
 def admin_update_password(admin_id):
     '''view function for admins to update new passwords'''
     if request.method == 'POST':
-        admin_password = json.loads(request.get_data().decode('utf8'))
+        admin_password = json_load_http_request(request)
         old_pass = admin_password['old_password']
         new_pass = admin_password['new_password']
         if db.exist_row('admin', admin_id=admin_id):
             # check old password
             if not password.verify_password('admin', old_pass, admin_id=admin_id):
                 admin_logger.warning('%d: wrong old password', admin_id)
-                return json.dumps({'status': 'failure', 'message': '密码错误'})
+                return json_dump_http_response({'status': 'failure', 'message': '密码错误'})
             # update passcode
             if not password.update_password('admin', new_pass, admin_id=admin_id):
                 admin_logger.warning('%d: not strong policy password', admin_id)
-                return json.dumps({'status': 'failure', 'message': '密码不合规范'})
+                return json_dump_http_response({'status': 'failure', 'message': '密码不合规范'})
 
             admin_logger.info('%d: update password successfully', admin_id)
-            return json.dumps({'status': 'success'})
+            return json_dump_http_response({'status': 'success'})
 
         admin_logger.waring('%d: no such admin', admin_id)
-        return json.dumps({'status': 'failure', 'message': '未知管理员'})
+        return json_dump_http_response({'status': 'failure', 'message': '未知管理员'})
 
 
 @app.route('/admin/forget-password', methods=['POST'])
@@ -409,31 +411,38 @@ def admin_reset_password():
             response, new_pass = email_verify.send_reset(receiver=addr)
             if response:
                 admin_logger.warning('%s: send reset email failed', addr)
-                return json.dumps({'status': 'failure', 'message': f'{response}'})
+                return json_dump_http_response({'status': 'failure', 'message': f'{response}'})
             admin_logger.info('%s, send reset email successfully', addr)
             # update passcode
             if not password.update_password('admin', new_pass, email=addr):
                 admin_logger.warning('%s: not strong policy password', addr)
-                return json.dumps({'status': 'failure', 'message': '密码不符合规范'})
+                return json_dump_http_response({'status': 'failure', 'message': '密码不符合规范'})
 
             admin_logger.info('%s, update password successfully', addr)
-            return json.dumps({'status': 'success'})
+            return json_dump_http_response({'status': 'success'})
 
         admin_logger.waring('%s, no such admin account', addr)
-        return json.dumps({'status': 'failure', 'message': '未注册邮箱'})
+        return json_dump_http_response({'status': 'failure', 'message': '未注册邮箱'})
 
 
-@app.route('/user-audit-status', methods=['GET'])
-def user_audit_status():
+@app.route('/user-audit-status/<user_type>', methods=['GET'])
+def user_audit_status(user_type):
     '''view function for admins to get all users info with audit status'''
     if request.method == 'GET':
+        if user_type == 'volunteer':
+            role_id = 0
+        elif user_type == 'disabled':
+            role_id = 1
+        else:
+            return json_dump_http_response({'status': 'failure', 'message': '用户类型错误'})
+
         users = []
         query_fields = ('openid', 'name', 'role', 'audit_status')
         try:
-            usersinfo = db.expr_query('user', fields=query_fields)
+            usersinfo = db.expr_query('user', fields=query_fields, role=role_id)
         except:
             admin_logger.error('Critical: database query failed !')
-            return json.dumps({'status': 'failure', 'message': '未知错误'})
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
         for userinfo in usersinfo:
             info = {}
@@ -450,7 +459,7 @@ def user_audit_status():
             users.append(info)
 
         admin_logger.info('query all user audit status successfully')
-        return json.dumps(users)
+        return json_dump_http_response(users)
 
 
 @app.route('/audit-user', methods=['GET', 'POST'])
@@ -458,15 +467,15 @@ def admin_audit_user():
     '''view function for admin to audit users'''
     if request.method == 'GET':
         feedback = {'status': 'success'}
-        openid = json.loads(request.get_data().decode('utf8'))['openid']
+        openid = json_load_http_request(request, keys='openid')
         try:
             userinfo = db.expr_query('user', openid=openid)[0]
             if not userinfo:
                 admin_logger.warning('%s, no such user openid', openid)
-                return json.dumps({'status': 'failure', 'message': '未知用户'})
+                return json_dump_http_response({'status': 'failure', 'message': '未知用户'})
         except:
             admin_logger.error('Critical: database query failed !')
-            return json.dumps({'status': 'failure', 'message': '未知错误'})
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
         feedback['openid'] = userinfo['openid']
         feedback['birthDate'] = userinfo['birth']
@@ -484,19 +493,19 @@ def admin_audit_user():
         feedback['registrationDate'] = userinfo['registration_date']
 
         admin_logger.info('%s, query user info successfully', openid)
-        return json.dumps(feedback)
+        return json_dump_http_response(feedback)
 
     if request.method == 'POST':
-        audit_status = json.loads(request.get_data().decode('utf8'))
+        audit_status = json_load_http_request(request)
         for openid, status in audit_status.items():
             try:
                 info = db.expr_query('user', ('audit_status', 'phone'), openid=openid)[0]
                 if not info:
                     admin_logger.warning('%s, no such user openid', openid)
-                    return json.dumps({'status': 'failure', 'message': '未知用户'})
+                    return json_dump_http_response({'status': 'failure', 'message': '未知用户'})
             except:
                 admin_logger.error('Critical: database query failed !')
-                return json.dumps({'status': 'failure', 'message': '未知错误'})
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
             # users audit new status
             if info['audit_status'] == 0 and status in ('approved', 'rejected', 'proceeding'):
@@ -518,18 +527,18 @@ def admin_audit_user():
                     sms_token.vrfcode = message
                     if not sms_token.send_sms():
                         admin_logger.warning('%s, unable to send sms to number', info['phone'])
-                        return json.dumps({'status': 'failure', 'message': '发送失败'})
+                        return json_dump_http_response({'status': 'failure', 'message': '发送失败'})
                 except:
-                    return json.dumps({'status': 'failure', 'message': err.args[1]})
+                    return json_dump_http_response({'status': 'failure', 'message': err.args[1]})
 
             # update each user audit status
             try:
                 if db.expr_update('user', new_status, openid=openid) != 1:
                     admin_logger.warning('%s, update user audit status failed', openid)
-                    return json.dumps({'status': 'failure', 'message': '更新失败'})
+                    return json_dump_http_response({'status': 'failure', 'message': '更新失败'})
             except:
                 admin_logger.error('Critical: update database failed')
-                return json.dumps({'status': 'failure', 'message': '未知错误'})
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
         admin_logger.info('update users audit status successfully')
-        return json.dumps({'status': 'success'})
+        return json_dump_http_response({'status': 'success'})

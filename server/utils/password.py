@@ -46,7 +46,7 @@ def check_password_policy(password):
     return True if not final else False
 
 
-def update_password(tbl, password, **kwargs):
+def update_password(password, tbl='admin', **kwargs):
     '''update user password'''
     if kwargs is None or len(kwargs) > 1:
         sys_logger.error('password.update_password: invalid argument')
@@ -72,10 +72,10 @@ def update_password(tbl, password, **kwargs):
     return False
 
 
-def verify_password(tbl, password, **kwargs):
+def verify_password(password, tbl='admin', **kwargs):
     '''verify user password when login or register'''
     try:
-        query = db.expr_query(tbl, 'password', kwargs)
+        query = db.expr_query(tbl, 'password', **kwargs)
         if len(query) == 1:
             bcrypt_password = query[0]['password']
             return bcrypt.checkpw(password, bcrypt_password)
