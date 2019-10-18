@@ -50,8 +50,8 @@ create table admin
     PRIMARY KEY (admin_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO admin (admin_id, registration_date, password, name, email_verified)
-VALUES (0, NOW(), 'default', 'root', 1);
+INSERT INTO admin (admin_id, registration_date, password, name, email_verified, email)
+VALUES (0, NOW(), 'default', 'root', 1, 'no.reply@rp-i.org');
 
 /* user table */
 create table user

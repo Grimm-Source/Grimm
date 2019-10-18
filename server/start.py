@@ -42,7 +42,7 @@ from server.utils.password import update_password
 
 if db.exist_row('admin', admin_id=0):
     if db.expr_query('admin', fields='password', admin_id=0)[0]['password'] == 'default':
-        if update_password('admin', ROOT_PASSWORD, admin_id=0):
+        if update_password(ROOT_PASSWORD, tbl='admin', admin_id=0):
             print('configure root password ... Done\n')
         else:
             print('configure root password failed')

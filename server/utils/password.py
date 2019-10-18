@@ -46,7 +46,7 @@ def check_password_policy(password):
     return True if not final else False
 
 
-def update_password(password, tbl='admin', **kwargs):
+def update_password(password, tbl='admin', policy_check=True, **kwargs):
     '''update user password'''
     if kwargs is None or len(kwargs) > 1:
         sys_logger.error('password.update_password: invalid argument')
@@ -58,8 +58,8 @@ def update_password(password, tbl='admin', **kwargs):
     need_quote = True if typeinfo[key] in db.QUOTED_TYPES else False
     kwargs[key] = f"'{val}'" if need_quote and isinstance(val, str) and val[0] not in '\'"' else val
 
-    policy_check = check_password_policy(password)
-    if policy_check is True:
+    policy_pass = check_password_policy(password) if policy_check else True
+    if policy_pass is True:
         salt = bcrypt.gensalt(PASSWORD_SALT)
         bcrypt_passcode = bcrypt.hashpw(password, salt)
         passcode = {'password': bcrypt_passcode}

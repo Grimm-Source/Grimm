@@ -27,6 +27,7 @@ import server.core.db as db
 import server.utils.password as password
 import server.utils.email_verify as email_verify
 import server.utils.sms_verify as sms_verify
+import server.utils.vrfcode as vrfcode
 from server.core import grimm as app
 from server import admin_logger
 from server.utils.misctools import json_dump_http_response, json_load_http_request
@@ -36,10 +37,15 @@ EMAIL_VRF_EXPIRY = 7200
 ROOT_PASSWORD = 'Cisco123456.'
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/')
+def home():
+    return json_dump_http_response({'status': 'success'})
+
+
+@app.route('/login', methods=['GET'])
 def admin_login():
     '''view funciton for admin logging'''
-    if request.method == 'POST':
+    if request.method == 'GET':
         info = json_load_http_request(request)  # Get user POST info
         feedback = {'status': 'success'}
         if db.exist_row('admin', email=info['email']):
@@ -49,7 +55,7 @@ def admin_login():
                 admin_logger.error('Critical: database query failed !')
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             input_password = info['password']
-            if password.verify_password('admin', input_password, email=info['email']):
+            if password.verify_password(input_password, 'admin', email=info['email']):
                 feedback['id'] = admininfo['admin_id']
                 feedback['email'] = admininfo['email']
                 feedback['type'] = 'root' if admininfo['admin_id'] == 0 else 'normal'
@@ -157,7 +163,7 @@ def new_admin():
                 admin_logger.error('Critical: database insert failed !')
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             # update passcode
-            if not password.update_password('admin', info['password'], admin_id=admininfo['admin_id']):
+            if not password.update_password(info['password'], 'admin', admin_id=admininfo['admin_id']):
                 admin_logger.warning('%d, %s: not strong policy password', admininfo['admin_id'], admininfo['name'])
                 return json_dump_http_response({'status': 'failure', 'message': '密码不合规范'})
             # send confirm email
@@ -203,17 +209,16 @@ def send_vrfemail():
         return json_dump_http_response({'status': 'failure', 'message': '邮箱未注册'})
 
 
-@app.route('/confirm-email/<token>', methods=['GET'])
+@app.route('/confirm-email/<token>', methods=['GET', 'POST'])
 def confirm_email(token):
     '''view function to confirm confirm email'''
-    if request.method == 'GET':
-        feedback = {'status': 'success'}
-        if not email_verify.validate_email(token):
-            admin_logger.warning('%s: email verify failed', password.parse_vrftoken(token))
-            feedback = {'status': 'failure'}
+    feedback = {'status': '您的邮箱认证成功'}
+    if not email_verify.validate_email(token):
+        admin_logger.warning('%s: email verify failed', vrfcode.parse_vrftoken(token))
+        feedback = {'status': '您的邮箱认证失败'}
 
-        admin_logger.info('%s: email verify successfully', password.parse_vrftoken(token))
-        return json_dump_http_response(feedback)
+    admin_logger.info('%s: email verify successfully', vrfcode.parse_vrftoken(token))
+    return json_dump_http_response(feedback)
 
 
 @app.route('/admin/delete', methods=['POST'])
@@ -304,27 +309,29 @@ def update_activity(activity_id):
         return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
     if request.method == 'POST':
-        newinfo = json_load_http_request(request)
-        activity_info = {}
-        activity_info['approver'] = newinfo['adminId']
-        activity_info['title'] = newinfo['title']
-        activity_info['location'] = newinfo['location']
-        activity_info['time'] = newinfo['date']
-        activity_info['duration'] = newinfo['duration']
-        activity_info['content'] = newinfo['content']
-        activity_info['notice'] = newinfo['notice']
-        activity_info['others'] = newinfo['others']
-        activity_info['activity_id'] = newinfo['id']
-        activity_info['admin_raiser'] = newinfo['adminId']
-        try:
-            if db.expr_update('activity', activity_info, activity_id=activity_id) == 1:
-                admin_logger.info('%d: update activity successfully', activity_id)
-                return json_dump_http_response({'status': 'success'})
-        except:
-            pass
+        if db.exist_row('activity', activity_id=activity_id):
+            newinfo = json_load_http_request(request)
+            activity_info = {}
+            activity_info['approver'] = newinfo['adminId']
+            activity_info['title'] = newinfo['title']
+            activity_info['location'] = newinfo['location']
+            activity_info['time'] = newinfo['date']
+            activity_info['duration'] = newinfo['duration']
+            activity_info['content'] = newinfo['content']
+            activity_info['notice'] = newinfo['notice']
+            activity_info['others'] = newinfo['others']
+            activity_info['admin_raiser'] = newinfo['adminId']
+            try:
+                if db.expr_update('activity', activity_info, activity_id=activity_id) == 1:
+                    admin_logger.info('%d: update activity successfully', activity_id)
+                    return json_dump_http_response({'status': 'success'})
+            except:
+                feedback = {'status': 'failure', 'message': '未知错误'}
+        else:
+            feedback = {'status': 'failure', 'message': '无效活动 ID'}
 
         admin_logger.warning('%d: update activity failed', activity_id)
-        return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
+        return json_dump_http_response(feedback)
 
 
 @app.route('/activity/delete', methods=['DELETE'])
@@ -385,11 +392,11 @@ def admin_update_password(admin_id):
         new_pass = admin_password['new_password']
         if db.exist_row('admin', admin_id=admin_id):
             # check old password
-            if not password.verify_password('admin', old_pass, admin_id=admin_id):
+            if not password.verify_password(old_pass, 'admin', admin_id=admin_id):
                 admin_logger.warning('%d: wrong old password', admin_id)
                 return json_dump_http_response({'status': 'failure', 'message': '密码错误'})
             # update passcode
-            if not password.update_password('admin', new_pass, admin_id=admin_id):
+            if not password.update_password(new_pass, 'admin', admin_id=admin_id):
                 admin_logger.warning('%d: not strong policy password', admin_id)
                 return json_dump_http_response({'status': 'failure', 'message': '密码不合规范'})
 
@@ -400,10 +407,10 @@ def admin_update_password(admin_id):
         return json_dump_http_response({'status': 'failure', 'message': '未知管理员'})
 
 
-@app.route('/admin/forget-password', methods=['POST'])
+@app.route('/admin/forget-password', methods=['GET'])
 def admin_reset_password():
     '''view function for admins to reset new passwords'''
-    if request.method == 'POST':
+    if request.method == 'GET':
         addr = request.get_data().decode('utf8').strip()
         if db.exist_row('admin', email=addr):
             response, new_pass = email_verify.send_reset(receiver=addr)
@@ -412,7 +419,7 @@ def admin_reset_password():
                 return json_dump_http_response({'status': 'failure', 'message': f'{response}'})
             admin_logger.info('%s, send reset email successfully', addr)
             # update passcode
-            if not password.update_password('admin', new_pass, email=addr):
+            if not password.update_password(new_pass, 'admin', policy_check=False, email=addr):
                 admin_logger.warning('%s: not strong policy password', addr)
                 return json_dump_http_response({'status': 'failure', 'message': '密码不符合规范'})
 
@@ -465,7 +472,7 @@ def admin_audit_user():
     '''view function for admin to audit users'''
     if request.method == 'GET':
         feedback = {'status': 'success'}
-        openid = json_load_http_request(request, keys='openid')
+        openid = json_load_http_request(request)
         try:
             userinfo = db.expr_query('user', openid=openid)[0]
             if not userinfo:
@@ -495,9 +502,11 @@ def admin_audit_user():
 
     if request.method == 'POST':
         audit_status = json_load_http_request(request)
+        print(audit_status)
         for openid, status in audit_status.items():
+            print(openid)
             try:
-                info = db.expr_query('user', ('audit_status', 'phone'), openid=openid)[0]
+                info = db.expr_query('user', fields=('audit_status', 'phone'), openid=openid)[0]
                 if not info:
                     admin_logger.warning('%s, no such user openid', openid)
                     return json_dump_http_response({'status': 'failure', 'message': '未知用户'})
@@ -526,7 +535,7 @@ def admin_audit_user():
                     if not sms_token.send_sms():
                         admin_logger.warning('%s, unable to send sms to number', info['phone'])
                         return json_dump_http_response({'status': 'failure', 'message': '发送失败'})
-                except:
+                except Exception as err:
                     return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
 
             # update each user audit status
