@@ -23,6 +23,7 @@ import re
 import json
 import werkzeug
 import socket
+import datetime
 
 
 # get parent directory
@@ -106,3 +107,16 @@ def validate_hostname(hostname):
         return True
     except:
         return False
+
+
+# calc time duration
+def calc_duration(start, end):
+    '''calculate time duration, return dict'''
+    if isinstance(start, datetime.datetime) and isinstance(end, datetime.datetime):
+        delta = end - start
+        days = delta.days
+        hours = int(delta.seconds / 3600)
+        minites = int((delta.seconds % 3600) / 60)
+        seconds = (delta.seconds % 3600) % 60
+        return {'day': days, 'hour': hours, 'min': minites, 'sec': seconds}
+    return {}

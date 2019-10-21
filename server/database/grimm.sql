@@ -90,9 +90,9 @@ create table activity
 (
     activity_id                 BIGINT              NOT NULL AUTO_INCREMENT,
     title                       VARCHAR(200)        NOT NULL        DEFAULT '助盲公益活动',
-    time                        DATETIME            NOT NULL,
+    start_time                  DATETIME,
     location                    VARCHAR(100)        NOT NULL,
-    duration                    TIME                NOT NULL        DEFAULT '3:00:00',
+    end_time                    DATETIME,
     content                     TEXT                NOT NULL,
     notice                      TEXT,
     others                      VARCHAR(120)        NOT NULL        DEFAULT '无',
@@ -118,8 +118,8 @@ create table activity
     PRIMARY KEY (activity_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO activity (time, location, duration, content, notice, user_raiser, approver, assignee)
-VALUES (NOW(), "湖北省宜昌市夷陵区", "4:00:00", "爱心牵手，你我同行", "需要配备雨具", '0', 0, '1');
+INSERT INTO activity (start_time, location, content, notice, user_raiser, approver, assignee)
+VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "需要配备雨具", '0', 0, '1');
 
 
 /* pickup table */
