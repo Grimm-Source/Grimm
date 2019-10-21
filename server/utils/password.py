@@ -22,8 +22,8 @@ import bcrypt
 import server.core.db as db
 
 from server import sys_logger
+from server.core.const import DEFAULT_PASSWORD_SALT, DB_QUOTED_TYPES
 
-PASSWORD_SALT = 5
 
 def check_password_policy(password):
     '''check password policy to ensure strong policy password'''
@@ -55,12 +55,12 @@ def update_password(password, tbl='admin', policy_check=True, **kwargs):
     for key, val in kwargs.items():
         pass
     typeinfo = db.query_tbl_fields_datatype(tbl, key)
-    need_quote = True if typeinfo[key] in db.QUOTED_TYPES else False
+    need_quote = True if typeinfo[key] in DB_QUOTED_TYPES else False
     kwargs[key] = f"'{val}'" if need_quote and isinstance(val, str) and val[0] not in '\'"' else val
 
     policy_pass = check_password_policy(password) if policy_check else True
     if policy_pass is True:
-        salt = bcrypt.gensalt(PASSWORD_SALT)
+        salt = bcrypt.gensalt(DEFAULT_PASSWORD_SALT)
         bcrypt_passcode = bcrypt.hashpw(password, salt)
         passcode = {'password': bcrypt_passcode}
         try:
@@ -68,7 +68,6 @@ def update_password(password, tbl='admin', policy_check=True, **kwargs):
                 return True
         except:
             pass
-
     return False
 
 
@@ -81,5 +80,4 @@ def verify_password(password, tbl='admin', **kwargs):
             return bcrypt.checkpw(password, bcrypt_password)
     except:
         pass
-
     return False

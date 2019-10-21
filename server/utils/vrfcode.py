@@ -18,6 +18,7 @@
 #   1. 2019/09/19, Ming, create first revision.
 #
 
+import re
 import uuid
 import time
 import random
@@ -28,21 +29,20 @@ from itsdangerous import URLSafeTimedSerializer
 
 from server import sys_logger
 from server.core import grimm
-from server import HOST, PORT
+from server.utils.misctools import get_host_ip, is_ipv4_addr
 
+from server.core.const import HOST, PORT
+from server.core.const import DEFAULT_SERIAL_NO_BYTES, DEFAULT_VRFCODE_BYTES, DEFAULT_PROTOCOL
 
 VRFCODE_POOL = {}
-SERIAL_BYTES = 32
-VRFCODE_BYTES = 6
 
-PROTOCOL = 'http'
 
-def new_serial_number(_bytes=SERIAL_BYTES):
+def new_serial_number(_bytes=DEFAULT_SERIAL_NO_BYTES):
     '''generate new serial number'''
     return uuid.uuid1().hex[0:_bytes]
 
 
-def new_vrfcode(_bytes=VRFCODE_BYTES):
+def new_vrfcode(_bytes=DEFAULT_VRFCODE_BYTES):
     '''generate new verification code'''
     global VRFCODE_POOL
     code = ''.join(random.choices(string.digits, k=_bytes))
@@ -84,7 +84,10 @@ def new_vrfurl(email):
     '''generate new confirm verification email url'''
     serializer = URLSafeTimedSerializer(grimm.config['SECRET_KEY'])
     token = serializer.dumps(email, salt=grimm.config['SECURITY_PASSWORD_SALT'])
-    vrfurl = PROTOCOL + '://' + str(HOST) + ':' + str(PORT) + '/confirm-email/' + token
+    server_port = PORT
+    server_host = get_host_ip() if is_ipv4_addr(HOST) or HOST == 'localhost' else HOST
+
+    vrfurl = DEFAULT_PROTOCOL + '://' + str(server_host) + ':' + str(server_port) + '/email?token=' + token
     return vrfurl
 
 

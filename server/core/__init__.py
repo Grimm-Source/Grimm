@@ -44,7 +44,7 @@ if grimm is None:
     grimm = Flask('grimm')
     grimm_ext = CORS(grimm)
 
-    grimm.secret_key = os.urandom(24)
+    grimm.config['SECRET_KEY']= os.urandom(24)
     grimm.config['SECURITY_PASSWORD_SALT'] = uuid.uuid4().hex
     path = get_pardir(get_pardir(os.path.abspath(__file__)))
     with open(path + '/config/wxapp.config', mode='r') as fp:
@@ -55,10 +55,12 @@ if grimm is None:
 
     del wxconfig, get_pardir, path
 
+
 # initialize database connection
 import server.core.db as db
-from server import FORCE
-if db.session_connection is None:
-    db.init_connection(force=True if FORCE is True else False)
+from server.core.const import FORCE_LOAD
 
-del db, FORCE
+if db.session_connection is None:
+    db.init_connection(force=True if FORCE_LOAD is True else False)
+
+del db, FORCE_LOAD

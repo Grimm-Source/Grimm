@@ -28,17 +28,17 @@ if '..' not in sys.path:
 # load services
 import server
 import server.core.db as db
-from server import HOST, PORT
-from server.core import grimm
-from server.core.exit import exit_grimm
 
 # import view function interfaces
 import server.core.route.web_admin
 import server.core.route.wxapp
 
 # update root user info
-from server.core.route.web_admin import ROOT_PASSWORD
+from server.core.const import ROOT_PASSWORD, HOST, PORT
 from server.utils.password import update_password
+from server.core.exit import exit_grimm
+from server.core import grimm
+
 
 if db.exist_row('admin', admin_id=0):
     if db.expr_query('admin', fields='password', admin_id=0)[0]['password'] == 'default':

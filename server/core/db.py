@@ -1,5 +1,5 @@
 #
-# File: sql.py
+# File: db.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
@@ -27,6 +27,8 @@ import pymysql
 from server.core.exceptions import SQLValueError, SQLConnectionError
 from server.utils.misctools import get_pardir
 
+from server.core.const import DB_CONFIG_FILE, DB_LOGGER_FILE, DB_QUOTED_TYPES
+
 
 __all__ = ['expr_query', 'expr_update', 'expr_insert', 'expr_delete',
            'query', 'update', 'delete', 'insert', 'query_tbl_fields',
@@ -35,15 +37,12 @@ __all__ = ['expr_query', 'expr_update', 'expr_insert', 'expr_delete',
            'reset_connection', 'destory_connection', 'exist_rows']
 
 
-# db configs
-pardir = get_pardir(get_pardir(os.path.abspath(__file__)))
-DB_CONFIG_FILE = pardir + '/config/db.config'
-DB_NAME = None
-
-# db logger configs
-DB_LOGGER_FILE = pardir + '/log/db.log'
-DB_LOGGER_NAME = 'db-transaction-logger'
+# db globals
+session_connection = None
 db_logger = None
+DB_NAME = None
+DB_LOGGER_NAME = 'db-transaction-logger'
+
 
 # initialize database logger
 if db_logger is None:
@@ -64,12 +63,6 @@ if db_logger is None:
     db_logger.addHandler(fh)
     print('Done')
 
-# SQL datatypes which need check quotes
-QUOTED_TYPES = ('char', 'varchar', 'datetime', 'date',
-                'timestamp', 'text', 'binary', 'time')
-
-# db session connection
-session_connection = None
 
 # close session database connection
 def close_connection():
@@ -107,7 +100,7 @@ signal.signal(signal.SIGTERM, sig_handler)
 # initialize database connection
 def init_connection(force=False):
     '''initialize database connection of server process'''
-    print('start initialize database connection...')
+    print('initialize database connection...')
     global DB_NAME, session_connection, db_logger
     db_config_items = ['Host', 'Port', 'DB', 'Charset', 'User']
 
@@ -233,10 +226,12 @@ def reset_connection(soft=True):
 def execute(_execute):
     '''standard SQL API for executing SQL script line'''
     # check SQL connection status
-    if session_connection is None or session_connection.open is False:
+    if session_connection is None:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
+    if not session_connection.open:
+        init_connection()
     # execute
     if isinstance(_execute, bytes):
         _execute.decode('utf8')
@@ -248,8 +243,8 @@ def execute(_execute):
         cursor.execute(_execute)
         cursor.close()
         session_connection.commit()
-    except pymysql.err.Error as e:
-        raise e
+    except pymysql.err.Error as err:
+        raise err
 
     return cursor
 
@@ -292,7 +287,7 @@ def parse_kwargs_clause(tbls, fields='*', **kwargs):
                 v = v.decode('utf8')
             # add quotes for values
             if isinstance(v, str) and v.strip()[0] not in '\'"':
-                if table_count == 1 and typeinfo[k] not in QUOTED_TYPES:
+                if table_count == 1 and typeinfo[k] not in DB_QUOTED_TYPES:
                     v = v.strip()
                 else:
                     v = f"'{v.strip()}'"
@@ -307,10 +302,12 @@ def parse_kwargs_clause(tbls, fields='*', **kwargs):
 def query_tbl_fields(tbl):
     '''fetch all fields names into a tuple of given table'''
     # check database connection session status
-    if session_connection is None or session_connection.open is False:
+    if session_connection is None:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
+    if not session_connection.open:
+        init_connection()
     # check table argument
     if isinstance(tbl, bytes):
         tbl = tbl.decode('utf8')
@@ -337,9 +334,9 @@ def query_tbl_fields(tbl):
         cursor.execute(_query)
         cursor.close()
         session_connection.commit()
-    except pymysql.err.Error as e:
-        db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.args[0], e.args[1])
-        raise e
+    except pymysql.err.Error as err:
+        db_logger.error(f"{err.__class__.__name__}: {err}")
+        raise err
 
     records = cursor.fetchall()
     query_fields = [str(row[0]) if not isinstance(row[0], str) else row[0] for row in records]
@@ -351,10 +348,12 @@ def query_tbl_fields(tbl):
 def query_tbl_fields_datatype(tbl, fields='*'):
     '''query fields\' datatypes of one table, default is all *'''
     # check database connection session status
-    if session_connection is None or session_connection.open is False:
+    if session_connection is None:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
+    if not session_connection.open:
+        init_connection()
     # check table argument
     if isinstance(tbl, bytes):
         tbl = tbl.decode('utf8')
@@ -399,9 +398,9 @@ def query_tbl_fields_datatype(tbl, fields='*'):
         cursor.execute(_query)
         cursor.close()
         session_connection.commit()
-    except pymysql.err.Error as e:
-        db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.args[0], e.args[1])
-        raise e
+    except pymysql.err.Error as err:
+        db_logger.error(f"{err.__class__.__name__}: {err}")
+        raise err
 
     records = cursor.fetchall()
     db_fields = [str(row[0]) if not isinstance(row[0], str) else row[0] for row in records]
@@ -419,10 +418,12 @@ def query_tbl_fields_datatype(tbl, fields='*'):
 def exist_fields(tbl, fields):
     '''check if fields existence'''
     # check database connection session status
-    if session_connection is None or session_connection.open is False:
+    if session_connection is None:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
+    if not session_connection.open:
+        init_connection()
     # check table argument
     if isinstance(tbl, bytes):
         tbl = tbl.decode('utf8')
@@ -468,10 +469,12 @@ def exist_fields(tbl, fields):
 def exist_row(tbl, **kwargs):
     '''standard SQL API for checking item existence using SQL script'''
     # check database connection session status
-    if session_connection is None or session_connection.open is False:
+    if session_connection is None:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
+    if not session_connection.open:
+        init_connection()
     # check table argument
     if isinstance(tbl, bytes):
         tbl = tbl.decode('utf8')
@@ -504,8 +507,8 @@ def exist_row(tbl, **kwargs):
         result = cursor.execute(_query)
         cursor.close()
         session_connection.commit()
-    except pymysql.err.Error as e:
-        db_logger.error('SQL query row existence error: (%d, %s)', e.args[0], e.args[1])
+    except pymysql.err.Error as err:
+        db_logger.error(f"SQL query row existence error: {err}")
         return None
 
     return cursor.rowcount if cursor.rowcount > 0 else None
@@ -559,11 +562,12 @@ def join_exprs_clause(clauses):
 #
 def expr_query(tbls, fields='*', clauses=None, **kwargs):
     '''standard SQL API for database query operation using expressions'''
-    if session_connection is None or session_connection.open is False:
+    if session_connection is None:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
-
+    if not session_connection.open:
+        init_connection()
     # default expr connector is 'and', expr operator is '=' for **kwargs
     where_clause = ''
 
@@ -629,9 +633,9 @@ def expr_query(tbls, fields='*', clauses=None, **kwargs):
         cursor.execute(_query)
         cursor.close()
         session_connection.commit()
-    except pymysql.err.Error as e:
-        db_logger.error('SQL expression query execution error: (%d, %s)', e.args[0], e.args[1])
-        raise e
+    except pymysql.err.Error as err:
+        db_logger.error(f"SQL query row existence error: {err}")
+        raise err
 
     # orgnize fetched records
     records = cursor.fetchall()
@@ -662,10 +666,12 @@ def expr_query(tbls, fields='*', clauses=None, **kwargs):
 #
 def expr_update(tbl, vals, clauses=None, **kwargs):
     '''standard SQL API for database update operation using expressions'''
-    if session_connection is None or session_connection.open is False:
+    if session_connection is None:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
+    if not session_connection.open:
+        init_connection()
 
     where_clause = ''
     update_exprs = []
@@ -714,7 +720,7 @@ def expr_update(tbl, vals, clauses=None, **kwargs):
             v = v.decode('utf8')
         # add quotes for words
         if isinstance(v, str) and v.strip()[0] not in '\'"':
-            if typeinfo[k] in QUOTED_TYPES:
+            if typeinfo[k] in DB_QUOTED_TYPES:
                 v = f"'{v.strip()}'"
             else:
                 v = v.strip()
@@ -734,9 +740,9 @@ def expr_update(tbl, vals, clauses=None, **kwargs):
         result = cursor.execute(_update)
         cursor.close()
         session_connection.commit()
-    except pymysql.err.Error as e:
-        db_logger.error('SQL expression update execution error: (%d, %s)', e.args[0], e.args[1])
-        raise e
+    except pymysql.err.Error as err:
+        db_logger.error(f"SQL expression update execution error: {err}")
+        raise err
 
     return result if result > 0 else False
 
@@ -761,10 +767,12 @@ def expr_update(tbl, vals, clauses=None, **kwargs):
 #
 def expr_insert(tbl, vals=None, **kwargs):
     '''standard SQL API for database insert operation using expressions'''
-    if session_connection is None or session_connection.open is False:
+    if session_connection is None:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
+    if not session_connection.open:
+        init_connection()
 
     insert_values = insert_columns = ''
 
@@ -818,9 +826,9 @@ def expr_insert(tbl, vals=None, **kwargs):
         result = cursor.execute(_insert)
         cursor.close()
         session_connection.commit()
-    except pymysql.err.Error as e:
-        db_logger.error('SQL expression insert execution error: (%d, %s)', e.args[0], e.args[1])
-        raise e
+    except pymysql.err.Error as err:
+        db_logger.error(f"SQL expression insert execution error: {err}")
+        raise err
 
     return result if result > 0 else False
 
@@ -855,10 +863,12 @@ def expr_insert(tbl, vals=None, **kwargs):
 def expr_delete(tbl, clauses=None, **kwargs):
     '''standard SQL API for database delete operation using expressions'''
     # check SQL connection status
-    if session_connection is None or session_connection.open is False:
+    if session_connection is None:
         e = SQLConnectionError()
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
+    if not session_connection.open:
+        init_connection()
 
     where_clause = ''
 
@@ -900,9 +910,9 @@ def expr_delete(tbl, clauses=None, **kwargs):
         result = cursor.execute(_delete)
         cursor.close()
         session_connection.commit()
-    except pymysql.err.Error as e:
-        db_logger.error('SQL delete execution error: (%d, %s)', e.args[0], e.args[1])
-        raise e
+    except pymysql.err.Error as err:
+        db_logger.error(f"SQL expression update execution error: {err}")
+        raise err
 
     return result if result > 0 else False
 

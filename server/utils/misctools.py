@@ -19,8 +19,10 @@
 
 
 import os
+import re
 import json
 import werkzeug
+import socket
 
 
 # get parent directory
@@ -43,6 +45,7 @@ def json_dump_http_response(data):
     return json.dumps(None)
 
 
+# load json data from flask request
 def json_load_http_request(request, keys=None):
     '''load http request json data object from front-end'''
     if isinstance(request, werkzeug.local.LocalProxy):
@@ -58,3 +61,48 @@ def json_load_http_request(request, keys=None):
             return {k: info_dict[k] for k in keys if k in info_dict}
 
     return info_dict
+
+
+# get local host IP
+def get_host_ip(hostname=None):
+    '''get local host IP with socket DNS connection'''
+    if hostname is None:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.connect(("8.8.8.8", 80))
+        local_ip_str = sock.getsockname()[0]
+        sock.close()
+    else:
+        local_ip_str = socket.gethostbyname(hostname)
+    return local_ip_str.strip()
+
+
+# check host name format
+def is_hostname(hostname):
+    '''check if some string is hostname or not'''
+    if len(hostname) > 255:
+        return False
+    if hostname[-1] == '.':
+        hostname = hostname[:-1]
+
+    allowed = re.compile(r"(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+    return all(allowed.match(x) for x in hostname.split("."))
+
+
+# check host ip format
+def is_ipv4_addr(ip_str):
+    '''check if some string is ipv4 address or not'''
+    try:
+        socket.inet_aton(ip_str)
+        return True
+    except:
+        return False
+
+
+# validate some hostname with socket connection
+def validate_hostname(hostname):
+    '''validate some string with socket to check if it's online host'''
+    try:
+        socket.gethostbyname(hostname)
+        return True
+    except:
+        return False
