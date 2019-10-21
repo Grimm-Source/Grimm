@@ -36,6 +36,7 @@ import server.core.db as db
 from server import sys_logger
 from server.core.exceptions import UserEmailError
 from server.utils.misctools import get_pardir
+from server.core.const import DEFAULT_PROTOCOL, EMAIL_REGEX as REGEX
 
 import server.core.route.web_admin
 
@@ -53,7 +54,6 @@ if passcode is None:
         smtp_port = email_config['port']
         passcode = email_config['passcode']
 
-RGX = r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$'
 SMTP_CONNECTION = None
 EMAIL_TOKEN_POOL = {}
 
@@ -81,7 +81,7 @@ def drop_token(addr):
 
 def check_email_addr(addr, verify_exists=False):
     '''verify if a email address exists with server domain'''
-    if re.match(RGX, addr.lower()) is None:
+    if re.match(REGEX, addr.lower()) is None:
         err = UserEmailError('invalid email address')
         sys_logger.error(err.emsg)
         return False
@@ -179,8 +179,8 @@ def send_confirm(receiver, vrfurl, email_sample='email_resource/confirm-admin.ht
     plain = """\
     您好，欢迎注册使用视障人士志愿者平台，请点击下方链接完成邮箱认证:
      """
-    if vrfcode.PROTOCOL not in vrfurl:
-        url = vrfcode.PROTOCOL + '://' + vrfurl.strip()
+    if DEFAULT_PROTOCOL not in vrfurl:
+        url = DEFAULT_PROTOCOL + '://' + vrfurl.strip()
     else:
         url = vrfurl.strip()
 

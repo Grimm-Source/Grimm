@@ -34,15 +34,7 @@ import server.utils.vrfcode as vrf_code
 from server import sys_logger
 from server.core.exceptions import UserPhoneError
 
-
-SIGNATURE = '视障人士志愿者平台'
-TEMPLATE_CODES = {
-    'AUTHENTICATE_ID': 'SMS_134125051',
-    'CONFIRM_LOGIN': 'SMS_134125050',
-    'REGISTER_USER': 'SMS_134125048',
-    'NOTIFY_APPROVED': 'SMS_175400063',
-    'NOTIFY_REJECTED': 'SMS_175405604'
-}
+from server.core.const import VRF_SIGNATURE, COM_SIGNATURE, TEMPLATE_CODES
 
 ACS_CLIENT = AcsClient(const.ACCESS_KEY_ID, const.ACCESS_KEY_SECRET, const.REGION)
 region_provider.add_endpoint(const.PRODUCT_NAME, const.REGION, const.DOMAIN)
@@ -109,7 +101,7 @@ class SMSVerifyToken(object):
     def __init__(self, phone_number, expiry=120,
                  access_id=const.ACCESS_KEY_ID,
                  access_secret=const.ACCESS_KEY_SECRET,
-                 signature=SIGNATURE,
+                 signature=VRF_SIGNATURE,
                  template='AUTHENTICATE_ID'):
         '''initialize sms verification token objects'''
         if isinstance(phone_number, str) and isinstance(expiry, int):
@@ -149,6 +141,17 @@ class SMSVerifyToken(object):
     def phone_number(self):
         '''get sms token phone number'''
         return self.__phone_number
+
+    @property
+    def signature(self):
+        '''get sms token signature'''
+        return self.__signature
+
+    @signature.setter
+    def signature(self, new_signature):
+        '''set new sms token signature'''
+        if new_signature in (VRF_SIGNATURE, COM_SIGNATURE):
+            self.__signature = new_signature
 
     @property
     def template(self):
@@ -285,7 +288,7 @@ class SMSVerifyToken(object):
 #
 #     if vrfcode is not None:
 #         if isinstance(phone_numbers, str) and isinstance(vrfcode, str):
-#             out = send(phone_numbers, SIGNATURE, TEMPLATE_CODES['AUTHENTICATE_ID'], '{"code": "%s"}' %(vrfcode))
+#             out = send(phone_numbers, VRF_SIGNATURE, TEMPLATE_CODES['AUTHENTICATE_ID'], '{"code": "%s"}' %(vrfcode))
 #             sys_logger.info('Send verification code %s to phone %s', vrfcode, phone_numbers)
 #             response = json.loads(out)
 #             if response['Code'] != 'OK':
@@ -302,7 +305,7 @@ class SMSVerifyToken(object):
 #                 len(phone_numbers) == len(vrfcode):
 #             pairs = dict(zip(phone_numbers, vrfcode))
 #             for phone, code in pairs.items():
-#                 out = send(phone, SIGNATURE, TEMPLATE_CODES['AUTHENTICATE_ID'], '{"code": "%s"}' %(code))
+#                 out = send(phone, VRF_SIGNATURE, TEMPLATE_CODES['AUTHENTICATE_ID'], '{"code": "%s"}' %(code))
 #                 sys_logger.info('Send verification code %s to phone %s', code, phone)
 #                 response = json.loads(out)
 #                 response_queue.append({phone: response['Code']})
@@ -321,7 +324,7 @@ class SMSVerifyToken(object):
 #         pairs = dict(zip(phone_numbers, vrfcodes))
 #
 #     for phone, code in pairs.items():
-#         out = send(phone, SIGNATURE, TEMPLATE_CODES('AUTHENTICATE_ID'), '{"code": "%s"}' %(code))
+#         out = send(phone, VRF_SIGNATURE, TEMPLATE_CODES('AUTHENTICATE_ID'), '{"code": "%s"}' %(code))
 #         sys_logger.info('Send verification code %s to phone %s', code, phone)
 #         response = json.loads(out)
 #         response_queue.append({phone: response['Code']})

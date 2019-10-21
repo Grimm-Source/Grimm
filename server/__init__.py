@@ -32,8 +32,12 @@ if '../..' not in sys.path:
 
 GRIMM_VERSION = '1.0'
 
+
 # parse user command argument, host/port
 import argparse
+import server.core.const
+
+
 parser = argparse.ArgumentParser(prog='Grimm-backend',
                                  description='Load Grimm back-end service',
                                  add_help=False)
@@ -52,9 +56,9 @@ parser.add_argument('-f', '--force', dest='force', action='store_true',
                     help='Force database connection when start')
 
 CMDARGS = parser.parse_args()
-HOST = CMDARGS.host
-PORT = CMDARGS.port
-FORCE = CMDARGS.force
+server.core.const.HOST = CMDARGS.host
+server.core.const.PORT = CMDARGS.port
+server.core.const.FORCE_LOAD = CMDARGS.force
 
 del parser, argparse
 
@@ -147,3 +151,5 @@ if user_logger is None:
 
     del fh, fmt, fmtter, user_log_path, log_dir
 print('Done')
+
+del get_pardir

@@ -43,7 +43,6 @@ create table admin
     registration_date   DATE                NOT NULL,
     password            BINARY(60)          NOT NULL    DEFAULT 0,
     name                VARCHAR(8),
-    gender              CHAR(1),
     email               VARCHAR(32)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin UNIQUE,
     email_verified      TINYINT             DEFAULT 0,
 

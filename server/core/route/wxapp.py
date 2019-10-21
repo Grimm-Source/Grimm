@@ -31,47 +31,52 @@ from server.core import wxappid, wxsecret
 from server import user_logger
 from server.utils.misctools import json_dump_http_response, json_load_http_request
 
+from server.core.const import SMS_VRF_EXPIRY
 
-SMS_VRF_EXPIRY = 300
 
-
-@app.route('/jscode2session')
+@app.route('/jscode2session', methods=['GET'])
 def wxjscode2session():
     '''view function for validating weixin user openid'''
-    js_code = request.args.get("js_code")
-    prefix = 'https://api.weixin.qq.com/sns/jscode2session?appid='
-    suffix = '&grant_type=authorization_code'
-    url = prefix + wxappid + '&secret=' + wxsecret + '&js_code=' + js_code + suffix
-    user_logger.info('user login, wxapp authorization: %s', url)
-    http = urllib3.PoolManager()
-    response = http.request('GET', url)
-    # authorization success
-    if response.status == 200:
-        feedback = json.loads(response.data)
-        feedback['server_errcode'] = 0
-        openid = feedback['openid']
-        # query user in database
-        try:
-            info = db.expr_query('user', openid=openid)[0]
-        except:
-            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
-        if info:
-            feedback['is_register'] = False
-            if info['audit_status'] == 0:
-                feedback['audit_status'] = 'proceeding'
-            elif info['audit_status'] == 1:
-                feedback['audit_status'] = 'approved'
-            elif info['audit_status'] == -1:
-                feedback['audit_status'] = 'rejected'
+    if request.method == 'GET':
+        js_code = request.args.get("js_code")
+        if js_code is None:
+            return json_dump_http_response({'status': 'failure'})
+        prefix = 'https://api.weixin.qq.com/sns/jscode2session?appid='
+        suffix = '&grant_type=authorization_code'
+        url = prefix + wxappid + '&secret=' + wxsecret + '&js_code=' + js_code + suffix
+        user_logger.info('user login, wxapp authorization: %s', url)
+        http = urllib3.PoolManager()
+        response = http.request('GET', url)
+        # authorization success
+        if response.status == 200:
+            feedback = json.loads(response.data)
+            feedback['server_errcode'] = 0
+            openid = feedback['openid']
+            if 'session_key' in feedback:
+                del feedback['session_key']
+            # query user in database
+            if db.exist_row('user', openid=openid):
+                try:
+                    userinfo = db.expr_query('user', openid=openid)[0]
+                except:
+                    return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
+                feedback['isRegistered'] = True
+                if userinfo['audit_status'] == 0:
+                    feedback['auditStatus'] = 'pending'
+                elif userinfo['audit_status'] == 1:
+                    feedback['auditStatus'] = 'approved'
+                elif userinfo['audit_status'] == -1:
+                    feedback['auditStatus'] = 'rejected'
+            else:
+                feedback['isRegistered'] = False
+                feedback['auditStatus'] = 'pending'
+            feedback['status'] = 'success'
+            user_logger.info('%s: wxapp authorization success', openid)
         else:
-            feedback['is_register'] = True
-        feedback['status'] = 'success'
-        user_logger.info('%s: wxapp authorization success', openid)
-    else:
-        user_logger.error('%s: wxapp authorization failed', openid)
-        feedback['status'] = 'failure'
+            user_logger.error('%s: wxapp authorization failed', openid)
+            feedback['status'] = 'failure'
 
-    return json_dump_http_response(feedback)
+        return json_dump_http_response(feedback)
 
 
 @app.route('/register', methods=['POST'])
@@ -95,6 +100,7 @@ def register():
             userinfo['phone'] = info['tel']
             userinfo['name'] = info['name']
             userinfo['role'] = 0 if info['role'] == "志愿者" else 1
+            userinfo['audit_status'] = 0
 
             # add extra info
             userinfo['registration_date'] = datetime.now().strftime('%Y-%m-%d')
@@ -137,10 +143,10 @@ def profile():
             feedback['role'] = "志愿者" if userinfo['role'] == 0 else "视障人士"
             feedback['tel'] = userinfo['phone']
             feedback['registrationDate'] = userinfo['registration_date']
-            user_logger('%s: user login successfully', userinfo['openid'])
+            user_logger.info('%s: user login successfully', userinfo['openid'])
             return json_dump_http_response(feedback)
 
-        user_logger('%s: user not registered', openid)
+        user_logger.warning('%s: user not registered', openid)
         return json_dump_http_response({'status': 'failure', 'message': '用户未注册'})
 
     if request.method == 'POST':
@@ -155,7 +161,24 @@ def profile():
         userinfo['emergent_contact_phone'] = newinfo['emergencyTel']
         userinfo['remark'] = newinfo['usercomment']
         userinfo['openid'] = newinfo['openid']
-
+        # confirm sms-code
+        vrfcode = newinfo['verification_code']
+        phone_number = userinfo['phone']
+        sms_token = sms_verify.fetch_token(phone_number)
+        if sms_token is None:
+            user_logger.warning('%s: no such a sms token for the number', info['tel'])
+            return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
+        if not sms_token.validate(phone_number=phone_number, vrfcode=vrfcode):
+            user_logger.warning('%s, %s: sms code validate failed', phone_number, vrfcode)
+            return json_dump_http_response({'status': 'failure', 'message': '验证未通过' })
+        try:
+            if db.expr_update('user', {'phone_verified': 1}, openid=info['openid']) != 1:
+                user_logger.info('%s, %s: sms code validate failed', phone_number, vrfcode)
+                return json_dump_http_response({'status': 'failure', 'message': '更新失败，请重新短信验证'})
+        except:
+            user_logger.info('%s, %s: sms code validate failed', phone_number, vrfcode)
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
+        # do inserting
         try:
             if db.expr_update('user', userinfo, openid=userinfo['openid']) != 1:
                 user_logger.error('%s: user update info failed', userinfo['openid'])
@@ -163,48 +186,52 @@ def profile():
         except:
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
-        user_logger.info('%s: user update info successfully', userinfo['openid'])
+        user_logger.info('%s: complete user registration successfully', userinfo['openid'])
         return json_dump_http_response({'status': 'success'})
 
 
-@app.route('/send-smscode', methods=['GET'])
-def send_smscode():
-    '''view function to send sms verification code to new user'''
+@app.route('/smscode', methods=['GET', 'POST'])
+def sms_code():
+    '''view function to send and verify sms verification code'''
+    # send smscode
     if request.method == 'GET':
-        info = json_load_http_request(request)
+        phone_number = request.args.get('tel')
+        if phone_number is None:
+            user_logger.warning('invalid url parameter phone_number')
+            return json_dump_http_response({'status': 'failure', 'message': '无效url参数'})
         try:
-            sms_verify.drop_token(info['tel'])  # drop old token if it exists
-            sms_token = sms_verify.SMSVerifyToken(phone_number=info['tel'],
+            sms_verify.drop_token(phone_number)  # drop old token if it exists
+            sms_token = sms_verify.SMSVerifyToken(phone_number=phone_number,
                                                   expiry=SMS_VRF_EXPIRY,
                                                   template='REGISTER_USER')
             if not sms_token.send_sms():
-                user_logger.warning('%s, unable to send sms to number', info['tel'])
+                user_logger.warning('%s, unable to send sms to number', phone_number)
                 return json_dump_http_response({'status': 'failure', 'message': '发送失败'})
         except Exception as err:
             return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
         sms_verify.append_token(sms_token)
 
-        user_logger.info('%s: send sms to number successfully', info['tel'])
+        user_logger.info('%s: send sms to number successfully', phone_number)
         return json_dump_http_response({'status': 'success'})
 
-
-@app.route('/confirm-smscode', methods=['GET'])
-def confirm_smscode():
-    '''view function to confirm sms verification code'''
-    if request.method == 'GET':
-        info = json_load_http_request(request)
-        sms_token = sms_verify.fetch_token(info['tel'])
+    # verify smscode
+    if request.method == 'POST':
+        data = json_load_http_request(request)
+        phone_number = data['tel']
+        vrfcode = data['verification_code']
+        openid = data['openid']
+        sms_token = sms_verify.fetch_token(phone_number)
         if sms_token is None:
-            user_logger.warning('%s: no such a sms token for the number', info['tel'])
+            user_logger.warning('%s: no such a sms token for the number', phone_number)
             return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
-        if not sms_token.validate(phone_number=info['tel'], vrfcode=info['vrfcode']):
-            user_logger.warning('%s, %s: sms code validate failed', info['tel'], info['vrfcode'])
+        if not sms_token.validate(phone_number=phone_number, vrfcode=vrfcode):
+            user_logger.warning('%s, %s: sms code validate failed', phone_number, vrfcode)
             return json_dump_http_response({'status': 'failure', 'message': '验证未通过' })
         try:
-            if db.expr_update('user', {'phone_verified': 1}, openid=info['openid']) == 1:
-                user_logger.info('%s, %s: sms code validate successfully', info['tel'], info['vrfcode'])
+            if db.expr_update('user', {'phone_verified': 1}, openid=openid) == 1:
+                user_logger.info('%s, %s: sms code validate successfully', phone_number, vrfcode)
                 return json_dump_http_response({'status': 'success'})
         except:
             pass
-        user_logger.warning('%s, %s: sms code validate failed', info['tel'], info['vrfcode'])
+        user_logger.warning('%s, %s: sms code validate failed', phone_number, vrfcode)
         return json_dump_http_response({'status': 'failure', 'message': '未知错误'})

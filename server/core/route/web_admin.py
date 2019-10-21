@@ -32,9 +32,7 @@ from server.core import grimm as app
 from server import admin_logger
 from server.utils.misctools import json_dump_http_response, json_load_http_request
 
-
-EMAIL_VRF_EXPIRY = 7200
-ROOT_PASSWORD = 'Cisco123456.'
+from server.core.const import EMAIL_VRF_EXPIRY, COM_SIGNATURE
 
 
 @app.route('/')
@@ -42,10 +40,10 @@ def home():
     return json_dump_http_response({'status': 'success'})
 
 
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 def admin_login():
     '''view funciton for admin logging'''
-    if request.method == 'GET':
+    if request.method == 'POST':
         info = json_load_http_request(request)  # Get user POST info
         feedback = {'status': 'success'}
         if db.exist_row('admin', email=info['email']):
@@ -151,7 +149,6 @@ def new_admin():
             except:
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             admininfo['admin_id'] = max_admin_id + 1  # new admin id
-            admininfo['gender'] = info['gender']
             admininfo['registration_date'] = datetime.now().strftime('%Y-%m-%d')
             admininfo['name'] = f"管理员{max_admin_id + 1}" if 'name' not in info or info['name'] is None else info['name']
             # do database inserting
@@ -171,12 +168,12 @@ def new_admin():
                 email_verify.drop_token(admininfo['email'])
                 email_token = email_verify.EmailVerifyToken(admininfo['email'], expiry=EMAIL_VRF_EXPIRY)  # 2hrs expiry
                 if not email_token.send_email():
-                    admin_logger.warning('%d, %s: send confirm email failed', admininfo['admin_id'], admininfo['name'])
+                    admin_logger.warning('%d, %s: send confirm email failed', admininfo['admin_id'], admininfo['email'])
                     return json_dump_http_response({'status': 'failure', 'message': '发送验证邮箱失败'})
             except Exception as err:
-                admin_logger.warning('%d, %s: send confirm email failed', admininfo['admin_id'], admininfo['name'])
+                admin_logger.warning('%d, %s: send confirm email failed', admininfo['admin_id'], admininfo['email'])
                 return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
-            admin_logger.info('%d, %s: send confirm email successfully', admininfo['admin_id'], admininfo['name'])
+            admin_logger.info('%d, %s: send confirm email successfully', admininfo['admin_id'], admininfo['email'])
             email_verify.append_token(email_token)
             admin_logger.info('%d, %s: create new admin procedure completed successfully', admininfo['admin_id'], admininfo['name'])
             return json_dump_http_response({'status': 'success'})
@@ -184,41 +181,42 @@ def new_admin():
         admin_logger.warning('%s: create new admin with duplicated email account', admininfo['email'])
         return json_dump_http_response({'status': 'failure', 'message': '已注册邮箱'})
 
-# 需前端提示发送验证邮件
-@app.route('/send-vrfemail', methods=['GET'])
+
+@app.route('/email', methods=['GET'])
 def send_vrfemail():
-    '''view function to send confirm email to user'''
+    '''view function to send and validate confirm email'''
     if request.method == 'GET':
-        feedback = {'status': 'success'}
-        addr = json_load_http_request(request, keys='email')
-        if db.exist_row('admin', email=addr):
-            try:
-                email_verify.drop_token(admininfo['email'])
-                email_token = email_verify.EmailVerifyToken(addr, expiry=EMAIL_VRF_EXPIRY)  # 2hrs expiry
-                if not email_token.send_email():
+        token = request.args.get('token')
+        # send confirm email
+        if token is None:
+            feedback = {'status': 'success'}
+            addr = json_load_http_request(request, keys='email')
+            if db.exist_row('admin', email=addr):
+                try:
+                    email_verify.drop_token(admininfo['email'])
+                    email_token = email_verify.EmailVerifyToken(addr, expiry=EMAIL_VRF_EXPIRY)  # 2hrs expiry
+                    if not email_token.send_email():
+                        admin_logger.warning('%s: send confirm email failed', addr)
+                        return json_dump_http_response({'status': 'failure', 'message': '发送验证邮箱失败'})
+                except Exception as err:
                     admin_logger.warning('%s: send confirm email failed', addr)
-                    return json_dump_http_response({'status': 'failure', 'message': '发送验证邮箱失败'})
-            except Exception as err:
-                admin_logger.warning('%s: send confirm email failed', addr)
-                return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
-            admin_logger.info('%s: send confirm email successfully', addr)
-            email_verify.append_token(email_token)
+                    return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
+                admin_logger.info('%s: send confirm email successfully', addr)
+                email_verify.append_token(email_token)
+                return json_dump_http_response(feedback)
+
+            admin_logger.warning('%s: email is not registered', addr)
+            return json_dump_http_response({'status': 'failure', 'message': '邮箱未注册'})
+
+        # validate confirm email
+        else:
+            feedback = {'status': '您的邮箱认证成功'}
+            if not email_verify.validate_email(token):
+                admin_logger.warning('%s: email verify failed', vrfcode.parse_vrftoken(token))
+                feedback = {'status': '您的邮箱认证失败'}
+
+            admin_logger.info('%s: email verify successfully', vrfcode.parse_vrftoken(token))
             return json_dump_http_response(feedback)
-
-        admin_logger.warning('%s: email is not registered', addr)
-        return json_dump_http_response({'status': 'failure', 'message': '邮箱未注册'})
-
-
-@app.route('/confirm-email/<token>', methods=['GET', 'POST'])
-def confirm_email(token):
-    '''view function to confirm confirm email'''
-    feedback = {'status': '您的邮箱认证成功'}
-    if not email_verify.validate_email(token):
-        admin_logger.warning('%s: email verify failed', vrfcode.parse_vrftoken(token))
-        feedback = {'status': '您的邮箱认证失败'}
-
-    admin_logger.info('%s: email verify successfully', vrfcode.parse_vrftoken(token))
-    return json_dump_http_response(feedback)
 
 
 @app.route('/admin/delete', methods=['POST'])
@@ -430,81 +428,61 @@ def admin_reset_password():
         return json_dump_http_response({'status': 'failure', 'message': '未注册邮箱'})
 
 
-@app.route('/user-audit-status/<user_type>', methods=['GET'])
-def user_audit_status(user_type):
-    '''view function for admins to get all users info with audit status'''
+@app.route('/users', methods=['GET', 'PATCH'])
+def users():
+    '''view function for admins to get all users info with role type'''
+    # for admin to get user info
     if request.method == 'GET':
+        user_type = request.args.get('role')
         if user_type == 'volunteer':
-            role_id = 0
+            kwargs = {'role': 0}
         elif user_type == 'disabled':
-            role_id = 1
+            kwargs = {'role': 1}
         else:
-            return json_dump_http_response({'status': 'failure', 'message': '用户类型错误'})
+            kwargs = {}
 
-        users = []
-        query_fields = ('openid', 'name', 'role', 'audit_status')
         try:
-            usersinfo = db.expr_query('user', fields=query_fields, role=role_id)
+            usersinfo = db.expr_query('user', **kwargs)
         except:
             admin_logger.error('Critical: database query failed !')
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
+        users = []
         for userinfo in usersinfo:
             info = {}
             info['openid'] = userinfo['openid']
             info['name'] = userinfo['name']
             info['role'] = "视障人士" if userinfo['role'] == 1 else "志愿者"
+            info['birthdate'] = userinfo['birth']
+            info['comment'] = userinfo['remark']
+            info['disabledID'] = userinfo['disabled_id']
+            info['emergencyPerson'] = userinfo['emergent_contact']
+            info['emergencyTel'] = userinfo['emergent_contact_phone']
+            info['gender'] = userinfo['gender']
+            info['idcard'] = userinfo['idcard']
+            info['linkaddress'] = userinfo['address']
+            info['linktel'] = userinfo['contact']
+            info['tel'] = userinfo['phone']
+            info['registrationDate'] = userinfo['registration_date']
             if userinfo['audit_status'] == 0:
-                info['audit_status'] = 'proceeding'
+                info['audit_status'] = 'pending'
             elif userinfo['audit_status'] == 1:
                 info['audit_status'] = 'approved'
             elif userinfo['audit_status'] == -1:
                 info['audit_status'] = 'rejected'
+            else:
+                info['audit_status'] = 'unknown'
 
             users.append(info)
 
-        admin_logger.info('query all user audit status successfully')
+        admin_logger.info('query all user info with role type successfully')
         return json_dump_http_response(users)
-
-
-@app.route('/audit-user', methods=['GET', 'POST'])
-def admin_audit_user():
-    '''view function for admin to audit users'''
-    if request.method == 'GET':
-        feedback = {'status': 'success'}
-        openid = json_load_http_request(request)
-        try:
-            userinfo = db.expr_query('user', openid=openid)[0]
-            if not userinfo:
-                admin_logger.warning('%s, no such user openid', openid)
-                return json_dump_http_response({'status': 'failure', 'message': '未知用户'})
-        except:
-            admin_logger.error('Critical: database query failed !')
-            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
-
-        feedback['openid'] = userinfo['openid']
-        feedback['birthDate'] = userinfo['birth']
-        feedback['usercomment'] = userinfo['remark']
-        feedback['disabledID'] = userinfo['disabled_id']
-        feedback['emergencyPerson'] = userinfo['emergent_contact']
-        feedback['emergencyTel'] = userinfo['emergent_contact_phone']
-        feedback['gender'] = userinfo['gender']
-        feedback['idcard'] = userinfo['idcard']
-        feedback['linkaddress'] = userinfo['address']
-        feedback['linktel'] = userinfo['contact']
-        feedback['name'] = userinfo['name']
-        feedback['role'] = "志愿者" if userinfo['role'] == 0 else "视障人士"
-        feedback['tel'] = userinfo['phone']
-        feedback['registrationDate'] = userinfo['registration_date']
-
-        admin_logger.info('%s, query user info successfully', openid)
-        return json_dump_http_response(feedback)
-
-    if request.method == 'POST':
-        audit_status = json_load_http_request(request)
-        print(audit_status)
-        for openid, status in audit_status.items():
-            print(openid)
+    # for admin to set user audit status
+    if request.method == 'PATCH':
+        audit_info = json_load_http_request(request)
+        for audit in audit_info:
+            openid = audit['openid']
+            status = audit['audit_status']
             try:
                 info = db.expr_query('user', fields=('audit_status', 'phone'), openid=openid)[0]
                 if not info:
@@ -515,7 +493,7 @@ def admin_audit_user():
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
             # users audit new status
-            if info['audit_status'] == 0 and status in ('approved', 'rejected', 'proceeding'):
+            if info['audit_status'] == 0 and status in ('approved', 'rejected', 'pending'):
                 if status == 'approved':
                     template = 'NOTIFY_APPROVED'
                     message = "条件合乎要求"
@@ -532,6 +510,7 @@ def admin_audit_user():
                     sms_token = sms_verify.SMSVerifyToken(phone_number=info['phone'], expiry=3600)
                     sms_token.template = template
                     sms_token.vrfcode = message
+                    sms_token.signature = COM_SIGNATURE
                     if not sms_token.send_sms():
                         admin_logger.warning('%s, unable to send sms to number', info['phone'])
                         return json_dump_http_response({'status': 'failure', 'message': '发送失败'})
