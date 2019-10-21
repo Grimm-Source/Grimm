@@ -30,7 +30,7 @@ import server.utils.sms_verify as sms_verify
 import server.utils.vrfcode as vrfcode
 from server.core import grimm as app
 from server import admin_logger
-from server.utils.misctools import json_dump_http_response, json_load_http_request
+from server.utils.misctools import json_dump_http_response, json_load_http_request, calc_duration
 
 from server.core.const import EMAIL_VRF_EXPIRY, COM_SIGNATURE
 
@@ -248,8 +248,8 @@ def new_activity():
         activity_info['approver'] = info['adminId']
         activity_info['title'] = info['title']
         activity_info['location'] = info['location']
-        activity_info['time'] = info['date']
-        activity_info['duration'] = info['duration']
+        activity_info['start_time'] = info['start_time']
+        activity_info['end_time'] = info['end_time']
         activity_info['content'] = info['content']
         activity_info['notice'] = info['notice']
         activity_info['others'] = info['others']
@@ -283,8 +283,11 @@ def update_activity(activity_id):
             feedback['adminId'] = activity['approver']
             feedback['title'] = activity['title']
             feedback['location'] = activity['location']
-            feedback['date'] = activity['time'].strftime('%Y-%m-%d %H:%M:%S')
-            feedback['duration'] = activity['duration']
+            start = activity['start_time']
+            end = activity['end_time']
+            feedback['start_time'] = start.strftime('%Y-%m-%d %H:%M:%S')
+            feedback['end_time'] = end.strftime('%Y-%m-%d %H:%M:%S')
+            feedback['duration'] = calc_duration(start, end)
             feedback['content'] = activity['content']
             feedback['notice'] = activity['notice']
             feedback['others'] = activity['others']
@@ -313,8 +316,8 @@ def update_activity(activity_id):
             activity_info['approver'] = newinfo['adminId']
             activity_info['title'] = newinfo['title']
             activity_info['location'] = newinfo['location']
-            activity_info['time'] = newinfo['date']
-            activity_info['duration'] = newinfo['duration']
+            activity_info['start_time'] = newinfo['start_time']
+            activity_info['end_time'] = newinfo['end_time']
             activity_info['content'] = newinfo['content']
             activity_info['notice'] = newinfo['notice']
             activity_info['others'] = newinfo['others']
@@ -369,8 +372,11 @@ def activities():
                 query['adminId'] = activity['approver']
                 query['title'] = activity['title']
                 query['location'] = activity['location']
-                query['date'] = activity['time'].strftime('%Y-%m-%dT%H:%M:%S')
-                query['duration'] = activity['duration']
+                start = activity['start_time']
+                end = activity['end_time']
+                query['start_time'] = start.strftime('%Y-%m-%dT%H:%M:%S')
+                query['end_time'] = end.strftime('%Y-%m-%dT%H:%M:%S')
+                query['duration'] = calc_duration(start, end)
                 query['content'] = activity['content']
                 query['notice'] = activity['content']
                 query['others'] = activity['others']
