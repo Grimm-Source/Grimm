@@ -4,6 +4,7 @@ import { switchHomeTag, logout , showActivityModal, switchAdminFormType, showDra
 import { HOME_TAG_TYPE, ADMIN_FORM_TYPE } from "../../constants";
 import notice from '../../images/notice.svg';
 import { connect } from 'react-redux';
+import { BrowserRouter as Link } from "react-router-dom";
 
 // import client from 'socket.io-client';
 
@@ -60,13 +61,14 @@ class Header extends React.Component {
                       />
                       {this.props.notices.length > 0? <span className="notice-count"/> : null }
                     </span>]}
-                  footer={
-                    <Tabs  onChange={this.props.onChangeTab} activeKey={this.props.activeKey}>
-                      <TabPane tab="志愿者活动" key={HOME_TAG_TYPE.ACTIVITY} />
-                      <TabPane tab="微信用户" key={HOME_TAG_TYPE.USER}/>
-                      {this.props.user && this.props.user.type === "root"? <TabPane tab="管理员" key={HOME_TAG_TYPE.ADMIN} />: null}
-                    </Tabs>
-                  }
+                  // footer={
+                  //   // <Tabs  onChange={this.props.onChangeTab} activeKey={this.props.activeKey}>
+                  //   //   <TabPane tab="志愿者活动" key={HOME_TAG_TYPE.ACTIVITY} />
+                  //   //   <TabPane tab="微信用户" key={HOME_TAG_TYPE.USER}/>
+                  //   //   <TabPane tab="个人信息管理" key={HOME_TAG_TYPE.PROFILE}/>
+                  //   //   {this.props.user && this.props.user.type === "root"? <TabPane tab="管理员" key={HOME_TAG_TYPE.ADMIN} />: null}
+                  //   // </Tabs>
+                  // }
                 >
             </PageHeader>
         );

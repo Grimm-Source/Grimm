@@ -303,3 +303,25 @@ export const setNoticeUsers = users =>({
     users
 });
 
+//profile section
+export const changePassword = (adminId, oldVal, newVal) => async (dispatch, getState) => {
+    dispatch(loading());
+    try {
+        await request({
+            path: `admin/${adminId}/update-password`,
+            method: 'POST',
+            data: {
+                adminId,
+                old_password: oldVal,
+                new_password: newVal
+            }
+        });
+        message.success('密码修改成功！');
+        dispatch(hideLoading());
+    }
+    catch (errorMessage) {
+        message.error(`密码修改失败，${errorMessage}`);
+        dispatch(hideLoading());
+    }
+}
+
