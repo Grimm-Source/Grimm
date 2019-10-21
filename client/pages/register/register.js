@@ -350,14 +350,14 @@ Page({
       wx.switchTab({
         url: '../home/home',
       });
-      wx.setStorageSync('is_register', true)
+      wx.setStorageSync('isRegistered', true)
     },(err)=>{
       wx.showModal({
         showCancel: false,
         title: '注册失败',
         content: err || "网络失败，请稍候再试"
       });  
-      wx.setStorageSync('is_register', false)
+      wx.setStorageSync('isRegistered', false)
     });
   },
 

@@ -3,7 +3,7 @@ const {getProfile} = require('../../utils/requestUtil.js');
 
 
 var app = getApp();
-const is_register = wx.getStorageSync('is_register') || false
+const isRegistered = wx.getStorageSync('isRegistered') || false;
 
 // pages/personal/personal.js
 Page({
@@ -95,7 +95,7 @@ Page({
   },
 
   getInfoSetting: function(){
-    if(is_register){
+    if(isRegistered){
       return getProfile(data => {
         wx.getSetting({
           success: res => {
