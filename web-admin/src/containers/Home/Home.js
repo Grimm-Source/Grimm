@@ -10,30 +10,22 @@ import Profile from '../Profile/Profile.js';
 import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import { Spin,Menu } from 'antd';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { createBrowserHistory } from 'history'
+import { Router, Route, Link } from "react-router-dom";
+import { createBrowserHistory } from 'history';
 
 import './Home.less';
 
 const history = createBrowserHistory();
 
 class Home extends React.Component {
-    // getContent = () => {
-    //     switch(this.props.tab){
-    //         case HOME_TAG_TYPE.ADMIN: return <Route path="/admin" component={AdminPanel}/>;
-    //         case HOME_TAG_TYPE.USER: return <Route path="/user" component={User}/>;
-    //         case HOME_TAG_TYPE.PROFILE: return <Route path="/basePersonInfo" component={Profile}/>;
-    //         default: return <Route exact path="/activity" component={ActivityList}/>;
-    //     }
-    // }
-
     getNavContent(history){
         const currentTagType = () => {
             switch(history.location.pathname){
-                case '/users': return HOME_TAG_TYPE.USER
-                case '/profile': return HOME_TAG_TYPE.PROFILE
-                case '/admin': return HOME_TAG_TYPE.ADMIN
-                default: return HOME_TAG_TYPE.ACTIVITY
+                case '/users': return HOME_TAG_TYPE.USER;
+                case '/profile': return HOME_TAG_TYPE.PROFILE;
+                case '/admins': return HOME_TAG_TYPE.ADMIN;
+                case '/activities':;
+                default: return HOME_TAG_TYPE.ACTIVITY;
             }
         }
 
@@ -41,7 +33,7 @@ class Home extends React.Component {
             <Menu className="nav-bar" defaultSelectedKeys={[`${currentTagType()}`]} mode="horizontal">
                 <Menu.Item key={HOME_TAG_TYPE.ACTIVITY}>
                 志愿者活动
-                <Link to="/" />
+                <Link to="/activities" />
                 </Menu.Item>
                 <Menu.Item key={HOME_TAG_TYPE.USER}>
                 微信用户
@@ -51,7 +43,7 @@ class Home extends React.Component {
                 个人信息管理
                 <Link to="/profile" />
                 </Menu.Item>
-                {this.props.user && this.props.user.type === "root"? <Menu.Item key={HOME_TAG_TYPE.ADMIN}>管理员<Link to="/admin" /></Menu.Item> : null}
+                {this.props.user && this.props.user.type === "root"? <Menu.Item key={HOME_TAG_TYPE.ADMIN}>管理员<Link to="/admins" /></Menu.Item> : null}
             </Menu>
         )
     }
@@ -59,18 +51,16 @@ class Home extends React.Component {
 
   
     render() {
-        // let navContent = this.getNavContent();        
-        // let content = this.getContent();
         return (
             <Router history={history}>
                 <div className="home" >
                     <Header/>
                     {this.getNavContent(history)}
                     <div className="content-wrapper" >
-                        <Route exact path="/" component={ActivityList}/>
+                        <Route exact path="/activities" component={ActivityList}/>
                         <Route path="/users" component={User}/>
                         <Route path="/profile" component={Profile}/>
-                        <Route path="/admin" component={AdminPanel}/>
+                        <Route path="/admins" component={AdminPanel}/>
                     </div>
                     <Login/>
                     <Activity/>

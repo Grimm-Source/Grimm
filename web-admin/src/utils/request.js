@@ -8,7 +8,7 @@ const request = (options) => {
         }
     }
 
-    if(options.method === "POST"){
+    if(options.method === "POST" || options.method === "PATCH" ){
         param["body"] = JSON.stringify(options.data)
     }
 

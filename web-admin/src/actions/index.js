@@ -17,6 +17,10 @@ export const switchHomeTag = (activeKey) =>({
     activeKey
 });
 
+export const switchUserList  =  () => ({
+    type: ACTION_TYPES.UI_USER_LIST_SWITCH
+});
+
 export const switchAdminPanel = (activeKey) =>({ 
     type: ACTION_TYPES.UI_ADMIN_PANEL_SWITCH,
     activeKey
@@ -52,6 +56,11 @@ export const showUserDetail = (user) =>({
 export const hideUserDetail = () =>({ 
     type: ACTION_TYPES.UI_USER_DETAIL_HIDE
 });
+
+export const setSelectedUsers = (users) => ({
+    type: ACTION_TYPES.UI_SELECTED_USER_LIST,
+    users
+})
 
 //account section
 export const loginAccount = (user) => (dispatch, getState) => {
@@ -285,7 +294,22 @@ export const getVolunteerList = () => (dispatch, getState) => {
 
 const fetchVolunteerList = () => dispatch => {
     return request({
-        path: "users?role='志愿者'"
+        path: "users?role=volunteer"
+    }).then(users => {
+        dispatch(setUsers(users));
+    }).finally(()=>{
+        dispatch(hideLoading());
+    });
+}
+
+export const getDisabledList = () => (dispatch, getState) => {
+    dispatch(loading());
+    return dispatch(fetchDisabledList());
+}
+
+const fetchDisabledList = () => dispatch => {
+    return request({
+        path: "users?role=disabled"
     }).then(users => {
         dispatch(setUsers(users));
     }).finally(()=>{
@@ -302,6 +326,27 @@ export const setNoticeUsers = users =>({
     type: ACTION_TYPES.NOTICE_NEW_USERS_SET,
     users
 });
+
+export const updateUsers = (users, isVolunteer) => (dispatch, getState) => {
+    dispatch(loading());
+    return dispatch(patchUserList(users, isVolunteer))
+}
+
+const patchUserList = (users,isVolunteer) => dispatch => {
+    return request({
+        path: "users",
+        method: "PATCH",
+        data: users
+    }).then(()=>{
+        if(isVolunteer){
+            dispatch(fetchVolunteerList());
+        }else{
+            dispatch(fetchDisabledList());
+        }
+    },()=>{
+        dispatch(hideLoading());
+    });
+}
 
 //profile section
 export const changePassword = (adminId, oldVal, newVal) => async (dispatch, getState) => {

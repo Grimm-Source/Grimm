@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import './ActivityDetail.less';
 
-const { MonthPicker, RangePicker } = DatePicker;
+const { RangePicker } = DatePicker;
 
 
 class ActivityDetail extends React.Component {
@@ -185,7 +185,7 @@ const WrappedActivityDetail = Form.create({
           value: props.activity.others || ""
         }),
         duration: Form.createFormField({
-          value: props.activity.duration && `${props.activity.duration.day}天${props.activity.duration.hour}小时${props.activity.duration.min}分钟${props.activity.duration.sec}秒` || ""
+          value: (props.activity.duration && `${props.activity.duration.day}天${props.activity.duration.hour}小时${props.activity.duration.min}分钟${props.activity.duration.sec}秒`) || ""
         }),
         date: Form.createFormField({
           value: (props.activity.start_time &&  props.activity.end_time && [moment(props.activity.start_time, 'YYYY-MM-DD HH:mm:ss'), moment(props.activity.end_time, 'YYYY-MM-DD HH:mm:ss')]) || null
