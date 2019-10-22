@@ -88,6 +88,28 @@ def register():
         # fetch data from front end
         userinfo['openid'] = request.headers.get('Authorization')
         if not db.exist_row('user', openid=userinfo['openid']):
+            # confirm sms-code
+            vrfcode = info['verification_code']
+            phone_number = info['tel']
+            del info['verification_code']
+            sms_token = sms_verify.fetch_token(phone_number)
+            if sms_token is None:
+                user_logger.warning('%s: no such a sms token for number', info['tel'])
+                return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
+            result = sms_token.validate(phone_number=phone_number, vrfcode=vrfcode)
+            if result is not True:
+                user_logger.warning('%s, %s: sms code validation failed, %s', phone_number, vrfcode, result)
+                return json_dump_http_response({'status': 'failure', 'message': result })
+            user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
+            sms_verify.drop_token(phone_number)  # drop token from pool after validation
+            try:
+                if db.expr_update('user', {'phone_verified': 1}, openid=info['openid']) != 1:
+                    user_logger.info('%s, update user phone valid status failed', info['openid'])
+                    return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新短信验证'})
+            except:
+                user_logger.info('%s, update user phone valid status failed', info['openid'])
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新短信验证'})
+            # mock user info and do inserting
             userinfo['birth'] = info['birthdate']
             userinfo['remark'] = info['comment']
             userinfo['disabled_id'] = info['disabledID']
@@ -97,25 +119,22 @@ def register():
             userinfo['idcard'] = info['idcard']
             userinfo['address'] = info['linkaddress']
             userinfo['contact'] = info['linktel']
-            userinfo['phone'] = info['tel']
             userinfo['name'] = info['name']
             userinfo['role'] = 0 if info['role'] == "志愿者" else 1
             userinfo['audit_status'] = 0
-
-            # add extra info
             userinfo['registration_date'] = datetime.now().strftime('%Y-%m-%d')
             try:
                 if db.expr_insert('user', userinfo) != 1:
-                    user_logger.error('%s: user register failed', userinfo['openid'])
-                    return json_dump_http_response({'status': 'failure', 'message': '录入用户失败'})
+                    user_logger.error('%s: user registration failed', userinfo['openid'])
+                    return json_dump_http_response({'status': 'failure', 'message': '录入用户失败，请重新注册'})
             except:
-                user_logger.error('%s: user register failed', userinfo['openid'])
-                return json_dump_http_response({'status': 'failure', 'message': '注册失败，请重新注册'})
-            user_logger.info('%s: user register success', userinfo['openid'])
+                user_logger.error('%s: user registration failed', userinfo['openid'])
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新注册'})
+            user_logger.info('%s: complete user registration success', userinfo['openid'])
             return json_dump_http_response({'status': 'success'})
 
-        user_logger.error('%s: user registered already', userinfo['openid'])
-        return json_dump_http_response({'status': 'failure', 'message': '用户已注册'})
+        user_logger.error('%s: user is registered already', userinfo['openid'])
+        return json_dump_http_response({'status': 'failure', 'message': '用户已注册，请登录'})
 
 
 @app.route('/profile', methods=['POST', 'GET'])
@@ -161,24 +180,6 @@ def profile():
         userinfo['emergent_contact_phone'] = newinfo['emergencyTel']
         userinfo['remark'] = newinfo['usercomment']
         userinfo['openid'] = newinfo['openid']
-        # confirm sms-code
-        vrfcode = newinfo['verification_code']
-        phone_number = userinfo['phone']
-        sms_token = sms_verify.fetch_token(phone_number)
-        if sms_token is None:
-            user_logger.warning('%s: no such a sms token for the number', info['tel'])
-            return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
-        if not sms_token.validate(phone_number=phone_number, vrfcode=vrfcode):
-            user_logger.warning('%s, %s: sms code validate failed', phone_number, vrfcode)
-            return json_dump_http_response({'status': 'failure', 'message': '验证未通过' })
-        try:
-            if db.expr_update('user', {'phone_verified': 1}, openid=info['openid']) != 1:
-                user_logger.info('%s, %s: sms code validate failed', phone_number, vrfcode)
-                return json_dump_http_response({'status': 'failure', 'message': '更新失败，请重新短信验证'})
-        except:
-            user_logger.info('%s, %s: sms code validate failed', phone_number, vrfcode)
-            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
-        # do inserting
         try:
             if db.expr_update('user', userinfo, openid=userinfo['openid']) != 1:
                 user_logger.error('%s: user update info failed', userinfo['openid'])
@@ -186,12 +187,12 @@ def profile():
         except:
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
-        user_logger.info('%s: complete user registration successfully', userinfo['openid'])
+        user_logger.info('%s: complete user profile updating successfully', userinfo['openid'])
         return json_dump_http_response({'status': 'success'})
 
 
 @app.route('/smscode', methods=['GET', 'POST'])
-def sms_code():
+def smscode():
     '''view function to send and verify sms verification code'''
     # send smscode
     if request.method == 'GET':
@@ -209,6 +210,7 @@ def sms_code():
                 return json_dump_http_response({'status': 'failure', 'message': '发送失败'})
         except Exception as err:
             return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
+        # append new token to pool
         sms_verify.append_token(sms_token)
 
         user_logger.info('%s: send sms to number successfully', phone_number)
@@ -222,16 +224,18 @@ def sms_code():
         openid = data['openid']
         sms_token = sms_verify.fetch_token(phone_number)
         if sms_token is None:
-            user_logger.warning('%s: no such a sms token for the number', phone_number)
+            user_logger.warning('%s: no such a sms token for number', phone_number)
             return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
-        if not sms_token.validate(phone_number=phone_number, vrfcode=vrfcode):
-            user_logger.warning('%s, %s: sms code validate failed', phone_number, vrfcode)
-            return json_dump_http_response({'status': 'failure', 'message': '验证未通过' })
+        result = sms_token.validate(phone_number=phone_number, vrfcode=vrfcode)
+        if result is not True:
+            user_logger.warning('%s, %s: sms code validation failed, %s', phone_number, vrfcode, result)
+            return json_dump_http_response({'status': 'failure', 'message': result })
+        user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
+        sms_verify.drop_token(phone_number)  # drop token from pool if validated
         try:
             if db.expr_update('user', {'phone_verified': 1}, openid=openid) == 1:
-                user_logger.info('%s, %s: sms code validate successfully', phone_number, vrfcode)
                 return json_dump_http_response({'status': 'success'})
         except:
             pass
-        user_logger.warning('%s, %s: sms code validate failed', phone_number, vrfcode)
-        return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
+        user_logger.warning('%s: update user phone valid status failed', openid)
+        return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新短信验证'})

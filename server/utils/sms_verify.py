@@ -233,21 +233,21 @@ class SMSVerifyToken(object):
     def validate(self, phone_number, vrfcode):
         '''validate verification code'''
         if not isinstance(vrfcode, (str, int)):
-            return 'Failed: 错误代码格式'
+            return '错误代码格式'
         if isinstance(vrfcode, int):
             vrfcode = '%06d' % (vrfcode)
 
         if not self.valid:
-            return 'Failed: 无效验证请求'
+            return '无效验证请求'
 
         if phone_number != self.phone_number:
-            return 'Failed: 无效电话号码'
+            return '无效电话号码'
 
         if vrfcode != self.vrfcode:
-            return 'Failed: 无效验证代码'
+            return '错误验证代码'
 
         if self.expired:
-            return 'Failed: 过期验证代码'
+            return '过期验证代码'
 
         self.__valid = False
         sys_logger.info('phone %s user sms validate success', self.phone_number)
