@@ -345,10 +345,10 @@ def validate_email(token):
                 try:
                     if db.expr_update('admin', {'email_verified': 1}, email=addr) == 1:
                         token.valid = False
-                        drop_token(addr)
                         # redirect(url_for('admin_login'))
                         return True
                 except:
                     pass
+        drop_token(addr)
     abort(404)
     return False
