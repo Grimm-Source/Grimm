@@ -18,11 +18,12 @@
 #   1. 2019/08/12, Ming, create first revision.
 #
 
+
+GRIMM_VERSION = '1.0'
+
 import sys
 import os
 import logging
-from server.utils.misctools import get_pardir
-
 
 if '..' not in sys.path:
     sys.path.append('..')
@@ -30,10 +31,24 @@ if '..' not in sys.path:
 if '../..' not in sys.path:
     sys.path.append('../..')
 
-GRIMM_VERSION = '1.0'
+
+# check python version
+try:
+    print('checking python version...', end=' ')
+except SyntaxError:
+    print('checking python version...', )
+PY_MAJOR = sys.version_info.major
+PY_MINOR = sys.version_info.minor
+PY_MICRO = sys.version_info.micro
+PY_VERSION = '.'.join([str(PY_MAJOR), str(PY_MINOR), str(PY_MICRO)])
+
+if PY_VERSION < '3.6.5':
+    print("Python %s is not supported, upgrade to 3.6.5 or later!" % (PY_VERSION))
+    sys.exit(-1)
+print('done!')
 
 
-# parse user command argument, host/port
+# handle user command arguments
 import argparse
 import server.core.const
 
@@ -61,21 +76,6 @@ server.core.const.FORCELOAD = cmdargs.force
 
 del parser, argparse, cmdargs
 
-# check python version
-try:
-    print('checking python version...', end=' ')
-except SyntaxError:
-    print('checking python version...', )
-PY_MAJOR = sys.version_info.major
-PY_MINOR = sys.version_info.minor
-PY_MICRO = sys.version_info.micro
-PY_VERSION = '.'.join([str(PY_MAJOR), str(PY_MINOR), str(PY_MICRO)])
-
-if PY_VERSION < '3.6.5':
-    print("Python %s is not supported, upgrade to 3.6.5 or later!" % (PY_VERSION))
-    sys.exit(-1)
-print('done!')
-
 
 # check package dependency
 print('checking package dependency...', end=' ')
@@ -93,6 +93,8 @@ except ImportError as err:
     raise err
 print('done!')
 
+
+from server.utils.misctools import get_pardir
 
 # initialize system logger
 print('initializing system logger...', end=' ')
