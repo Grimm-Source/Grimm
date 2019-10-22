@@ -54,13 +54,3 @@ if grimm is None:
     wxsecret = wxconfig['secret']
 
     del wxconfig, get_pardir, path
-
-
-# initialize database connection
-import server.core.db as db
-from server.core.const import FORCE_LOAD
-
-if db.session_connection is None:
-    db.init_connection(force=True if FORCE_LOAD is True else False)
-
-del db, FORCE_LOAD

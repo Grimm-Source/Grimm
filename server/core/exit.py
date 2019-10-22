@@ -25,7 +25,6 @@ if '../..' not in sys.path:
 
 import server.core.db as db
 import server
-from server.core.db import destory_connection
 
 
 def exit_grimm(signalnum=None, frame=None):
@@ -35,19 +34,22 @@ def exit_grimm(signalnum=None, frame=None):
     if db.db_logger is not None:
         db.db_logger.disabled = True
         db.db_logger = None
-    # print(db.db_logger)
+
     # close sys_logger
     print('close sys-logger...')
     if server.sys_logger is not None:
         server.sys_logger.disabled = True
         server.sys_logger = None
-    # print(server.sys_logger)
+
     # close user_logger
     print('close user-logger...')
     if server.user_logger is not None:
         server.user_logger.disabled = True
         server.user_logger = None
-    # print(server.user_logger)
+
+    # close database connection
+    db.destroy_connection()
+
     # exit grimm backend service
     time.sleep(1)
     print('\nquit grimm back-end service done !\n')

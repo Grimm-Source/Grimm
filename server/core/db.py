@@ -34,7 +34,7 @@ __all__ = ['expr_query', 'expr_update', 'expr_insert', 'expr_delete',
            'query', 'update', 'delete', 'insert', 'query_tbl_fields',
            'execute', 'query_tbl_fields_datatype',
            'exist_fields', 'init_connection', 'close_connection',
-           'reset_connection', 'destory_connection', 'exist_rows']
+           'reset_connection', 'destroy_connection', 'exist_rows']
 
 
 # db globals
@@ -46,7 +46,7 @@ DB_LOGGER_NAME = 'db-transaction-logger'
 
 # initialize database logger
 if db_logger is None:
-    print('initialize database logger...', end=' ')
+    print('\ninitialize database logger...', end=' ')
     db_logger = logging.getLogger(DB_LOGGER_NAME)
     # set logging level as default DEBUG level.
     db_logger.setLevel(logging.DEBUG)
@@ -61,7 +61,7 @@ if db_logger is None:
     fh.setFormatter(fmter)
     # add file handler
     db_logger.addHandler(fh)
-    print('Done')
+    print('done!\n')
 
 
 # close session database connection
@@ -73,7 +73,7 @@ def close_connection():
 
 
 # destory session database connection
-def destory_connection():
+def destroy_connection():
     '''destory current session database connection'''
     global session_connection
     close_connection()
@@ -84,7 +84,7 @@ def destory_connection():
 def sig_handler(signalnum=None, frame=None):
     '''quit everything when termination signal received to kill the process'''
     global db_logger
-    destory_connection()
+    destroy_connection()
     if db_logger is not None:
         db_logger.disabled = True
 #        logging.shutdown()
@@ -111,7 +111,7 @@ def init_connection(force=False):
 
     def collect_db_config():
         '''for user to input database configs, and dump configs as file'''
-        print('\nConfigure MySQL connection >>>\n')
+        print('Configure MySQL connection >>>\n')
         config = {}
         for item in db_config_items:
             _input = input('{:^10}: '.format(item)).strip()
@@ -216,7 +216,7 @@ def reset_connection(soft=True):
         close_connection()
         init_connection(force=False)
     else:
-        destory_connection()
+        destroy_connection()
         init_connection(force=True)
 
 

@@ -17,7 +17,6 @@
 #   1. 2019/08/27, Ming, create first revision.
 #
 
-
 import sys
 import signal
 # jump out to upper directory, then `server` becomes a pure python package.
@@ -33,23 +32,10 @@ import server.core.db as db
 import server.core.route.web_admin
 import server.core.route.wxapp
 
-# update root user info
-from server.core.const import ROOT_PASSWORD, HOST, PORT
+from server.core.const import ROOT_PASSWORD, HOST, PORT, FORCELOAD
 from server.utils.password import update_password
 from server.core.exit import exit_grimm
 from server.core import grimm
-
-
-if db.exist_row('admin', admin_id=0):
-    if db.expr_query('admin', fields='password', admin_id=0)[0]['password'] == 'default':
-        if update_password(ROOT_PASSWORD, tbl='admin', admin_id=0):
-            print('configure root password ... Done\n')
-        else:
-            print('configure root password failed')
-            sys.exit(-1)
-else:
-    print('root user is not registerd by default, check you database!')
-    sys.exit(-1)
 
 
 if __name__ == '__main__':
@@ -57,5 +43,21 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, exit_grimm)
     signal.signal(signal.SIGQUIT, exit_grimm)
     signal.signal(signal.SIGTERM, exit_grimm)
-    # start grimm back-end
+
+    # initialize database connection
+    db.init_connection(force=True if FORCELOAD is True else False)
+
+    # update root admin password
+    if db.exist_row('admin', admin_id=0):
+        if db.expr_query('admin', fields='password', admin_id=0)[0]['password'] == 'default':
+            if update_password(ROOT_PASSWORD, tbl='admin', admin_id=0):
+                print('configure root admin password ... Done\n')
+            else:
+                print('configure root admin password failed')
+                sys.exit(-1)
+    else:
+        print('Error: root admin isn\'t created by default, check your database!')
+        sys.exit(-1)
+
+    # start grimm back-end server
     grimm.run(host=HOST, port=PORT)

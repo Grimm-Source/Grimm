@@ -49,7 +49,7 @@ ROOT_PASSWORD = 'Cisco123456.'
 # configuration when loading back-end
 HOST = None
 PORT = None
-FORCE_LOAD = None
+FORCELOAD = None
 
 # send sms configuration
 VRF_SIGNATURE = '视障人士志愿者平台验证'
