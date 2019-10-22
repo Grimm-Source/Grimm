@@ -24,7 +24,7 @@ class Home extends React.Component {
                 case '/users': return HOME_TAG_TYPE.USER;
                 case '/profile': return HOME_TAG_TYPE.PROFILE;
                 case '/admins': return HOME_TAG_TYPE.ADMIN;
-                case '/activities':;
+                case '/activities':
                 default: return HOME_TAG_TYPE.ACTIVITY;
             }
         }
@@ -47,8 +47,6 @@ class Home extends React.Component {
             </Menu>
         )
     }
-
-
   
     render() {
         return (

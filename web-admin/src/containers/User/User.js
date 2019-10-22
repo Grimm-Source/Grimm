@@ -20,8 +20,8 @@ class User extends React.Component {
     return (
         <div className="user">
             <TableHeader right={<span>
-                      <Button loading={this.props.loading} onClick={this.props.onClickAuditAction.bind(null, this.props.selectedUsers, isVolunteer, "approved")}>同意</Button>
-                      <Button loading={this.props.loading} onClick={this.props.onClickAuditAction.bind(null, this.props.selectedUsers, isVolunteer, "rejected")} type="danger">拒绝</Button>
+                      <Button disabled={this.props.loading} onClick={this.props.onClickAuditAction.bind(null, this.props.selectedUsers, isVolunteer, "approved")}>同意</Button>
+                      <Button disabled={this.props.loading} onClick={this.props.onClickAuditAction.bind(null, this.props.selectedUsers, isVolunteer, "rejected")} type="danger">拒绝</Button>
                       <img 
                         width={25}
                         alt="refresh"
@@ -31,7 +31,7 @@ class User extends React.Component {
                       </span>}
                       
                       left={<span>
-                        <Switch loading={this.props.loading} checkedChildren="志愿者" unCheckedChildren="视障人士" checked={isVolunteer} onChange={this.props.onChangeType.bind(null, isVolunteer)}/>
+                        <Switch disabled={this.props.loading} checkedChildren="志愿者" unCheckedChildren="视障人士" checked={isVolunteer} onChange={this.props.onChangeType.bind(null, isVolunteer)}/>
                         </span>}/>
             <UserTable/>
         </div>
