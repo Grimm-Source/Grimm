@@ -114,9 +114,10 @@ def calc_duration(start, end):
     '''calculate time duration, return dict'''
     if isinstance(start, datetime.datetime) and isinstance(end, datetime.datetime):
         delta = end - start
-        days = delta.days
-        hours = int(delta.seconds / 3600)
-        minites = int((delta.seconds % 3600) / 60)
-        seconds = (delta.seconds % 3600) % 60
-        return {'day': days, 'hour': hours, 'min': minites, 'sec': seconds}
+        if delta.total_seconds() > 0:
+            days = delta.days
+            hours = int(delta.seconds / 3600)
+            minites = int((delta.seconds % 3600) / 60)
+            seconds = (delta.seconds % 3600) % 60
+            return {'day': days, 'hour': hours, 'min': minites, 'sec': seconds}
     return {}

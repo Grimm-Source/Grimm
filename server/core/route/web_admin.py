@@ -490,47 +490,43 @@ def users():
             openid = audit['openid']
             status = audit['audit_status']
             try:
-                info = db.expr_query('user', fields=('audit_status', 'phone'), openid=openid)[0]
-                if not info:
+                userinfo = db.expr_query('user', fields=('audit_status', 'phone'), openid=openid)[0]
+                if not userinfo:
                     admin_logger.warning('%s, no such user openid', openid)
                     return json_dump_http_response({'status': 'failure', 'message': '未知用户'})
             except:
                 admin_logger.error('Critical: database query failed !')
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
-
             # users audit new status
-            if info['audit_status'] == 0 and status in ('approved', 'rejected', 'pending'):
+            if userinfo['audit_status'] == 0 and status in ('approved', 'rejected', 'pending'):
                 if status == 'approved':
-                    template = 'NOTIFY_APPROVED'
-                    message = "条件合乎要求"
+                    sms_template = 'NOTIFY_APPROVED'
+                    sms_message = "条件合乎要求"
                     new_status = {'audit_status': 1}
                 elif status == 'rejected':
-                    template = 'NOTIFY_REJECTED'
-                    message = "条件不合要求"
+                    sms_template = 'NOTIFY_REJECTED'
+                    sms_message = "条件不合要求"
                     new_status = {'audit_status': -1}
                 else:
                     continue
-
+                # update each user audit status
+                try:
+                    if db.expr_update('user', new_status, openid=openid) != 1:
+                        admin_logger.warning('%s, update user audit status failed', openid)
+                        return json_dump_http_response({'status': 'failure', 'message': '审核状态更新失败'})
+                except:
+                    admin_logger.error('Critical: update database failed')
+                    return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
                 # send sms message to notify user the result timely
                 try:
-                    sms_token = sms_verify.SMSVerifyToken(phone_number=info['phone'], expiry=3600)
-                    sms_token.template = template
-                    sms_token.vrfcode = message
+                    sms_token = sms_verify.SMSVerifyToken(phone_number=userinfo['phone'], expiry=3600)
+                    sms_token.template = sms_template
+                    sms_token.vrfcode = sms_message
                     sms_token.signature = COM_SIGNATURE
                     if not sms_token.send_sms():
-                        admin_logger.warning('%s, unable to send sms to number', info['phone'])
-                        return json_dump_http_response({'status': 'failure', 'message': '发送失败'})
+                        admin_logger.warning('%s, unable to send sms to number', userinfo['phone'])
                 except Exception as err:
-                    return json_dump_http_response({'status': 'failure', 'message': f"{err.args}"})
-
-            # update each user audit status
-            try:
-                if db.expr_update('user', new_status, openid=openid) != 1:
-                    admin_logger.warning('%s, update user audit status failed', openid)
-                    return json_dump_http_response({'status': 'failure', 'message': '更新失败'})
-            except:
-                admin_logger.error('Critical: update database failed')
-                return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
+                    pass
 
         admin_logger.info('update users audit status successfully')
         return json_dump_http_response({'status': 'success'})

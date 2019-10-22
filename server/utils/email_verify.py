@@ -267,6 +267,12 @@ class EmailVerifyToken(object):
         '''get email verification token validation status, True if valid else False'''
         return self.__valid
 
+    @valid.setter
+    def valid(self, value):
+        '''set token valid status when validating token'''
+        if isinstance(value, bool):
+            self.__valid == value
+
     @property
     def email_sample(self):
         '''get email sample file name in relative path format'''
@@ -338,7 +344,9 @@ def validate_email(token):
             if token.valid and not token.expired:
                 try:
                     if db.expr_update('admin', {'email_verified': 1}, email=addr) == 1:
-                        redirect(url_for('admin_login'))
+                        token.valid = False
+                        drop_token(addr)
+                        # redirect(url_for('admin_login'))
                         return True
                 except:
                     pass
