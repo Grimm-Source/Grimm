@@ -30,10 +30,8 @@ class ActivityDetail extends React.Component {
         // date: fieldsValue['date'].format('YYYY-MM-DD HH:mm:ss'),
         id: this.props.activity.id,
         adminId: this.props.userId,
-        'date': [
-          rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss'),
-          rangeTimeValue[1].format('YYYY-MM-DD HH:mm:ss'),
-        ],
+        start_time: rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss'),
+        end_time: rangeTimeValue[1].format('YYYY-MM-DD HH:mm:ss'),
       };
       this.props.publishActivity(values);
       this.props.hideActivityModal();
@@ -129,10 +127,10 @@ class ActivityDetail extends React.Component {
              rules: [
                {
                  required: true,
-                 message: '请输入活动持续时间',
+                 message: '活动持续时间不能为0，请重新选择开始和结束时间',
                },
              ],
-           })(<Input disabled={true} placeholder="请输入活动持续时间" />)}
+           })(<Input disabled={true} placeholder="0" />)}
        </Form.Item>
        <Form.Item label="活动内容">
            {getFieldDecorator('content', {
@@ -187,10 +185,10 @@ const WrappedActivityDetail = Form.create({
           value: props.activity.others || ""
         }),
         duration: Form.createFormField({
-          value: props.activity.duration || ""
+          value: props.activity.duration && `${props.activity.duration.day}天${props.activity.duration.hour}小时${props.activity.duration.min}分钟${props.activity.duration.sec}秒` || ""
         }),
         date: Form.createFormField({
-          value: (props.activity.date && props.activity.date.length===2 && [moment(props.activity.date[0], 'YYYY-MM-DD HH:mm:ss'), moment(props.activity.date[1], 'YYYY-MM-DD HH:mm:ss')]) || null
+          value: (props.activity.start_time &&  props.activity.end_time && [moment(props.activity.start_time, 'YYYY-MM-DD HH:mm:ss'), moment(props.activity.end_time, 'YYYY-MM-DD HH:mm:ss')]) || null
         })
       }
     },
