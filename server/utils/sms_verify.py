@@ -232,6 +232,7 @@ class SMSVerifyToken(object):
 #
     def validate(self, phone_number, vrfcode):
         '''validate verification code'''
+        sys_logger.info('%s, %s: try to validate user sms code', phone_number, vrfcode)
         if not isinstance(vrfcode, (str, int)):
             return '错误代码格式'
         if isinstance(vrfcode, int):

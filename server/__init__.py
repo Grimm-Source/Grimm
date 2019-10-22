@@ -37,7 +37,6 @@ GRIMM_VERSION = '1.0'
 import argparse
 import server.core.const
 
-
 parser = argparse.ArgumentParser(prog='Grimm-backend',
                                  description='Load Grimm back-end service',
                                  add_help=False)
@@ -55,12 +54,12 @@ parser.add_argument('-p', '--port', metavar='Port Num', nargs='?',
 parser.add_argument('-f', '--force', dest='force', action='store_true',
                     help='Force database connection when start')
 
-CMDARGS = parser.parse_args()
-server.core.const.HOST = CMDARGS.host
-server.core.const.PORT = CMDARGS.port
-server.core.const.FORCE_LOAD = CMDARGS.force
+cmdargs = parser.parse_args()
+server.core.const.HOST = cmdargs.host
+server.core.const.PORT = cmdargs.port
+server.core.const.FORCELOAD = cmdargs.force
 
-del parser, argparse
+del parser, argparse, cmdargs
 
 # check python version
 try:
@@ -75,7 +74,7 @@ PY_VERSION = '.'.join([str(PY_MAJOR), str(PY_MINOR), str(PY_MICRO)])
 if PY_VERSION < '3.6.5':
     print("Python %s is not supported, upgrade to 3.6.5 or later!" % (PY_VERSION))
     sys.exit(-1)
-print('Done')
+print('done!')
 
 
 # check package dependency
@@ -92,7 +91,7 @@ try:
     import flask
 except ImportError as err:
     raise err
-print('Done')
+print('done!')
 
 
 # initialize system logger
@@ -112,7 +111,7 @@ if sys_logger is None:
     sys_logger.addHandler(fh)
 
     del fh, fmt, fmtter, sys_log_path, log_dir
-print('Done')
+print('done!')
 
 # initialize admin logger
 print('initializing admin logger...', end=' ')
@@ -131,7 +130,7 @@ if admin_logger is None:
     admin_logger.addHandler(fh)
 
     del fh, fmt, fmtter, admin_log_path, log_dir
-print('Done')
+print('done!')
 
 # initialize user logger
 print('initializing user logger...', end=' ')
@@ -150,6 +149,6 @@ if user_logger is None:
     user_logger.addHandler(fh)
 
     del fh, fmt, fmtter, user_log_path, log_dir
-print('Done')
+print('done!')
 
 del get_pardir
