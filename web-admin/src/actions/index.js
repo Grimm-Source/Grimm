@@ -343,7 +343,8 @@ const patchUserList = (users,isVolunteer) => dispatch => {
         }else{
             dispatch(fetchDisabledList());
         }
-    },()=>{
+    },(errorMessage)=>{
+        message.error(`操作失败，${errorMessage}`);
         dispatch(hideLoading());
     });
 }
