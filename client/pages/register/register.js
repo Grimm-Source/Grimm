@@ -1,5 +1,7 @@
 import WxValidate from '../../utils/WxValidate.js';
 const { register} = require('../../utils/requestUtil.js');
+const { getVerifyCode } = require('../../utils/requestUtil.js');
+const { verifyCode } = require('../../utils/requestUtil.js');
 const apiUrl = require('../../config.js').apiUrl;
 
 const app = getApp();
@@ -250,6 +252,7 @@ Page({
       })
       return;
     }else{
+      getVerifyCode(telData.tel)
       //当手机号正确的时候提示用户短信验证码已经发送
       wx.showToast({
         title: '短信验证码已发送',
@@ -345,7 +348,7 @@ Page({
       wx.showToast({
         title: '注册成功',
         icon: 'success',
-        duration: 300
+        duration: 3000
       });
       wx.switchTab({
         url: '../home/home',
@@ -372,12 +375,25 @@ Page({
       const error = this.WxValidate.errorList[0]
       this.showModal(error)
       return false
+    } else {
+      const formData = {
+        tel: this.data.form.tel,
+        verification_code: this.data.form.regcode
+      }
+      verifyCode(formData, (res)=>{
+        this.setData({
+          registerStep: 'detail',
+          registeBaseActive: '',
+          registeDetailActive: 'active'
+        })
+      },(err)=>{
+        wx.showModal({
+          showCancel: false,
+          title: '验证失败',
+          content: err || "网络失败，请稍候再试"
+        });
+      })
     }
-    this.setData({
-      registerStep: 'detail',
-      registeBaseActive: '',
-      registeDetailActive: 'active'
-    })
   },
 
   initValidate: function(){

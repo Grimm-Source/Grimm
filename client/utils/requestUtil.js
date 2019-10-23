@@ -19,13 +19,21 @@ const updateProfile = (userInfo, successCallback, failCallback) => {
 }
 
 const getVerifyCode = (tel) => {
-    //get
+  const requestUrl = "smscode?tel=" + tel
+  return request({
+      url: requestUrl,
+      method: "get"
+  });
 }
 
 const verifyCode = (obj, successCallback, failCallback) =>{
-    //send
-    let {tel, code} = obj;
-    successCallback();
+    return request({
+      url: "smscode",
+      data: obj,
+      method: 'POST',
+      success: successCallback,
+      fail: failCallback,
+    })
 }
 
 const register =  (obj, successCallback, failCallback) => {
