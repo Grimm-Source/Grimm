@@ -1,7 +1,8 @@
 export const HOME_TAG_TYPE = {
     ACTIVITY: "ACTIVITY",
     ADMIN: "ADMIN",
-    USER: "USER"
+    USER: "USER",
+    PROFILE: "PROFILE"
 };
 
 export const ADMIN_PANEL_TYPE = {
@@ -12,4 +13,15 @@ export const ADMIN_PANEL_TYPE = {
 export const ADMIN_FORM_TYPE = {
     CREATE: "CREATE",
     LOGIN: "LOGIN"
+}
+
+export const USER_LIST_TYPE = {
+    VOLUNTEER: "VOLUNTEER",
+    DISABLED: "DISABLED"
+}
+
+export const AUDIT_STATUS = {
+    pending: "待审核",
+    approved: "已审核",
+    rejected: "已拒绝"
 }

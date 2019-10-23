@@ -1,6 +1,7 @@
 import {ACTION_TYPES} from './actionTypes';
 import request from '../utils/request';
 import { ADMIN_PANEL_TYPE, ADMIN_FORM_TYPE } from "../constants";
+import { storage } from "../utils/localStorageHelper";
 import { message } from 'antd';
 
 //ui section
@@ -15,6 +16,10 @@ export const hideLoading = () =>({
 export const switchHomeTag = (activeKey) =>({ 
     type: ACTION_TYPES.UI_HOME_TAG_SWITCH,
     activeKey
+});
+
+export const switchUserList  =  () => ({
+    type: ACTION_TYPES.UI_USER_LIST_SWITCH
 });
 
 export const switchAdminPanel = (activeKey) =>({ 
@@ -53,6 +58,11 @@ export const hideUserDetail = () =>({
     type: ACTION_TYPES.UI_USER_DETAIL_HIDE
 });
 
+export const setSelectedUsers = (users) => ({
+    type: ACTION_TYPES.UI_SELECTED_USER_LIST,
+    users
+})
+
 //account section
 export const loginAccount = (user) => (dispatch, getState) => {
     dispatch(loading());
@@ -65,7 +75,7 @@ const verifyAccount = user => dispatch => {
         method: "POST",
         data: user
     }).then((userInfo) => {
-        sessionStorage.setItem("user", JSON.stringify(userInfo));
+        storage.setItem("user", userInfo);
         dispatch(login(userInfo));    
         dispatch(switchAdminFormType(ADMIN_FORM_TYPE.CREATE));
         message.success('登录成功');
@@ -285,7 +295,22 @@ export const getVolunteerList = () => (dispatch, getState) => {
 
 const fetchVolunteerList = () => dispatch => {
     return request({
-        path: "users?role='志愿者'"
+        path: "users?role=volunteer"
+    }).then(users => {
+        dispatch(setUsers(users));
+    }).finally(()=>{
+        dispatch(hideLoading());
+    });
+}
+
+export const getDisabledList = () => (dispatch, getState) => {
+    dispatch(loading());
+    return dispatch(fetchDisabledList());
+}
+
+const fetchDisabledList = () => dispatch => {
+    return request({
+        path: "users?role=disabled"
     }).then(users => {
         dispatch(setUsers(users));
     }).finally(()=>{
@@ -302,4 +327,48 @@ export const setNoticeUsers = users =>({
     type: ACTION_TYPES.NOTICE_NEW_USERS_SET,
     users
 });
+
+export const updateUsers = (users, isVolunteer) => (dispatch, getState) => {
+    dispatch(loading());
+    return dispatch(patchUserList(users, isVolunteer))
+}
+
+const patchUserList = (users,isVolunteer) => dispatch => {
+    return request({
+        path: "users",
+        method: "PATCH",
+        data: users
+    }).then(()=>{
+        if(isVolunteer){
+            dispatch(fetchVolunteerList());
+        }else{
+            dispatch(fetchDisabledList());
+        }
+    },(errorMessage)=>{
+        message.error(`操作失败，${errorMessage}`);
+        dispatch(hideLoading());
+    });
+}
+
+//profile section
+export const changePassword = (adminId, oldVal, newVal) => async (dispatch, getState) => {
+    dispatch(loading());
+    try {
+        await request({
+            path: `admin/${adminId}/update-password`,
+            method: 'POST',
+            data: {
+                adminId,
+                old_password: oldVal,
+                new_password: newVal
+            }
+        });
+        message.success('密码修改成功！');
+        dispatch(hideLoading());
+    }
+    catch (errorMessage) {
+        message.error(`密码修改失败，${errorMessage}`);
+        dispatch(hideLoading());
+    }
+}
 

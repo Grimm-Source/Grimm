@@ -6,6 +6,9 @@ import { connect } from 'react-redux';
 
 import './ActivityDetail.less';
 
+const { RangePicker } = DatePicker;
+
+
 class ActivityDetail extends React.Component {
 
   componentDidMount(){
@@ -21,17 +24,50 @@ class ActivityDetail extends React.Component {
       if (err) {
         return;
       }
-      
+      const rangeTimeValue = fieldsValue['date'];
       const values = {
         ...fieldsValue,
-        date: fieldsValue['date'].format('YYYY-MM-DD HH:mm:ss'),
+        // date: fieldsValue['date'].format('YYYY-MM-DD HH:mm:ss'),
         id: this.props.activity.id,
-        adminId: this.props.userId
+        adminId: this.props.userId,
+        start_time: rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss'),
+        end_time: rangeTimeValue[1].format('YYYY-MM-DD HH:mm:ss'),
       };
       this.props.publishActivity(values);
       this.props.hideActivityModal();
     });
   };
+
+  changeDate = (date, dateString) => {
+    if(date && date.length === 2){
+      const startTime = new Date(dateString[0]).getTime();
+      const endTime = new Date(dateString[1]).getTime();
+      let delta = Math.abs(endTime - startTime) / 1000;                    
+      let diffObj = {};  
+      let result = '';                                                            
+      let structure = {                                                                  
+          '年': 31536000,
+          '月': 2592000,
+          '周': 604800, // uncomment row to ignore
+          '天': 86400,   // feel free to add your own row
+          '小时': 3600,
+          '分钟': 60,
+          '秒': 1
+      };
+
+      Object.keys(structure).forEach(function(key){
+        diffObj[key] = Math.floor(delta / structure[key]);
+        delta -= diffObj[key] * structure[key];
+        if(diffObj[key] !== 0){
+          result += `${diffObj[key]}${key}`
+        }
+      });
+
+      this.props.form.setFieldsValue({
+        duration: result
+      });
+    }
+  }
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -45,20 +81,24 @@ class ActivityDetail extends React.Component {
         sm: { span: 20 },
       },
     };
+
+    const disabledDate = (current) => {
+      // Can not select days before today
+      return current < moment().startOf('day');
+    }
     
     return (
       
        this.props.loading? <Spin size="large" />: <Form {...formItemLayout} onSubmit={this.handleSubmit}>
        <Form.Item label="活动时间">
          {getFieldDecorator('date', {
-               rules: [
-                   { 
-                       type: 'object', 
-                       required: true, 
-                       message: '请选择时间' 
-                   }],
-               })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" placeholder="请选择活动时间"/>,
-         )}
+            rules: [
+                { 
+                    type: 'array', 
+                    required: true, 
+                    message: '请选择时间' 
+                }],
+            })(<RangePicker disabledDate={disabledDate} onChange={this.changeDate} showTime format="YYYY-MM-DD HH:mm:ss" />)}
        </Form.Item>
        <Form.Item label="活动主题">
            {getFieldDecorator('title', {
@@ -83,13 +123,14 @@ class ActivityDetail extends React.Component {
        </Form.Item>
        <Form.Item label="活动持续时间">
            {getFieldDecorator('duration', {
+            //  initialValue: '0',
              rules: [
                {
                  required: true,
-                 message: '请输入活动持续时间',
+                 message: '活动持续时间不能为0，请重新选择开始和结束时间',
                },
              ],
-           })(<Input placeholder="请输入活动持续时间" />)}
+           })(<Input disabled={true} placeholder="0" />)}
        </Form.Item>
        <Form.Item label="活动内容">
            {getFieldDecorator('content', {
@@ -144,10 +185,10 @@ const WrappedActivityDetail = Form.create({
           value: props.activity.others || ""
         }),
         duration: Form.createFormField({
-          value: props.activity.duration || ""
+          value: (props.activity.duration && `${props.activity.duration.day}天${props.activity.duration.hour}小时${props.activity.duration.min}分钟${props.activity.duration.sec}秒`) || ""
         }),
         date: Form.createFormField({
-          value: (props.activity.date && moment(props.activity.date, 'YYYY-MM-DD HH:mm:ss')) || null
+          value: (props.activity.start_time &&  props.activity.end_time && [moment(props.activity.start_time, 'YYYY-MM-DD HH:mm:ss'), moment(props.activity.end_time, 'YYYY-MM-DD HH:mm:ss')]) || null
         })
       }
     },

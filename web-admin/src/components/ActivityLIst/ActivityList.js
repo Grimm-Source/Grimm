@@ -43,12 +43,7 @@ class ActivityList extends React.Component {
           >
             <Skeleton avatar title={false} loading={this.props.loading} active>
               <List.Item.Meta
-                title={
-                  <span>
-                    <span>{item.date.split('T')[0]}</span> |{' '}
-                    <span>{item.title}</span> | <span>{item.location}</span>
-                  </span>
-                }
+                title={<span><span>{(item.start_time.split("T"))[0]===(item.end_time.split("T"))[0] ? (item.start_time.split("T"))[0] : `${(item.start_time.split("T"))[0]} ~ ${(item.end_time.split("T"))[0]}`}</span> | <span>{item.title}</span> | <span>{item.location}</span></span>}
                 description={item.content}
                 className="activity-content"
                 onClick={this.props.onClickActivity.bind(this, item)}

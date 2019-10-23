@@ -1,4 +1,5 @@
-import {ACTION_TYPES} from '../actions/actionTypes.js'
+import {ACTION_TYPES} from '../actions/actionTypes.js';
+import {USER_LIST_TYPE} from '../constants/index.js';
 
 const ui = (state = [], action) => {
     switch (action.type) {
@@ -67,10 +68,20 @@ const ui = (state = [], action) => {
             ...state,
             adminFormType: action.activeKey
           };
+      case ACTION_TYPES.UI_USER_LIST_SWITCH:
+          return {
+            ...state,
+            userListType: state.userListType === USER_LIST_TYPE.VOLUNTEER? USER_LIST_TYPE.DISABLED:USER_LIST_TYPE.VOLUNTEER
+          };
       case ACTION_TYPES.UI_ACTIVITY_SET:
         return {
           ...state,
           activity: action.activity || {}
+        };
+      case ACTION_TYPES.UI_SELECTED_USER_LIST:
+        return {
+          ...state,
+          selectedUsers: action.users || []
         };
       default:
         return state;

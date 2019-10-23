@@ -14,13 +14,13 @@ App({
         wx.request({
           url: apiUrl + 'jscode2session?js_code=' + res.code,
           success: function (res) {
-            wx.setStorageSync('openid', res.data.openid)
             console.log('****res:', res)// 服务器回包信息
-            if (!res.data.is_register) {
-              wx.setStorageSync('is_register', false)
-            }else{
-              wx.setStorageSync('is_register', true)
+            if(!res.data){
+              return;
             }
+            wx.setStorageSync('openid', res.data.openid)
+            wx.setStorageSync('isRegistered', !!res.data.isRegistered)
+            wx.setStorageSync('auditStatus', res.data.auditStatus || "pending")
           }
         })        
       }

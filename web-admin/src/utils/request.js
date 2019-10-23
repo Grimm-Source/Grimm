@@ -1,4 +1,4 @@
-import url from '../config/config'
+import url from '../config/config';
 
 const request = (options) => {
     let param = {
@@ -6,10 +6,10 @@ const request = (options) => {
         headers: {
             Accept: 'application/json',
         }
-    }
+    };
 
-    if(options.method === "POST"){
-        param["body"] = JSON.stringify(options.data)
+    if(options.method === "POST" || options.method === "PATCH" ){
+        param["body"] = JSON.stringify(options.data);
     }
 
     return fetch(`${url}${options.path}`, param).then(response => {
@@ -24,9 +24,9 @@ const request = (options) => {
         return response.json()
     }).then((response)=>{
         if(response.status === "failure"){
-            return Promise.reject(response.message)
+            return Promise.reject(response.message);
         }
-        return Promise.resolve(response)
+        return Promise.resolve(response);
     });
 }
 
