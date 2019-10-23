@@ -415,7 +415,7 @@ def admin_update_password(admin_id):
 def admin_reset_password():
     '''view function for admins to reset new passwords'''
     if request.method == 'GET':
-        addr = request.get_data().decode('utf8').strip()
+        addr = request.args.get('email')
         if db.exist_row('admin', email=addr):
             response, new_pass = email_verify.send_reset(receiver=addr)
             if response:
