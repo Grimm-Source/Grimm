@@ -106,7 +106,7 @@ Page({
                   // 可以将 res 发送给后台解码出 unionId
                   app.globalData.userInfo = res.userInfo
                   this.setData({
-                    userInfo: data,
+                    userInfo: res.userInfo,
                     avatarUrl: res.userInfo.avatarUrl
                   })
     

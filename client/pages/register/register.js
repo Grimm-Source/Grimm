@@ -345,6 +345,7 @@ Page({
     const formData = Object.assign(this.data.form, e.detail.value);
     console.log(formData)
     register(formData, (res)=>{
+      wx.setStorageSync('isRegistered', true)
       wx.showToast({
         title: '注册成功',
         icon: 'success',
@@ -353,7 +354,6 @@ Page({
       wx.switchTab({
         url: '../home/home',
       });
-      wx.setStorageSync('isRegistered', true)
     },(err)=>{
       wx.showModal({
         showCancel: false,
