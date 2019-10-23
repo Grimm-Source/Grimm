@@ -34,7 +34,7 @@ __all__ = ['expr_query', 'expr_update', 'expr_insert', 'expr_delete',
            'query', 'update', 'delete', 'insert', 'query_tbl_fields',
            'execute', 'query_tbl_fields_datatype',
            'exist_fields', 'init_connection', 'close_connection',
-           'reset_connection', 'destroy_connection', 'exist_rows']
+           'reset_connection', 'destroy_connection', 'exist_row']
 
 
 # db globals
@@ -261,43 +261,6 @@ def formatter(record):
     return record
 
 
-# parse **kwargs where clauses
-def parse_kwargs_clause(tbls, fields='*', **kwargs):
-    expr_operator = '='
-    expr_connector = 'and'
-    where_clause = ''
-    # check tbls argument
-    if isinstance(tbls, (bytes, str)):
-        table_count = 1
-    elif isinstance(tbls, (tuple, list)):
-        table_count = len(tbls)
-    else:
-        table_count = 0
-
-    if table_count > 0 and kwargs is not None:
-        if table_count == 1:
-            if isinstance(fields, str) and fields != '*':
-                fields = [fields, ]
-            if isinstance(fields, (list, tuple)):
-                fields = list(fields) + [k for k in kwargs.keys()]
-            # fetch all fields datatype info to check if need check quotes
-            typeinfo = query_tbl_fields_datatype(tbls, fields)
-        for k, v in kwargs.items():
-            if isinstance(v, bytes):
-                v = v.decode('utf8')
-            # add quotes for values
-            if isinstance(v, str) and v.strip()[0] not in '\'"':
-                if table_count == 1 and typeinfo[k] not in DB_QUOTED_TYPES:
-                    v = v.strip()
-                else:
-                    v = f"'{v.strip()}'"
-
-            expr = f'{k} {expr_operator} {v}'
-            where_clause = f'{where_clause} {expr_connector} {expr}' if where_clause else expr
-
-    return where_clause
-
-
 # get all table column names
 def query_tbl_fields(tbl):
     '''fetch all fields names into a tuple of given table'''
@@ -317,10 +280,9 @@ def query_tbl_fields(tbl):
         raise e
     if isinstance(tbl, (tuple, list)):
         if len(tbl) > 1:
-            db_logger.warning('query multiple table fields: %s', ','.join(tbl))
-        table = str(tbl[0]) if not isinstance(tbl[0], str) else tbl[0].strip()
-    else:
-        table = tbl.strip('\'" ')
+            db_logger.warning(f'query table fields in multiple tables: {tbl}')
+        table = tbl[0] if isinstance(tbl[0], str) else tbl[0].decode('utf8')
+    table = tbl.strip('\'" ')  # strip 3 typical characters after transfer to string name.
     if not table:
         e = SQLValueError('query field names', 'null table')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
@@ -328,7 +290,6 @@ def query_tbl_fields(tbl):
     # do query
     _query = f"SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` \
         WHERE `TABLE_SCHEMA` = '{DB_NAME}' AND `TABLE_NAME` = '{table}'"
-    db_logger.info('SQL table fields querying: %s', _query)
     cursor = session_connection.cursor()
     try:
         cursor.execute(_query)
@@ -339,7 +300,7 @@ def query_tbl_fields(tbl):
         raise err
 
     records = cursor.fetchall()
-    query_fields = [str(row[0]) if not isinstance(row[0], str) else row[0] for row in records]
+    query_fields = [row[0] if isinstance(row[0], str) else str(row[0]) for row in records]
 
     return tuple(query_fields)
 
@@ -363,10 +324,9 @@ def query_tbl_fields_datatype(tbl, fields='*'):
         raise e
     if isinstance(tbl, (tuple, list)):
         if len(tbl) > 1:
-            db_logger.warning('query multiple tables fields datatype: %s', ','.join(tbl))
-        table = str(tbl[0]) if not isinstance(tbl[0], str) else tbl[0].strip()
-    else:
-        table = tbl.strip('\'" ')
+            db_logger.warning(f'query table fields datatype in multiple tables: {tbl}')
+        table = tbl[0] if isinstance(tbl[0], str) else tbl[0].decode('utf8')
+    table = tbl.strip('\'" ')  # strip 3 typical characters after transfer to string name.
     if not table:
         e = SQLValueError('query fields datatype', 'null table')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
@@ -392,7 +352,6 @@ def query_tbl_fields_datatype(tbl, fields='*'):
     # do query
     _query = f"SELECT `COLUMN_NAME`,`DATA_TYPE` FROM `INFORMATION_SCHEMA`.`COLUMNS` \
                 WHERE `TABLE_NAME` = '{table}' AND `COLUMN_NAME` {opcode} {columns}"
-    db_logger.info('SQL fields datatype querying: %s', _query)
     cursor = session_connection.cursor()
     try:
         cursor.execute(_query)
@@ -403,10 +362,47 @@ def query_tbl_fields_datatype(tbl, fields='*'):
         raise err
 
     records = cursor.fetchall()
-    db_fields = [str(row[0]) if not isinstance(row[0], str) else row[0] for row in records]
-    db_typeinfo = [str(row[1]) if not isinstance(row[1], str) else row[1] for row in records]
+    db_fields = [row[0] if isinstance(row[0], str) else str(row[0]) for row in records]
+    db_typeinfo = [row[1] if isinstance(row[1], str) else str(row[1]) for row in records]
 
     return dict(zip(db_fields, db_typeinfo))
+
+
+# parse **kwargs where clauses
+def parse_kwargs_clause(tbls, fields='*', **kwargs):
+    expr_operator = '='
+    expr_connector = 'and'
+    where_clause = ''
+    # check tbls argument
+    if isinstance(tbls, (bytes, str)):
+        table_count = 1
+    elif isinstance(tbls, (tuple, list)):
+        table_count = len(tbls)
+    else:
+        table_count = 0
+
+    if table_count > 0 and kwargs is not None:
+        if table_count == 1:
+            if isinstance(fields, str) and fields != '*':
+                fields = [fields, ]
+            elif isinstance(fields, (list, tuple)):
+                fields = list(fields)
+            fields = fields + list(kwargs.keys()) if fields != '*' else fields
+            # fetch all fields datatype info to check if need check quotes
+            typeinfo = query_tbl_fields_datatype(tbls, fields)
+        for key, val in kwargs.items():
+            if isinstance(val, bytes):
+                val = val.decode('utf8')
+            # add quotes for values
+            if isinstance(val, str) and table_count == 1:
+                val = val.strip()
+                if val[0] not in '\'"' and typeinfo[key] in DB_QUOTED_TYPES:
+                    val = f"'{val}'"
+
+            expr = f'{key} {expr_operator} {val}'
+            where_clause = f'{where_clause} {expr_connector} {expr}' if where_clause else expr
+
+    return where_clause
 
 
 #
@@ -433,10 +429,9 @@ def exist_fields(tbl, fields):
         return None
     if isinstance(tbl, (tuple, list)):
         if len(tbl) > 1:
-            db_logger.warning('check multiple table existence: %s', ','.join(tbl))
-        table = str(tbl[0]) if not isinstance(tbl[0], str) else tbl[0].strip()
-    else:
-        table = tbl.strip('\'" ')
+            db_logger.warning(f'query fields existence in multiple tables: {tbl}')
+        table = tbl[0] if isinstance(tbl[0], str) else tbl[0].decode('utf8')
+    table = tbl.strip('\'" ')  # strip 3 typical characters after transfer to string name.
     if not table:
         e = SQLValueError('check fields existence', 'null table')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
@@ -475,6 +470,11 @@ def exist_row(tbl, **kwargs):
         raise e
     if not session_connection.open:
         init_connection()
+    # check kwargs argument
+    if kwargs is None:
+        err = SQLValueError('check rows existence', 'invalid kwargs query condition')
+        db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
+        return None
     # check table argument
     if isinstance(tbl, bytes):
         tbl = tbl.decode('utf8')
@@ -483,25 +483,16 @@ def exist_row(tbl, **kwargs):
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         return None
     if isinstance(tbl, (tuple, list)):
-        if len(tbl) > 1:
-            db_logger.warning('check multiple table existence: %s', ','.join(tbl))
-        table = str(tbl[0]) if not isinstance(tbl[0], str) else tbl[0].strip()
-    else:
-        table = tbl.strip('\'" ')
+        table = tbl[0] if isinstance(tbl[0], str) else tbl[0].decode('utf8')
+    table = tbl.strip('\'" ')  # strip 3 typical characters after transfer to string name.
     if not table:
         e = SQLValueError('check rows existence', 'null table')
-        db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
-        return None
-    # check kwargs argument
-    if kwargs is None:
-        err = SQLValueError('check rows existence', 'invalid kwargs query condition')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         return None
 
     where_clause = parse_kwargs_clause(tbls=tbl, **kwargs)
     # do query and check existence
-    _query = f"select * from {tbl} where {where_clause}"
-    print('query row existence:', _query)
+    _query = f"SELECT EXISTS(SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1)"
     cursor = session_connection.cursor()
     try:
         result = cursor.execute(_query)
@@ -511,7 +502,7 @@ def exist_row(tbl, **kwargs):
         db_logger.error(f"SQL query row existence error: {err}")
         return None
 
-    return cursor.rowcount if cursor.rowcount > 0 else None
+    return True if cursor.fetchone()[0] == 1 else None
 
 
 # connect exprs where clause exprs list
@@ -579,7 +570,7 @@ def expr_query(tbls, fields='*', clauses=None, **kwargs):
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         raise e
     if isinstance(tbls, (tuple, list)):
-        tables = ','.join([str(tbl) if not isinstance(tbl, str) else tbl.strip() for tbl in tbls])
+        tables = ','.join([tbl.strip('\'" ') if isinstance(tbl, str) else tbl.decode('utf8').strip('\'" ') for tbl in tbls])
         table_count = len(tbls)
     else:
         tables = tbls.strip('\'" ')
@@ -684,10 +675,9 @@ def expr_update(tbl, vals, clauses=None, **kwargs):
         raise e
     if isinstance(tbl, (tuple, list)):
         if len(tbl) > 1:
-            db_logger.warning('expression update multiple tables: %s', ','.join(tbl))
-        table = str(tbl[0]) if not isinstance(tbl[0], str) else tbl[0].strip()
-    else:
-        table = tbl.strip('\'" ')
+            db_logger.warning(f'expression update in multiple tables: {tbl}')
+        table = tbl[0] if isinstance(tbl[0], str) else tbl[0].decode('utf8')
+    table = tbl.strip('\'" ')  # strip 3 typical characters after transfer to string name.
     if not table:
         e = SQLValueError('expression update', 'null table')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
@@ -784,10 +774,9 @@ def expr_insert(tbl, vals=None, **kwargs):
         raise e
     if isinstance(tbl, (tuple, list)):
         if len(tbl) > 1:
-            db_logger.warning('expression insert multiple tables: %s', ','.join(tbl))
-        table = str(tbl[0]) if not isinstance(tbl[0], str) else tbl[0].strip()
-    else:
-        table = tbl.strip('\'" ')
+            db_logger.warning(f'expression insert in multiple tables: {tbl}')
+        table = tbl[0] if isinstance(tbl[0], str) else tbl[0].decode('utf8')
+    table = tbl.strip('\'" ')  # strip 3 typical characters after transfer to string name.
     if not table:
         e = SQLValueError('expression insert', 'null table')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
@@ -880,10 +869,9 @@ def expr_delete(tbl, clauses=None, **kwargs):
         raise e
     if isinstance(tbl, (tuple, list)):
         if len(tbl) > 1:
-            db_logger.warning('expression delete multiple tables: %s', ','.join(tbl))
-        table = str(tbl[0]) if not isinstance(tbl[0], str) else tbl[0].strip()
-    else:
-        table = tbl.strip('\'" ')
+            db_logger.warning(f'expression update multiple tables: {tbl}')
+        table = tbl[0] if isinstance(tbl[0], str) else tbl[0].decode('utf8')
+    table = tbl.strip('\'" ')  # strip 3 typical characters after transfer to string name.
     if not table:
         e = SQLValueError('expression delete', 'null table')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
