@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hideDrawer, setNoticeUsers} from '../../actions';
+import { hideDrawer, setNoticeUsers } from '../../actions';
 import NoticeUserList from '../../components/NoticeUserList/NoticeUserList';
 
 import user from '../../images/user.svg';

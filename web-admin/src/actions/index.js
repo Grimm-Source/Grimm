@@ -1,6 +1,7 @@
 import {ACTION_TYPES} from './actionTypes';
 import request from '../utils/request';
 import { ADMIN_PANEL_TYPE, ADMIN_FORM_TYPE } from "../constants";
+import { storage } from "../utils/localStorageHelper";
 import { message } from 'antd';
 
 //ui section
@@ -74,7 +75,7 @@ const verifyAccount = user => dispatch => {
         method: "POST",
         data: user
     }).then((userInfo) => {
-        sessionStorage.setItem("user", JSON.stringify(userInfo));
+        storage.setItem("user", userInfo);
         dispatch(login(userInfo));    
         dispatch(switchAdminFormType(ADMIN_FORM_TYPE.CREATE));
         message.success('登录成功');

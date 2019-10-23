@@ -20,7 +20,7 @@ class NoticeUserList extends React.Component {
                 >
                     <Skeleton title={false} loading={this.props.loading} active>
                     <List.Item.Meta
-                        title={<span><span className="user-name">{item.name}</span> | <span>{item.registerDate}</span></span>}
+                        title={<span><span className="user-name">{item.name}</span> | <span>{item.registrationDate}</span></span>}
                     />
                     </Skeleton>
                 </List.Item>
@@ -31,16 +31,7 @@ class NoticeUserList extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  // newUsers: state.notice.newUsers ,
-  newUsers: [{
-    id: 1,
-    name: "张阿贵",
-    registerDate: "2019-01-01"
-  },{
-    id: 2,
-    name: "王小月",
-    registerDate: "2019-09-21"
-  }],
+  newUsers: state.notice.newUsers,
   loading: state.ui.loading
 });
 

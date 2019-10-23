@@ -1,23 +1,14 @@
 import React from 'react';
 import { PageHeader, Tag, Button, Menu, Dropdown, Icon } from 'antd';
-import { switchHomeTag, logout , showActivityModal, switchAdminFormType, showDrawer} from '../../actions';
-import { HOME_TAG_TYPE, ADMIN_FORM_TYPE } from "../../constants";
-import notice from '../../images/notice.svg';
+import { switchHomeTag, logout , showActivityModal, switchAdminFormType} from '../../actions';
+import Notice from '../Notice/Notice.js';
+import { HOME_TAG_TYPE, ADMIN_FORM_TYPE } from '../../constants';
+import { storage } from '../../utils/localStorageHelper';
 import { connect } from 'react-redux';
-
-// import client from 'socket.io-client';
 
 import './Header.less';
 
 class Header extends React.Component {
-
-    componentDidMount(){
-        // let io = client.connect("http://127.0.0.1:5000");
-        // io.on('connect',function() {
-        //     io.emit("test",{data: 'I\'m connected!'});
-        // });
-    }
-
     onClickCreateActivity = () =>{
         this.props.onClickCreateActivity();
     }
@@ -50,14 +41,7 @@ class Header extends React.Component {
                     <Button key="new-activity" type="primary" onClick={this.props.onClickCreateActivity}>
                       发布新活动
                     </Button>,
-                    <span key="notice" className="notice" onClick={this.props.onClickNotice}>
-                      <img 
-                        width={25}
-                        alt="notice"
-                        src={notice}
-                      />
-                      {this.props.notices.length > 0? <span className="notice-count"/> : null }
-                    </span>]}
+                    <Notice key="notice"/>]}
                 >
             </PageHeader>
         );
@@ -77,13 +61,10 @@ class Header extends React.Component {
     onClickLogin: () => {
       // dispatch(login());
     },
-    onClickNotice: () =>{
-      dispatch(showDrawer());
-    },
     onClickLogout: () => {
       dispatch(switchAdminFormType(ADMIN_FORM_TYPE.LOGIN));
       dispatch(switchHomeTag(HOME_TAG_TYPE.ACTIVITY));//incase login form in 2 modes
-      sessionStorage.clear();
+      storage.clearItems();
       dispatch(logout());
     },
     onClickCreateActivity: () => {

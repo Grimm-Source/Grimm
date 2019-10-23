@@ -3,7 +3,10 @@ import {HOME_TAG_TYPE,
         ADMIN_FORM_TYPE,
         USER_LIST_TYPE} from "../constants";
 
-let user = sessionStorage.getItem("user") && JSON.parse(sessionStorage.getItem("user"));
+import { storage } from "../utils/localStorageHelper";
+
+let user = storage.getItem("user");
+let newUsers = storage.getItem("notice-new-users");
 
 const initialState = {
     ui: {
@@ -31,7 +34,7 @@ const initialState = {
         activities: []
     },
     user: {
-        users: []
+        users: newUsers || []
     },
     notice: {
         newUsers: []

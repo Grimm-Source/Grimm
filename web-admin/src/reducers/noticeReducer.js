@@ -5,7 +5,7 @@ const notice = (state = [], action) => {
       case ACTION_TYPES.NOTICE_NEW_USERS_SET:
           return {
             ...state,
-            users: action.users || []
+            newUsers: action.users || []
           };
 
       default:
