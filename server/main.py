@@ -22,7 +22,7 @@ class grimmdb():
         self.user = user
         self.passwd = passwd
         self.dbName = dbName
-    
+
     def connect(self):
         self.db = pymysql.connect(self.host, self.user, self.passwd, self.dbName)
         self.cursor = self.db.cursor()
@@ -37,7 +37,7 @@ class grimmdb():
         except Exception as e:
             print("XTYDBG_ERR:", e)
         return res
-    
+
     def get_all(self, sql, args):
         res = None
         try:
@@ -70,12 +70,12 @@ class grimmdb():
             self.db.rollback()
         return res
 
-grimmdb = grimmdb('localhost', 'root', '123Xty1.', 'grimm')
+grimmdb = grimmdb('localhost', 'root', '12345678', 'grimm')
 
 @app.route('/jscode2session')
 def wx_jscode2session():
     js_code = request.args.get("js_code")
-    
+
     print(wx_appid)
     print(wx_secret)
     print(js_code)
@@ -83,8 +83,8 @@ def wx_jscode2session():
     print('request url:', url)
     http = urllib3.PoolManager()
     response = http.request('GET', url)
-    
-    if response.status == 200:      
+
+    if response.status == 200:
         response_data = response.data
         json_data = json.loads(response_data)
         json_data['server_errcode'] = 0
@@ -98,7 +98,7 @@ def wx_jscode2session():
     else:
         ret_data_str = json.dumps({'status':'failure'})
     return ret_data_str
-    
+
 @app.route('/register', methods=['POST'])
 def register():
     newdata = {}
@@ -337,7 +337,7 @@ def update_activity(id):
             return json.dumps({"status": "delete successful"})
         except Exception as e:
             print("*********XTYDBG activity delete failure", e)
-            return "failure" # need to define a better protocol to communicate with frontend       
+            return "failure" # need to define a better protocol to communicate with frontend
     else:
         data = request.get_data()
         print('XTYDBG', type(data))
@@ -363,8 +363,8 @@ def update_activity(id):
         except Exception as e:
             print('XTYDBG:', e)
         return data
-       
-        
+
+
 
 
 @app.route('/activity/delete', methods=['POST', 'GET', 'DELETE'])
