@@ -709,11 +709,10 @@ def expr_update(tbl, vals, clauses=None, **kwargs):
         if isinstance(v, bytes):
             v = v.decode('utf8')
         # add quotes for words
-        if isinstance(v, str) and v.strip()[0] not in '\'"':
-            if typeinfo[k] in DB_QUOTED_TYPES:
-                v = f"'{v.strip()}'"
-            else:
-                v = v.strip()
+        if isinstance(v, str):
+            v = v.strip()
+            if v[0] not in '\'"' and typeinfo[k] in DB_QUOTED_TYPES:
+                v = f"'{v}'"
 
         update_exprs += [f'{k}={v}']
     update_vals = ','.join(update_exprs)
