@@ -34,6 +34,9 @@ from server.utils.misctools import json_dump_http_response, json_load_http_reque
 from server.core.const import SMS_VRF_EXPIRY
 
 
+SMS_VERIFIED_OPENID = {}
+
+
 @app.route('/jscode2session', methods=['GET'])
 def wxjscode2session():
     '''view function for validating weixin user openid'''
@@ -83,33 +86,41 @@ def wxjscode2session():
 def register():
     '''view function for registering new user to database'''
     if request.method == 'POST':
+        global SMS_VERIFIED_OPENID
         userinfo = {}
         info = json_load_http_request(request)  # get http POST data bytes format
         # fetch data from front end
         userinfo['openid'] = request.headers.get('Authorization')
-        if not db.exist_row('user', openid=userinfo['openid']):
+        openid = userinfo['openid']
+        if not db.exist_row('user', openid=openid):
             # confirm sms-code
-            vrfcode = info['verification_code']
-            phone_number = info['tel']
-            sms_token = sms_verify.fetch_token(phone_number)
-            if sms_token is None:
-                user_logger.warning('%s: no such a sms token for number', phone_number)
-                return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
-            if sms_token.expired:
-                user_logger.warning('%s, %s: try to validate user with expired token', phone_number, sms_token.vrfcode)
-                sms_verify.drop_token(phone_number)
-                return json_dump_http_response({'status': 'failure', 'message': '过期验证码'})
-            if not sms_token.valid:
-                user_logger.warning('%s: try to validate user with invalid token', phone_number)
-                sms_verify.drop_token(phone_number)
-                return json_dump_http_response({'status': 'failure', 'message': '无效验证码'})
+            if not ('verification_code' in info or openid in SMS_VERIFIED_OPENID):
+                user_logger.warning('%s: user registers before sms verification', openid)
+                return json_dump_http_response({'status': 'failure', 'message': '未认证注册用户'})
+            if 'verification_code' in info:
+                vrfcode = info['verification_code']
+                phone_number = info['tel']
+                sms_token = sms_verify.fetch_token(phone_number)
+                if sms_token is None:
+                    user_logger.warning('%s: no such a sms token for number', phone_number)
+                    return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
+                if sms_token.expired:
+                    user_logger.warning('%s, %s: try to validate user with expired token', phone_number, sms_token.vrfcode)
+                    sms_verify.drop_token(phone_number)
+                    return json_dump_http_response({'status': 'failure', 'message': '过期验证码'})
+                if not sms_token.valid:
+                    user_logger.warning('%s: try to validate user with invalid token', phone_number)
+                    sms_verify.drop_token(phone_number)
+                    return json_dump_http_response({'status': 'failure', 'message': '无效验证码'})
 
-            result = sms_token.validate(phone_number=phone_number, vrfcode=vrfcode)
-            if result is not True:
-                user_logger.warning('%s, %s: sms code validation failed, %s', phone_number, vrfcode, result)
-                return json_dump_http_response({'status': 'failure', 'message': result })
-            user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
-            sms_verify.drop_token(phone_number)  # drop token from pool after validation
+                result = sms_token.validate(phone_number=phone_number, vrfcode=vrfcode)
+                if result is not True:
+                    user_logger.warning('%s, %s: sms code validation failed, %s', phone_number, vrfcode, result)
+                    return json_dump_http_response({'status': 'failure', 'message': result })
+                user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
+                sms_verify.drop_token(phone_number)  # drop token from pool after validation
+            else:
+                del SMS_VERIFIED_OPENID[openid]
             # mock user info and do inserting
             userinfo['birth'] = info['birthdate']
             userinfo['remark'] = info['comment']
@@ -127,16 +138,16 @@ def register():
             userinfo['phone_verified'] = 1
             try:
                 if db.expr_insert('user', userinfo) != 1:
-                    user_logger.error('%s: user registration failed', userinfo['openid'])
+                    user_logger.error('%s: user registration failed', openid)
                     return json_dump_http_response({'status': 'failure', 'message': '录入用户失败，请重新注册'})
             except:
-                user_logger.error('%s: user registration failed', userinfo['openid'])
+                user_logger.error('%s: user registration failed', openid)
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新注册'})
 
-            user_logger.info('%s: complete user registration success', userinfo['openid'])
+            user_logger.info('%s: complete user registration success', openid)
             return json_dump_http_response({'status': 'success'})
 
-        user_logger.error('%s: user is registered already', userinfo['openid'])
+        user_logger.error('%s: user is registered already', openid)
         return json_dump_http_response({'status': 'failure', 'message': '用户已注册，请登录'})
 
 
@@ -221,6 +232,7 @@ def smscode():
 
     # verify smscode
     if request.method == 'POST':
+        global SMS_VERIFIED_OPENID
         data = json_load_http_request(request)
         phone_number = data['tel']
         vrfcode = data['verification_code']
@@ -233,12 +245,14 @@ def smscode():
         if result is not True:
             user_logger.warning('%s, %s: sms code validation failed, %s', phone_number, vrfcode, result)
             return json_dump_http_response({'status': 'failure', 'message': result })
-        user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
         sms_verify.drop_token(phone_number)  # drop token from pool if validated
+        # try update database first, if no successful, append this openid.
         try:
-            if db.expr_update('user', {'phone_verified': 1}, openid=openid) == 1:
-                return json_dump_http_response({'status': 'success'})
+            if db.expr_update('user', {'phone_verified': 1}, openid=openid) is False:
+                SMS_VERIFIED_OPENID[openid] = phone_number
         except:
-            pass
-        user_logger.warning('%s: update user phone valid status failed', openid)
-        return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新短信验证'})
+            user_logger.warning('%s: update user phone valid status failed', openid)
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新短信验证'})
+
+        user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
+        return json_dump_http_response({'status': 'success'})
