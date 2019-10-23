@@ -135,6 +135,7 @@ def register():
             userinfo['role'] = 0 if info['role'] == "志愿者" else 1
             userinfo['audit_status'] = 0
             userinfo['registration_date'] = datetime.now().strftime('%Y-%m-%d')
+            userinfo['phone'] = info['tel']
             userinfo['phone_verified'] = 1
             try:
                 if db.expr_insert('user', userinfo) != 1:
@@ -185,6 +186,7 @@ def profile():
     if request.method == 'POST':
         newinfo = json_load_http_request(request)  # get request POST user data
         userinfo = {}
+        userinfo['openid'] = request.headers.get('Authorization')
         userinfo['phone'] = newinfo['tel']
         userinfo['gender'] = newinfo['gender']
         userinfo['birth'] = newinfo['birthDate']
@@ -193,7 +195,6 @@ def profile():
         userinfo['emergent_contact'] = newinfo['emergencyPerson']
         userinfo['emergent_contact_phone'] = newinfo['emergencyTel']
         userinfo['remark'] = newinfo['usercomment']
-        userinfo['openid'] = newinfo['openid']
         try:
             if db.expr_update('user', userinfo, openid=userinfo['openid']) != 1:
                 user_logger.error('%s: user update info failed', userinfo['openid'])
@@ -236,7 +237,7 @@ def smscode():
         data = json_load_http_request(request)
         phone_number = data['tel']
         vrfcode = data['verification_code']
-        openid = data['openid']
+        openid = request.headers.get('Authorization')
         sms_token = sms_verify.fetch_token(phone_number)
         if sms_token is None:
             user_logger.warning('%s: no such a sms token for number', phone_number)
