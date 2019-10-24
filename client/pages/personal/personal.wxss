@@ -23,6 +23,12 @@ page{
     margin-bottom: 20rpx;
 }
 
+.personal_container .personal_banner{
+    display: flex;
+    justify-content: center;
+    font-size: 30rpx;
+}
+
 .register_login{
     margin-top: 10rpx;
 }

@@ -12,26 +12,33 @@ class Notice extends React.Component {
     constructor(props) {
         super(props);
         this.io = null;
+        // this.initNewUsersSocket();
     }
 
     componentWillReceiveProps(nextProps, prevState){
         if(!this.io && nextProps.hasLogined){
-            let io = socketHelper.getNewUsersSockect();
-            io.on('new-users', function (data) {
-                if( !data.users || data.users.length === 0 ){
-                    return;
-                }
-                let users = data.users;//received users
-                let newUsers = users.concat( this.props.users );
-
-                storage.setItem("notice-new-users", newUsers);
-                this.props.onUpdateNewUser(newUsers);
-
-                io.emit("new-users", { data: {
-                    users
-                }});
-            });
+            // this.initNewUsersSocket();
         }
+    }
+
+    initNewUsersSocket(){
+        let io = socketHelper.getNewUsersSockect();
+
+        console.log(io + "***********")
+        io.on('new-users', (users) => {
+            if( !users || users.length === 0 ){
+                return;
+            }
+
+            let newUsers = users.concat( this.props.users );
+
+            storage.setItem("notice-new-users", newUsers);
+            this.props.onUpdateNewUser(newUsers);
+
+            io.emit("new-users", { data: {
+                users
+            }});
+        });
     }
 
     render() {   

@@ -76,7 +76,8 @@ const verifyAccount = user => dispatch => {
         data: user
     }).then((userInfo) => {
         storage.setItem("user", userInfo);
-        dispatch(login(userInfo));    
+        dispatch(login(userInfo));  
+        dispatch(fetchActivityList());
         dispatch(switchAdminFormType(ADMIN_FORM_TYPE.CREATE));
         message.success('登录成功');
     }, (errorMessage)=>{

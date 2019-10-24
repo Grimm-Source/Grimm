@@ -21,29 +21,30 @@ class Home extends React.Component {
     getNavContent(history){
         const currentTagType = () => {
             switch(history.location.pathname){
+                // case '/changePassword':
                 case '/users': return HOME_TAG_TYPE.USER;
                 case '/profile': return HOME_TAG_TYPE.PROFILE;
                 case '/admins': return HOME_TAG_TYPE.ADMIN;
-                case '/activities':
                 default: return HOME_TAG_TYPE.ACTIVITY;
             }
         }
 
         return(
-            <Menu className="nav-bar" defaultSelectedKeys={[`${currentTagType()}`]} mode="horizontal">
+            <Menu className="nav-bar" selectedKeys={[`${currentTagType()}`]} mode="horizontal">
                 <Menu.Item key={HOME_TAG_TYPE.ACTIVITY}>
                 志愿者活动
-                <Link to="/activities" />
+                <Link to="/" />
                 </Menu.Item>
                 <Menu.Item key={HOME_TAG_TYPE.USER}>
                 微信用户
                 <Link to="/users" />
                 </Menu.Item>
+                {this.props.user && this.props.user.type === "root"? <Menu.Item key={HOME_TAG_TYPE.ADMIN}>管理员<Link to="/admins" /></Menu.Item> : null}
                 <Menu.Item key={HOME_TAG_TYPE.PROFILE}>
                 个人信息管理
                 <Link to="/profile" />
                 </Menu.Item>
-                {this.props.user && this.props.user.type === "root"? <Menu.Item key={HOME_TAG_TYPE.ADMIN}>管理员<Link to="/admins" /></Menu.Item> : null}
+                
             </Menu>
         )
     }
@@ -55,10 +56,10 @@ class Home extends React.Component {
                     <Header/>
                     {this.getNavContent(history)}
                     <div className="content-wrapper" >
-                        <Route exact path="/activities" component={ActivityList}/>
+                        <Route exact path="/" component={ActivityList}/>
                         <Route path="/users" component={User}/>
                         <Route path="/profile" component={Profile}/>
-                        <Route path="/admins" component={AdminPanel}/>
+                        {this.props.user && this.props.user.type === "root"?<Route path="/admins" component={AdminPanel}/>: null}
                     </div>
                     <Login/>
                     <Activity/>

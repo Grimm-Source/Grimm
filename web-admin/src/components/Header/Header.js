@@ -4,20 +4,26 @@ import { switchHomeTag, logout , showActivityModal, switchAdminFormType} from '.
 import Notice from '../Notice/Notice.js';
 import { HOME_TAG_TYPE, ADMIN_FORM_TYPE } from '../../constants';
 import { storage } from '../../utils/localStorageHelper';
+import { withRouter} from "react-router-dom";
 import { connect } from 'react-redux';
 
 import './Header.less';
 
 class Header extends React.Component {
-    onClickCreateActivity = () =>{
+    onClickCreateActivity = () => {
         this.props.onClickCreateActivity();
+    }
+
+    onClickLogout = ()=> {
+        this.props.history.push('/');
+        this.props.onClickLogout();
     }
 
     render() {  
         const menu = (
           <Menu className="header-menu">
             <Menu.Item>
-              {this.props.user && this.props.user.email?(<div className="header-menu-button" onClick={this.props.onClickLogout}>
+              {this.props.user && this.props.user.email?(<div className="header-menu-button" onClick={this.onClickLogout}>
                 退出
               </div>): (<div className="header-menu-button"  onClick={this.props.onClickLogin}>
                 登录
@@ -72,4 +78,4 @@ class Header extends React.Component {
     }
   });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));

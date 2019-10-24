@@ -3,7 +3,8 @@ const {getProfile} = require('../../utils/requestUtil.js');
 
 
 var app = getApp();
-const isRegistered = wx.getStorageSync('isRegistered') || false;
+let isRegistered = wx.getStorageSync('isRegistered') || false;
+let auditStatus = wx.getStorageSync('auditStatus') || "pending";
 
 // pages/personal/personal.js
 Page({
@@ -57,6 +58,10 @@ Page({
    */
   onShow: function () {
     this.getInfoSetting()
+    this.setData({
+      isRegistered,
+      auditStatus
+    })
   },
 
   /**
@@ -133,6 +138,14 @@ Page({
   },
 
   updateProfile: function(){
+    if(this.data.isRegistered){
+      wx.showToast({
+        title: '个人信息正在审核，无法更新',
+        icon: 'none', //error
+        duration: 2000
+      });
+      return;
+    }
     wx.navigateTo({
       url: '/pages/profile/profile',
     })

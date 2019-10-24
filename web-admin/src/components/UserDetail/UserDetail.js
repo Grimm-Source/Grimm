@@ -28,8 +28,8 @@ class UserDetail extends React.Component {
             <Form.Item label="性别">{this.props.user.gender}</Form.Item>
             <Form.Item label="生日">{this.props.user.birthdate}</Form.Item>
             <Form.Item label="注册时间">{this.props.user.registrationDate}</Form.Item>
-            <Form.Item label="紧急联系人">{this.props.user.emergencyPerson}</Form.Item>
-            <Form.Item label="紧急联系电话">{this.props.user.emergencyTel}</Form.Item>
+            {this.props.user.role === "志愿者"?null:<Form.Item label="紧急联系人">{this.props.user.emergencyPerson}</Form.Item>}
+            {this.props.user.role === "志愿者"?null:<Form.Item label="紧急联系电话">{this.props.user.emergencyTel}</Form.Item>}
             <Form.Item label="备注">{this.props.user.comment}</Form.Item>
         </Form>
     );

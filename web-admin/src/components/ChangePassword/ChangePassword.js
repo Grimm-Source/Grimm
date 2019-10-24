@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button } from 'antd';
 import { changePassword } from '../../actions';
+import {rule as passwordReg} from '../../utils/passwordRules';
 
 class ChangePassword extends React.Component {
     constructor(props){
@@ -18,8 +19,7 @@ class ChangePassword extends React.Component {
 
     validatePasswordFormat = (rule, value, callback) => {
         const { form } = this.props;
-        let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,21}/;
-        if (value && !reg.test(value)) {
+        if (value && !passwordReg.test(value)) {
             callback('密码为8~21位，至少包含一个大小字母，一个小写字母及一个特殊字符!');
         }else if (value && this.state.confirmDirty) {
             form.validateFields(['confirmPassword'], { force: true });

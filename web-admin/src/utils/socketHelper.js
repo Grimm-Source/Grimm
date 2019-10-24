@@ -2,15 +2,14 @@ import client from 'socket.io-client';
 import url from '../config/config';
 import { storage } from '../utils/localStorageHelper';
 
-const NEW_USERS = 'new-users';
-
 let user = storage.getItem("user");
 
 function getNewUsersSockect() {
-    let newUsersSockect = client.connect( url + NEW_USERS );
-
+    let newUsersSockect = client.connect( url );
+    console.log( "connect......" );
     newUsersSockect.on('connect',function() {
-        newUsersSockect.emit("connect", { data: {
+        console.log( "connected......" );
+        newUsersSockect.emit("test", { data: {
             user: user.id
         }});
     });
