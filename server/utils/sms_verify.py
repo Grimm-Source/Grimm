@@ -202,7 +202,7 @@ class SMSVerifyToken(object):
                        self.phone_number,
                        self.__signature,
                        self.__template_code,
-                       '{"code": "%s"}' % (self.vrfcode))
+                       json.dumps({'code': self.vrfcode}, ensure_ascii=False, default=str) if self.vrfcode else None)
             sys_logger.info('send verification code %s to phone %s', self.vrfcode, self.phone_number)
             response = json.loads(out)
 
