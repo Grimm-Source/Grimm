@@ -70,7 +70,7 @@ create table user
     birth                       DATE                NOT NULL,
     address                     VARCHAR(80)         NOT NULL,
     emergent_contact            VARCHAR(8),
-    emergent_contact_phone      VARCHAR(16)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL UNIQUE,
+    emergent_contact_phone      VARCHAR(16)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin UNIQUE,
     activities_joined           SMALLINT            NOT NULL        DEFAULT 0,
     remark                      VARCHAR(100)        DEFAULT "无",
     audit_status                TINYINT             NOT NULL        DEFAULT 0,
