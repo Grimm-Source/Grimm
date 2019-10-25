@@ -1,11 +1,7 @@
-const {getProfile} = require('../../utils/requestUtil.js');
-
-
 var app = getApp();
 let isRegistered = wx.getStorageSync('isRegistered') || false;
 let auditStatus = wx.getStorageSync('auditStatus') || "pending";
 
-// pages/personal/personal.js
 Page({
 
   /**
@@ -42,7 +38,6 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function () {
-    // this.getInfoSetting()
   },
 
   /**
@@ -100,32 +95,28 @@ Page({
 
   getInfoSetting: function(){
     if(isRegistered){
-      return getProfile(data => {
-        wx.getSetting({
-          success: res => {
-            if (res.authSetting['scope.userInfo']) {
-              // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-              wx.getUserInfo({
-                success: res => {
-                  // 可以将 res 发送给后台解码出 unionId
-                  app.globalData.userInfo = res.userInfo
-                  this.setData({
-                    userInfo: res.userInfo,
-                    avatarUrl: res.userInfo.avatarUrl
-                  })
-    
-                  // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-                  // 所以此处加入 callback 以防止这种情况
-                  if (this.userInfoReadyCallback) {
-                    this.userInfoReadyCallback(res)
-                  }
+      wx.getSetting({
+        success: res => {
+          if (res.authSetting['scope.userInfo']) {
+            // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+            wx.getUserInfo({
+              success: res => {
+                // 可以将 res 发送给后台解码出 unionId
+                app.globalData.userInfo = res.userInfo
+                this.setData({
+                  userInfo: res.userInfo,
+                  avatarUrl: res.userInfo.avatarUrl
+                })
+  
+                // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+                // 所以此处加入 callback 以防止这种情况
+                if (this.userInfoReadyCallback) {
+                  this.userInfoReadyCallback(res)
                 }
-              })
-            }
+              }
+            })
           }
-        })
-      }, (err) => {
-        console.log(err)
+        }
       })
     }
   },
