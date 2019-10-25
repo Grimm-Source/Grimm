@@ -1,4 +1,3 @@
-const apiUrl = require('../../config.js').apiUrl
 const {getProfile} = require('../../utils/requestUtil.js');
 
 
@@ -43,7 +42,7 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function () {
-    this.getInfoSetting()
+    // this.getInfoSetting()
   },
 
   /**
@@ -57,11 +56,11 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-    this.getInfoSetting()
+    this.getInfoSetting(); 
     this.setData({
       isRegistered,
       auditStatus
-    })
+    });
   },
 
   /**
@@ -138,7 +137,7 @@ Page({
   },
 
   updateProfile: function(){
-    if(this.data.isRegistered){
+    if(this.data.isRegistered && this.data.auditStatus === "pending"){
       wx.showToast({
         title: '个人信息正在审核，无法更新',
         icon: 'none', //error

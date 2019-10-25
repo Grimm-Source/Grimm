@@ -4,16 +4,16 @@
       <view class="weui-cell__hd">
         <view class="weui-label" aria-label="姓名">姓名</view>
       </view>
-      <view class="weui-cell__bd form-input-readonly">
-        <input class="weui-input" disabled aria-valuenow="{{userInfo.name}}" aria-readonly value="{{userInfo.name}}"/>
+      <view class="{{ui.auditStatus!=='rejected'?'weui-cell__hd form-input-readonly': 'weui-cell__hd'}}">
+        <input class="weui-input" disabled="{{ui.auditStatus!=='rejected'}}" aria-valuenow="{{userInfo.name}}" aria-readonly="{{ui.auditStatus!=='rejected'}}" value="{{userInfo.name}}"/>
       </view>
     </view>
     <view class="weui-cell weui-cell_input">
       <view class="weui-cell__hd">
         <view class="weui-label" aria-label="身份证号码">身份证号码</view>
       </view>
-      <view class="weui-cell__bd form-input-readonly">
-        <input class="weui-input" disabled aria-readonly aria-valuenow="{{userInfo.idcard}}" aria-readonly value="{{userInfo.idcard}}"/>
+      <view class="{{ui.auditStatus!=='rejected'?'weui-cell__hd form-input-readonly': 'weui-cell__hd'}}">
+        <input class="weui-input" disabled="{{ui.auditStatus!=='rejected'}}" maxlength="18" aria-readonly="{{ui.auditStatus!=='rejected'}}" aria-valuenow="{{userInfo.idcard}}" aria-readonly="{{ui.auditStatus!=='rejected'}}" value="{{userInfo.idcard}}"/>
       </view>
     </view> 
     <view class="weui-cell weui-cell_input">
@@ -86,8 +86,8 @@
         <view class="weui-cell__hd">
             <view class="weui-label" aria-label="残疾人证">残疾人证</view>
         </view>
-        <view class="weui-cell__bd form-input-readonly">
-            <input class="weui-input" disabled aria-valuenow="{{userInfo.disabledID}}" value="{{userInfo.disabledID}}"/>
+        <view class="{{ui.auditStatus!=='rejected'?'weui-cell__hd form-input-readonly': 'weui-cell__hd'}}">
+            <input class="weui-input" disabled="{{ui.auditStatus!=='rejected'}}" aria-readonly="{{ui.auditStatus!=='rejected'}}" aria-valuenow="{{userInfo.disabledID}}" value="{{userInfo.disabledID}}"/>
         </view>
         </view>
         <view class="weui-cell weui-cell_input">

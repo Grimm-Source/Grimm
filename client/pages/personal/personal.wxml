@@ -16,7 +16,7 @@
     </view>
     <view class="personal_banner">
         <view class="audit_status" wx:if='{{auditStatus === "pending"}}'>正在审核中...</view>
-        <view class="audit_status" wx:if='{{auditStatus === "rejected"}}'>未通过审核，请重新提交</view>
+        <view class="audit_status" wx:if='{{auditStatus === "rejected"}}'>未通过审核，请更新个人信息</view>
         <view class="audit_status" wx:if='{{auditStatus === "approved"}}'>已审核</view>
     </view>
     <view class="personal_body">
