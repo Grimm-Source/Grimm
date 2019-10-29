@@ -44,7 +44,7 @@ Name Form Conventions(Recommended):
     1. do_something:        a function or a procedure is designed to do a certain job, when naming this kind of functions/procedures, put the verb ahead of other words, like 'parse', then others behind, and then the job name at last.
                             example:
                                     parse_url_info
-    2. is_something:        a function or a procedure is designed to check the bool status of some object, when naming this kind of functions/procedures, put 'is' ahead of other words, then ohters behind, and then expected status/value at last.
+    2. is_something:        a function or a procedure is designed to check the bool status of some object, when naming this kind of functions/procedures, put 'is' ahead of other words, then others behind, and then expected status/value at last.
                             example:
                                     is_grimm_admin
     3. how_something:       a function or a procedure that describe a group of things, no other verbs or predicates are needed, but sometimes adjectives/adverbs are needed, in this case, put the adjectives/adverbs ahead of the group name.
