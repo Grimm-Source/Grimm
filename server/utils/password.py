@@ -61,6 +61,8 @@ def update_password(password, tbl='admin', policy_check=True, **kwargs):
     policy_pass = check_password_policy(password) if policy_check else True
     if policy_pass is True:
         salt = bcrypt.gensalt(DEFAULT_PASSWORD_SALT)
+        if isinstance(password, str):
+            password = password.encode('utf-8')
         bcrypt_passcode = bcrypt.hashpw(password, salt)
         passcode = {'password': bcrypt_passcode}
         try:
@@ -77,6 +79,8 @@ def verify_password(password, tbl='admin', **kwargs):
         query = db.expr_query(tbl, 'password', **kwargs)
         if len(query) == 1:
             bcrypt_password = query[0]['password']
+            password = password.encode('utf-8')
+            bcrypt_password = bcrypt_password.encode('utf-8')
             return bcrypt.checkpw(password, bcrypt_password)
     except:
         pass
