@@ -55,7 +55,7 @@ VALUES (0, NOW(), 'default', 'root', 1, 'no.reply@rp-i.org');
 /* user table */
 create table user
 (
-    openid                      VARCHAR(35)         NOT NULL,
+    openid                      CHAR(28)            NOT NULL,
     registration_date           DATE                NOT NULL,
     role                        TINYINT             NOT NULL        DEFAULT 0,  /* 0 是志愿者， 1 是视障人士 */
     name                        VARCHAR(8)          DEFAULT "志愿者",
@@ -97,9 +97,9 @@ create table activity
     notice                      TEXT,
     others                      VARCHAR(120)        NOT NULL        DEFAULT '无',
     admin_raiser                INT                 DEFAULT NULL,
-    user_raiser                 VARCHAR(35),
+    user_raiser                 CHAR(28),
     approver                    INT                 DEFAULT NULL,
-    assignee                    VARCHAR(35),
+    assignee                    CHAR(28),
     published                   TINYINT             NOT NULL        DEFAULT 0,
 
     FOREIGN KEY (user_raiser) REFERENCES user(openid)
@@ -126,8 +126,8 @@ VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "�
 create table pickups
 (
     activity_id                 BIGINT,
-    offer_pickup                VARCHAR(35)         NOT NULL,
-    need_pickup                 VARCHAR(35)         NOT NULL,
+    offer_pickup                CHAR(28)            NOT NULL,
+    need_pickup                 CHAR(28)            NOT NULL,
     time                        DATETIME            NOT NULL,
     location                    VARCHAR(100)        NOT NULL,
 
