@@ -79,8 +79,10 @@ def verify_password(password, tbl='admin', **kwargs):
         query = db.expr_query(tbl, 'password', **kwargs)
         if len(query) == 1:
             bcrypt_password = query[0]['password']
-            password = password.encode('utf-8')
-            bcrypt_password = bcrypt_password.encode('utf-8')
+            if isinstance(password, str):
+                password = password.encode('utf-8')
+            if isinstance(bcrypt_password, str):
+                bcrypt_password = bcrypt_password.encode('utf-8')
             return bcrypt.checkpw(password, bcrypt_password)
     except:
         pass

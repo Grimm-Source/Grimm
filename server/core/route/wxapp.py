@@ -186,7 +186,7 @@ def profile():
     if request.method == 'POST':
         newinfo = json_load_http_request(request)  # get request POST user data
         userinfo = {}
-        userinfo['openid'] = request.headers.get('Authorization')
+        openid = request.headers.get('Authorization')
         userinfo['phone'] = newinfo['tel']
         userinfo['gender'] = newinfo['gender']
         userinfo['birth'] = newinfo['birthDate']
@@ -195,14 +195,17 @@ def profile():
         userinfo['emergent_contact'] = newinfo['emergencyPerson']
         userinfo['emergent_contact_phone'] = newinfo['emergencyTel']
         userinfo['remark'] = newinfo['usercomment']
+        userinfo['disabled_id'] = newinfo['disabledID']
+        userinfo['idcard'] = newinfo['idcard']
+        userinfo['name'] = newinfo['name']
         try:
-            if db.expr_update('user', userinfo, openid=userinfo['openid']) != 1:
-                user_logger.error('%s: user update info failed', userinfo['openid'])
+            if db.expr_update('user', userinfo, openid=openid) != 1:
+                user_logger.error('%s: user update info failed', openid)
                 return json_dump_http_response({'status': 'failure', 'message': "更新失败，请重新输入"})
         except:
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
-        user_logger.info('%s: complete user profile updating successfully', userinfo['openid'])
+        user_logger.info('%s: complete user profile updating successfully', openid)
         return json_dump_http_response({'status': 'success'})
 
 
