@@ -333,7 +333,7 @@ def validate_email(token):
     if isinstance(token, bytes):
         token = token.decode('utf8')
     if not isinstance(token, str):
-        sys_logger('email_verify.validate_email: invalid argument for email token')
+        sys_logger.warning('email_verify.validate_email: invalid argument for email token')
         return False
 
     addr = vrfcode.parse_vrftoken(token)
