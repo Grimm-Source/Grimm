@@ -1,6 +1,5 @@
+// pages/personal2/personal2.js
 var app = getApp();
-let isRegistered = wx.getStorageSync('isRegistered') || false;
-let auditStatus = wx.getStorageSync('auditStatus') || "pending";
 
 Page({
 
@@ -8,27 +7,51 @@ Page({
    * Page initial data
    */
   data: {
-    avatarUrl: '../../images/defaultAvatar.jpeg',
-    userInfo: null,
-    userInfoList: [
+    setting_list: [
       {
-        label: '参加过的活动',
-        icon: '../../images/check-circle.png',
+        icon: '../../images/scan.png',
+        action: 'scanCode'
+      },
+      {
+        icon: '../../images/set.png',
+        action: 'settingProfile'
+      }
+    ],
+    avatarUrl: '../../images/avatar.jpg',
+    userInfo: null,
+    activity_list: [
+      {
+        icon: '../../images/order.png',
+        label: '已预约'
+      },
+      {
+        icon: '../../images/signature.png',
+        label: '已签到'
+      },
+      {
+        icon: '../../images/no_signature.png',
+        label: '未签到'
+      }
+    ],
+    personalInfoList: [
+      {
+        label: '我的活动列表',
         action: ''
       },
       {
-        label: '即将参加的活动',
-        icon: '../../images/smile.png',
+        label: '我的通知',
         action: ''
       },
       {
         label: '更新个人信息',
-        icon: '../../images/setting.png',
         action: 'updateProfile'
       },
       {
         label: '常见问题',
-        icon: '../../images/bulb.png',
+        action: ''
+      },
+      {
+        label: '用户反馈',
         action: ''
       }
     ]
@@ -37,7 +60,8 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function () {
+  onLoad: function (options) {
+
   },
 
   /**
@@ -51,11 +75,11 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-    this.getInfoSetting(); 
     this.setData({
-      isRegistered,
-      auditStatus
+      isRegistered: wx.getStorageSync('isRegistered') || false,
+      auditStatus: wx.getStorageSync('auditStatus') || "pending"
     });
+    this.getInfoSetting(); 
   },
 
   /**
@@ -94,7 +118,7 @@ Page({
   },
 
   getInfoSetting: function(){
-    if(isRegistered){
+    if(this.data.isRegistered){
       wx.getSetting({
         success: res => {
           if (res.authSetting['scope.userInfo']) {
@@ -131,6 +155,14 @@ Page({
     if(this.data.isRegistered && this.data.auditStatus === "pending"){
       wx.showToast({
         title: '个人信息正在审核，无法更新',
+        icon: 'none', //error
+        duration: 2000
+      });
+      return;
+    }
+    if(!this.data.isRegistered){
+      wx.showToast({
+        title: '请先注册',
         icon: 'none', //error
         duration: 2000
       });
