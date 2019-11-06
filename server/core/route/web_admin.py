@@ -186,11 +186,10 @@ def new_admin():
 def send_vrfemail():
     '''view function to send and validate confirm email'''
     if request.method == 'GET':
-        token = request.args.get('token')
+        addr = request.args.get('email')
         # send confirm email
-        if token is None:
+        if addr is not None:
             feedback = {'status': 'success'}
-            addr = json_load_http_request(request, keys='email')
             if db.exist_row('admin', email=addr):
                 try:
                     email_verify.drop_token(admininfo['email'])
@@ -210,6 +209,7 @@ def send_vrfemail():
 
         # validate confirm email
         else:
+            token = request.args.get('token')
             feedback = {'status': '您的邮箱认证成功'}
             if not email_verify.validate_email(token):
                 admin_logger.warning('%s: email verify failed', vrfcode.parse_vrftoken(token))
