@@ -12,6 +12,10 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 import thunk from 'redux-thunk';
 import reducer from './reducers';
+import {
+  BrowserRouter as Router,
+} from "react-router-dom";
+
 
 
 const middleware = [ thunk ];
@@ -19,7 +23,11 @@ moment.locale('zh-cn');
 
 const store = createStore(reducer, initialState, applyMiddleware(...middleware));
 ReactDOM.render(<Provider store={store}>
-    <ConfigProvider locale={zh_CN}><App/></ConfigProvider>
+    <ConfigProvider locale={zh_CN}>
+      <Router>
+        <App />
+      </Router>
+    </ConfigProvider>
   </Provider>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

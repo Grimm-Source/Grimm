@@ -10,7 +10,8 @@ import Profile from '../Profile/Profile.js';
 import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import { Spin,Menu } from 'antd';
-import { Router, Route, Link } from "react-router-dom";
+import { Switch } from "react-router";
+import { Router, Route, Link, withRouter } from "react-router-dom";
 import { createBrowserHistory } from 'history';
 
 import './Home.less';
@@ -18,10 +19,11 @@ import './Home.less';
 const history = createBrowserHistory();
 
 class Home extends React.Component {
-    getNavContent(history){
+    getNavContent(){
         const currentTagType = () => {
-            switch(history.location.pathname){
-                // case '/changePassword':
+            let currentUrlPath = this.props.location.pathname;
+            if(currentUrlPath.includes('/profile')) currentUrlPath = '/profile'
+            switch(currentUrlPath){
                 case '/users': return HOME_TAG_TYPE.USER;
                 case '/profile': return HOME_TAG_TYPE.PROFILE;
                 case '/admins': return HOME_TAG_TYPE.ADMIN;
@@ -51,22 +53,23 @@ class Home extends React.Component {
   
     render() {
         return (
-            <Router history={history}>
-                <div className="home" >
-                    <Header/>
-                    {this.getNavContent(history)}
-                    <div className="content-wrapper" >
-                        <Route exact path="/" component={ActivityList}/>
-                        <Route path="/users" component={User}/>
-                        <Route path="/profile" component={Profile}/>
-                        {this.props.user && this.props.user.type === "root"?<Route path="/admins" component={AdminPanel}/>: null}
-                    </div>
-                    <Login/>
-                    <Activity/>
-                    <Drawer/>
-                    {this.props.loading? <Spin size="large" />: null}
+            
+            <div className="home" >
+                <Header/>
+                {this.getNavContent()}
+                <div className="content-wrapper" >
+                <Switch>
+                    <Route exact path="/" component={ActivityList}/>
+                    <Route path="/users" component={User}/>
+                    <Route path="/profile" component={Profile}/>
+                    {this.props.user && this.props.user.type === "root"?<Route path="/admins" component={AdminPanel}/>: null}
+                </Switch>
                 </div>
-            </Router>   
+                <Login/>
+                <Activity/>
+                <Drawer/>
+                {this.props.loading? <Spin size="large" />: null}
+            </div>
         );
     }
   }
@@ -80,5 +83,5 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Home))
   

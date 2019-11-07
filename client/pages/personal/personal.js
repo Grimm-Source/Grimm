@@ -171,5 +171,13 @@ Page({
     wx.navigateTo({
       url: '/pages/profile/profile',
     })
+  },
+
+  scanCode: function(){
+    wx.scanCode({
+      success(res) {
+        console.log(res)
+      }
+    })
   }
 })
