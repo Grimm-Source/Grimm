@@ -53,7 +53,7 @@ FORCELOAD = None
 
 # send sms configuration
 VRF_SIGNATURE = '视障人士志愿者平台验证'
-COM_SIGNATURE = '阿里云短信测试专用'
+COM_SIGNATURE = '华晓信息'
 TEMPLATE_CODES = {
     'AUTHENTICATE_ID': 'SMS_134125051',
     'CONFIRM_LOGIN': 'SMS_134125050',
