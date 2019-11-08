@@ -27,3 +27,6 @@ tags
 cscope*
 # IDE
 .vscode
+# vim swap files
+.*swp
+.*swo
