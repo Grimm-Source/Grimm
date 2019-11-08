@@ -501,11 +501,9 @@ def users():
             if userinfo['audit_status'] == 0 and status in ('approved', 'rejected', 'pending'):
                 if status == 'approved':
                     sms_template = 'NOTIFY_APPROVED'
-                    sms_message = "条件合乎要求"
                     new_status = {'audit_status': 1}
                 elif status == 'rejected':
                     sms_template = 'NOTIFY_REJECTED'
-                    sms_message = "条件不合要求"
                     new_status = {'audit_status': -1}
                 else:
                     continue
@@ -521,7 +519,7 @@ def users():
                 try:
                     sms_token = sms_verify.SMSVerifyToken(phone_number=userinfo['phone'], expiry=3600)
                     sms_token.template = sms_template
-                    sms_token.vrfcode = sms_message
+                    sms_token.vrfcode = ''
                     sms_token.signature = COM_SIGNATURE
                     if not sms_token.send_sms():
                         admin_logger.warning('%s, unable to send sms to number', userinfo['phone'])

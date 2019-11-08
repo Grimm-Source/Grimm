@@ -203,7 +203,8 @@ class SMSVerifyToken(object):
                        self.__signature,
                        self.__template_code,
                        json.dumps({'code': self.vrfcode}, ensure_ascii=False, default=str) if self.vrfcode else None)
-            sys_logger.info('send verification code %s to phone %s', self.vrfcode, self.phone_number)
+            message = f'SMS code {self.vrfcode}' if self.signature == 'AUTHENTICATE_ID' else 'notification message'
+            sys_logger.info('send %s to phone %s', message, self.phone_number)
             response = json.loads(out)
 
             self.sms_response = response
@@ -211,8 +212,9 @@ class SMSVerifyToken(object):
                 self.__send_time = datetime.now()
                 return True
 
-            err = UserPhoneError('Failed to send SMS code %s to %s: %s' % (self.vrfcode, self.phone_number, out.decode('utf8')))
-            sys_logger.error(err.emsg)
+            message = f'SMS code {self.vrfcode}' if self.signature == 'AUTHENTICATE_ID' else 'notification message'
+            err = UserPhoneError('Failed to send %s to %s: %s' % (message, self.phone_number, out.decode('utf8')))
+            sys_logger.error(err.emsg + f' SIGNATURE: {self.signature} ' + f'TEMPLATE: {self.template}')
         else:
             sys_logger.error('Try to send sms to phone %s with invalid or expired token', self.phone_number)
         return False
