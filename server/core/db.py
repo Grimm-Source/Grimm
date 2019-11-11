@@ -92,7 +92,7 @@ def sig_handler(signalnum=None, frame=None):
 
 
 signal.signal(signal.SIGINT, sig_handler)
-signal.signal(signal.SIGQUIT, sig_handler)
+# signal.signal(signal.SIGQUIT, sig_handler)
 # signal.signal(9, sig_handler)
 signal.signal(signal.SIGTERM, sig_handler)
 

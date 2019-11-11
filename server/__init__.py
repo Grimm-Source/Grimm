@@ -32,6 +32,14 @@ if '../..' not in sys.path:
     sys.path.append('../..')
 
 
+# get local os type
+import platform
+import server.core.const
+if server.core.const.PLATFORM is None:
+    server.core.const.PLATFORM = platform.system()
+del platform
+
+
 # check python version
 try:
     print('checking python version...', end=' ')
@@ -76,6 +84,13 @@ server.core.const.FORCELOAD = cmdargs.force
 
 del parser, argparse, cmdargs
 
+
+# print local host V4 ip
+from server.utils.misctools import get_host_ip
+if server.core.const.PLATFORM != 'Windows' and server.core.const.HOST_IP == '0.0.0.0' or server.core.const.HOST_IP is None:
+    server.core.const.HOST_IP = get_host_ip()
+print('\n>>> LOCAL HOST IP: ' + server.core.const.HOST_IP + '\n')
+del get_host_ip
 
 # check package dependency
 print('checking package dependency...', end=' ')

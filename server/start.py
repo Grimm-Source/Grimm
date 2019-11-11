@@ -41,7 +41,7 @@ from server.core import grimm
 if __name__ == '__main__':
     # register signal handler
     signal.signal(signal.SIGINT, exit_grimm)
-    signal.signal(signal.SIGQUIT, exit_grimm)
+    # signal.signal(signal.SIGQUIT, exit_grimm)
     signal.signal(signal.SIGTERM, exit_grimm)
 
     # initialize database connection
