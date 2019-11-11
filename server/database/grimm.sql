@@ -61,7 +61,7 @@ create table user
     name                        VARCHAR(8)          DEFAULT "志愿者",
     idcard                      CHAR(18)            UNIQUE,
     idcard_verified             TINYINT             DEFAULT 0,
-    disabled_id                 VARCHAR(60)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin UNIQUE,
+    disabled_id                 VARCHAR(60)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin UNIQUE DEFAULT NULL,
     disabled_id_verified        TINYINT             DEFAULT 0,
     phone                       VARCHAR(16)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL UNIQUE,
     phone_verified              TINYINT             NOT NULL        DEFAULT 0,
@@ -69,8 +69,8 @@ create table user
     gender                      CHAR(1)             NOT NULL,
     birth                       DATE                NOT NULL,
     address                     VARCHAR(80)         NOT NULL,
-    emergent_contact            VARCHAR(8),
-    emergent_contact_phone      VARCHAR(16)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin UNIQUE,
+    emergent_contact            VARCHAR(8)          DEFAULT NULL,
+    emergent_contact_phone      VARCHAR(16)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin UNIQUE DEFAULT NULL,
     activities_joined           SMALLINT            NOT NULL        DEFAULT 0,
     remark                      VARCHAR(100)        DEFAULT "无",
     audit_status                TINYINT             NOT NULL        DEFAULT 0,
@@ -81,8 +81,8 @@ create table user
 INSERT INTO user (openid, registration_date, idcard, phone, phone_verified, gender, birth, address, emergent_contact, emergent_contact_phone, role, contact)
 VALUES ('0', NOW(), '000000000000000000', '13163236603', 1, '女', '1979-09-19', "湖北省武汉市洪山区", "张三", "17621533767", 0, '021-08131311');
 
-INSERT INTO user (openid, registration_date, idcard, phone, phone_verified, gender, birth, address, emergent_contact, emergent_contact_phone, name, role, contact)
-VALUES ('1', NOW(), '111111111111111111', '13163236604', 1, '男', '1985-08-14', "湖北省武汉市武昌区", "李四", "18256789090", "视障人士", 1, '021-08131311');
+INSERT INTO user (openid, registration_date, idcard, phone, phone_verified, gender, birth, address, emergent_contact, emergent_contact_phone, name, role, contact, disabled_id)
+VALUES ('1', NOW(), '111111111111111111', '13163236604', 1, '男', '1985-08-14', "湖北省武汉市武昌区", "李四", "18256789090", "视障人士", 1, '021-08131311', '0001');
 
 
 /* activity table */
