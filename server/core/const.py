@@ -67,6 +67,9 @@ DEFAULT_SERIAL_NO_BYTES = 32
 DEFAULT_VRFCODE_BYTES = 6
 DEFAULT_PROTOCOL = 'http'
 
-
 # default password salt
 DEFAULT_PASSWORD_SALT = 5
+
+# local machine information
+HOST_IP = '0.0.0.0'
+PLATFORM = None
