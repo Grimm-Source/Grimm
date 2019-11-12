@@ -48,11 +48,17 @@ def wxjscode2session():
         suffix = '&grant_type=authorization_code'
         url = prefix + wxappid + '&secret=' + wxsecret + '&js_code=' + js_code + suffix
         user_logger.info('user login, wxapp authorization: %s', url)
-        http = urllib3.PoolManager()
-        response = http.request('GET', url)
-        # authorization success
-        if response.status == 200:
+        retry = 3
+        while retry > 0:
+            http = urllib3.PoolManager()
+            response = http.request('GET', url)
             feedback = json.loads(response.data)
+            # authorization success
+            if response.status == 200 and 'openid' in feedback:
+                break
+            retry -= 1
+
+        if retry != 0:
             feedback['server_errcode'] = 0
             openid = feedback['openid']
             if 'session_key' in feedback:
@@ -188,18 +194,22 @@ def profile():
         newinfo = json_load_http_request(request)  # get request POST user data
         userinfo = {}
         openid = request.headers.get('Authorization')
+        if newinfo['role'] == '视障人士':
+            userinfo['disabled_id'] = info['disabledID']
+            userinfo['emergent_contact'] = info['emergencyPerson']
+            userinfo['emergent_contact_phone'] = info['emergencyTel']
         userinfo['phone'] = newinfo['tel']
         userinfo['gender'] = newinfo['gender']
         userinfo['birth'] = newinfo['birthDate']
         userinfo['contact'] = newinfo['linktel']
         userinfo['address'] = newinfo['linkaddress']
-        userinfo['emergent_contact'] = newinfo['emergencyPerson']
-        userinfo['emergent_contact_phone'] = newinfo['emergencyTel']
         userinfo['remark'] = newinfo['usercomment']
-        userinfo['disabled_id'] = newinfo['disabledID']
         userinfo['idcard'] = newinfo['idcard']
         userinfo['name'] = newinfo['name']
         try:
+            status = db.expr_query('user', 'audit_status', openid=openid)[0]
+            if status['audit_status'] == -1:
+                userinfo['audit_status'] = 0
             if db.expr_update('user', userinfo, openid=openid) != 1:
                 user_logger.error('%s: user update info failed', openid)
                 return json_dump_http_response({'status': 'failure', 'message': "更新失败，请重新输入"})
