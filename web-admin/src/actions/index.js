@@ -324,10 +324,13 @@ export const setUsers = users =>({
     users
 });
 
-export const setNoticeUsers = users =>({
-    type: ACTION_TYPES.NOTICE_NEW_USERS_SET,
-    users
-});
+export const setNoticeUsers = users =>{
+    storage.setItem("notice-new-users", users);
+    return ({
+        type: ACTION_TYPES.NOTICE_NEW_USERS_SET,
+        users
+    })
+};
 
 export const updateUsers = (users, isVolunteer) => (dispatch, getState) => {
     dispatch(loading());

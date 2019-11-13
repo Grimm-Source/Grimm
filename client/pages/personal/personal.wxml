@@ -12,7 +12,7 @@
                 <view class="username_info" wx:if='{{userInfo}}'>{{userInfo.nickName}} 
                     <view class="personal_banner">
                         <view class="audit_status" wx:if='{{auditStatus === "pending"}}'>正在审核中...</view>
-                        <view class="audit_status" wx:if='{{auditStatus === "rejected"}}'>未通过审核，请更新个人信息</view>
+                        <view class="audit_status" wx:if='{{auditStatus === "rejected"}}'>未通过审核，请 <navigator url="/pages/profile/profile">重新提交</navigator></view>
                         <view class="audit_status" wx:if='{{auditStatus === "approved"}}'>审核通过</view>
                     </view>
                 </view>

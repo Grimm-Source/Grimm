@@ -46,11 +46,21 @@ const register =  (obj, successCallback, failCallback) => {
     });
 }
 
+const getRegisterStatus = (code, successCallback, failCallback) => {
+    return request({
+        url: 'jscode2session?js_code=' + code,
+        success: successCallback,
+        fail: failCallback,
+        method: "GET"
+    }); 
+}
+
 module.exports = {
     getProfile,
     updateProfile,
     getVerifyCode,
     verifyCode,
-    register
+    register,
+    getRegisterStatus
 }
   

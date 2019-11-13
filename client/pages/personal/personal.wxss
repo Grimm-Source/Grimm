@@ -72,6 +72,11 @@ page{
     height: 100%;
 }
 
+.personal_container navigator{
+    display: inline;
+    color: #248bd6;
+}
+
 .activity_classify{
     height: 80rpx;
     border-top: 1px solid lightgrey;

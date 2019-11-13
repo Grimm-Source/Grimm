@@ -34,10 +34,10 @@ const initialState = {
         activities: []
     },
     user: {
-        users: newUsers || []
+        users: []
     },
     notice: {
-        newUsers: []
+        newUsers: newUsers || []
     }
 }
 

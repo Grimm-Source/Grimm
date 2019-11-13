@@ -11,7 +11,7 @@ const MAX_ITEMS = 10;
 class NoticeUserList extends React.Component {
 
   onClickNewUser(item){
-    this.props.history.push('/users')
+    this.props.history.push('/users');
     this.props.onClickNewUser(item);
   }
 
@@ -44,8 +44,7 @@ class NoticeUserList extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  // newUsers: state.notice.newUsers,
-  newUsers: [{openid:"111",name:"ahahha",registrationDate:"12e2"}],
+  newUsers: state.notice.newUsers,
   loading: state.ui.loading
 });
 

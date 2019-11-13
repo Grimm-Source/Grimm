@@ -1,9 +1,6 @@
 const {userInfoMessage} = require('../../utils/messageHelper.js');
 const {getVerifyCode, verifyCode, getProfile, updateProfile} = require('../../utils/requestUtil.js');
 
-let isRegistered = wx.getStorageSync('isRegistered') || false;
-let auditStatus = wx.getStorageSync('auditStatus') || "pending";
-
 Page({
   
   data: {
@@ -22,6 +19,13 @@ Page({
 
   updateProfile: function(e){
     if(!this.data.ui.isFormValid){
+      return;
+    }
+    if(!this.__isUserInfoUpdated()){
+      wx.showToast({
+        title: '请更新后提交',
+        duration: 1000
+      });
       return;
     }
     this.__updateProfile();
@@ -50,7 +54,7 @@ Page({
     }
     verifyCode({ 
       tel: this.data.userInfo.tel, 
-      code: this.data.code
+      verification_code: this.data.code
     },()=>{
         wx.showToast({
           title: '验证成功',
@@ -110,11 +114,10 @@ Page({
           isCodeSent: false,
           isTelValid: true,
           telNeedValidate: null,
-          isFormValid: true,
+          isFormValid: false,
           isLoadingValid: false,
           isLoadingUpdate: false,
-          isRegistered,
-          auditStatus
+          auditStatus: wx.getStorageSync('auditStatus')
       },
       error: {
         tel: false,
@@ -145,12 +148,22 @@ Page({
         userInfo
     });
     if(!isIgnoreValid && !this.__validate(key, value)){
-      console.error("key**************"+key)
       this.__setUi("isFormValid", false);
       this.__setError(key, true);
     }else{
       this.__validateAll();
     }
+  },
+
+  __isUserInfoUpdated: function(){
+    let userInfo = this.data && this.data.userInfo;
+    let userInfoSource = this.data && this.data.userInfoSource;
+    for(var key in userInfo){
+      if( userInfo[key] !== userInfoSource[key]){
+        return true;
+      }
+    }
+    return false;
   },
 
   __setUi: function(key, value){
@@ -236,7 +249,8 @@ Page({
   __getProfile: function(){
     return getProfile((data) => {
       this.setData({
-        userInfo: data
+        userInfo: data,
+        userInfoSource: Object.assign({}, data)
       });
     },(err) => {
       wx.showModal({
