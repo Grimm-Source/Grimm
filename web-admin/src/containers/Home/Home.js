@@ -7,6 +7,7 @@ import User from '../User/User.js';
 import Activity from '../Activity/Activity.js';
 import ActivityList from '../../components/ActivityList/ActivityList.js';
 import Profile from '../Profile/Profile.js';
+import Report from '../Report/Report.js';
 import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import { Spin,Menu } from 'antd';
@@ -26,6 +27,7 @@ class Home extends React.Component {
             switch(currentUrlPath){
                 case '/users': return HOME_TAG_TYPE.USER;
                 case '/profile': return HOME_TAG_TYPE.PROFILE;
+                case '/report': return HOME_TAG_TYPE.REPORT;
                 case '/admins': return HOME_TAG_TYPE.ADMIN;
                 default: return HOME_TAG_TYPE.ACTIVITY;
             }
@@ -41,10 +43,14 @@ class Home extends React.Component {
                 微信用户
                 <Link to="/users" />
                 </Menu.Item>
+                <Menu.Item key={HOME_TAG_TYPE.REPORT}>
+                活动签到统计
+                <Link to="/report" />
+                </Menu.Item>
                 {this.props.user && this.props.user.type === "root"? <Menu.Item key={HOME_TAG_TYPE.ADMIN}>管理员<Link to="/admins" /></Menu.Item> : null}
                 <Menu.Item key={HOME_TAG_TYPE.PROFILE}>
                 个人信息管理
-                <Link to="/profile" />
+                <Link to="/profile/base-info" />
                 </Menu.Item>
                 
             </Menu>
@@ -61,6 +67,7 @@ class Home extends React.Component {
                 <Switch>
                     <Route exact path="/" component={ActivityList}/>
                     <Route path="/users" component={User}/>
+                    <Route path="/report" component={Report}/>
                     <Route path="/profile" component={Profile}/>
                     {this.props.user && this.props.user.type === "root"?<Route path="/admins" component={AdminPanel}/>: null}
                 </Switch>

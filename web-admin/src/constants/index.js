@@ -2,7 +2,8 @@ export const HOME_TAG_TYPE = {
     ACTIVITY: "ACTIVITY",
     ADMIN: "ADMIN",
     USER: "USER",
-    PROFILE: "PROFILE"
+    PROFILE: "PROFILE",
+    REPORT: "REPORT"
 };
 
 export const ADMIN_PANEL_TYPE = {

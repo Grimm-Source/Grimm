@@ -20,7 +20,7 @@ class Profile extends React.Component {
         }
     }
     return (
-            <Content style={{ padding: '0 50px' }}>
+            <Content>
                 <Layout style={{ padding: '24px 0', background: '#fff' }}>
                     <Sider width={200} style={{ background: '#fff' }}>
                         <Menu
@@ -53,8 +53,8 @@ class Profile extends React.Component {
                     </Sider>
                     <Content style={{ padding: '0 24px', minHeight: 280 }}>
                     <Switch>
-                        <Route exact path="/profile" component={BaseInfo} />
-                        <Route path="/changePassword" component={ChangePassword} />
+                        <Route exact path="/profile/base-info" component={BaseInfo} />
+                        <Route path="/profile/changePassword" component={ChangePassword} />
                     </Switch>
                     </Content>
                 </Layout>
