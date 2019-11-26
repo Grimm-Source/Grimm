@@ -89,7 +89,7 @@ VALUES ('1', NOW(), '111111111111111111', '13163236604', 1, '男', '1985-08-14',
 create table activity
 (
     activity_id                 BIGINT              NOT NULL AUTO_INCREMENT,
-    title                       VARCHAR(200)        NOT NULL        DEFAULT '助盲公益活动',
+    title                       VARCHAR(60)         NOT NULL        DEFAULT '助盲公益活动',
     start_time                  DATETIME            NOT NULL,
     location                    VARCHAR(100)        NOT NULL,
     end_time                    DATETIME,
@@ -126,23 +126,23 @@ VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "�
 create table pickups
 (
     activity_id                 BIGINT,
-    offer_pickup                CHAR(28)            NOT NULL,
-    need_pickup                 CHAR(28)            NOT NULL,
+    offer                       CHAR(28)            NOT NULL,
+    need                        CHAR(28)            NOT NULL,
     time                        DATETIME            NOT NULL,
     location                    VARCHAR(100)        NOT NULL,
 
     FOREIGN KEY (activity_id) REFERENCES activity(activity_id)
     ON DELETE cascade
     ON UPDATE cascade,
-    FOREIGN KEY (offer_pickup) REFERENCES user(openid)
+    FOREIGN KEY (offer) REFERENCES user(openid)
     ON DELETE cascade
     ON UPDATE cascade,
-    FOREIGN KEY (need_pickup) REFERENCES user(openid)
+    FOREIGN KEY (need) REFERENCES user(openid)
     ON DELETE cascade
     ON UPDATE cascade,
 
-    PRIMARY KEY(offer_pickup, need_pickup)
+    PRIMARY KEY(offer, need)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO pickups (activity_id, offer_pickup, need_pickup, time, location)
+INSERT INTO pickups (activity_id, offer, need, time, location)
 VALUES (1, '0', '1', NOW(), "上海市某个地方");
