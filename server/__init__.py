@@ -74,13 +74,20 @@ parser.add_argument('-h', '--host', metavar='Host IP', nargs='?',
 parser.add_argument('-p', '--port', metavar='Port Num', nargs='?',
                     default=5000, type=int, dest='port',
                     help='Customize service\'s listening port.')
+parser.add_argument('-l', '--logfile', dest='logfile', metavar='Log File',
+                    nargs='?', default='./log/session.log',
+                    help='Specify a logfile when starting in daemon mode')
 parser.add_argument('-f', '--force', dest='force', action='store_true',
                     help='Force database connection when start')
+parser.add_argument('-d', '--daemon', dest='daemon', action='store_true',
+                    help='Start in daemon mode')
 
 cmdargs = parser.parse_args()
 server.core.const.HOST = cmdargs.host
 server.core.const.PORT = cmdargs.port
-server.core.const.FORCELOAD = cmdargs.force
+server.core.const.FORCE_LOAD = cmdargs.force
+server.core.const.DAEMON_LOAD = cmdargs.daemon
+server.core.const.SESSION_LOG = cmdargs.logfile
 
 del parser, argparse, cmdargs
 

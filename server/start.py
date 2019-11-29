@@ -18,7 +18,9 @@
 #
 
 import sys
+import os
 import signal
+import atexit
 # jump out to upper directory, then `server` becomes a pure python package.
 # must be placed ahead of other imports !!!
 if '..' not in sys.path:
@@ -32,12 +34,51 @@ import server.core.db as db
 import server.core.route.web_admin
 import server.core.route.wxapp
 
-from server.core.const import ROOT_PASSWORD, HOST, PORT, FORCELOAD
+from server.core.const import ROOT_PASSWORD, HOST, PORT, FORCE_LOAD, DAEMON_LOAD, SESSION_LOG
 from server.utils.password import update_password
 from server.core.exit import exit_grimm
 from server.core import grimm
 
 
+# start Grimm back-end in daemon mode
+def start_daemon(logfile, pid_file=None):
+    '''start Grimm back-end in daemon mode'''
+    son_pid = os.fork()
+    # exit father
+    if son_pid:
+        sys.exit(0)
+
+    # fork grandson and exit son
+    os.umask(0)
+    os.setsid()
+
+    grandson_pid = os.fork()
+    if grandson_pid:
+        sys.exit(0)
+
+    # flush stdin/stdout
+    sys.stdout.flush()
+    sys.stderr.flush()
+
+    # disregard stdin, and redirect stdout/stderr to session logfile
+    with open('/dev/null') as null_read, open(logfile, mode='w') as logger:
+        os.dup2(null_read.fileno(), sys.stdin.fileno())
+        os.dup2(logger.fileno(), sys.stdout.fileno())
+        os.dup2(logger.fileno(), sys.stderr.fileno())
+
+    # write pid file
+    if pid_file:
+        with open(pid_file, 'w+') as fd:
+            fd.write(str(os.getpid()))
+
+        atexit.register(os.remove, pid_file)
+
+    # start grimm back-end server
+    grimm.run(host=HOST, port=PORT)
+
+
+
+# Grimm back-end main entry
 if __name__ == '__main__':
     # register signal handler
     signal.signal(signal.SIGINT, exit_grimm)
@@ -45,7 +86,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, exit_grimm)
 
     # initialize database connection
-    db.init_connection(force=True if FORCELOAD is True else False)
+    db.init_connection(force=FORCE_LOAD)
 
     # update root admin password
     if db.exist_row('admin', admin_id=0):
@@ -60,4 +101,7 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     # start grimm back-end server
-    grimm.run(host=HOST, port=PORT)
+    if DAEMON_LOAD:
+        start_daemon(SESSION_LOG)
+    else:
+        grimm.run(host=HOST, port=PORT)
