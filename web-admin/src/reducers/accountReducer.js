@@ -12,6 +12,11 @@ const account = (state = [], action) => {
           ...state,
           user: {}
         };
+      case ACTION_TYPES.ACCOUNT_RESET:
+        return {
+          ...state,
+          accountId: action.accountId
+        }
       default:
         return state;
     }

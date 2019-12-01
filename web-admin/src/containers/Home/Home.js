@@ -5,9 +5,10 @@ import Drawer from '../Drawer/Drawer.js';
 import AdminPanel from '../AdminPanel/AdminPanel.js';
 import User from '../User/User.js';
 import Activity from '../Activity/Activity.js';
-import ActivityList from '../../components/ActivityList/ActivityList.js';
+import ActivityList from '../../components/ActivityLIst/ActivityList.js';
 import Profile from '../Profile/Profile.js';
 import Report from '../Report/Report.js';
+import ResetPassword from '../ResetPassword/ResetPassword'
 import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import { Spin,Menu } from 'antd';
@@ -72,6 +73,8 @@ class Home extends React.Component {
                     {this.props.user && this.props.user.type === "root"?<Route path="/admins" component={AdminPanel}/>: null}
                 </Switch>
                 </div>
+                {this.props.showLogin ? <Login /> : null}
+                {this.props.showReset ? <ResetPassword /> : null}
                 <Login/>
                 <Activity/>
                 <Drawer/>
@@ -84,7 +87,9 @@ class Home extends React.Component {
 const mapStateToProps = (state, ownProps) => ({
     tab: state.ui.homeTagType,
     loading: state.ui.loading,
-    user: state.account.user
+    user: state.account.user,
+    showLogin: !state.account.user || !state.account.user.email,
+    showReset: state.ui.isShowResetPassword
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

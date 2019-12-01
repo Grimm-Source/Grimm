@@ -63,6 +63,18 @@ export const setSelectedUsers = (users) => ({
     users
 })
 
+export const showLogin = () => ({
+    type: ACTION_TYPES.UI_SHOW_LOGIN
+})
+
+export const showResetPassword = () => ({
+    type: ACTION_TYPES.UI_SHOW_RESET_PASSWORD
+})
+
+export const hideResetPassword = () => ({
+    type: ACTION_TYPES.UI_HIDE_RESET_PASSWORD
+})
+
 //account section
 export const loginAccount = (user) => (dispatch, getState) => {
     dispatch(loading());
@@ -95,6 +107,20 @@ export const login = (user) => ({
 export const logout = ()=>({
     type: ACTION_TYPES.ACCOUNT_LOGOUT
 });
+
+export const resetPassword = (accountId) => (dispatch, getState) => {
+    return request({
+        path: "admin/forget-password?email=" + accountId,
+        method: "GET"
+    }).then((accountID) => {
+        message.success('新的密码已成功发送到注册邮箱');
+        dispatch(hideResetPassword());
+    }, (errorMessage)=>{
+        message.error(`新得密码发送失败，${errorMessage}`);
+    }).finally(()=>{
+
+    });
+}
 
 //activity section
 export const publishActivity = (activity) => (dispatch, getState) => {

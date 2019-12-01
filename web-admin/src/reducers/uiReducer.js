@@ -83,6 +83,21 @@ const ui = (state = [], action) => {
           ...state,
           selectedUsers: action.users || []
         };
+      case ACTION_TYPES.UI_SHOW_LOGIN:
+        return {
+          ...state,
+          isShowLogin: true,
+        };
+      case ACTION_TYPES.UI_SHOW_RESET_PASSWORD:
+        return {
+          ...state,
+          isShowResetPassword: true
+        }
+      case ACTION_TYPES.UI_HIDE_RESET_PASSWORD:
+        return {
+          ...state,
+          isShowResetPassword: false
+        }
       default:
         return state;
     }

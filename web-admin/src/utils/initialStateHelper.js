@@ -13,6 +13,8 @@ const initialState = {
         isShowActivityModal: false,
         isShowDrawer: false,
         isShowUserDetail: false,
+        isShowLogin: true,
+        isShowResetPassword: false,
         activityId: null,
         user: {},
         selectedUsers: [],
