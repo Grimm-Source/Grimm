@@ -75,6 +75,17 @@ export const hideResetPassword = () => ({
     type: ACTION_TYPES.UI_HIDE_RESET_PASSWORD
 })
 
+export const showEmailVerify = (emailAddr) => ({
+    type: ACTION_TYPES.UI_SHOW_EMAIL_VERIFY,
+    emailAddr
+});
+
+export const hideEmailVerify = () => ({
+    type: ACTION_TYPES.UI_HIDE_EMAIL_VERIFY
+});
+
+
+
 //account section
 export const loginAccount = (user) => (dispatch, getState) => {
     dispatch(loading());
@@ -82,6 +93,7 @@ export const loginAccount = (user) => (dispatch, getState) => {
 };
 
 const verifyAccount = user => dispatch => {
+    var emailAddr = user.email;
     return request({
         path: "login",
         method: "POST",
@@ -92,9 +104,13 @@ const verifyAccount = user => dispatch => {
         dispatch(fetchActivityList());
         dispatch(switchAdminFormType(ADMIN_FORM_TYPE.CREATE));
         message.success('登录成功');
-    }, (errorMessage)=>{
+        dispatch(showEmailVerify(emailAddr));
+    }, (errorMessage) => {
         message.error(`登录失败，${errorMessage}`);
-    }).finally(()=>{
+        if (errorMessage === EMAIL_NOT_VERIFIED_ERROR_STRING) {
+            dispatch(showEmailVerify(emailAddr));
+        }
+    }).finally(() => {
         dispatch(hideLoading());
     });
 }
@@ -121,6 +137,21 @@ export const resetPassword = (accountId) => (dispatch, getState) => {
 
     });
 }
+
+export const verifyAdminEmail = (emailAddr) => (dispatch, getState) => {
+    if(emailAddr == null) {
+        return;
+    }
+    return request({
+        path: "email?addr=" + emailAddr,
+        method: "GET"
+    }).then((userInfo) => {
+        message.success('邮箱验证码已发送');
+    }, (errorMessage)=>{
+        message.error(`邮箱验证码发送失败${errorMessage}`);
+    }).finally(()=>{
+    });
+};
 
 //activity section
 export const publishActivity = (activity) => (dispatch, getState) => {

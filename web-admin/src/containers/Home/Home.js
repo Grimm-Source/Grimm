@@ -5,10 +5,11 @@ import Drawer from '../Drawer/Drawer.js';
 import AdminPanel from '../AdminPanel/AdminPanel.js';
 import User from '../User/User.js';
 import Activity from '../Activity/Activity.js';
-import ActivityList from '../../components/ActivityLIst/ActivityList.js';
+import ActivityList from '../../components/ActivityList/ActivityList.js';
 import Profile from '../Profile/Profile.js';
 import Report from '../Report/Report.js';
 import ResetPassword from '../ResetPassword/ResetPassword'
+import AdminEmailVerify from '../../components/AdminEmailVerify/AdminEmailVerify.js';
 import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import { Spin,Menu } from 'antd';
@@ -16,7 +17,9 @@ import { Switch } from "react-router";
 import { Router, Route, Link, withRouter } from "react-router-dom";
 import { createBrowserHistory } from 'history';
 
+
 import './Home.less';
+
 
 const history = createBrowserHistory();
 
@@ -75,6 +78,7 @@ class Home extends React.Component {
                 </div>
                 {this.props.showLogin ? <Login /> : null}
                 {this.props.showReset ? <ResetPassword /> : null}
+                {this.props.showEmailVerify ? <AdminEmailVerify /> : null}
                 <Login/>
                 <Activity/>
                 <Drawer/>
@@ -89,7 +93,8 @@ const mapStateToProps = (state, ownProps) => ({
     loading: state.ui.loading,
     user: state.account.user,
     showLogin: !state.account.user || !state.account.user.email,
-    showReset: state.ui.isShowResetPassword
+    showReset: state.ui.isShowResetPassword,
+    showEmailVerify: state.ui.isShowEmailVerify,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
