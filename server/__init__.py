@@ -79,7 +79,7 @@ parser.add_argument('-l', '--logfile', dest='logfile', metavar='Log File',
                     help='Specify a logfile when starting in daemon mode')
 parser.add_argument('-f', '--force', dest='force', action='store_true',
                     help='Force database connection when start')
-parser.add_argument('-d', '--daemon', dest='daemon', action='store_true',
+parser.add_argument('-D', '--daemon', dest='daemon', action='store_true',
                     help='Start in daemon mode')
 
 cmdargs = parser.parse_args()
@@ -96,7 +96,7 @@ del parser, argparse, cmdargs
 from server.utils.misctools import get_host_ip
 if server.core.const.PLATFORM != 'Windows' and server.core.const.HOST_IP == '0.0.0.0' or server.core.const.HOST_IP is None:
     server.core.const.HOST_IP = get_host_ip()
-print('\n>>> LOCAL HOST IP: ' + server.core.const.HOST_IP + '\n')
+print('\n>>> IPv4 Access Info: ' + server.core.const.HOST_IP + ':' + str(server.core.const.PORT) + '\n')
 del get_host_ip
 
 # check package dependency
