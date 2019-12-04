@@ -54,20 +54,23 @@ def admin_login():
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             input_password = info['password']
             if password.verify_password(input_password, 'admin', email=info['email']):
-                feedback['id'] = admininfo['admin_id']
-                feedback['email'] = admininfo['email']
-                feedback['type'] = 'root' if admininfo['admin_id'] == 0 else 'normal'
-                feedback['email_verified'] = True if admininfo['email_verified'] else False
-                admin_logger.info('%d, %s: admin login successfully', admininfo['admin_id'], admininfo['name'])
+                if admininfo['email_verified']:
+                    feedback['id'] = admininfo['admin_id']
+                    feedback['email'] = admininfo['email']
+                    feedback['type'] = 'root' if admininfo['admin_id'] == 0 else 'normal'
+                    admin_logger.info('%d, %s: admin login successfully', admininfo['admin_id'], admininfo['name'])
+                else:
+                    feedback['message'] = '请先认证邮箱'
+                    admin_logger.warning('%d, %s: admin login failed, email not verified', admininfo['admin_id'], admininfo['name'])
             else:
-                feedback['status'] = 'failure'
                 feedback['message'] = '密码错误'
                 admin_logger.warning('%d, %s: admin login failed, wrong password', admininfo['admin_id'], admininfo['name'])
         else:
-            feedback['status'] = 'failure'
             feedback['message'] = '未注册邮箱'
             admin_logger.warning('%s: no such admin account', info['email'])
 
+        if 'message' in feedback:
+            feedback['status'] = 'failure'
         return json_dump_http_response(feedback)
 
 
@@ -407,7 +410,7 @@ def admin_update_password(admin_id):
             admin_logger.info('%d: update password successfully', admin_id)
             return json_dump_http_response({'status': 'success'})
 
-        admin_logger.waring('%d: no such admin', admin_id)
+        admin_logger.warning('%d: no such admin', admin_id)
         return json_dump_http_response({'status': 'failure', 'message': '未知管理员'})
 
 
@@ -430,7 +433,7 @@ def admin_reset_password():
             admin_logger.info('%s, update password successfully', addr)
             return json_dump_http_response({'status': 'success'})
 
-        admin_logger.waring('%s, no such admin account', addr)
+        admin_logger.warning('%s, no such admin account', addr)
         return json_dump_http_response({'status': 'failure', 'message': '未注册邮箱'})
 
 
