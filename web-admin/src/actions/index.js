@@ -125,6 +125,7 @@ export const logout = ()=>({
 });
 
 export const resetPassword = (accountId) => (dispatch, getState) => {
+    dispatch(loading());
     return request({
         path: "admin/forget-password?email=" + accountId,
         method: "GET"
@@ -134,7 +135,7 @@ export const resetPassword = (accountId) => (dispatch, getState) => {
     }, (errorMessage)=>{
         message.error(`新得密码发送失败，${errorMessage}`);
     }).finally(()=>{
-
+        dispatch(hideLoading());
     });
 }
 

@@ -57,7 +57,7 @@ class ForgotPassword extends React.Component {
                     )}
                 </Form.Item>
                 <Form.Item >
-                    <Button type="primary" htmlType="submit" className="forgot-password-button" onClick={this.handleResetPassword}>下一步</Button>
+                    <Button type="primary" htmlType="submit" className="forgot-password-button" loading={this.props.loading} onClick={this.handleResetPassword}>下一步</Button>
                 </Form.Item>
             </Form>
           </Modal>
@@ -67,6 +67,7 @@ class ForgotPassword extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
     visible: state.ui.isShowResetPassword,
+    loading: state.ui.loading
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
