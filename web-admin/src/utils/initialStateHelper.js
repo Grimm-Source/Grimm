@@ -13,6 +13,8 @@ const initialState = {
         isShowActivityModal: false,
         isShowDrawer: false,
         isShowUserDetail: false,
+        isShowLogin: true,
+        isShowResetPassword: false,
         activityId: null,
         user: {},
         selectedUsers: [],
@@ -22,9 +24,12 @@ const initialState = {
         homeTagType: HOME_TAG_TYPE.ACTIVITY,
         adminPanelType: ADMIN_PANEL_TYPE.DETAIL,
         adminFormType: ADMIN_FORM_TYPE.LOGIN,
-        userListType: USER_LIST_TYPE.VOLUNTEER
+        userListType: USER_LIST_TYPE.VOLUNTEER,
+        
+        isShowEmailVerify: false,
+        emailAddrWaitForVerified: null,
     },
-    account:{
+    account: {
         user: user || {}
     },
     admin: {
@@ -34,10 +39,10 @@ const initialState = {
         activities: []
     },
     user: {
-        users: newUsers || []
+        users: []
     },
     notice: {
-        newUsers: []
+        newUsers: newUsers || []
     }
 }
 

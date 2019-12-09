@@ -1,34 +1,47 @@
 
 import React from 'react';
-import { Modal } from 'antd';
+import { showLogin, showResetPassword } from "../../actions";
+import { Modal, Button } from 'antd';
 import { connect } from 'react-redux';
 import AdminForm from '../../components/AdminForm/AdminForm';
 
 import './Login.less';
 
-class Login extends React.Component {  
+class Login extends React.Component {
+
+  handleForgotPassword = e => {
+    this.props.forgotPassword();
+  };
 
   render() {
     return (
-        <Modal
-          className="register-modal"
-          title="登录"
-          visible={!this.props.user ||!this.props.user.email}
-          destroyOnClose={true}
-          closable={false}
-          maskClosable={false}
-          cancelButtonProps={{ disabled: true }}
-          okButtonProps={{ disabled: true }}
-        >
-          <AdminForm/>
-        </Modal>
+      <Modal
+        className="register-modal"
+        title="登录"
+        visible= {this.props.visible}
+        destroyOnClose={true}
+        closable={false}
+        maskClosable={false}
+        cancelButtonProps={{ disabled: true }}
+        okButtonProps={{ disabled: true}}
+      >
+      <AdminForm />
+      <Button type="link" className="admin-forget-button" onClick={this.handleForgotPassword}>{"忘记密码?"}</Button>
+      </Modal>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => ({
   user: state.account.user,
-  loading: state.ui.loading
+  loading: state.ui.loading,
+  visible: (!state.account.user || !state.account.user.email) && !state.ui.isShowResetPassword
 });
 
-export default connect(mapStateToProps)(Login)
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  forgotPassword: () => {
+    dispatch(showResetPassword());
+  }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

@@ -29,7 +29,7 @@ const request = (option, isManualLoading = false) => {
                             reject(res.data.message);
                             return;
                         }else if(res.data.status === "success"){
-                            resolve();
+                            resolve(res.data);
                             return;
                         }
                         resolve(res.data);

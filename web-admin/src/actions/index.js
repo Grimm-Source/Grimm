@@ -63,6 +63,29 @@ export const setSelectedUsers = (users) => ({
     users
 })
 
+export const showLogin = () => ({
+    type: ACTION_TYPES.UI_SHOW_LOGIN
+})
+
+export const showResetPassword = () => ({
+    type: ACTION_TYPES.UI_SHOW_RESET_PASSWORD
+})
+
+export const hideResetPassword = () => ({
+    type: ACTION_TYPES.UI_HIDE_RESET_PASSWORD
+})
+
+export const showEmailVerify = (emailAddr) => ({
+    type: ACTION_TYPES.UI_SHOW_EMAIL_VERIFY,
+    emailAddr
+});
+
+export const hideEmailVerify = () => ({
+    type: ACTION_TYPES.UI_HIDE_EMAIL_VERIFY
+});
+
+
+
 //account section
 export const loginAccount = (user) => (dispatch, getState) => {
     dispatch(loading());
@@ -70,18 +93,24 @@ export const loginAccount = (user) => (dispatch, getState) => {
 };
 
 const verifyAccount = user => dispatch => {
+    var emailAddr = user.email;
     return request({
         path: "login",
         method: "POST",
         data: user
     }).then((userInfo) => {
         storage.setItem("user", userInfo);
-        dispatch(login(userInfo));    
+        dispatch(login(userInfo));  
+        dispatch(fetchActivityList());
         dispatch(switchAdminFormType(ADMIN_FORM_TYPE.CREATE));
         message.success('登录成功');
-    }, (errorMessage)=>{
+        dispatch(showEmailVerify(emailAddr));
+    }, (errorMessage) => {
         message.error(`登录失败，${errorMessage}`);
-    }).finally(()=>{
+        if (errorMessage === EMAIL_NOT_VERIFIED_ERROR_STRING) {
+            dispatch(showEmailVerify(emailAddr));
+        }
+    }).finally(() => {
         dispatch(hideLoading());
     });
 }
@@ -94,6 +123,36 @@ export const login = (user) => ({
 export const logout = ()=>({
     type: ACTION_TYPES.ACCOUNT_LOGOUT
 });
+
+export const resetPassword = (accountId) => (dispatch, getState) => {
+    dispatch(loading());
+    return request({
+        path: "admin/forget-password?email=" + accountId,
+        method: "GET"
+    }).then((accountID) => {
+        message.success('新的密码已成功发送到注册邮箱');
+        dispatch(hideResetPassword());
+    }, (errorMessage)=>{
+        message.error(`新得密码发送失败，${errorMessage}`);
+    }).finally(()=>{
+        dispatch(hideLoading());
+    });
+}
+
+export const verifyAdminEmail = (emailAddr) => (dispatch, getState) => {
+    if(emailAddr == null) {
+        return;
+    }
+    return request({
+        path: "email?addr=" + emailAddr,
+        method: "GET"
+    }).then((userInfo) => {
+        message.success('邮箱验证码已发送');
+    }, (errorMessage)=>{
+        message.error(`邮箱验证码发送失败${errorMessage}`);
+    }).finally(()=>{
+    });
+};
 
 //activity section
 export const publishActivity = (activity) => (dispatch, getState) => {
@@ -323,10 +382,13 @@ export const setUsers = users =>({
     users
 });
 
-export const setNoticeUsers = users =>({
-    type: ACTION_TYPES.NOTICE_NEW_USERS_SET,
-    users
-});
+export const setNoticeUsers = users =>{
+    storage.setItem("notice-new-users", users);
+    return ({
+        type: ACTION_TYPES.NOTICE_NEW_USERS_SET,
+        users
+    })
+};
 
 export const updateUsers = (users, isVolunteer) => (dispatch, getState) => {
     dispatch(loading());

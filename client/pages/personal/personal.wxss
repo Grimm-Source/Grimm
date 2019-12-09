@@ -1,115 +1,123 @@
-/* pages/personal/personal.wxss */
+/* pages/personal2/personal2.wxss */
 page{
     height: 100%;
+    background-color: rgb(241, 241, 241);
 }
 
 .personal_container{
     height: 100%;
-    overflow: hidden;
     background-color: rgb(241, 241, 241);
 }
+
 .personal_header{
-    height: 30%;
-    background: linear-gradient(#6badff, #92ccfe);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.personal_header .center_part{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin-bottom: 20rpx;
-}
-
-.register_login{
-    margin-top: 10rpx;
-}
-
-.personal_header .register_login button{
-    background-color: transparent;
-    color: white;
-    border: 2rpx solid white;
-    height: 45rpx;
-    line-height: 45rpx;
-}
-
-.personal_body{
-    height: 80%;
+    height: 34%;
     background-color: white;
-    margin-top: -10%;
-    margin-left: 50rpx;
-    margin-right: 50rpx;
-    border-top-left-radius: 30rpx;
-    border-top-right-radius: 30rpx;
-    padding: 40rpx;
-    color: grey;
-    font-size: 20rpx;
-    overflow: auto;
+    margin-bottom: 5%;
+    padding: 20rpx 30rpx;
 }
-.personal_body .agreement{
-    padding-bottom: 200rpx;
+.personal_header .setting_nav{
+    height: 50rpx;
+    display: flex;
+    justify-content: flex-end;
 }
 
-.avatar{
-    width: 140rpx;
-    height: 140rpx;
-    border-radius: 70rpx;
+.personal_header .setting_nav .setting_item image{
+    width: 40rpx;
+    height: 40rpx;
+    margin: 0 20rpx;
 }
-.avatar image {
+
+.personal_header .user_nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20rpx 0 40rpx;
+}
+
+.personal_header .user_nav .user_nav_left{
+    display: flex;
+    align-items: center;
+}
+
+.personal_header .user_nav .user_nav_left .personal_banner{
+    font-size: 28rpx;
+    color: grey;
+}
+
+.personal_header .user_nav .user_nav_right{
+    display: flex;
+    align-items: center;
+    font-size: 26rpx;
+    color: grey;
+}
+
+.personal_header .user_nav .avatar{
+    width: 130rpx;
+    height: 130rpx;
+    border-radius: 65rpx;
+    margin-right: 40rpx;
+}
+.personal_header .user_nav .avatar image {
     width: 100%;
     height: 100%;
     border-radius: 50%;
 }
 
-.updateProfile{
+.personal_header .user_nav .user_nav_right .user_detail{
+    width: 50rpx;
+    height: 50rpx;
+}
+.personal_header .user_nav .user_nav_right .user_detail image{
+    width: 100%;
+    height: 100%;
+}
+
+.personal_container navigator{
+    display: inline;
+    color: #248bd6;
+}
+
+.activity_classify{
+    height: 80rpx;
+    border-top: 1px solid lightgrey;
     display: flex;
-    margin-right: 50rpx;
-}
-.updateProfile .updateProfile_btn{
-    background-color: transparent;
-    padding: 0 10rpx;
-    font-size: 20rpx;
-    border-radius: 20rpx;
-    border: 1rpx solid white;
-    color: white;
+    justify-content: space-around;
+    font-size: 28rpx;
+    color: grey;
+    padding-top: 25rpx;
 }
 
-.username_info {
-    color: white;
-}
-
-.userinfoItem image{
-    width: 40rpx;
-    height: 40rpx;
-    margin-right: 10rpx;
-}
-.username_info text{
-    font-size: 22rpx;
-}
-
-.labelName{
+.activity_classify .activity_item_label{
     display: flex;
     align-items: center;
-}
-
-.userinfoItem{
-    display: flex;
-    justify-content: space-between;
-    font-size: 30rpx;
-    align-items: center;
-    padding: 10rpx;
     margin-bottom: 10rpx;
 }
-.userinfo_list{
-    padding-top: 50rpx;
+
+.activity_classify .activity_item_label image{
+    width: 50rpx;
+    height: 50rpx;
 }
 
-.arrow{
-    width: 10rpx;
-    height: 10rpx;
-    border-top: 2rpx solid #999;
-    border-right: 2rpx solid #999;
-    transform: rotate(45deg);
-  }
+.activity_classify .activity_nav_item{
+    text-align: center;
+}
+
+.personal_info_list{
+    height: 60%;
+    background-color: white;
+    padding: 30rpx 30rpx 0;
+}
+
+.person_info_Item{
+    border-bottom: 1rpx solid #eee;
+    padding: 30rpx 0;
+    color: grey;
+    font-size: 30rpx;
+    display: flex;
+    justify-content: space-between;
+}
+
+.person_info_Item image{
+    width: 40rpx;
+    height: 40rpx;
+}

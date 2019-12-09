@@ -1,38 +1,58 @@
-const apiUrl = require('../../config.js').apiUrl
-const {getProfile} = require('../../utils/requestUtil.js');
-
-
+// pages/personal2/personal2.js
 var app = getApp();
-const isRegistered = wx.getStorageSync('isRegistered') || false;
+const {getRegisterStatus} = require('../../utils/requestUtil.js');
 
-// pages/personal/personal.js
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    avatarUrl: '../../images/defaultAvatar.jpeg',
-    userInfo: null,
-    userInfoList: [
+    setting_list: [
       {
-        label: '参加过的活动',
-        icon: '../../images/check-circle.png',
+        icon: '../../images/scan.png',
+        action: 'scanCode'
+      },
+      {
+        icon: '../../images/set.png',
+        action: 'settingProfile'
+      }
+    ],
+    avatarUrl: '../../images/avatar.jpg',
+    userInfo: null,
+    activity_list: [
+      {
+        icon: '../../images/order.png',
+        label: '已预约'
+      },
+      {
+        icon: '../../images/signature.png',
+        label: '已签到'
+      },
+      {
+        icon: '../../images/no_signature.png',
+        label: '未签到'
+      }
+    ],
+    personalInfoList: [
+      {
+        label: '我的活动列表',
         action: ''
       },
       {
-        label: '即将参加的活动',
-        icon: '../../images/smile.png',
+        label: '我的通知',
         action: ''
       },
       {
         label: '更新个人信息',
-        icon: '../../images/setting.png',
         action: 'updateProfile'
       },
       {
         label: '常见问题',
-        icon: '../../images/bulb.png',
+        action: ''
+      },
+      {
+        label: '用户反馈',
         action: ''
       }
     ]
@@ -41,8 +61,8 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function () {
-    this.getInfoSetting()
+  onLoad: function (options) {
+
   },
 
   /**
@@ -56,7 +76,27 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-    this.getInfoSetting()
+    wx.login({
+      success: res => {
+        console.log(res.code)
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        getRegisterStatus(res.code, (res)=>{//to check if any update of registeration status
+            if(!res.openid){
+              return;
+            }
+            wx.setStorageSync('openid', res.openid);
+            wx.setStorageSync('isRegistered', !!res.isRegistered);
+            wx.setStorageSync('auditStatus', res.auditStatus || "pending");
+            this.setData({
+              isRegistered: !!res.isRegistered,
+              auditStatus: res.auditStatus || "pending"
+            })
+            if(res.isRegistered){
+              this.getInfoSetting(); 
+            }
+        });       
+      }
+    });
   },
 
   /**
@@ -95,35 +135,30 @@ Page({
   },
 
   getInfoSetting: function(){
-    if(isRegistered){
-      return getProfile(data => {
-        wx.getSetting({
-          success: res => {
-            if (res.authSetting['scope.userInfo']) {
-              // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-              wx.getUserInfo({
-                success: res => {
-                  // 可以将 res 发送给后台解码出 unionId
-                  app.globalData.userInfo = res.userInfo
-                  this.setData({
-                    userInfo: res.userInfo,
-                    avatarUrl: res.userInfo.avatarUrl
-                  })
-    
-                  // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-                  // 所以此处加入 callback 以防止这种情况
-                  if (this.userInfoReadyCallback) {
-                    this.userInfoReadyCallback(res)
-                  }
-                }
+    wx.getSetting({
+      success: res => {
+        if (res.authSetting['scope.userInfo']) {
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+          wx.getUserInfo({
+            success: res => {
+              // 可以将 res 发送给后台解码出 unionId
+              app.globalData.userInfo = res.userInfo
+              this.setData({
+                userInfo: res.userInfo,
+                avatarUrl: res.userInfo.avatarUrl
               })
+
+              // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+              // 所以此处加入 callback 以防止这种情况
+              if (this.userInfoReadyCallback) {
+                this.userInfoReadyCallback(res)
+              }
             }
-          }
-        })
-      }, (err) => {
-        console.log(err)
-      })
-    }
+          })
+        }
+      }
+    });
+      
   },
 
   register: function(){
@@ -133,8 +168,32 @@ Page({
   },
 
   updateProfile: function(){
+    if(this.data.isRegistered && this.data.auditStatus === "pending"){
+      wx.showToast({
+        title: '个人信息正在审核，无法更新',
+        icon: 'none', //error
+        duration: 2000
+      });
+      return;
+    }
+    if(!this.data.isRegistered){
+      wx.showToast({
+        title: '请先注册',
+        icon: 'none', //error
+        duration: 2000
+      });
+      return;
+    }
     wx.navigateTo({
       url: '/pages/profile/profile',
+    })
+  },
+
+  scanCode: function(){
+    wx.scanCode({
+      success(res) {
+        console.log(res)
+      }
     })
   }
 })

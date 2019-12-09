@@ -1,7 +1,8 @@
 import React from 'react';
 import { Layout, Menu, Icon } from 'antd';
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Router, Route, Link, withRouter } from "react-router-dom";
+import { Switch } from "react-router";
 import './Profile.less';
 
 import BaseInfo from '../../components/BaseInfo/BaseInfo';
@@ -12,25 +13,30 @@ const { Content, Sider } = Layout;
 
 class Profile extends React.Component {  
   render() {
+    const currentTagType = () => {
+        switch(this.props.location.pathname){
+            case '/profile/base-info': return 'base-info';
+            case '/profile/changePassword': return 'change-password';
+        }
+    }
     return (
-        <Router>
-            <Content style={{ padding: '0 50px' }}>
+            <Content>
                 <Layout style={{ padding: '24px 0', background: '#fff' }}>
                     <Sider width={200} style={{ background: '#fff' }}>
                         <Menu
                             mode="inline"
-                            defaultSelectedKeys={['base-info']}
+                            selectedKeys={[`${currentTagType()}`]}
                             style={{ height: '100%' }}
                         >
                             <Menu.Item key="base-info">
                                 <Icon type="user" />
                                 基本信息
-                                <Link to="/profile" />
+                                <Link to="/profile/base-info" />
                             </Menu.Item>
                             <Menu.Item key="change-password">
                                 <Icon type="laptop" />
                                 密码修改
-                                <Link to="/changePassword" />
+                                <Link to="/profile/changePassword" />
                             </Menu.Item>
                             <SubMenu key="sub3"
                             title={
@@ -46,12 +52,13 @@ class Profile extends React.Component {
                         </Menu>
                     </Sider>
                     <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                        <Route exact path="/profile" component={BaseInfo} />
-                        <Route path="/changePassword" component={ChangePassword} />
+                    <Switch>
+                        <Route exact path="/profile/base-info" component={BaseInfo} />
+                        <Route path="/profile/changePassword" component={ChangePassword} />
+                    </Switch>
                     </Content>
                 </Layout>
             </Content>
-        </Router>
     );
   }
 }
@@ -60,4 +67,4 @@ const mapStateToProps = (state, ownProps) => ({
   loading: state.ui.loading
 });
 
-export default connect(mapStateToProps)(Profile)
+export default connect(mapStateToProps)(withRouter(Profile))

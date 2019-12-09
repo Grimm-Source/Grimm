@@ -3,6 +3,7 @@ import React from 'react';
 import { Form, Icon, Input, Button } from 'antd';
 import { loginAccount, publishAdmin } from '../../actions';
 import { ADMIN_FORM_TYPE } from "../../constants";
+import {rule as passwordReg} from '../../utils/passwordRules';
 import { connect } from 'react-redux';
 
 import "./AdminForm.less";
@@ -34,8 +35,7 @@ class AdminForm extends React.Component {
         if(this.props.type === ADMIN_FORM_TYPE.LOGIN){
             return true;
         }
-        let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,21}/;
-        return reg.test(passward);
+        return passwordReg.test(passward);
     }
 
     render() {

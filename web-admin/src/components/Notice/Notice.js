@@ -3,7 +3,7 @@ import { showDrawer, setNoticeUsers} from '../../actions';
 import notice from '../../images/notice.svg';
 import { connect } from 'react-redux';
 import { socketHelper } from '../../utils/socketHelper.js';
-import { storage } from '../../utils/localStorageHelper.js';
+import { message } from 'antd';
 
 import './Notice.less';
 
@@ -12,26 +12,31 @@ class Notice extends React.Component {
     constructor(props) {
         super(props);
         this.io = null;
+        if(this.props.hasLogined){
+            this.initNewUsersSocket();
+        }
     }
 
     componentWillReceiveProps(nextProps, prevState){
         if(!this.io && nextProps.hasLogined){
-            let io = socketHelper.getNewUsersSockect();
-            io.on('new-users', function (data) {
-                if( !data.users || data.users.length === 0 ){
-                    return;
-                }
-                let users = data.users;//received users
-                let newUsers = users.concat( this.props.users );
-
-                storage.setItem("notice-new-users", newUsers);
-                this.props.onUpdateNewUser(newUsers);
-
-                io.emit("new-users", { data: {
-                    users
-                }});
-            });
+            this.initNewUsersSocket();
         }
+    }
+
+    initNewUsersSocket(){
+        this.io = socketHelper.getNewUsersSockect();
+        
+        this.io.on('new-users', (users) => {
+            if( !users || users.length === 0 ){
+                return;
+            }
+            message.success(`${users.length}位新用户注册，请及时处理`);
+            let newUsers = users.concat( this.props.users );
+            this.props.onUpdateNewUser(newUsers);
+            this.io.emit("new-users", { data: {
+                users
+            }});
+        });
     }
 
     render() {   
@@ -50,7 +55,8 @@ class Notice extends React.Component {
 
   const mapStateToProps = (state, ownProps) => ({
         users: state.notice.newUsers,
-        hasLogined: state.account.user && state.account.user.id
+        hasLogined: !!(state.account.user && state.account.user.email),
+        user: state.account.user && state.account.user
   });
   
   const mapDispatchToProps = (dispatch, ownProps) => ({
