@@ -21,13 +21,7 @@ import {
 const middleware = [ thunk ];
 moment.locale('zh-cn');
 
-const store = createStore(reducer, initialState, 
-  compose(
-    applyMiddleware(...middleware),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  ),
-  
-  );
+const store = createStore(reducer, initialState, applyMiddleware(...middleware));
 ReactDOM.render(<Provider store={store}>
     <ConfigProvider locale={zh_CN}>
       <Router>
