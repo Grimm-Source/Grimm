@@ -1,0 +1,12 @@
+.admin-email-verify-button.ant-btn-link {
+    &[clickable = 'false'] {
+        &:after {
+            margin-left: 10px;
+            content: attr(timeValue) + 's 后重试';
+        }
+
+        color: grey;
+        cursor: none;
+    }
+    
+}

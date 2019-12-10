@@ -5,56 +5,56 @@ import { storage } from "../utils/localStorageHelper";
 import { message } from 'antd';
 
 //ui section
-export const loading = () =>({ 
+export const loading = () => ({
     type: ACTION_TYPES.UI_LOADING
 });
 
-export const hideLoading = () =>({ 
+export const hideLoading = () => ({
     type: ACTION_TYPES.UI_LOADING_HIDE
 });
 
-export const switchHomeTag = (activeKey) =>({ 
+export const switchHomeTag = (activeKey) => ({
     type: ACTION_TYPES.UI_HOME_TAG_SWITCH,
     activeKey
 });
 
-export const switchUserList  =  () => ({
+export const switchUserList = () => ({
     type: ACTION_TYPES.UI_USER_LIST_SWITCH
 });
 
-export const switchAdminPanel = (activeKey) =>({ 
+export const switchAdminPanel = (activeKey) => ({
     type: ACTION_TYPES.UI_ADMIN_PANEL_SWITCH,
     activeKey
 });
 
-export const switchAdminFormType = (activeKey) =>({ 
+export const switchAdminFormType = (activeKey) => ({
     type: ACTION_TYPES.UI_ADMIN_FORM_TYPE_SWITCH,
     activeKey
 });
 
-export const showActivityModal = (activityId) =>({ 
+export const showActivityModal = (activityId) => ({
     type: ACTION_TYPES.UI_ACTIVITY_SHOW,
     activityId
 });
 
-export const hideActivityModal = () =>({ 
+export const hideActivityModal = () => ({
     type: ACTION_TYPES.UI_ACTIVITY_HIDE
 });
 
-export const showDrawer = () =>({ 
+export const showDrawer = () => ({
     type: ACTION_TYPES.UI_DRAWER_SHOW
 });
 
-export const hideDrawer = () =>({ 
+export const hideDrawer = () => ({
     type: ACTION_TYPES.UI_DRAWER_HIDE
 });
 
-export const showUserDetail = (user) =>({ 
+export const showUserDetail = (user) => ({
     type: ACTION_TYPES.UI_USER_DETAIL_SHOW,
     user
 });
 
-export const hideUserDetail = () =>({ 
+export const hideUserDetail = () => ({
     type: ACTION_TYPES.UI_USER_DETAIL_HIDE
 });
 
@@ -104,9 +104,10 @@ const verifyAccount = user => dispatch => {
         dispatch(fetchActivityList());
         dispatch(switchAdminFormType(ADMIN_FORM_TYPE.CREATE));
         message.success('登录成功');
-        dispatch(showEmailVerify(emailAddr));
     }, (errorMessage) => {
         message.error(`登录失败，${errorMessage}`);
+        const EMAIL_NOT_VERIFIED_ERROR_STRING = "请先认证邮箱";
+
         if (errorMessage === EMAIL_NOT_VERIFIED_ERROR_STRING) {
             dispatch(showEmailVerify(emailAddr));
         }
@@ -120,7 +121,7 @@ export const login = (user) => ({
     user
 });
 
-export const logout = ()=>({
+export const logout = () => ({
     type: ACTION_TYPES.ACCOUNT_LOGOUT
 });
 
@@ -132,7 +133,7 @@ export const resetPassword = (accountId) => (dispatch, getState) => {
     }).then((accountID) => {
         message.success('新的密码已成功发送到注册邮箱');
         dispatch(hideResetPassword());
-    }, (errorMessage)=>{
+    }, (errorMessage) => {
         message.error(`新得密码发送失败，${errorMessage}`);
     }).finally(()=>{
         dispatch(hideLoading());
@@ -140,7 +141,7 @@ export const resetPassword = (accountId) => (dispatch, getState) => {
 }
 
 export const verifyAdminEmail = (emailAddr) => (dispatch, getState) => {
-    if(emailAddr == null) {
+    if (emailAddr == null) {
         return;
     }
     return request({
@@ -148,16 +149,15 @@ export const verifyAdminEmail = (emailAddr) => (dispatch, getState) => {
         method: "GET"
     }).then((userInfo) => {
         message.success('邮箱验证码已发送');
-    }, (errorMessage)=>{
+    }, (errorMessage) => {
         message.error(`邮箱验证码发送失败${errorMessage}`);
-    }).finally(()=>{
-    });
+    }).finally(() => {});
 };
 
 //activity section
 export const publishActivity = (activity) => (dispatch, getState) => {
     dispatch(loading());
-    if(!activity["id"]){
+    if (!activity["id"]) {
         return dispatch(postActivity(activity));
     }
     return dispatch(updateActivity(activity));
@@ -172,10 +172,10 @@ const postActivity = activity => dispatch => {
         dispatch(setActivity({})); 
         dispatch(fetchActivityList());
         message.success('活动发布成功');   
-    }, (errorMessage)=>{
+    }, (errorMessage) => {
         message.error(`活动发布失败，${errorMessage}`);
         dispatch(hideLoading());
-    }).finally(()=>{
+    }).finally(() => {
 
     });
 }
@@ -189,10 +189,10 @@ const updateActivity = activity => dispatch => {
         dispatch(setActivity({})); 
         dispatch(fetchActivityList());
         message.success('活动发布成功');   
-    }, (errorMessage)=>{
+    }, (errorMessage) => {
         message.error(`活动发布失败，${errorMessage}`);
         dispatch(hideLoading());
-    }).finally(()=>{
+    }).finally(() => {
 
     });
 }
@@ -207,12 +207,12 @@ const fetchActivity = id => dispatch => {
         path: `activity/${id}`
     }).then(activity => {
         dispatch(setActivity(activity));    
-    }).finally(()=>{
+    }).finally(() => {
         dispatch(hideLoading());
     });
 }
 
-export const setActivity = activity =>({
+export const setActivity = activity => ({
     type: ACTION_TYPES.UI_ACTIVITY_SET,
     activity
 });
@@ -229,7 +229,7 @@ const deleteActivity = activityId => dispatch => {
     }).then(() => {
         dispatch(getActivityList());
         message.success('活动删除成功');
-    }, (errorMessage)=>{
+    }, (errorMessage) => {
         message.error(`活动删除失败，${errorMessage}`);
         dispatch(hideLoading());
     });
@@ -245,12 +245,12 @@ const fetchActivityList = id => dispatch => {
         path: "activities"
     }).then(activities => {
         dispatch(setActivities(activities));
-    }).finally(()=>{
+    }).finally(() => {
         dispatch(hideLoading());
     });
 }
 
-export const setActivities = activities =>({
+export const setActivities = activities => ({
     type: ACTION_TYPES.ACTIVITY_LIST_SET,
     activities
 });
@@ -270,7 +270,7 @@ const postAdmin = admin => dispatch => {
         dispatch(getAdminList());
         dispatch(switchAdminPanel(ADMIN_PANEL_TYPE.DETAIL));
         message.success('管理员创建成功');
-    }, (errorMessage)=>{
+    }, (errorMessage) => {
         message.error(`管理员创建失败，${errorMessage}`);
         dispatch(hideLoading());
     });
@@ -294,7 +294,7 @@ const deleteAdmin = adminId => dispatch => {
     }).then(() => {
         dispatch(getAdminList());
         message.success('管理员删除成功');
-    },(errorMessage)=>{
+    }, (errorMessage) => {
         message.error(`管理员删除失败，${errorMessage}`);
         dispatch(hideLoading());
     });
@@ -310,7 +310,7 @@ const fetchAdmin = id => dispatch => {
         path: `admin/${id}`
     }).then(admin => {
         dispatch(setAdmin(admin));    
-    }).finally(()=>{
+    }).finally(() => {
         dispatch(hideLoading());
     });
 }
@@ -326,7 +326,7 @@ const fetchAdminList = () => dispatch => {
     }).then(admins => {
         dispatch(setAdmins(admins));
         
-        if( admins.length > 0){
+        if (admins.length > 0) {
             dispatch(setAdmin(admins[0]));
             dispatch(getAdmin(admins[0]["id"]));
             return true;
@@ -334,15 +334,15 @@ const fetchAdminList = () => dispatch => {
         
         setAdmin({});
         return false;
-    }).finally((needHideLoading)=>{
-        if( !needHideLoading){
+    }).finally((needHideLoading) => {
+        if (!needHideLoading) {
             return
         }
         dispatch(hideLoading());
     });;
 }
 
-export const setAdmins = admins =>({
+export const setAdmins = admins => ({
     type: ACTION_TYPES.ADMIN_LIST_SET,
     admins
 });
@@ -357,7 +357,7 @@ const fetchVolunteerList = () => dispatch => {
         path: "users?role=volunteer"
     }).then(users => {
         dispatch(setUsers(users));
-    }).finally(()=>{
+    }).finally(() => {
         dispatch(hideLoading());
     });
 }
@@ -372,17 +372,17 @@ const fetchDisabledList = () => dispatch => {
         path: "users?role=disabled"
     }).then(users => {
         dispatch(setUsers(users));
-    }).finally(()=>{
+    }).finally(() => {
         dispatch(hideLoading());
     });
 }
 
-export const setUsers = users =>({
+export const setUsers = users => ({
     type: ACTION_TYPES.USER_LIST_SET,
     users
 });
 
-export const setNoticeUsers = users =>{
+export const setNoticeUsers = users => {
     storage.setItem("notice-new-users", users);
     return ({
         type: ACTION_TYPES.NOTICE_NEW_USERS_SET,
@@ -395,18 +395,18 @@ export const updateUsers = (users, isVolunteer) => (dispatch, getState) => {
     return dispatch(patchUserList(users, isVolunteer))
 }
 
-const patchUserList = (users,isVolunteer) => dispatch => {
+const patchUserList = (users, isVolunteer) => dispatch => {
     return request({
         path: "users",
         method: "PATCH",
         data: users
-    }).then(()=>{
-        if(isVolunteer){
+    }).then(() => {
+        if (isVolunteer) {
             dispatch(fetchVolunteerList());
-        }else{
+        } else {
             dispatch(fetchDisabledList());
         }
-    },(errorMessage)=>{
+    }, (errorMessage) => {
         message.error(`操作失败，${errorMessage}`);
         dispatch(hideLoading());
     });
@@ -427,10 +427,8 @@ export const changePassword = (adminId, oldVal, newVal) => async (dispatch, getS
         });
         message.success('密码修改成功！');
         dispatch(hideLoading());
-    }
-    catch (errorMessage) {
+    } catch (errorMessage) {
         message.error(`密码修改失败，${errorMessage}`);
         dispatch(hideLoading());
     }
 }
-
