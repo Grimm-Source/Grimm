@@ -1,4 +1,3 @@
-// pages/personal2/personal2.js
 var app = getApp();
 const {getRegisterStatus} = require('../../utils/requestUtil.js');
 
