@@ -9,9 +9,6 @@ import {
     hideEmailVerify
 } from '../../actions';
 import {
-    storage
-} from '../../utils/localStorageHelper';
-import {
     connect
 } from 'react-redux';
 
