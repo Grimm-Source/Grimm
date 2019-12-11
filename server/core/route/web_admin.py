@@ -190,12 +190,12 @@ def send_vrfemail():
     '''view function to send and validate confirm email'''
     if request.method == 'GET':
         addr = request.args.get('email')
+        feedback = {'status': 'success'}
         # send confirm email
         if addr is not None:
-            feedback = {'status': 'success'}
             if db.exist_row('admin', email=addr):
                 try:
-                    email_verify.drop_token(admininfo['email'])
+                    email_verify.drop_token(addr)
                     email_token = email_verify.EmailVerifyToken(addr, expiry=EMAIL_VRF_EXPIRY)  # 2hrs expiry
                     if not email_token.send_email():
                         admin_logger.warning('%s: send confirm email failed', addr)
@@ -208,18 +208,16 @@ def send_vrfemail():
                 return json_dump_http_response(feedback)
 
             admin_logger.warning('%s: email is not registered', addr)
-            return json_dump_http_response({'status': 'failure', 'message': '邮箱未注册'})
-
+            feedback = {'status': 'failure', 'message': '邮箱未注册'}
         # validate confirm email
         else:
             token = request.args.get('token')
-            feedback = {'status': 'success', 'message':'您的邮箱验证成功'}
             if not email_verify.validate_email(token):
                 admin_logger.warning('%s: email verify failed', vrfcode.parse_vrftoken(token))
                 return json_dump_http_response({'status': 'failure', 'message':'您的邮箱验证失败'})
-
             admin_logger.info('%s: email verify successfully', vrfcode.parse_vrftoken(token))
-            return json_dump_http_response(feedback)
+
+        return json_dump_http_response(feedback)
 
 
 @app.route('/admin/delete', methods=['POST'])
