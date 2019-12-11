@@ -213,10 +213,10 @@ def send_vrfemail():
         # validate confirm email
         else:
             token = request.args.get('token')
-            feedback = {'status': '您的邮箱认证成功'}
+            feedback = {'status': 'success', 'message':'您的邮箱验证成功'}
             if not email_verify.validate_email(token):
                 admin_logger.warning('%s: email verify failed', vrfcode.parse_vrftoken(token))
-                feedback = {'status': '您的邮箱认证失败'}
+                return json_dump_http_response({'status': 'failure', 'message':'您的邮箱验证失败'})
 
             admin_logger.info('%s: email verify successfully', vrfcode.parse_vrftoken(token))
             return json_dump_http_response(feedback)
