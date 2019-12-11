@@ -145,7 +145,7 @@ export const verifyAdminEmail = (emailAddr) => (dispatch, getState) => {
         return;
     }
     return request({
-        path: "email?addr=" + emailAddr,
+        path: "email?email=" + emailAddr,
         method: "GET"
     }).then((userInfo) => {
         message.success('邮箱验证码已发送');

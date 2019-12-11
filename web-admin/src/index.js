@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import initialState from './utils/initialStateHelper';
 // import * as serviceWorker from './serviceWorker';
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { ConfigProvider } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
