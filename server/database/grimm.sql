@@ -51,7 +51,6 @@ create table admin
 
 INSERT INTO admin (admin_id, registration_date, password, name, email_verified, email)
 VALUES (0, NOW(), 'default', 'root', 1, 'no.reply@rp-i.org');
-    audit_status                TINYINT             NOT NULL        DEFAULT 0,
 
 /* user table */
 create table user
