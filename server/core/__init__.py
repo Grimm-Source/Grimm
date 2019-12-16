@@ -31,6 +31,7 @@ grimm = None
 grimm_ext = None
 wxappid = None
 wxsecret = None
+socketio = None
 
 # initialize grimm back-end service
 if grimm is None:
@@ -40,12 +41,17 @@ if grimm is None:
     from flask import Flask
     from flask_cors import CORS
     from server.utils.misctools import get_pardir
+    from flask_socketio import SocketIO
 
     grimm = Flask('grimm')
     grimm_ext = CORS(grimm)
 
     grimm.config['SECRET_KEY']= os.urandom(24)
     grimm.config['SECURITY_PASSWORD_SALT'] = uuid.uuid4().hex
+
+    socketio = SocketIO(cors_allowed_origins='*', debug=True)
+    socketio.init_app(grimm)
+
     path = get_pardir(get_pardir(os.path.abspath(__file__)))
     with open(path + '/config/wxapp.config', mode='r') as fp:
         wxconfig = json.load(fp=fp, encoding='utf8')

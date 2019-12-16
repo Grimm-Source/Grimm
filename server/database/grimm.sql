@@ -51,6 +51,7 @@ create table admin
 
 INSERT INTO admin (admin_id, registration_date, password, name, email_verified, email)
 VALUES (0, NOW(), 'default', 'root', 1, 'no.reply@rp-i.org');
+    audit_status                TINYINT             NOT NULL        DEFAULT 0,
 
 /* user table */
 create table user
@@ -74,6 +75,7 @@ create table user
     activities_joined           SMALLINT            NOT NULL        DEFAULT 0,
     remark                      VARCHAR(100)        DEFAULT "无",
     audit_status                TINYINT             NOT NULL        DEFAULT 0,
+    push_status                 TINYINT             NOT NULL        DEFAULT 0,
 
     PRIMARY KEY (openid)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

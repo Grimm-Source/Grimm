@@ -27,7 +27,7 @@ from flask import request, url_for
 import server.core.db as db
 import server.utils.sms_verify as sms_verify
 from server.core import grimm as app
-from server.core import wxappid, wxsecret
+from server.core import wxappid, wxsecret, socketio
 from server import user_logger
 from server.utils.misctools import json_dump_http_response, json_load_http_request
 
@@ -152,6 +152,11 @@ def register():
                 user_logger.error('%s: user registration failed', openid)
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新注册'})
 
+            socketio.emit('new-users', [userinfo])
+            try:
+                rc = db.expr_update(tbl = 'user', vals = {'push_status':1}, openid = userinfo['openid'])
+            except Exception as e:
+                user_logger.error('update push_status fail, %s', e)
             user_logger.info('%s: complete user registration success', openid)
             return json_dump_http_response({'status': 'success'})
 

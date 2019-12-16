@@ -22,6 +22,7 @@ import os
 import urllib3
 from flask import request
 from datetime import datetime
+from flask_socketio import emit
 
 import server.core.db as db
 import server.utils.password as password
@@ -29,10 +30,41 @@ import server.utils.email_verify as email_verify
 import server.utils.sms_verify as sms_verify
 import server.utils.vrfcode as vrfcode
 from server.core import grimm as app
-from server import admin_logger
+from server.core import socketio
+from server import admin_logger, user_logger
 from server.utils.misctools import json_dump_http_response, json_load_http_request, calc_duration
 
 from server.core.const import EMAIL_VRF_EXPIRY, COM_SIGNATURE
+
+@socketio.on('disconnect')
+def notice_disconnect():
+    print('Client disconnect', request.sid)
+
+@socketio.on('connect')
+def notice_connect():
+    print('Client connecetd')
+    try:
+        unau_users = db.expr_query('user', push_status=0)
+    except:
+        user_logger.error('Critical: database query failed !')
+    unauusers = []
+    if unau_users is not None:
+        for user in unau_users:
+            theuser = {}
+            if user is not None:
+                theuser['openid'] = user['openid']
+                theuser['name'] = user['name']
+                regdate = user['registration_date']
+                theuser['registrationDate'] = regdate.strftime('%Y-%m-%d')
+                theuser['phone'] = user['phone']
+                unauusers.append(theuser)
+    emit('new-users', unauusers)
+    for user in unauusers:
+        try:
+            rc = db.expr_update(tbl = 'user', vals = {'push_status':1}, openid = user['openid'])
+        except Exception as e:
+            print(e)
+
 
 
 @app.route('/')
