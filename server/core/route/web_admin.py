@@ -123,6 +123,7 @@ def admins():
             query['email'] = admin['email']
             query['type'] = 'root' if admin['admin_id'] == 0 else 'normal'
             query['name'] = admin['name']
+            query['email_verified'] = admin['email_verified']
             queries.append(query)
 
         return json_dump_http_response(queries)
