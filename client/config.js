@@ -1,4 +1,4 @@
-var apiUrl = 'http://173.37.22.10:18001/'
+var apiUrl = 'http://173.37.22.10:5000/'
 
 var config = {
   apiUrl
