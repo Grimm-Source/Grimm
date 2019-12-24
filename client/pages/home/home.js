@@ -8,10 +8,5 @@ Page({
   //事件处理函数
   onLoad: function () {
 
-  },
-  bindTapProfile: function(){
-    wx.navigateTo({
-        url: '../profile/profile',
-    })
   }
 })

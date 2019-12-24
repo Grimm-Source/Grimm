@@ -9,7 +9,7 @@ import ActivityList from '../../components/ActivityList/ActivityList.js';
 import Profile from '../Profile/Profile.js';
 import Report from '../Report/Report.js';
 import ResetPassword from '../ResetPassword/ResetPassword'
-import AdminEmailVerify from '../../components/AdminEmailVerify/AdminEmailVerify.js';
+import AdminEmailVerify from '../../containers/AdminEmailVerify/AdminEmailVerify.js';
 import { HOME_TAG_TYPE } from "../../constants";
 import { connect } from 'react-redux';
 import { Spin,Menu } from 'antd';
