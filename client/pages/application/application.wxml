@@ -1,0 +1,29 @@
+<view class="page__bd">
+<view class="weui-form-preview">
+<view class="weui-form-preview__hd">
+
+<view class="weui-form-preview__item">
+<view class="weui-form-preview__label">联系电话</view>
+<input class="weui-form-preview__value"  value="{{apply.tel}}"/>
+</view>
+
+<view class="weui-form-preview__item">
+<view class="weui-form-preview__label">联系地址</view>
+<input class="weui-form-preview__value"  value="{{apply.address}}"/>
+</view>
+
+<view class="weui-form-preview__item">
+<view class="weui-form-preview__label">{{role === '视障人士'?"是否需要接送":"是否愿意接送视障人士"}}</view>
+<checkbox-group bindchange="checkboxChange">
+<checkbox wx:if="{{role === '视障人士'}}" class="weui-form-preview__value"  value="{{apply.needPickUp}}"/>
+<checkbox wx:if="{{role !== '视障人士'}}" class="weui-form-preview__value"  value="{{apply.toPickUp}}"/>
+</checkbox-group>
+</view>
+
+<view class="weui-form-preview__ft">
+<text class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" bindtap="onTapSubmit">提交</text>
+</view>
+
+</view>
+</view>
+</view>

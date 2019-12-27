@@ -31,7 +31,7 @@ class NoticeUserList extends React.Component {
                 >
                     <Skeleton title={false} loading={this.props.loading} active>
                     <List.Item.Meta
-                        title={<span><span className="user-name">{item.name}</span> | <span>{item.registrationDate}</span></span>}
+                        title={<span><span className="user-name">{item.name}</span> | <span>{item.registration_date}</span></span>}
                     />
                     </Skeleton>
                 </List.Item>

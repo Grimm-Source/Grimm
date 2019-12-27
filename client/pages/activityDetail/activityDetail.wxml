@@ -1,0 +1,50 @@
+<wxs module="dateFormatter" src="../../utils/dateFormatter.wxs"></wxs>
+<view class="activity">
+<view class="page__hd">
+<view class="page__title">{{activityUi.title}}</view>
+</view>
+
+<view class="page__bd">
+<view class="weui-form-preview">
+<view class="weui-form-preview__hd">
+
+<view class="weui-form-preview__item">
+<view class="weui-form-preview__label">开始时间</view>
+<view class="weui-form-preview__value">{{dateFormatter.timeToFullDate(activityUi.startTimeStamp)}}</view>
+</view>
+
+<view class="weui-form-preview__item">
+<view class="weui-form-preview__label">结束时间</view>
+<view class="weui-form-preview__value">{{dateFormatter.timeToFullDate(activityUi.endTimeStamp)}}</view>
+</view>
+
+<view class="weui-form-preview__item">
+<view class="weui-form-preview__label">地点</view>
+<view class="weui-form-preview__value">{{activityUi.location}}</view>
+</view>
+
+<view class="weui-form-preview__item">
+<view class="weui-form-preview__label">内容</view>
+<view class="weui-form-preview__value">{{activityUi.content}}</view>
+</view>
+
+<view class="weui-form-preview__item">
+<view class="weui-form-preview__label">注意事项</view>
+<view class="weui-form-preview__value">{{activityUi.notice}}</view>
+</view>
+
+<view class="weui-form-preview__item">
+<view class="weui-form-preview__label">其它</view>
+<view class="weui-form-preview__value">{{activityUi.others}}</view>
+</view>
+
+<view class="weui-form-preview__ft">
+<text class="weui-form-preview__btn weui-form-preview__btn_primary" data-item="{{activity}}" hover-class="weui-form-preview__btn_active" bindtap="onTapApply">报名</text>
+<text wx:if="{{false}}" class="weui-form-preview__btn weui-form-preview__btn_primary" data-item="{{activity}}" hover-class="weui-form-preview__btn_active">修改</text>
+<text wx:if="{{false}}" class="weui-form-preview__btn weui-form-preview__btn_primary" data-item="{{activity}}" hover-class="weui-form-preview__btn_active">取消</text>
+</view>
+
+</view>
+</view>
+</view>
+</view>

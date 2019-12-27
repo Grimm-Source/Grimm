@@ -1,0 +1,16 @@
+<wxs module="dateFormatter" src="../../utils/dateFormatter.wxs"></wxs>
+<view class="activity-page">
+<view  wx:if="{{type === 'ALL'}}" class="activity-container activity-list-all" >
+  <view class="activity activity-all" bindtap="onTapActivity" data-item="{{item}}" wx:for="{{activityListUi}}" wx:key="item.id">
+    <view class="subtitle line">{{dateFormatter.timeToFullDate(item.startTimeStamp)}} | {{item.location}}</view>
+    <view class="title line">{{item.title}}</view>
+  </view>
+</view>
+
+<view class="activity-container activity-list-registered" wx:if="{{type === 'REGISTERED'}}" >
+  <view class="activity activity-registered" bindtap="onTapActivity" data-item="{{item}}" wx:for="{{activityListUi}}" wx:key="item.id">
+    <view class="subtitle line">{{dateFormatter.timeToFullDate(item.startTimeStamp)}} | {{item.location}}</view>
+    <view class="title line">{{item.title}}</view>
+  </view>
+</view>
+</view>

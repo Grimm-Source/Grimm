@@ -1,0 +1,14 @@
+.activity-container .activity .action .action-button{
+    border: 1px solid;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 0 5px;
+    font-size: 14px;
+    background: #99CC66;
+    color: white;
+}
+
+.activity .page__title{
+    display: flex;
+    justify-content: center; 
+}

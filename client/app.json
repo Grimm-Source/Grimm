@@ -4,7 +4,10 @@
     "pages/profile/profile",
     "pages/authorize/authorize",
     "pages/register/register",
-    "pages/personal/personal"
+    "pages/personal/personal",
+    "pages/activityList/activityList",
+    "pages/activityDetail/activityDetail",
+    "pages/application/application"
   ],
   "window": {
     "backgroundTextStyle": "light",

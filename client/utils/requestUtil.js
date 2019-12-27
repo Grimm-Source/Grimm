@@ -55,12 +55,66 @@ const getRegisterStatus = (code, successCallback, failCallback) => {
     }); 
 }
 
+const getActivityList = (successCallback, failCallback) => {
+    return request({
+        url: 'activities',
+        success: successCallback,
+        fail: failCallback,
+        method: "GET"
+    }); 
+}
+
+const getRegisteredActivityList = (idList, successCallback, failCallback) => {
+    let url = 'registeredActivities';
+    if(idList){
+        let idString = "";
+        for(let i = 0; i < idList.length;i++){
+            if(i === idList.length - 1){
+                idString += `${idList[i]}`;
+                break;
+            }
+            idString += `${idList[i]},`;
+        }
+        url += "?activityId=" + idString
+    }
+    return request({
+        url,
+        success: successCallback,
+        fail: failCallback,
+        method: "GET"
+    }); 
+}
+
+const postRegisteredActivityList = (obj, successCallback, failCallback) => {
+    return request({
+        url: 'registeredActivities',
+        success: successCallback,
+        fail: failCallback,
+        method: "POST",
+        data: obj
+    }); 
+}
+
+const removeRegisteredActivityList = (obj, successCallback, failCallback) => {
+    return request({
+        url: 'registeredActivities',
+        success: successCallback,
+        fail: failCallback,
+        method: "DELETE",
+        data: obj
+    }); 
+}
+
 module.exports = {
     getProfile,
     updateProfile,
     getVerifyCode,
     verifyCode,
     register,
-    getRegisterStatus
+    getRegisterStatus,
+    getActivityList,
+    getRegisteredActivityList,
+    postRegisteredActivityList,
+    removeRegisteredActivityList
 }
   

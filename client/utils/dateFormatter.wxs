@@ -1,0 +1,28 @@
+var timeToFullDate = function (value) {
+    if(!value){
+        return "";
+    }
+    
+    var date = getDate(value);
+    return dateToFullDate(date);
+}
+
+
+var dateToFullDate = function( date ) {
+    if(!date.getFullYear){//invalid date string
+        return "";
+    }
+
+    var year = date.getFullYear(),
+    month = date.getMonth() + 1,
+    day = date.getDate();
+    return year + "-" + month + "-" + day;
+}
+
+
+
+
+module.exports = {
+    timeToFullDate: timeToFullDate,
+    dateToFullDate: dateToFullDate
+}
