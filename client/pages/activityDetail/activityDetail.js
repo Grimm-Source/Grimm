@@ -37,7 +37,6 @@ Page({
         })
         return;
       }
-      debugger
         let activityUi = this.getActivityUi(res[0]);
         this.setData({
           activity: res[0],
