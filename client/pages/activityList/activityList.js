@@ -54,7 +54,7 @@ Page({
     let item = event.currentTarget.dataset && event.currentTarget.dataset.item,
     activityId = item.id || null;
     wx.navigateTo({
-        url: '/pages/activityDetail/activityDetail?activityId='+ activityId+"&item="+JSON.stringify(item),
+        url: '/pages/activityDetail/activityDetail?activityId='+ activityId,
     })
   }
 })

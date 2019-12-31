@@ -39,9 +39,8 @@
 </view>
 
 <view class="weui-form-preview__ft">
-<text class="weui-form-preview__btn weui-form-preview__btn_primary" data-item="{{activity}}" hover-class="weui-form-preview__btn_active" bindtap="onTapApply">报名</text>
-<text wx:if="{{false}}" class="weui-form-preview__btn weui-form-preview__btn_primary" data-item="{{activity}}" hover-class="weui-form-preview__btn_active">修改</text>
-<text wx:if="{{false}}" class="weui-form-preview__btn weui-form-preview__btn_primary" data-item="{{activity}}" hover-class="weui-form-preview__btn_active">取消</text>
+<text class="weui-form-preview__btn weui-form-preview__btn_primary"  wx:if="{{activity.isRegistered || true}}" data-item="{{activity}}" hover-class="weui-form-preview__btn_active" bindtap="onTapApply">报名</text>
+<text class="weui-form-preview__btn weui-form-preview__btn_primary" wx:if="{{activity.isRegistered}}" data-item="{{activity}}" hover-class="weui-form-preview__btn_active" bindtap="onTapCancel">取消报名</text>
 </view>
 
 </view>

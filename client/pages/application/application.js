@@ -31,7 +31,7 @@ Page({
   },
   onTapSubmit: function(){
     let obj = {
-        activityId: this.data.activityId,
+        activityId: + this.data.activityId,
         ...this.data.apply
     };
     if(this.data.role === "视障人士"){
@@ -41,11 +41,20 @@ Page({
     }
 
     postRegisteredActivityList([obj],()=>{
-        wx.navigateTo({
-            url: '/pages/activityDetail/activityDetail?activityId='+ this.data.activityId
-        })
+      wx.showToast({
+        title: '报名成功',
+        icon: 'success', //error
+        duration: 2000
+      });
+      wx.navigateTo({
+          url: '/pages/activityDetail/activityDetail?activityId='+ this.data.activityId
+      })
     },()=>{
-
+      wx.showToast({
+        title: '报名失败',
+        icon: 'none', //error
+        duration: 2000
+      });
     });
   },
   checkboxChange: function (e) {

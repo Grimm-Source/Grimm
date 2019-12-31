@@ -63,6 +63,14 @@ const getActivityList = (successCallback, failCallback) => {
         method: "GET"
     }); 
 }
+const getActivity = (activityId, successCallback, failCallback) => {
+    return request({
+        url: 'activity/'+ activityId,
+        success: successCallback,
+        fail: failCallback,
+        method: "GET"
+    }); 
+}
 
 const getRegisteredActivityList = (idList, successCallback, failCallback) => {
     let url = 'registeredActivities';
@@ -113,6 +121,7 @@ module.exports = {
     register,
     getRegisterStatus,
     getActivityList,
+    getActivity,
     getRegisteredActivityList,
     postRegisteredActivityList,
     removeRegisteredActivityList

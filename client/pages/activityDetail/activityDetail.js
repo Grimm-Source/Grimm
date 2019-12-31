@@ -1,4 +1,4 @@
-const {getRegisteredActivityList} = require('../../utils/requestUtil.js');
+const {getRegisteredActivityList, removeRegisteredActivityList, getActivity} = require('../../utils/requestUtil.js');
 
 Page({
   data: {
@@ -12,9 +12,7 @@ Page({
       return;
     }
     this.setData({
-        activityId: option.activityId,
-        activity: JSON.parse(option.item),
-        activityUi: this.getActivityUi(JSON.parse(option.item))
+        activityId: option.activityId
     });
   }, 
   onPullDownRefresh: function () {
@@ -25,9 +23,21 @@ Page({
   },
   getActivity: function (){
     getRegisteredActivityList([this.data.activityId], (res)=>{
-        var activityUi = this.getActivityUi(res)
+      if(res.length < 1){
+        getActivity(this.data.activityId, (res)=>{
+          let activityUi = this.getActivityUi(res);
+          this.setData({
+            activity: res,
+            activityUi
+          })
+        },()=>{
+
+        })
+        return;
+      }
+        let activityUi = this.getActivityUi(res[0]);
         this.setData({
-          activity: res,
+          activity: res[0],
           activityUi
         })
     }); 
@@ -40,11 +50,15 @@ Page({
     return activity;
   },
   onTapApply: function(event){
-    let item = event.currentTarget.dataset && event.currentTarget.dataset.item,
-    activityId = item.id || null;
+    let activityId = this.data.activityId;
     wx.navigateTo({
         url: '/pages/application/application?activityId='+ activityId
-    })
+    });
+  },
+  onTapCancel: function(event){
+    removeRegisteredActivityList([this.data.activityId], ()=>{
+      this.getActivity();
+    });
   }
 
 })
