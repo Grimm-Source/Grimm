@@ -1,17 +1,22 @@
 <view class="home">
 <view class="info" wx:if="{{!isAuthorized}}">您未注册用户或注册信息尚未通过审核，无法浏览信息。请注册用户并待审核通过后再试。</view>
 <view class="main-board" wx:if="{{isAuthorized}}">
-    <view class="messages">
+    <view class="messages"><image src="{{volunteerUrl}}" />
     </view>
 </view>
-<view class="tile-container" wx:if="{{isAuthorized}}">
-    <view class="tile all-activities" bindtap="onTapAllActivites" >
-    <text>所有活动</text>
-    <text class="description">查看所有活动</text>
-    </view>
-    <view class="tile registered-activities" bindtap="onTapRegisteredActivities">
-    <text>已报名</text>
-    <text class="description">查看已报名活动</text>
+<view class="tile-container">
+    <view class="tile-title">常用</view>
+    <view class="tiles" wx:if="{{isAuthorized}}">
+        <view class="tile all-activities" bindtap="onTapAllActivites" >
+        <view class="title"><image src="{{activityUrl}}" />
+        <text>所有活动</text></view>
+        <text class="description">查看所有活动</text>
+        </view>
+        <view class="tile registered-activities" bindtap="onTapRegisteredActivities">
+        <view class="title"><image src="{{registerUrl}}" />
+        <text>已报名</text></view>
+        <text class="description">查看已报名活动</text>
+        </view>
     </view>
 </view>
 

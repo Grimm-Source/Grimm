@@ -1,11 +1,13 @@
-const {getActivityList} = require('../../utils/requestUtil.js');
 
 //获取应用实例
 const app = getApp()
 
 Page({
   data: {
-    isAuthorized: false
+    isAuthorized: false,
+    volunteerUrl: '../../images/house-volunteer.svg',
+    activityUrl: '../../images/volunteer_activism.svg',
+    registerUrl: '../../images/baoming.svg'
   },
   //事件处理函数
   onLoad: function () {

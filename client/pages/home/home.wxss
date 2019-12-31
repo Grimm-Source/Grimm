@@ -1,34 +1,79 @@
 .home{
     width: 100%;
     height: 100%;
-    background: #99CC66;
+    background: white;
     padding: 1px 0;
 }
 
-.tile-container{
-    width: 100%;
+.home .info{
+    padding: 2.5%
+}
+
+.main-board{
+    display: flex;
+    justify-content: center;
+}
+
+.main-board .messages{
+    height: 140px;
+    width: 90%;
+    background: #afcd50;
+    border-radius: 10px;
+    box-shadow: 2px 2px 7px #c8db8c;
+    align-content: center;
+}
+
+.main-board .messages image{
+    width: 70px;
+    height: 70px;
+    margin: 20px;
+}
+
+.main-board .messages, .home .tiles{
     display: flex;
     margin: 2.5% 0;
     flex-wrap: wrap;
     justify-content: start;
 }
 
-.tile-container .tile{
-    width: 40%;
+.home .tile-title{
+    margin: 5% 5% 5% 8%;
+    color: #afcd50;
+}
+
+.home .tiles{
+    height: 100%;
+    border-radius: 50px 50px 0 0;
+    background: white;
+    margin-left: 5%;
+}
+
+.home .tiles .tile{
+    width: 30%;
     height: 100px;
     display: flex;
     justify-content: center;
     align-items: left;
-    background: white;
+    border: 1px solid #c8db8c;
+    color: #afcd50;
     border-radius: 10px;
-    color: #99CC00;
     margin: 1% 1%;
-    box-shadow: 2px 2px 7px #336600;
     flex-direction: column;
-    padding-left: 8%;
+    padding-left: 4%;
 }
 
-.tile-container .tile .description{
+.home .tiles .tile .title{
+    display: flex;
+    justify-content: start;
+}
+
+.home .tiles .tile .title image{
+    width: 20px;
+    height: 20px;
+    margin: 0 5px 0 0;
+}
+
+.tiles .tile .description{
     color: #999999;
     font-size: 12px;
     margin-top: 20px;
