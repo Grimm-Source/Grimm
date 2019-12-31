@@ -34,10 +34,10 @@ Page({
       }
     ],
     personalInfoList: [
-      {
-        label: '我的活动列表',
-        action: ''
-      },
+      // {
+      //   label: '我的活动列表',
+      //   action: ''
+      // },
       {
         label: '我的通知',
         action: ''
