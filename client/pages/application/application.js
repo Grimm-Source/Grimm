@@ -36,8 +36,10 @@ Page({
     };
     if(this.data.role === "视障人士"){
         delete obj["toPickUp"];
+        obj["needPickUp"] = obj["needPickUp"]?1:0;
     }else{
         delete obj["needPickUp"];
+        obj["toPickUp"] = obj["toPickUp"]?1:0;
     }
 
     postRegisteredActivityList([obj],()=>{

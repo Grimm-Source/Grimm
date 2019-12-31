@@ -15,8 +15,8 @@
 <view class="weui-form-preview__item">
 <view class="weui-form-preview__label">{{role === '视障人士'?"是否需要接送":"是否愿意接送视障人士"}}</view>
 <checkbox-group bindchange="checkboxChange">
-<checkbox wx:if="{{role === '视障人士'}}" class="weui-form-preview__value"  value="{{apply.needPickUp}}"/>
-<checkbox wx:if="{{role !== '视障人士'}}" class="weui-form-preview__value"  value="{{apply.toPickUp}}"/>
+<checkbox wx:if="{{role === '视障人士'}}" class="weui-form-preview__value" disabled value="{{apply.needPickUp}}"/>
+<checkbox wx:if="{{role !== '视障人士'}}" class="weui-form-preview__value" disabled value="{{apply.toPickUp}}"/>
 </checkbox-group>
 </view>
 

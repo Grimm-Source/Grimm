@@ -12,3 +12,8 @@
     display: flex;
     justify-content: center; 
 }
+
+.register-detail{
+    padding-top: 10px;
+    border-top: 1rpx dashed #d5d5d6;
+}

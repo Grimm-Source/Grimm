@@ -1,4 +1,4 @@
-const {getRegisteredActivityList, removeRegisteredActivityList, getActivity} = require('../../utils/requestUtil.js');
+const {getProfile, getRegisteredActivityList, removeRegisteredActivityList, getActivity} = require('../../utils/requestUtil.js');
 
 Page({
   data: {
@@ -37,12 +37,14 @@ Page({
         })
         return;
       }
+      debugger
         let activityUi = this.getActivityUi(res[0]);
         this.setData({
           activity: res[0],
           activityUi,
           isRegistered: true
-        })
+        });
+        this.getContactInfo();
     }); 
   },
   
@@ -58,6 +60,14 @@ Page({
         url: '/pages/application/application?activityId='+ activityId
     });
   },
+  getContactInfo: function (){
+    getProfile((res)=>{
+        this.setData({
+          role: res.role
+        })
+    }); 
+  },
+
   onTapCancel: function(event){
     removeRegisteredActivityList([this.data.activityId], ()=>{
       this.getActivity();
