@@ -73,20 +73,8 @@ const getActivity = (activityId, successCallback, failCallback) => {
 }
 
 const getRegisteredActivityList = (idList, successCallback, failCallback) => {
-    let url = 'registeredActivities';
-    if(idList){
-        let idString = "";
-        for(let i = 0; i < idList.length;i++){
-            if(i === idList.length - 1){
-                idString += `${idList[i]}`;
-                break;
-            }
-            idString += `${idList[i]},`;
-        }
-        url += "?activityId=" + idString
-    }
     return request({
-        url,
+        url: arrToUrl("registeredActivities", idList, "activityId"),
         success: successCallback,
         fail: failCallback,
         method: "GET"
@@ -103,14 +91,28 @@ const postRegisteredActivityList = (obj, successCallback, failCallback) => {
     }); 
 }
 
-const removeRegisteredActivityList = (obj, successCallback, failCallback) => {
+const removeRegisteredActivityList = (idList, successCallback, failCallback) => {
     return request({
-        url: 'registeredActivities',
+        url: arrToUrl("registeredActivities", idList, "activityId"),
         success: successCallback,
         fail: failCallback,
-        method: "DELETE",
-        data: obj
+        method: "DELETE"
     }); 
+}
+
+const arrToUrl = (baseUrl, arr, key) => {
+    if(!arr || arr.length < 1){
+        return baseUrl;
+    }
+    let paramUrl = "";
+    for(let i = 0; i < arr.length;i++){
+        if(i === arr.length - 1){
+            paramUrl += `${arr[i]}`;
+            break;
+        }
+        paramUrl += `${arr[i]},`;
+    }
+    return `${baseUrl}?${key}=${paramUrl}`;
 }
 
 module.exports = {

@@ -50,9 +50,8 @@ Page({
     return uiList;
   },
   onTapActivity: function(event){
-
     let item = event.currentTarget.dataset && event.currentTarget.dataset.item,
-    activityId = item.id || null;
+    activityId = this.data.type === type.ALL? item.id : item.activityId;
     wx.navigateTo({
         url: '/pages/activityDetail/activityDetail?activityId='+ activityId,
     })

@@ -4,7 +4,8 @@ Page({
   data: {
     activity: {},
     activityUi: {},
-    activityId: null
+    activityId: null,
+    isRegistered: false
   },
   //事件处理函数
   onLoad: function (option) {
@@ -28,7 +29,8 @@ Page({
           let activityUi = this.getActivityUi(res);
           this.setData({
             activity: res,
-            activityUi
+            activityUi,
+            isRegistered: false
           })
         },()=>{
 
@@ -38,7 +40,8 @@ Page({
         let activityUi = this.getActivityUi(res[0]);
         this.setData({
           activity: res[0],
-          activityUi
+          activityUi,
+          isRegistered: true
         })
     }); 
   },
