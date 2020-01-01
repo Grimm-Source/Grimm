@@ -10,10 +10,9 @@ page{
 }
 
 .personal_header{
-    height: 34%;
     background-color: white;
     margin-bottom: 5%;
-    padding: 20rpx 30rpx;
+    padding: 40rpx 30rpx;
 }
 .personal_header .setting_nav{
     height: 50rpx;
@@ -120,4 +119,8 @@ page{
 .person_info_Item image{
     width: 40rpx;
     height: 40rpx;
+}
+
+.personal_container .disabled{
+    color: #ddd;
 }

@@ -12,17 +12,18 @@ Page({
         icon: '../../images/scan.png',
         action: 'scanCode'
       },
-      {
-        icon: '../../images/set.png',
-        action: 'settingProfile'
-      }
+      // {
+      //   icon: '../../images/set.png',
+      //   action: 'settingProfile'
+      // }
     ],
     avatarUrl: '../../images/avatar.jpg',
     userInfo: null,
     activity_list: [
       {
         icon: '../../images/order.png',
-        label: '已预约'
+        label: '已报名',
+        action: 'onTapRegisteredActivities'
       },
       {
         icon: '../../images/signature.png',
@@ -40,7 +41,8 @@ Page({
       // },
       {
         label: '我的通知',
-        action: ''
+        action: '',
+        class: 'disabled'
       },
       {
         label: '更新个人信息',
@@ -48,11 +50,13 @@ Page({
       },
       {
         label: '常见问题',
-        action: ''
+        action: '',
+        class: 'disabled'
       },
       {
         label: '用户反馈',
-        action: ''
+        action: '',
+        class: 'disabled'
       }
     ]
   },
@@ -131,6 +135,12 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+
+  onTapRegisteredActivities: function(){
+    wx.navigateTo({
+      url: '/pages/activityList/activityList?type=REGISTERED',
+    });
   },
 
   getInfoSetting: function(){

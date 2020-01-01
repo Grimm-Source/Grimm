@@ -22,20 +22,20 @@
                     </view>
                 </view>
             </view>
-            <view class="user_nav_right">详情
+            <view class="user_nav_right" bindtap="updateProfile">详情
                 <view class="user_detail"><image src="../../images/right_arrow.png" /></view>
             </view>
         </view>
         <view class="activity_classify">
             <view class="activity_nav_item" wx:for='{{activity_list}}' wx:key="item.index">
-                <view class="activity_item_label"><image src="{{item.icon}}" />{{item.label}}</view>
+                <view class="activity_item_label" bindtap="{{item.action}}"><image src="{{item.icon}}" />{{item.label}}</view>
                 <view class="activity_item_count">0</view>
             </view>
         </view>
     </view>
     <view class="personal_info_list">
         <block wx:for='{{personalInfoList}}' wx:key='{{item.index}}'>
-            <view class="person_info_Item" bindtap="{{item.action}}">
+            <view class="{{'person_info_Item '+ item.class}}" bindtap="{{item.action}}">
                 <view class="labelName">{{item.label}}</view>
                 <image src="../../images/right_arrow.png" />
             </view>

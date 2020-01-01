@@ -6,7 +6,12 @@
 }
 
 .home .info{
-    padding: 2.5%
+    padding: 2.5% 5%;
+}
+
+.home .info navigator{
+    display: inline;
+    color: #248bd6;
 }
 
 .main-board{
@@ -14,26 +19,25 @@
     justify-content: center;
 }
 
-.main-board .messages{
+.main-board .main-info{
     height: 140px;
     width: 90%;
-    background: #afcd50;
+    background: #99CC66;
     border-radius: 10px;
     box-shadow: 2px 2px 7px #c8db8c;
     align-content: center;
+    justify-content: start;
 }
 
-.main-board .messages image{
-    width: 70px;
-    height: 70px;
-    margin: 20px;
+.main-board .main-info image{
+    width: 20%;
+    margin: 5%;
 }
 
-.main-board .messages, .home .tiles{
+.main-board .main-info, .home .tiles{
     display: flex;
     margin: 2.5% 0;
-    flex-wrap: wrap;
-    justify-content: start;
+    flex-wrap: wrap;  
 }
 
 .home .tile-title{
@@ -45,11 +49,12 @@
     height: 100%;
     border-radius: 50px 50px 0 0;
     background: white;
-    margin-left: 5%;
+    justify-content: start;
+    padding: 0 1.25%;
 }
 
 .home .tiles .tile{
-    width: 30%;
+    width: 47.5%;
     height: 100px;
     display: flex;
     justify-content: center;
@@ -57,14 +62,20 @@
     border: 1px solid #c8db8c;
     color: #afcd50;
     border-radius: 10px;
-    margin: 1% 1%;
+    margin: 1.25% 1.25% 1.25% 1.25%;
     flex-direction: column;
     padding-left: 4%;
+    box-sizing: border-box;
+}
+
+.home .tiles .tile.disabled{
+    opacity: 50%;
 }
 
 .home .tiles .tile .title{
     display: flex;
     justify-content: start;
+    align-items: center;
 }
 
 .home .tiles .tile .title image{

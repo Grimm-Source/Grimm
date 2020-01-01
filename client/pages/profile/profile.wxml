@@ -12,7 +12,7 @@
       <view class="weui-cell__hd">
         <view class="weui-label" aria-label="身份证号码">身份证号码</view>
       </view>
-      <view class="{{ui.auditStatus!=='rejected'?'weui-cell__hd form-input-readonly': 'weui-cell__hd'}}">
+      <view class="{{ui.auditStatus!=='rejected'?'weui-cell__bd form-input-readonly': 'weui-cell__bd'}}">
         <input class="weui-input" disabled="{{ui.auditStatus!=='rejected'}}" maxlength="18" aria-readonly="{{ui.auditStatus!=='rejected'}}" aria-valuenow="{{userInfo.idcard}}" aria-readonly="{{ui.auditStatus!=='rejected'}}" value="{{userInfo.idcard}}"/>
       </view>
     </view> 
@@ -42,8 +42,8 @@
       <view class="weui-cell__hd">
         <view class="weui-label" aria-label="性别">性别</view>
       </view>
-      <view class="weui-cell__bd">
-      <picker data-info-key="gender" bindinput="bindInputChange" value="{{userInfo.gender==='男'?0:1}}" range="{{meta.genderArray}}">
+      <view class="{{ui.auditStatus!=='rejected'?'weui-cell__bd form-input-readonly': 'weui-cell__bd'}}">
+      <picker data-info-key="gender" disabled="{{ui.auditStatus!=='rejected'}}" bindinput="bindInputChange" value="{{userInfo.gender==='男'?0:1}}" range="{{meta.genderArray}}">
         <view class="weui-input" aria-valuenow="{{userInfo.gender}}" >
         {{userInfo.gender}}
         </view>
@@ -54,8 +54,8 @@
       <view class="weui-cell__hd">
         <view class="weui-label" aria-label="出生年月">出生年月</view>
       </view>
-      <view class="weui-cell__bd">
-        <input class="weui-input" disabled aria-readonly aria-valuenow="{{userInfo.birthDate}}" aria-readonly value="{{userInfo.birthDate}}"/>
+      <view class="{{ui.auditStatus!=='rejected'?'weui-cell__bd form-input-readonly': 'weui-cell__bd'}}">
+        <input class="weui-input" disabled aria-readonly aria-valuenow="{{userInfo.birthDate}}" value="{{userInfo.birthDate}}"/>
       </view>
     </view>
     
