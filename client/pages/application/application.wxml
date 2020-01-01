@@ -4,12 +4,12 @@
 
 <view class="weui-form-preview__item">
 <view class="weui-form-preview__label">联系电话</view>
-<input class="weui-form-preview__value"  value="{{apply.tel}}"/>
+<input class="weui-form-preview__value"  value="{{apply.tel}}" data-info-key="tel" bindinput="bindInputChange" placeholder="{{message.linktel.placeholder}}" />
 </view>
 
 <view class="weui-form-preview__item">
 <view class="weui-form-preview__label">联系地址</view>
-<input class="weui-form-preview__value"  value="{{apply.address}}"/>
+<input class="weui-form-preview__value" value="{{apply.address}}"  data-info-key="address" bindinput="bindInputChange" placeholder="{{message.linkaddress.placeholder}}" />
 </view>
 
 <view class="weui-form-preview__item">
