@@ -120,8 +120,17 @@ create table activity
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO activity (start_time, location, content, notice, user_raiser, approver, assignee, end_time)
-VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "需要配备雨具", '0', 0, '1', '2019-10-28 09:30:00');
+VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "需要配备雨具", '0', 0, '1', '2030-10-28 09:30:00');
 
+/* registed activities table */
+create table registerActivities
+(
+    openid                      CHAR(28)            NOT NULL,
+    activity_id                 BIGINT              NOT NULL,
+    needpickup                  TINYINT             NOT NULL        DEFAULT 0,
+    topickup                    TINYINT             NOT NULL        DEFAULT 0,
+    PRIMARY KEY(openid, activity_id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* pickup table */
 create table pickups

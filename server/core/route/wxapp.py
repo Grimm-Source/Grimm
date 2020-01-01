@@ -29,7 +29,7 @@ import server.utils.sms_verify as sms_verify
 from server.core import grimm as app
 from server.core import wxappid, wxsecret, socketio
 from server import user_logger
-from server.utils.misctools import json_dump_http_response, json_load_http_request
+from server.utils.misctools import json_dump_http_response, json_load_http_request, calc_duration
 
 from server.core.const import SMS_VRF_EXPIRY
 
@@ -276,3 +276,84 @@ def smscode():
 
         user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
         return json_dump_http_response({'status': 'success'})
+
+@app.route('/registeredActivities', methods = ['POST', 'GET', 'DELETE'])
+def registeredActivities():
+    # register an activity
+    if request.method == 'POST':
+        openid = request.headers.get('Authorization')
+        info = json_load_http_request(request)[0]
+        print(info)
+        activity_id = info['activityId']
+        registerAct = {}
+        if 'needPickUp' in info.keys():
+            registerAct['needpickup'] = int(info['needPickUp'])
+        if 'toPickUp' in info.keys():
+            registerAct['topickup'] = int(info['toPickUp'])
+        registerAct['openid'] = openid
+        # activity_id from network is str
+        registerAct['activity_id'] = int(activity_id)
+        try:
+            if db.expr_insert('registerActivities', registerAct) != 1:
+                user_logger.error('%s: activity registration failed', openid)
+                return json_dump_http_response({'status': 'failure', 'message': '活动注册失败，请重新注册'})
+            else:
+                return json_dump_http_response({'status': 'success'})
+        except IntegrityError as e:
+            print(e)
+            user_logger.error('%s: activity registration failed', openid)
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新注册'})
+    #  view registered activities
+    if request.method == 'GET':
+        openid = request.headers.get('Authorization')
+        activity_id = request.args.get('activityId')
+        activities = []
+        try:
+            activities_info = db.expr_query(['registerActivities', 'activity', 'user'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
+                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.content', 'activity.others',\
+                                              'registerActivities.needpickup', 'registerActivities.topickup', 'activity.location', 'user.phone',\
+                                              'user.address'], \
+                                             clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id ' \
+                                             'and registerActivities.openid = user.openid'.format(str(openid)))
+        except Exception as e:
+            print('*******************xtydbg*****************',e)
+        if activities_info is None:
+            return json_dump_http_response(activities)
+        for item in activities_info:
+            activity = {}
+            print(item)
+            activity['activityId'] = item['activity.activity_id']
+            activity['title'] = item['activity.title']
+            start = item['activity.start_time']
+            end = item['activity.end_time']
+            activity['start_time'] = start.strftime('%Y-%m-%d %H:%M:%S')
+            activity['end_time'] = end.strftime('%Y-%m-%d %H:%M:%S')
+            activity['duration'] = calc_duration(start, end)
+            activity['content'] = item['activity.content']
+            activity['location'] = item['activity.location']
+            activity['notice'] = item['activity.notice']
+            activity['others'] = item['activity.others']
+            activity['tel'] = item['user.phone']
+            activity['address'] = item['user.address']
+            activity['needPickUp'] = item['registerActivities.needpickup']
+            activity['toPickUp'] = item['registerActivities.topickup']
+            activities.append(activity)
+        if activity_id is not None:
+            for item in activities:
+                if int(activity_id) == item['activityId']:
+                    return json_dump_http_response([item])
+            return json_dump_http_response([])
+        return json_dump_http_response(activities)
+    # cancel specific registered activity
+    if request.method == 'DELETE':
+        openid = request.headers.get('Authorization')
+        print('*****************deleteopenid', type(openid), openid)
+        activity_id = request.args.get('activityId')
+        try:
+            if db.expr_delete(['registerActivities'], clauses='openid="{}" and activity_id={}'.format(openid, activity_id)) == 1:
+                return json_dump_http_response({'status': '取消活动成功！'})
+            else:
+                return json_dump_http_response({'status': '取消活动失败！'})
+        except Exception as e:
+            print('*******************xtydbg*****************',e)
+            return json_dump_http_response({'status': '取消活动失败！'})
