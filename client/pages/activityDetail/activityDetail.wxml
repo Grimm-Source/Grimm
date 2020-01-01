@@ -50,15 +50,15 @@
 
     <view class="weui-form-preview__item">
     <view class="weui-form-preview__label">{{role === '视障人士'?"是否需要接送":"是否愿意接送视障人士"}}</view>
-    <checkbox-group bindchange="checkboxChange">
-    <checkbox wx:if="{{role === '视障人士'}}" class="weui-form-preview__value"  value="{{activityUi.needPickUp === 1}}"/>
-    <checkbox wx:if="{{role !== '视障人士'}}" class="weui-form-preview__value"  value="{{activityUi.toPickUp === 1}}"/>
+    <checkbox-group>
+    <checkbox wx:if="{{role === '视障人士'}}" class="weui-form-preview__value" disabled checked="{{activityUi.needPickUp === 1}}"/>
+    <checkbox wx:if="{{role !== '视障人士'}}" class="weui-form-preview__value" disabled checked="{{activityUi.toPickUp === 1}}"/>
     </checkbox-group>
     </view>
 </view>
 
 <view class="weui-form-preview__ft">
-<text class="weui-form-preview__btn weui-form-preview__btn_primary"  wx:if="{{!isRegistered}}" data-item="{{activity}}" hover-class="weui-form-preview__btn_active" bindtap="onTapApply">报名</text>
+<text class="weui-form-preview__btn weui-form-preview__btn_primary" wx:if="{{!isRegistered}}" data-item="{{activity}}" hover-class="weui-form-preview__btn_active" bindtap="onTapApply">报名</text>
 <text class="weui-form-preview__btn weui-form-preview__btn_primary" wx:if="{{isRegistered}}" data-item="{{activity}}" hover-class="weui-form-preview__btn_active" bindtap="onTapCancel">取消报名</text>
 </view>
 
