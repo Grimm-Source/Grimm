@@ -37,7 +37,7 @@
         <block wx:for='{{personalInfoList}}' wx:key='{{item.index}}'>
             <view class="{{'person_info_Item '+ item.class}}" bindtap="{{item.action}}">
                 <view class="labelName">{{item.label}}</view>
-                <image src="../../images/right_arrow.png" />
+                <image src="../../images/right_arrow.png" aria-hidden="true"/>
             </view>
         </block>
     </view>
