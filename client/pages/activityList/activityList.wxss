@@ -22,7 +22,10 @@
     flex-direction: column;
     border-bottom: 1px solid #CCCCCC;
     padding: 10px 0;
+}
 
+.activity-container .activity.empty{
+    padding-left: 10px;
 }
 
 .activity-container .activity .subtitle{

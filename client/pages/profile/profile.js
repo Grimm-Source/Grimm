@@ -239,7 +239,7 @@ Page({
       this.__setUi("leftTimeLabel", `${time--}秒后再试`);
       if(time < 0){
         time = 60;
-        clearInterval(that.timer);
+        clearInterval(this.timer);
         this.__setUi("isCodeSent", false);
         this.__setUi("leftTimeLabel", `获取验证码`);
       }

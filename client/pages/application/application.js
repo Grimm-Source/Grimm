@@ -50,7 +50,6 @@ Page({
   },
   onTapSubmit: function(){
     if(!this.__validate("linktel", this.data.apply && this.data.apply.tel)){
-      debugger
       wx.showToast({
         title: userInfoMessage["linktel"]["message"],
         icon: 'none',
@@ -58,7 +57,6 @@ Page({
       });
       return;
     }else if(!this.__validate("linkaddress", this.data.apply && this.data.apply.address)){
-      debugger
       wx.showToast({
         title: userInfoMessage["linkaddress"]["message"],
         icon: 'none', //error
@@ -82,9 +80,9 @@ Page({
       wx.navigateTo({
           url: '/pages/activityDetail/activityDetail?activityId='+ this.data.activityId
       })
-    },()=>{
+    },(message)=>{
       wx.showToast({
-        title: '报名失败',
+        title: message || '报名失败',
         icon: 'none', //error
         duration: 2000
       });

@@ -20,7 +20,7 @@
 }
 
 .main-board .main-info{
-    height: 140px;
+    height: 300rpx;
     width: 90%;
     background: #99CC66;
     border-radius: 10px;
@@ -30,8 +30,9 @@
 }
 
 .main-board .main-info image{
-    width: 20%;
-    margin: 5%;
+    width: 100rpx;
+    height: 100rpx;
+    margin: 50rpx;
 }
 
 .main-board .main-info, .home .tiles{
