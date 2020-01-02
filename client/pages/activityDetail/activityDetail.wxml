@@ -9,33 +9,33 @@
 <view class="weui-form-preview__hd">
 
 <view class="weui-form-preview__item">
-<view class="weui-form-preview__label">开始时间</view>
-<view class="weui-form-preview__value">{{dateFormatter.timeToFullDate(activityUi.startTimeStamp)}}</view>
+<view class="weui-form-preview__label" aria-describedby="startTime" >开始时间</view>
+<view class="weui-form-preview__value" id="startTime">{{dateFormatter.timeToFullDate(activityUi.startTimeStamp)}}</view>
 </view>
 
 <view class="weui-form-preview__item">
-<view class="weui-form-preview__label">结束时间</view>
-<view class="weui-form-preview__value">{{dateFormatter.timeToFullDate(activityUi.endTimeStamp)}}</view>
+<view class="weui-form-preview__label" aria-describedby="endTime">结束时间</view>
+<view class="weui-form-preview__value" id="endTime">{{dateFormatter.timeToFullDate(activityUi.endTimeStamp)}}</view>
 </view>
 
 <view class="weui-form-preview__item">
-<view class="weui-form-preview__label">地点</view>
-<view class="weui-form-preview__value">{{activityUi.location}}</view>
+<view class="weui-form-preview__label" aria-describedby="location">地点</view>
+<view class="weui-form-preview__value" id="location">{{activityUi.location}}</view>
 </view>
 
 <view class="weui-form-preview__item">
-<view class="weui-form-preview__label">内容</view>
-<view class="weui-form-preview__value">{{activityUi.content}}</view>
+<view class="weui-form-preview__label" aria-describedby="content">内容</view>
+<view class="weui-form-preview__value" id="content">{{activityUi.content}}</view>
 </view>
 
 <view class="weui-form-preview__item">
-<view class="weui-form-preview__label">注意事项</view>
-<view class="weui-form-preview__value">{{activityUi.notice}}</view>
+<view class="weui-form-preview__label" aria-describedby="notice">注意事项</view>
+<view class="weui-form-preview__value" id="notice">{{activityUi.notice}}</view>
 </view>
 
 <view class="weui-form-preview__item">
-<view class="weui-form-preview__label">其它</view>
-<view class="weui-form-preview__value">{{activityUi.others}}</view>
+<view class="weui-form-preview__label" aria-describedby="others">其它</view>
+<view class="weui-form-preview__value" id="others">{{activityUi.others}}</view>
 </view>
 <view class="register-detail" wx:if="{{isRegistered}}" >
     <view class="weui-form-preview__item">

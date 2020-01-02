@@ -1,5 +1,5 @@
 <view class="home">
-    <view class="info" wx:if="{{!isAuthorized}}" aria-label="您未注册用户或注册信息尚未通过审核，无法浏览信息。">您未注册用户或注册信息尚未通过审核，无法浏览信息。请<navigator url="/pages/authorize/authorize" aria-label="注册" aria-role="button">注册用户</navigator>并待审核通过后再试。</view>
+    <view class="info" wx:if="{{!isAuthorized}}" aria-label="您未注册用户或注册信息尚未通过审核，无法浏览信息。">您未注册用户或注册信息尚未通过审核，无法浏览信息。请查看个人中心。</view>
     <view class="main-board" aria-hidden="true" wx:if="{{isAuthorized}}">
         <view class="main-info">
             <image src="{{volunteerUrl}}" />

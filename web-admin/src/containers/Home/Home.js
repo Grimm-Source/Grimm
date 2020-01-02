@@ -43,13 +43,13 @@ class Home extends React.Component {
                 志愿者活动
                 <Link to="/" />
                 </Menu.Item>
-                <Menu.Item key={HOME_TAG_TYPE.USER}>
-                微信用户
-                <Link to="/users" />
-                </Menu.Item>
                 <Menu.Item key={HOME_TAG_TYPE.REPORT}>
                 活动签到统计
                 <Link to="/report" />
+                </Menu.Item>
+                <Menu.Item key={HOME_TAG_TYPE.USER}>
+                微信用户
+                <Link to="/users" />
                 </Menu.Item>
                 {this.props.user && this.props.user.type === "root"? <Menu.Item key={HOME_TAG_TYPE.ADMIN}>管理员<Link to="/admins" /></Menu.Item> : null}
                 <Menu.Item key={HOME_TAG_TYPE.PROFILE}>
@@ -70,8 +70,8 @@ class Home extends React.Component {
                 <div className="content-wrapper" >
                 <Switch>
                     <Route exact path="/" component={ActivityList}/>
-                    <Route path="/users" component={User}/>
                     <Route path="/report" component={Report}/>
+                    <Route path="/users" component={User}/>
                     <Route path="/profile" component={Profile}/>
                     {this.props.user && this.props.user.type === "root"?<Route path="/admins" component={AdminPanel}/>: null}
                 </Switch>
