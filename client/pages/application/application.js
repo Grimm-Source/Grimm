@@ -79,11 +79,6 @@ Page({
     }
 
     postRegisteredActivityList([obj],()=>{
-      wx.showToast({
-        title: '报名成功',
-        icon: 'success', //error
-        duration: 2000
-      });
       wx.navigateTo({
           url: '/pages/activityDetail/activityDetail?activityId='+ this.data.activityId
       })

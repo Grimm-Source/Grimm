@@ -39,25 +39,25 @@ Page({
       //   label: '我的活动列表',
       //   action: ''
       // },
-      {
-        label: '我的通知',
-        action: '',
-        class: 'disabled'
-      },
+      // {
+      //   label: '我的通知',
+      //   action: '',
+      //   class: 'disabled'
+      // },
       {
         label: '更新个人信息',
         action: 'updateProfile'
       },
-      {
-        label: '常见问题',
-        action: '',
-        class: 'disabled'
-      },
-      {
-        label: '用户反馈',
-        action: '',
-        class: 'disabled'
-      }
+      // {
+      //   label: '常见问题',
+      //   action: '',
+      //   class: 'disabled'
+      // },
+      // {
+      //   label: '用户反馈',
+      //   action: '',
+      //   class: 'disabled'
+      // }
     ]
   },
 
@@ -173,7 +173,7 @@ Page({
   register: function(){
     wx.navigateTo({
       url: '/pages/authorize/authorize',
-    })
+    });
   },
 
   updateProfile: function(){

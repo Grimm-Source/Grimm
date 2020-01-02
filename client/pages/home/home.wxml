@@ -1,29 +1,28 @@
 <view class="home">
-<view class="info" wx:if="{{!isAuthorized}}">您未注册用户或注册信息尚未通过审核，无法浏览信息。请<navigator url="/pages/authorize/authorize">注册用户</navigator>并待审核通过后再试。</view>
-<view class="main-board" wx:if="{{isAuthorized}}">
-    <view class="main-info">
-        <image src="{{volunteerUrl}}" />
-    </view>
-</view>
-<view class="tile-container" wx:if="{{isAuthorized}}">
-    <view class="tile-title">常用</view>
-    <view class="tiles" >
-        <view class="tile all-activities" bindtap="onTapAllActivites" >
-        <view class="title"><image src="{{activityUrl}}" />
-        <text>所有活动</text></view>
-        <text class="description">查看所有活动</text>
-        </view>
-        <view class="tile registered-activities" bindtap="onTapRegisteredActivities">
-        <view class="title"><image src="{{registerUrl}}" />
-        <text>已报名</text></view>
-        <text class="description">查看已报名活动</text>
-        </view>
-        <view class="tile sign-activities disabled" bindtap="onTapSignedActivities">
-        <view class="title"><image src="{{signUrl}}" />
-        <text>已签到</text></view>
-        <text class="description">查看已签到活动</text>
+    <view class="info" wx:if="{{!isAuthorized}}" aria-label="您未注册用户或注册信息尚未通过审核，无法浏览信息。">您未注册用户或注册信息尚未通过审核，无法浏览信息。请<navigator url="/pages/authorize/authorize" aria-label="注册" aria-role="button">注册用户</navigator>并待审核通过后再试。</view>
+    <view class="main-board" aria-hidden="true" wx:if="{{isAuthorized}}">
+        <view class="main-info">
+            <image src="{{volunteerUrl}}" />
         </view>
     </view>
-</view>
-
+    <view class="tile-container" wx:if="{{isAuthorized}}">
+        <view class="tile-title" aria-hidden="true" >常用</view>
+        <view class="tiles" >
+            <view class="tile all-activities" aria-label="查看所有活动" aria-role="button" bindtap="onTapAllActivites" >
+            <view class="title"><image src="{{activityUrl}}" />
+            <text>所有活动</text></view>
+            <text class="description">查看所有活动</text>
+            </view>
+            <view class="tile registered-activities" aria-label="查看已报名活动" aria-role="button" bindtap="onTapRegisteredActivities">
+            <view class="title"><image src="{{registerUrl}}" />
+            <text>已报名</text></view>
+            <text class="description">查看已报名活动</text>
+            </view>
+            <!--<view class="tile sign-activities disabled" bindtap="onTapSignedActivities">
+            <view class="title"><image src="{{signUrl}}" />
+            <text>已签到</text></view>
+            <text class="description">查看已签到活动</text>
+            </view>-->
+        </view>
+    </view>
 </view>
