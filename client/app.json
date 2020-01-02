@@ -20,21 +20,21 @@
     "request": 10000
   },
   "tabBar": {
-    "color": "#a4d2ba",
-    "selectedColor": "#07c160",
+    "color": "#c8db8c",
+    "selectedColor": "#afcd50",
     "borderStyle": "black",
-    "backgroundColor": "black",
+    "backgroundColor": "#FFF",
     "list": [
       {
         "pagePath": "pages/home/home",
-        "iconPath": "images/home.png",
-        "selectedIconPath": "images/home_selected.png",
+        "iconPath": "images/home_de.png",
+        "selectedIconPath": "images/home_se.png",
         "text": "首页"
       },
       {
         "pagePath": "pages/personal/personal",
-        "iconPath": "images/self.png",
-        "selectedIconPath": "images/self_selected.png",
+        "iconPath": "images/per_de.png",
+        "selectedIconPath": "images/per_se.png",
         "text": "个人中心"
       }
     ]
