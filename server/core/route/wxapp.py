@@ -21,6 +21,7 @@ import sys
 import os
 import json
 import urllib3
+import pymysql
 from datetime import datetime
 from flask import request, url_for
 
@@ -290,6 +291,8 @@ def registeredActivities():
             registerAct['needpickup'] = int(info['needPickUp'])
         if 'toPickUp' in info.keys():
             registerAct['topickup'] = int(info['toPickUp'])
+        registerAct['phone'] = info['tel']
+        registerAct['address'] = info['address']
         registerAct['openid'] = openid
         # activity_id from network is str
         registerAct['activity_id'] = int(activity_id)
@@ -299,9 +302,10 @@ def registeredActivities():
                 return json_dump_http_response({'status': 'failure', 'message': '活动注册失败，请重新注册'})
             else:
                 return json_dump_http_response({'status': 'success'})
-        except IntegrityError as e:
-            print(e)
-            user_logger.error('%s: activity registration failed', openid)
+        except pymysql.err.IntegrityError as e:
+            if e.args[0] == 1062:
+                print('*********xtydbg********',e)
+                return json_dump_http_response({'status': 'failure', 'message': '重复报名'})
             return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新注册'})
     #  view registered activities
     if request.method == 'GET':
@@ -309,12 +313,11 @@ def registeredActivities():
         activity_id = request.args.get('activityId')
         activities = []
         try:
-            activities_info = db.expr_query(['registerActivities', 'activity', 'user'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
+            activities_info = db.expr_query(['registerActivities', 'activity'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
                                               'activity.end_time', 'activity.content', 'activity.notice', 'activity.content', 'activity.others',\
-                                              'registerActivities.needpickup', 'registerActivities.topickup', 'activity.location', 'user.phone',\
-                                              'user.address'], \
-                                             clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id ' \
-                                             'and registerActivities.openid = user.openid'.format(str(openid)))
+                                              'registerActivities.needpickup', 'registerActivities.topickup', 'activity.location', 'registerActivities.phone',\
+                                              'registerActivities.address'], \
+                                             clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id '.format(openid))
         except Exception as e:
             print('*******************xtydbg*****************',e)
         if activities_info is None:
@@ -333,8 +336,8 @@ def registeredActivities():
             activity['location'] = item['activity.location']
             activity['notice'] = item['activity.notice']
             activity['others'] = item['activity.others']
-            activity['tel'] = item['user.phone']
-            activity['address'] = item['user.address']
+            activity['tel'] = item['registerActivities.phone']
+            activity['address'] = item['registerActivities.address']
             activity['needPickUp'] = item['registerActivities.needpickup']
             activity['toPickUp'] = item['registerActivities.topickup']
             activities.append(activity)
