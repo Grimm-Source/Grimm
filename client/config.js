@@ -1,6 +1,6 @@
-var apiUrl = 'http://173.37.22.10:5000/'
+const apiUrl = 'http://173.37.22.10:18001/'
 
-var config = {
+const config = {
   apiUrl
 };
 module.exports = config;
