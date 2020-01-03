@@ -3,12 +3,12 @@
     <view class="personal_header">
         <view class="setting_nav">
            <block wx:for='{{setting_list}}' wx:key="item.index">
-                <view class="setting_item" bindtap="{{item.action}}"><image src="{{item.icon}}" /></view>
+                <view class="setting_item" bindtap="{{item.action}}"><image src="{{item.icon}}" aria-role="button" aria-label="{{item.label}}"/></view>
             </block>
         </view>
         <view class="user_nav">
             <view class="user_nav_left">
-                <view class="avatar"><image src="{{avatarUrl}}" /></view>
+                <view class="avatar"><image src="{{avatarUrl}}" aria-label="头像"/></view>
                 <view class="username_info" wx:if='{{userInfo}}'>{{userInfo.nickName}} 
                     <view class="personal_banner">
                         <view class="audit_status" wx:if='{{auditStatus === "pending"}}'>正在审核中...</view>

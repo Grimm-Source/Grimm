@@ -10,7 +10,8 @@ Page({
     setting_list: [
       {
         icon: '../../images/scan.png',
-        action: 'scanCode'
+        action: 'scanCode',
+        label:'扫一扫'
       },
       // {
       //   icon: '../../images/set.png',
