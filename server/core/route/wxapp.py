@@ -201,9 +201,9 @@ def profile():
         userinfo = {}
         openid = request.headers.get('Authorization')
         if newinfo['role'] == '视障人士':
-            userinfo['disabled_id'] = info['disabledID']
-            userinfo['emergent_contact'] = info['emergencyPerson']
-            userinfo['emergent_contact_phone'] = info['emergencyTel']
+            userinfo['disabled_id'] = newinfo['disabledID']
+            userinfo['emergent_contact'] = newinfo['emergencyPerson']
+            userinfo['emergent_contact_phone'] = newinfo['emergencyTel']
         userinfo['phone'] = newinfo['tel']
         userinfo['gender'] = newinfo['gender']
         userinfo['birth'] = newinfo['birthDate']
