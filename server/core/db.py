@@ -645,8 +645,6 @@ def expr_query(tbls, fields='*', clauses=None, **kwargs):
 
     # orgnize fetched records
     records = cursor.fetchall()
-    print('*****************records********************', records)
-    print('*************************cursour.rowcount************', cursor.rowcount)
     row_count = cursor.rowcount
     if row_count == 0:
         db_logger.warning('Empty query record, SQL: %s', _query)
