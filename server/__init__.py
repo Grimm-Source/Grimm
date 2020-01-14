@@ -18,12 +18,12 @@
 #   1. 2019/08/12, Ming, create first revision.
 #
 
-
-GRIMM_VERSION = '1.0'
-
 import sys
 import os
 import logging
+
+GRIMM_VERSION = '1.0'
+
 
 if '..' not in sys.path:
     sys.path.append('..')

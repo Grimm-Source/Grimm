@@ -18,7 +18,6 @@
 #
 
 import os
-import sys
 from server.utils.misctools import get_pardir
 
 # regex
