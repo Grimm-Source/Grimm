@@ -603,8 +603,7 @@ def new_tag():
     if request.method == 'POST':
         feedback = {}
         tag_name = json_load_http_request(request, keys='tag')
-        new_tag = {}
-        new_tag['tag_name'] = tag_name
+        new_tag = {'tag_name': tag_name}
         if not db.exist_row('activity_tag', tag_name=tag_name):
             try:
                 if db.expr_insert('activity_tag', new_tag) == 1:
