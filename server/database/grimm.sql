@@ -102,6 +102,7 @@ create table activity
     approver                    INT                 DEFAULT NULL,
     assignee                    CHAR(28),
     published                   TINYINT             NOT NULL        DEFAULT 0,
+    tag_ids                     VARCHAR(120),
 
     FOREIGN KEY (user_raiser) REFERENCES user(openid)
     ON DELETE set null
@@ -158,3 +159,16 @@ create table pickups
 
 INSERT INTO pickups (activity_id, offer, need, time, location)
 VALUES (1, '0', '1', NOW(), "上海市某个地方");
+
+/* activity tag table */
+CREATE table activity_tag
+(
+    tag_id                      BIGINT,             NOT NULL AUTO_INCREMENT,
+    tag_name                    VARCHAR(60)         NOT NULL,
+
+    PRIMARY KEY(tag_id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO pickups (tag_name)
+VALUES ("运动");
+INSERT INTO pickups (tag_name)
+VALUES ("音乐");
