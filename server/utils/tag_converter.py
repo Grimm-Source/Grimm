@@ -39,8 +39,8 @@ def get_tags_map():
     except:
         admin_logger.warning('get activity tag failed')
     tags_map = {}
-    for pair in tags_table:
-        tags_map[pair['tag_id']] = pair['tag_name']
+    for tag in tags_table:
+        tags_map[str(tag['tag_id'])] = tag['tag_name']
     return tags_map
 
 def get_reverse_tags_map():
@@ -49,6 +49,6 @@ def get_reverse_tags_map():
     except:
         admin_logger.warning('get activity tag failed')
     reverse_tags_map = {}
-    for pair in tags_table:
-        reverse_tags_map[pair['tag_name']] = pair['tag_id']
+    for tag in tags_table:
+        reverse_tags_map[tag['tag_name']] = str(tag['tag_id'])
     return reverse_tags_map
