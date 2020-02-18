@@ -120,8 +120,8 @@ create table activity
     PRIMARY KEY (activity_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO activity (start_time, location, content, notice, user_raiser, approver, assignee, end_time)
-VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "需要配备雨具", '0', 0, '1', '2030-10-28 09:30:00');
+INSERT INTO activity (start_time, location, content, notice, user_raiser, approver, assignee, end_time, tag_ids)
+VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "需要配备雨具", '0', 0, '1', '2030-10-28 09:30:00', '1,2');
 
 /* registed activities table */
 create table registerActivities
@@ -163,12 +163,12 @@ VALUES (1, '0', '1', NOW(), "上海市某个地方");
 /* activity tag table */
 CREATE table activity_tag
 (
-    tag_id                      BIGINT,             NOT NULL AUTO_INCREMENT,
+    tag_id                      BIGINT              NOT NULL AUTO_INCREMENT,
     tag_name                    VARCHAR(60)         NOT NULL,
 
     PRIMARY KEY(tag_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-INSERT INTO pickups (tag_name)
+INSERT INTO activity_tag (tag_name)
 VALUES ("运动");
-INSERT INTO pickups (tag_name)
+INSERT INTO activity_tag (tag_name)
 VALUES ("音乐");

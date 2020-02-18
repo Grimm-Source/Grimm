@@ -584,7 +584,7 @@ def tags():
         admin_logger.info('query all tags info successfully')
         return json_dump_http_response(tags_list)
 
-@app.route('/tag/<string:tag_name>', methods=['DELETE', 'POST'])
+@app.route('/tag/<tag_name>', methods=['DELETE'])
 def update_tag(tag_name):
     if request.method == 'DELETE':
         try:
@@ -597,29 +597,26 @@ def update_tag(tag_name):
         admin_logger.warning('%s: delete tag failed', tag_name)
         return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
+@app.route('/tag', methods=['POST'])
+def new_tag():
+    '''view function to add new tag'''
     if request.method == 'POST':
-        new_info = json_load_http_request(request)
-        new_tag_name = new_info['tag']
-        if db.exist_row('activity_tag', tag_name=tag_name):
+        feedback = {}
+        tag_name = json_load_http_request(request, keys='tag')
+        new_tag = {}
+        new_tag['tag_name'] = tag_name
+        if not db.exist_row('activity_tag', tag_name=tag_name):
             try:
-                if db.expr_update('activity_tag', new_tag_name, tag_name=tag_name) == 1:
-                    admin_logger.info('%s: update tag successfully', tag_name)
-                    return json_dump_http_response({'status': 'success'})
-            except:
-                feedback = {'status': 'failure', 'message': '未知错误'}
-        else:
-            try:
-                new_tag = {}
-                new_tag['tag_name'] = new_tag_name
                 if db.expr_insert('activity_tag', new_tag) == 1:
                     admin_logger.info('%s: create new tag successfully', tag_name)
                     return json_dump_http_response({'status': 'success'})
             except:
-                feedback = {'status': 'failure', 'message': '未知错误'}
+                feedback = {'status': 'failure', 'message': '未知错误'} 
+        else:
+            feedback = {'status': 'failure', 'message': '标签已存在'} 
 
-        admin_logger.warning('%s: update tag failed', tag_name)
+        admin_logger.warning('%s: add tag failed', tag_name)
         return json_dump_http_response(feedback)
-
 
 
     
