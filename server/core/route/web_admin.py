@@ -29,6 +29,7 @@ import server.utils.password as password
 import server.utils.email_verify as email_verify
 import server.utils.sms_verify as sms_verify
 import server.utils.vrfcode as vrfcode
+import server.utils.tag_converter as tag_converter
 from server.core import grimm as app
 from server.core import socketio
 from server import admin_logger, user_logger
@@ -288,6 +289,7 @@ def new_activity():
         activity_info['notice'] = info['notice']
         activity_info['others'] = info['others']
         activity_info['admin_raiser'] = info['adminId']
+        activity_info['tag_ids'] = tag_converter.convert_tags_to_ids(info['tag'])
         try:
             if db.expr_insert('activity', activity_info) == 1:
                 admin_logger.info('%s: create new activity successfully', activity_info['title'])
@@ -325,6 +327,7 @@ def update_activity(activity_id):
             feedback['content'] = activity['content']
             feedback['notice'] = activity['notice']
             feedback['others'] = activity['others']
+            feedback['tag'] = tag_converter.convert_ids_to_tags(activity['tag_ids'])
 
             admin_logger.info('%d: get activity successfully', activity_id)
             return json_dump_http_response(feedback)
@@ -356,6 +359,7 @@ def update_activity(activity_id):
             activity_info['notice'] = newinfo['notice']
             activity_info['others'] = newinfo['others']
             activity_info['admin_raiser'] = newinfo['adminId']
+            activity_info['tag_ids'] = tag_converter.convert_tags_to_ids(newinfo['tag'])
             try:
                 if db.expr_update('activity', activity_info, activity_id=activity_id) == 1:
                     admin_logger.info('%d: update activity successfully', activity_id)
@@ -414,7 +418,7 @@ def activities():
                 query['content'] = activity['content']
                 query['notice'] = activity['content']
                 query['others'] = activity['others']
-
+                query['tag'] = tag_converter.convert_ids_to_tags(activity['tag_ids'])
                 queries.append(query)
 
         admin_logger.info('get all activities successfully')
@@ -562,3 +566,56 @@ def users():
 
         admin_logger.info('update users audit status successfully')
         return json_dump_http_response({'status': 'success'})
+
+
+@app.route('/tags', methods=['GET'])
+def tags():
+    '''view function to get all tags info'''
+    if request.method == 'GET':
+        try:
+            tags_info = db.expr_query('activity_tag')
+        except:
+            admin_logger.error('Critical: database query failed !')
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
+        tags_list = []
+        for tag in tags_info:
+            tags_list.append(tag['tag_name'])
+
+        admin_logger.info('query all tags info successfully')
+        return json_dump_http_response(tags_list)
+
+@app.route('/tag/<tag_name>', methods=['DELETE'])
+def update_tag(tag_name):
+    if request.method == 'DELETE':
+        try:
+            if db.expr_delete('activity_tag', tag_name=tag_name) == 1:
+                admin_logger.info('%s: delete tag successfully', tag_name)
+                return json_dump_http_response({'status': 'success'})
+        except:
+            pass
+
+        admin_logger.warning('%s: delete tag failed', tag_name)
+        return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
+
+@app.route('/tag', methods=['POST'])
+def new_tag():
+    '''view function to add new tag'''
+    if request.method == 'POST':
+        feedback = {}
+        tag_name = json_load_http_request(request, keys='tag')
+        new_tag = {'tag_name': tag_name}
+        if not db.exist_row('activity_tag', tag_name=tag_name):
+            try:
+                if db.expr_insert('activity_tag', new_tag) == 1:
+                    admin_logger.info('%s: create new tag successfully', tag_name)
+                    return json_dump_http_response({'status': 'success'})
+            except:
+                feedback = {'status': 'failure', 'message': '未知错误'} 
+        else:
+            feedback = {'status': 'failure', 'message': '标签已存在'} 
+
+        admin_logger.warning('%s: add tag failed', tag_name)
+        return json_dump_http_response(feedback)
+
+
+    
