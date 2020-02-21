@@ -21,15 +21,23 @@ from server import admin_logger
 
 def convert_ids_to_tags(ids):
     tag_list = []
+    if not ids:
+        return tag_list
     tags_map = get_tags_map()
-    for id in ids.split(","):
+    for id in ids.split(','):
+        if not id or id not in tags_map:
+            continue
         tag_list.append(tags_map[id])
     return tag_list
 
 def convert_tags_to_ids(tags_list):
+    if not tags_list:
+        return ''
     id_list = []
     reverse_tags_map = get_reverse_tags_map()
     for tag in tags_list:
+        if not tag or tag not in reverse_tags_map:
+            continue
         id_list.append(reverse_tags_map[tag])
     return ','.join(id_list)
 
