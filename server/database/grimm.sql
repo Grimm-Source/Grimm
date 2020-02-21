@@ -168,7 +168,9 @@ CREATE table activity_tag
 
     PRIMARY KEY(tag_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-INSERT INTO activity_tag (tag_name)
-VALUES ("运动");
-INSERT INTO activity_tag (tag_name)
-VALUES ("音乐");
+INSERT INTO activity_tag (tag_name) VALUES ("运动");
+INSERT INTO activity_tag (tag_name) VALUES ("学习");
+INSERT INTO activity_tag (tag_name) VALUES ("分享");
+INSERT INTO activity_tag (tag_name) VALUES ("文娱");
+INSERT INTO activity_tag (tag_name) VALUES ("保健");
+INSERT INTO activity_tag (tag_name) VALUES ("其它");
