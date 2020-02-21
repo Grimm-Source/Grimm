@@ -584,7 +584,8 @@ def tags():
         admin_logger.info('query all tags info successfully')
         return json_dump_http_response(tags_list)
 
-@app.route('/tag/<tag_name>', methods=['DELETE'])
+
+# Reserve for custom tags, not open API now
 def update_tag(tag_name):
     if request.method == 'DELETE':
         try:
@@ -597,7 +598,6 @@ def update_tag(tag_name):
         admin_logger.warning('%s: delete tag failed', tag_name)
         return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
-@app.route('/tag', methods=['POST'])
 def new_tag():
     '''view function to add new tag'''
     if request.method == 'POST':
