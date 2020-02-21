@@ -26,3 +26,12 @@ export const AUDIT_STATUS = {
     approved: "已审核",
     rejected: "已拒绝"
 }
+
+export const ACTIVITY_TAGS = [
+    "运动",
+    "学习",
+    "分享",
+    "文娱",
+    "保健",
+    "其它"
+   ]

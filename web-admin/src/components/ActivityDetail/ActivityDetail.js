@@ -1,5 +1,7 @@
 import { Form, DatePicker, Input, Button, Spin } from 'antd';
 import moment from 'moment';
+import ButtonGroup from '../ButtonGroup/ButtonGroup.js';
+import { ACTIVITY_TAGS } from '../../constants';
 import React from 'react';
 import { hideActivityModal, getActivity, publishActivity} from '../../actions';
 import { connect } from 'react-redux';
@@ -8,9 +10,7 @@ import './ActivityDetail.less';
 
 const { RangePicker } = DatePicker;
 
-
 class ActivityDetail extends React.Component {
-
   componentDidMount(){
     if(!this.props.activityId){
       return;
@@ -86,7 +86,7 @@ class ActivityDetail extends React.Component {
       // Can not select days before today
       return current < moment().startOf('day');
     }
-    
+
     return (
       
        this.props.loading? <Spin size="large" />: <Form {...formItemLayout} onSubmit={this.handleSubmit}>
@@ -142,6 +142,17 @@ class ActivityDetail extends React.Component {
              ],
            })(<Input.TextArea placeholder="请输入活动内容" />)}
        </Form.Item>
+       <Form.Item label="活动标签">
+           {getFieldDecorator('tag', {
+             rules: [
+               {
+                 required: false
+               },
+             ],
+           })(<ButtonGroup buttons={ACTIVITY_TAGS}  />)}
+       </Form.Item>
+
+       
        <Form.Item label="活动注意事项">
            {getFieldDecorator('notice', )(<Input placeholder="请输入活动注意事项" />)}
        </Form.Item>
@@ -183,6 +194,9 @@ const WrappedActivityDetail = Form.create({
         }),
         others: Form.createFormField({
           value: props.activity.others || ""
+        }),
+        tag: Form.createFormField({
+          value: props.activity.tag || []
         }),
         duration: Form.createFormField({
           value: (props.activity.duration && `${props.activity.duration.day}天${props.activity.duration.hour}小时${props.activity.duration.min}分钟${props.activity.duration.sec}秒`) || ""
