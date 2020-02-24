@@ -30,3 +30,5 @@ cscope*
 # vim swap files
 .*swp
 .*swo
+# local config files
+db.config
