@@ -1,0 +1,22 @@
+<!--components/activitiesList/activitiesList.wxml-->
+<scroll-view class="activities-list" scroll-y="true">
+  <block wx:for="{{activities}}" wx:key="{{item.id}}">
+    <view class="activity-item" id="{{item.id}}">
+      <view class="activity-detail">
+        <view class="activity-image"></view>
+        <text class="activity-title">{{item.title}}</text>
+        <text class="activity-description">{{item.description}}</text>
+      </view>
+      <view class="activity-time-location">
+        <text class="activity-time">时间: {{item.time}}</text>
+        <text class="activity-location">地点: {{item.location}}</text>
+      </view>
+      <view class="activity-people">
+        <text>{{item.joined}}人参加 | {{item.inserted}}人感兴趣</text>
+        <button class="share" type="primary"></button>
+      </view>
+    </view>
+  </block>
+</scroll-view>
+
+

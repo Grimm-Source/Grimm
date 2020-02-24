@@ -29,7 +29,7 @@
         "pagePath": "pages/home/home",
         "iconPath": "images/home_de.png",
         "selectedIconPath": "images/home_se.png",
-        "text": "首页"
+        "text": "活动"
       },
       {
         "pagePath": "pages/personal/personal",

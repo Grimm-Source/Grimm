@@ -1,0 +1,30 @@
+<!--components/activitiesPicker/activitiesPicker.wxml-->
+
+<!-- <view class='myactivities-tab'>
+    <view class="myactivities-select {{TypeIndex == 0 ?'active':''}}" bindtap="selectActivitiesType" data-index="0">所有活动</view>
+    <view class="myactivities-select {{TypeIndex == 1 ?'active':''}}" bindtap="selectActivitiesType" data-index="1">我的活动</view>
+</view> -->
+
+<view class="category">
+  <view class="category-all">活动</view>
+  <scroll-view scroll-x="true" class="category-picker">
+      <block wx:for="{{activityCategories}}" wx:key="{{item.type}}">
+          <view id="{{'view'+type}}" class="category-type {{activeIndex == index ?'item_on':''}}" bindtap="tabClick">
+              {{item.categoryName}}
+          </view>
+      </block>
+  </scroll-view>
+</view>
+
+<view class="time">
+  <view class="time-all">全部</view>
+  <scroll-view scroll-x="true" class="time-picker">
+      <block wx:for="{{activityTimes}}" wx:key="{{item.time}}">
+          <view id="{{'view'+type}}" class="time-selector {{activeIndex == index ?'item_on':''}}" bindtap="tabClick">
+              {{item.description}}
+          </view>
+      </block>
+  </scroll-view>
+</view>
+
+

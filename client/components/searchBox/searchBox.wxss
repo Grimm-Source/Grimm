@@ -1,0 +1,27 @@
+/* components/searchBox/searchBox.wxss */
+
+.searchbar {
+  width: calc(100% - 32rpx);
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  border-radius: 30rpx;
+  background: #F5F5F5;
+  padding-left: 32rpx;
+}
+
+.searchbar icon {
+  margin-right: 12px;
+}
+
+.searchbar input {
+  font-size: 28rpx;
+  width:100%;
+  margin-right: 32rpx;
+}
+
+.active{
+    color:#405F80;
+    border-bottom: 5rpx solid #405F80;
+    transform: scale(1.2);
+}

@@ -1,0 +1,42 @@
+/* components/activitiesPicker/activitiesPicker.wxss */
+
+.myactivities-select {
+  display: inline-block;
+  margin: 0 12px;
+}
+
+.category-all,
+.time-all {
+  position: relative;
+  display: inline-block;
+  font-size: 32rpx;
+  font-weight: bold;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  height: auto;
+}
+
+.category-picker,
+.time-picker {
+  display: inline-block;
+  position: relative;
+  width: 80%;
+  box-sizing: border-box;
+  background:white;
+  white-space: nowrap;
+  padding-bottom: 10rpx;
+}
+
+.category-type,
+.time-selector {
+  display: inline-block;
+  text-align: center;
+  font-size: 32rpx;
+  box-sizing: border-box;
+  margin-right: 20px;
+}
+
+.category-picker .item_on{
+  background-color:#53DB21;
+}

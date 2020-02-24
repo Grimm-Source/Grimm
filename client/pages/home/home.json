@@ -1,4 +1,9 @@
 {
-    "usingComponents": {},
-    "navigationBarTitleText": "视障志愿者社区平台"
-  }
+  "usingComponents": {
+    "tipsSwiper": "/components/tipsSwiper/tipsSwiper",
+    "searchBox": "/components/searchBox/searchBox",
+    "activitiesPicker": "/components/activitiesPicker/activitiesPicker",
+    "activitiesList": "/components/activitiesList/activitiesList"
+  },
+  "navigationBarTitleText": "爱心牵手你我同行"
+}

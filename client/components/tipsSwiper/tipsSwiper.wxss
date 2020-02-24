@@ -1,0 +1,17 @@
+/* components/tipsSwiper/tipsSwiper.wxss */
+.swiper-container {
+  margin: 0 24rpx;
+  border-radius: 6px;
+}
+
+.swiper-item-0 {
+  background: #f0f8ff;
+}
+
+.swiper-item-1 {
+  background: #e6e6fa;
+}
+
+.swiper-item-2 {
+  background: #b0c4de;
+}

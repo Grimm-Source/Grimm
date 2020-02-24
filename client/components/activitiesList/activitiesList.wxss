@@ -1,0 +1,48 @@
+/* components/activitiesList/activitiesList.wxss */
+.activity-item {
+  margin: 16rpx 24rpx 32rpx 24rpx;
+  border-radius: 12rpx;
+  border: solid gray 0rpx;
+  box-shadow:  0 10rpx 20rpx rgba(0,0,0,0.3);
+}
+
+.activity-detail { 
+  width: 100%;
+  height: 300rpx;
+  background-color: #2f4f4f;
+  border-radius: 12rpx 12rpx 0rpx 0rpx;
+}
+
+.activity-title {
+  display:block;
+  position: relative;
+  bottom: -160rpx;
+  font-size: 46rpx;
+  color: whitesmoke;
+  padding: 0rpx 12rpx ;
+}
+
+.activity-description {
+  display:block;
+  position: relative;
+  bottom: -160rpx;
+  color: whitesmoke;
+  padding: 0rpx 12rpx 20rpx 12rpx ;
+}
+
+.activity-time-location {
+  border-bottom: solid #d3d3d3 2rpx;
+  padding: 20rpx 12rpx ;
+  font-size: 28rpx;
+}
+
+.activity-time, .activity-location {
+  display: block;
+}
+
+.activity-people {
+  padding: 20rpx 12rpx ;
+  font-size: 28rpx;
+}
+
+

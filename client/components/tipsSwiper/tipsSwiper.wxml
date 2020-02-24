@@ -1,0 +1,8 @@
+<!--components/tipsSwiper/tipsSwiper.wxml-->
+<swiper class="swiper-container" indicator-dots="true">
+<block wx:for="{{swiperItems}}" wk:key="{{item.name}}">
+  <swiper-item class="swiper-item-{{item.name}}}">
+    <view>{{item.content}}</view>
+  </swiper-item>
+</block>
+</swiper>
