@@ -1,19 +1,71 @@
-.activity-container .activity .action .action-button{
-    border: 1px solid;
-    border-radius: 5px;
-    margin: 5px;
-    padding: 0 5px;
-    font-size: 14px;
-    background: #99CC66;
-    color: white;
+.detail-wrapper{
+  padding: 20rpx 25rpx;
+  font-size: 28rpx;
 }
 
-.activity .page__title{
-    display: flex;
-    justify-content: center; 
+.detail-banner{
+  width: 100%;
+  height: 350rpx;
 }
 
-.register-detail{
-    padding-top: 10px;
-    border-top: 1rpx dashed #d5d5d6;
+.detail-title{
+  font-size: 38rpx;
+}
+
+.detail-action-wrapper{
+  display: flex;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #ccc;
+}
+
+.detail-action{
+  display: flex;
+  align-items: center;
+  margin-right: 40rpx;
+}
+
+.detail-icon{
+  width: 30rpx;
+  height: 30rpx;
+  margin-right: 10rpx;
+}
+
+.detail-block{
+  padding: 30rpx 0;
+  border-bottom: 1rpx solid #ccc;
+}
+
+.detail-progress{
+  display: flex;
+  justify-content: space-between;
+  font-size: 24rpx;
+}
+
+.detail-progress progress{
+  width: 500rpx;
+}
+
+.detail-content-wrapper{
+  padding-bottom: 160rpx;
+}
+
+.detail-footer{
+  position: fixed;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 140rpx;
+  left: 0;
+  bottom: 0;
+  background: #fff;
+  box-shadow: 0 0 10rpx 1rpx #ccc;
+}
+
+.detail-footer button{
+  flex: 1;
+  height: 80rpx;
+  margin: 0 25rpx;
+  font-size: 28rpx;
+  line-height: 80rpx;
 }

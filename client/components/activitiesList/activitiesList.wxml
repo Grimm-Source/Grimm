@@ -2,7 +2,7 @@
 <scroll-view class="activities-list" scroll-y="true">
   <block wx:for="{{activities}}" wx:key="{{item.id}}">
     <view class="activity-item" id="{{item.id}}">
-      <view class="activity-detail">
+      <view class="activity-detail" bindtap="onTapActivity">
         <view class="activity-image"></view>
         <text class="activity-title">{{item.title}}</text>
         <text class="activity-description">{{item.description}}</text>
