@@ -103,6 +103,8 @@ create table activity
     assignee                    CHAR(28),
     published                   TINYINT             NOT NULL        DEFAULT 0,
     tag_ids                     VARCHAR(120),
+    volunteer_capacity          INT                 DEFAULT 0,
+    vision_impaired_capacity    INT                 DEFAULT 0,
 
     FOREIGN KEY (user_raiser) REFERENCES user(openid)
     ON DELETE set null
@@ -174,3 +176,24 @@ INSERT INTO activity_tag (tag_name) VALUES ("分享");
 INSERT INTO activity_tag (tag_name) VALUES ("文娱");
 INSERT INTO activity_tag (tag_name) VALUES ("保健");
 INSERT INTO activity_tag (tag_name) VALUES ("其它");
+
+create table activity_participants
+(
+    activity_id                BIGINT,
+    participants_id            CHAR(28)            NOT NULL, 
+    interested                 TINYINT             DEFAULT 0,
+    share                      INT                 DEFAULT 0,
+    sign_up                    TINYINT             DEFAULT 0,
+    
+    FOREIGN KEY (activity_id) REFERENCES activity(activity_id)
+    ON DELETE cascade
+    ON UPDATE cascade,
+    FOREIGN KEY (participants_id) REFERENCES user(openid)
+    ON DELETE cascade
+    ON UPDATE cascade,
+
+    PRIMARY KEY(activity_id, participants_id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO activity_participants(activity_id, participants_id, interest, share, sign_up)
+VALUES(1, 1, 0, 0, 0)

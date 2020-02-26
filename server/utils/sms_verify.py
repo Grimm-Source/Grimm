@@ -24,7 +24,7 @@ import re
 from datetime import datetime
 import dysms.const as const
 from dysms.aliyunsdkdysmsapi.request.v20170525 import SendSmsRequest
-from aliyunsdkdysmsapi.request.v20170525 import QuerySendDetailsRequest
+from dysms.aliyunsdkdysmsapi.request.v20170525 import QuerySendDetailsRequest
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.profile import region_provider
 from aliyunsdkcore.http import method_type as MT
