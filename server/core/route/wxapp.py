@@ -360,3 +360,135 @@ def registeredActivities():
         except Exception as e:
             print('*******************xtydbg*****************',e)
             return json_dump_http_response({'status': '取消活动失败！'})
+        
+        
+@app.route('/activity_detail', methods = ['GET'])
+def get_activity():
+    '''view function for the activity_detail'''
+    if request.method == 'GET':
+        openid = int(request.headers.get('Authorization'))
+        activity_id = int(request.args.get('activityId'))
+        if db.exist_row('activity', activity_id=activity_id):
+            feedback = {'status': 'success'}
+            try:
+                activity = db.expr_query('activity', activity_id=activity_id)[0]
+                if not activity:
+                    user_logger.warning('%d: no such activity', activity_id)
+                    return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
+            except:
+                user_logger.warning('%d: get activity failed', activity_id)
+                return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
+            feedback['id'] = activity['activity_id']
+            feedback['title'] = activity['title']
+            feedback['location'] = activity['location']
+            start = activity['start_time']
+            end = activity['end_time']
+            feedback['start_time'] = start.strftime('%Y-%m-%d %H:%M:%S')
+            feedback['end_time'] = end.strftime('%Y-%m-%d %H:%M:%S')
+            feedback['duration'] = calc_duration(start, end)
+            feedback['content'] = activity['content']
+            feedback['notice'] = activity['notice']
+            feedback['others'] = activity['others']
+            feedback['volunteer_capacity'] = activity['volunteer_capacity']
+            feedback['vision_impaired_capacity'] = activity['vision_impaired_capacity']
+            feedback['volunteers'] = 1
+            feedback['vision_impaireds'] = 0
+            feedback['interested'] = 0
+            feedback['share'] = 0
+            feedback['sign_up'] = 0
+            try:
+                participants = db.expr_query('activity_participants', activity_id=activity_id, participants_id=openid)[0]
+                volunteer_count = db.expr_query(['activity_participants', 'user'], 'COUNT(*)', \
+                                             clauses='activity_participants.activity_id = {} ' \
+                                             'and activity_participants.participants_id = user.openid and user.role = 0'.format(activity_id))
+                vision_impaired_count = db.expr_query(['activity_participants', 'user'], 'COUNT(*)', \
+                                             clauses='activity_participants.activity_id = {} ' \
+                                             'and activity_participants.participants_id = user.openid and user.role = 1'.format(activity_id))
+                
+                if not participants:
+                    user_logger.warning('%d: no such activity', activity_id)
+                    return json_dump_http_response(feedback)
+            except Exception as e:
+                print('*******************mia*****************', e)
+                user_logger.warning('%d: get activity failed', activity_id)
+                return json_dump_http_response(feedback)
+            feedback['interested'] = participants['interested']
+            feedback['share'] = participants['share']
+            feedback['sign_up'] = participants['sign_up']
+            feedback['volunteers'] = volunteer_count[0]['COUNT(*)']
+            feedback['vision_impaireds'] = vision_impaired_count[0]['COUNT(*)']
+            
+            user_logger.info('%d: get activity successfully', activity_id)
+            return json_dump_http_response(feedback)
+
+        user_logger.warning('%d: no such activity', activity_id, )
+        return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
+
+@app.route('/activity_detail/interest', methods = ['POST'])
+def mark_activity():
+    '''mark activity as Insterest'''
+    if request.method == 'POST':
+        openid = int(request.headers.get('Authorization'))
+        activity_id = request.args.get('activityId')
+        interest = request.args.get('interest')
+        feedback = {'status': 'success'}
+        if db.exist_row('activity_participants', activity_id = activity_id, participants_id=openid):
+            try:
+                rc = db.expr_update(tbl = 'activity_participants', vals = {'interested':interest}, activity_id = activity_id, participants_id=openid)
+                return json_dump_http_response(feedback)
+            except Exception as e:
+                user_logger.error('update push_status fail, %s', e)
+                user_logger.info('%s: complete user registration success', openid)
+            
+        return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
+    
+@app.route('/activity_detail/sign_up', methods = ['POST'])
+def enroll_activity():
+    '''sign_up activity'''
+    if request.method == 'POST':
+        openid = int(request.headers.get('Authorization'))
+        activity_id = request.args.get('activityId')
+        sign_up = request.args.get('sign_up')
+        feedback = {'status': 'success'}
+        if db.exist_row('activity_participants', activity_id = activity_id, participants_id=openid):
+            try:
+                print('mia sign up test')
+                rc = db.expr_update(tbl = 'activity_participants', vals = {'sign_up':sign_up}, activity_id = activity_id, participants_id=openid)
+                return json_dump_http_response(feedback)
+            except Exception as e:
+                user_logger.error('update push_status fail, %s', e)
+                user_logger.info('%s: complete user registration success', openid)
+            
+        return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
+
+@app.route('/activity_detail/share', methods = ['POST'])
+def share_activity():
+    '''share activity'''
+    if request.method == 'POST':
+        openid = int(request.headers.get('Authorization'))
+        activity_id = request.args.get('activityId')
+        is_share = int(request.args.get('share'))
+        if db.exist_row('activity_participants', activity_id = activity_id, participants_id=openid):
+            try:
+                participants = db.expr_query('activity_participants', activity_id=activity_id, participants_id=openid)[0]
+                if not participants:
+                    user_logger.warning('%d: no such activity', activity_id)
+                    return json_dump_http_response({'status': 'failure'})
+            except Exception as e:
+                print('*******************mia*****************', e)
+                user_logger.warning('%d: get activity failed', activity_id)
+                return json_dump_http_response({'status': 'failure'})
+        
+            share_count = int(participants['share'])
+            if is_share == 1:
+                share_count = share_count+1
+            else:
+                share_count = share_count-1
+            try:
+                rc = db.expr_update(tbl = 'activity_participants', vals = {'share':share_count}, activity_id = activity_id, participants_id=openid)
+                return json_dump_http_response({'status': 'success'})
+            except Exception as e:
+                user_logger.error('update push_status fail, %s', e)
+                user_logger.info('%s: complete user registration success', openid)
+            
+        return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
