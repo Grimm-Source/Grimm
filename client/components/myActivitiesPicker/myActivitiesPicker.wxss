@@ -1,0 +1,14 @@
+/* components/myActivitiesPicker/myActivitiesPicker.wxss */
+.myActivitiesCategories {
+  margin: 0 12px;
+}
+
+.myActivitiesTab {
+  display: inline-block;
+  margin: 18px 15px;
+  font-size: 13px;
+}
+
+.myActivitiesTab.selected {
+  color: blue;
+}

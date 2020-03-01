@@ -1,0 +1,8 @@
+<!--pages/myActivity/myActivity.wxml-->
+<slot></slot>
+
+<view class="myActivities">
+  <searchBox class="activities-searchbox"></searchBox>
+  <myActivitiesPicker class="myActivitiesPicker"></myActivitiesPicker>
+  <myActivitiesList class="myActivitiesList"></myActivitiesList>
+</view>
