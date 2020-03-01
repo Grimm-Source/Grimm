@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "searchBox": "/components/searchBox/searchBox",
+    "myActivitiesList": "/components/myActivitiesList/myActivitiesList",
+    "myActivitiesPicker": "/components/myActivitiesPicker/myActivitiesPicker"
+  }
+}

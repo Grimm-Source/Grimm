@@ -1,0 +1,14 @@
+<!--components/myActivitiesPicker/myActivitiesPicker.wxml-->
+
+<view class="myActivitiesCategories">
+  <scroll-view scroll-x="true" class="myActivitiesCategoryPicker">
+      <block wx:for="{{myActivitiesTab}}" wx:key="idx">
+          <view wx:if="{{item.idx == selectedIdx}}" class="myActivitiesTab selected" data-param="{{item.idx}}" bindtap="myActivitiesTabClick">
+              {{item.tabName}}
+          </view>
+          <view wx:if="{{item.idx != selectedIdx}}" class="myActivitiesTab" data-param="{{item.idx}}"  bindtap="myActivitiesTabClick">
+              {{item.tabName}}
+          </view>
+      </block>
+  </scroll-view>
+</view>

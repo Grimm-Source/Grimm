@@ -7,7 +7,8 @@
     "pages/personal/personal",
     "pages/activityList/activityList",
     "pages/activityDetail/activityDetail",
-    "pages/application/application"
+    "pages/application/application",
+    "pages/myActivity/myActivity"
   ],
   "window": {
     "backgroundTextStyle": "light",
