@@ -1,15 +1,19 @@
 // // pages/myActivity/myActivity.js
 
-Component({
-
-  properties: {
-  },
-
-  /**
-   * 组件的初始数据
-   */
+Page({
   data: {
+    selectedIdx: 0,
     
   },
 
+  onLoad: function (options) {
+  },
+
+  handleMyActivitiesPickerEvent: function (event) {
+    this.setData({
+      selectedIdx: event.detail.selectedIdx
+    })
+  },
+
 })
+

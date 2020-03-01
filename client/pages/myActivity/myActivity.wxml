@@ -3,6 +3,6 @@
 
 <view class="myActivities">
   <searchBox class="activities-searchbox"></searchBox>
-  <myActivitiesPicker class="myActivitiesPicker"></myActivitiesPicker>
-  <myActivitiesList class="myActivitiesList"></myActivitiesList>
+  <myActivitiesPicker class="myActivitiesPicker" selectedIdx="{{selectedIdx}}" bind:myActivitiesSelectedIdx="handleMyActivitiesPickerEvent"></myActivitiesPicker>
+  <myActivitiesList class="myActivitiesList" selectedIdx="{{selectedIdx}}"></myActivitiesList>
 </view>

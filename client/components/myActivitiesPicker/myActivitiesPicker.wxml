@@ -1,4 +1,5 @@
 <!--components/myActivitiesPicker/myActivitiesPicker.wxml-->
+
 <view class="myActivitiesCategories">
   <scroll-view scroll-x="true" class="myActivitiesCategoryPicker">
       <block wx:for="{{myActivitiesTab}}" wx:key="idx">

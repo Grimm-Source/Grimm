@@ -4,7 +4,10 @@ Component({
    * 组件的属性列表
    */
   properties: {
-
+    selectedIdx: {
+      type: Number,
+      value: 0,
+    }
   },
 
   /**
@@ -17,21 +20,20 @@ Component({
       { 'idx': '2', 'tabName': '感兴趣'},
       { 'idx': '3', 'tabName': '已结束活动'},],
 
-    selectedIdx: 0
+    // selectedIdx: 0
   },
 
   /**
    * 组件的方法列表
    */
   methods: {
-    // myActivitiesTabClick(e) {
-    //   const targetIdx = e.currentTarget.dataset.param;
-    //   this.setData({
-    //     selectedIdx: targetIdx
-    //   });
-    //   // refresh list
-    // }
-
-    
+    myActivitiesTabClick(e) {
+      const targetIdx = e.currentTarget.dataset.param;
+      // this.setData({
+      //   selectedIdx: targetIdx
+      // });
+      // refresh list
+      this.triggerEvent('myActivitiesSelectedIdx', { selectedIdx: targetIdx});
+    }
   }
 })
