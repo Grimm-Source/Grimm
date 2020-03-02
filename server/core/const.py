@@ -74,3 +74,12 @@ DEFAULT_PASSWORD_SALT = 5
 # local machine information
 HOST_IP = '0.0.0.0'
 PLATFORM = None
+
+# Carousel information
+CAROUSEL_LIST = [
+    {'url': 'https://mp.weixin.qq.com/s/-uvqSpe7eZcF6X0pVXgjEA', 'title': '志愿者证书 申请流程', 'photo_url': 'https://s.zhiyuanyun.com/www.chinavolunteer.cn/cms/201901/18/5c41a6d2488b7.jpg'},
+    {'url': 'https://mp.weixin.qq.com/s/VG8UXhK9P-_XUJfK5wu4vQ', 'title': '引导视障者的方式方法及需注意事项', 'photo_url': 'https://s.zhiyuanyun.com/www.chinavolunteer.cn/cms/202002/11/5e41ff79263f6.jpg'}
+    ]
+
+# Tag information
+TAG_LIST = ['运动', '学习', '分享', '文娱', '保健', '其它']

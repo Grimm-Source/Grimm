@@ -569,18 +569,10 @@ def users():
 
 
 @app.route('/tags', methods=['GET'])
-def tags():
+def tags_db():
     '''view function to get all tags info'''
     if request.method == 'GET':
-        try:
-            tags_info = db.expr_query('activity_tag')
-        except:
-            admin_logger.error('Critical: database query failed !')
-            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
-        tags_list = []
-        for tag in tags_info:
-            tags_list.append(tag['tag_name'])
-
+        tags_list = tag_converter.get_all_tags()
         admin_logger.info('query all tags info successfully')
         return json_dump_http_response(tags_list)
 

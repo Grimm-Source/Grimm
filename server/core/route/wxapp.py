@@ -33,6 +33,7 @@ from server import user_logger
 from server.utils.misctools import json_dump_http_response, json_load_http_request, calc_duration
 
 from server.core.const import SMS_VRF_EXPIRY
+from server.core.const import CAROUSEL_LIST
 
 
 SMS_VERIFIED_OPENID = {}
@@ -492,3 +493,10 @@ def share_activity():
                 user_logger.info('%s: complete user registration success', openid)
             
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
+
+@app.route('/carousel', methods = ['GET'])
+def get_carousel_list():
+    '''view function for the activity_detail'''
+    if request.method == 'GET':
+        user_logger.info('query all carousel info successfully')
+        return json_dump_http_response(CAROUSEL_LIST)
