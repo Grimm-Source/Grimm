@@ -10,26 +10,26 @@
       <!-- base information -->
       <block class="register-baseInfo" wx:if="{{registerStep === 'base'}}">
         <view class="weui-cell weui-cell_input">
-          <view class="weui-cell__hd">
-            <view class="weui-label">手机号<span class="specialChar">*</span></view>
+          <view class="weui-cell__hd" aria-role="textbox" aria-label="手机号必填">
+            <view class="weui-label" aria-hidden="true">手机号<span class="specialChar">*</span></view>
           </view>
-          <view class="weui-cell__bd">
-            <input class="weui-input" type="number" placeholder="请输入手机号" bindinput="inputPhoneNum" maxlength="11" name='tel' value="{{form.tel}}" auto-focus/>
+          <view class="weui-cell__bd" aria-role="textbox" aria-label="请输入手机号">
+            <input class="weui-input" placeholder="请输入手机号" bindinput="inputPhoneNum" maxlength="11" name='tel' value="{{form.tel}}" auto-focus/>
           </view>
           <view class="weui-cell__ft">
             <button class="vcode-btn" style="background-color:{{color}}" bindtap="bindVcodeButtonTap" disabled='{{disabled}}'>{{text}}</button>
           </view>
         </view> 
         <view class="weui-cell weui-cell_input">
-          <view class="weui-cell__hd">
+          <view class="weui-cell__hd" aria-role="textbox" aria-label="验证码必填">
             <view class="weui-label">验证码<span class="specialChar">*</span></view>
           </view>
-          <view class="weui-cell__bd">
-            <input class="weui-input" placeholder="请输入验证码" type="number" bindinput="inputVcode" name="regcode" value="{{form.regcode}}"/>
+          <view class="weui-cell__bd" aria-role="textbox" aria-label="请输入验证码">
+            <input class="weui-input" placeholder="请输入验证码" bindinput="inputVcode" name="regcode" value="{{form.regcode}}"/>
           </view>
         </view> 
         <view class="weui-cell">
-          <view class="weui-cell__hd">
+          <view class="weui-cell__hd" aria-role="radio" aria-label="注册身份必选">
             <view class="weui-label">注册身份<span class="specialChar">*</span></view>
           </view>
           <view class="weui-cell__bd">
