@@ -9,7 +9,7 @@
 .time-all {
   position: relative;
   display: inline-block;
-  font-size: 32rpx;
+  font-size: 17px;
   font-weight: bold;
   padding-left: 20px;
   padding-right: 20px;
@@ -32,11 +32,13 @@
 .time-selector {
   display: inline-block;
   text-align: center;
-  font-size: 32rpx;
+  font-size: 15px;
   box-sizing: border-box;
   margin-right: 20px;
 }
 
-.category-picker .item_on{
-  background-color:#53DB21;
+.category-picker .selected,
+.time-picker .selected{
+  color: #60D5EC;
+  scale: 1.15;
 }

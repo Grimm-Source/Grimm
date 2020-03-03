@@ -8,8 +8,8 @@
 <view class="category">
   <view class="category-all">活动</view>
   <scroll-view scroll-x="true" class="category-picker">
-      <block wx:for="{{activityCategories}}" wx:key="{{item.type}}">
-          <view id="{{'view'+type}}" class="category-type {{activeIndex == index ?'item_on':''}}" bindtap="tabClick">
+      <block wx:for="{{activityCategories}}" wx:key="id">
+          <view id="{{item.type}}" class="category-type {{activeType == item.type ? 'selected' : ''}}" bindtap="tapCategory">
               {{item.categoryName}}
           </view>
       </block>
@@ -19,8 +19,8 @@
 <view class="time">
   <view class="time-all">全部</view>
   <scroll-view scroll-x="true" class="time-picker">
-      <block wx:for="{{activityTimes}}" wx:key="{{item.time}}">
-          <view id="{{'view'+type}}" class="time-selector {{activeIndex == index ?'item_on':''}}" bindtap="tabClick">
+      <block wx:for="{{activityTimes}}" wx:key="id">
+          <view id="{{item.time}}" class="time-selector {{activeTime == item.time ?'selected':''}}" bindtap="tapTime">
               {{item.description}}
           </view>
       </block>

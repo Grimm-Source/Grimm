@@ -3,6 +3,6 @@
   <searchBox class="activities-searchbox"></searchBox>
 
   <activitiesPicker class="activities-picker"></activitiesPicker>
-  <activitiesList class='filtered-activities-list'></activitiesList>
+  <activitiesList class="filtered-activities-list" activitiesProp="{{activities}}"></activitiesList>
 
 </view>

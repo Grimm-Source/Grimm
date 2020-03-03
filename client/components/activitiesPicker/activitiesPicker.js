@@ -20,17 +20,34 @@ Component({
       { 'type': '5', 'categoryName': '心理疏导' },
       { 'type': '6', 'categoryName': '其他活动' },],
     activityTimes: [
-      { 'type': '0', 'description': '全部' },
+      { 'time': '0', 'description': '全部' },
       { 'time': '1', 'description': '最新' },
       { 'time': '2', 'description': '周末' },
       { 'time': '3', 'description': '最近一周' },
-      { 'time': '4', 'description': '选择日期' },]
+      { 'time': '4', 'description': '选择日期' },],
+    activeType: 0,
+    activeTime: 0,
   },
 
   /**
    * 组件的方法列表
    */
   methods: {
+    tapCategory: function (event) {
+      this.setData({
+        activeType: event.currentTarget.id,
+      })
 
-  }
+    },
+
+    tapTime: function (event) {
+      this.setData({
+        activeTime: event.currentTarget.id,
+      })
+    },
+
+    requestFilteredActivities: function() {
+      // get activities by type and time
+    }
+  },
 })
