@@ -21,10 +21,7 @@
 import sys
 
 if '../..' not in sys.path:
-    sys.path.append('../..')
-
-if '..' not in sys.path:
-    sys.path.append('..')
+    sys.path.insert(1, '../..')
 
 
 grimm = None
@@ -35,28 +32,30 @@ socketio = None
 
 # initialize grimm back-end service
 if grimm is None:
-    import os
-    import uuid
     import json
     from flask import Flask
     from flask_cors import CORS
-    from server.utils.misctools import get_pardir
+    from server.utils.misc import pardir
     from flask_socketio import SocketIO
+    from server.core.globals import APP_DEBUG_MODE, APP_TESTING_MODE, APP_SECRET_KEY
+    from server.core.globals import APP_SECURITY_PASSWORD_SALT, WX_CONFIG_FILE
 
-    grimm = Flask('grimm')
+    grimm = Flask('Grimm')
     grimm_ext = CORS(grimm)
-
-    grimm.config['SECRET_KEY']= os.urandom(24)
-    grimm.config['SECURITY_PASSWORD_SALT'] = uuid.uuid4().hex
+    # app configuration
+    grimm.config['DEBUG'] = APP_DEBUG_MODE # app debug mode, default off
+    grimm.config['TESTING'] = APP_TESTING_MODE # app testing mode, default off
+    grimm.config['SECRET_KEY'] = APP_SECRET_KEY # app secret key, default generated as random string
+    grimm.config['SECURITY_PASSWORD_SALT'] = APP_SECURITY_PASSWORD_SALT # app security password salt
+    grimm.config['JSON_AS_ASCII'] = False   # make json data not limited as ascii
 
     socketio = SocketIO(cors_allowed_origins='*', debug=True)
     socketio.init_app(grimm)
 
-    path = get_pardir(get_pardir(os.path.abspath(__file__)))
-    with open(path + '/config/wxapp.config', mode='r') as fp:
+    with open(WX_CONFIG_FILE, mode='r') as fp:
         wxconfig = json.load(fp=fp, encoding='utf8')
 
     wxappid = wxconfig['appid']
     wxsecret = wxconfig['secret']
 
-    del wxconfig, get_pardir, path
+    del wxconfig, pardir

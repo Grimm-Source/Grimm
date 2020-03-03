@@ -34,7 +34,7 @@ import server.utils.vrfcode as vrf_code
 from server import sys_logger
 from server.core.exceptions import UserPhoneError
 
-from server.core.const import VRF_SIGNATURE, COM_SIGNATURE, TEMPLATE_CODES
+from server.core.globals import VRF_SIGNATURE, COM_SIGNATURE, TEMPLATE_CODES
 
 ACS_CLIENT = AcsClient(const.ACCESS_KEY_ID, const.ACCESS_KEY_SECRET, const.REGION)
 region_provider.add_endpoint(const.PRODUCT_NAME, const.REGION, const.DOMAIN)

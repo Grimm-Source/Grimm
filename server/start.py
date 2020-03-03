@@ -24,17 +24,16 @@ import atexit
 # jump out to upper directory, then `server` becomes a pure python package.
 # must be placed ahead of other imports !!!
 if '..' not in sys.path:
-    sys.path.append('..')
+    sys.path.insert(0, '..')
 
 # load services
 import server
 import server.core.db as db
 
 # import view function interfaces
-import server.core.route.web_admin
-import server.core.route.wxapp
+import server.core.view_function as vf
 
-from server.core.const import ROOT_PASSWORD, HOST, PORT, FORCE_LOAD, DAEMON_LOAD, SESSION_LOG
+from server.core.globals import ROOT_PASSWORD, HOST, PORT, FORCE_LOAD, DAEMON_LOAD, SESSION_LOG
 from server.utils.password import update_password
 from server.core.exit import exit_grimm
 from server.core import grimm

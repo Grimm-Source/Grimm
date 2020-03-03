@@ -29,10 +29,10 @@ from itsdangerous import URLSafeTimedSerializer
 
 from server import sys_logger
 from server.core import grimm
-from server.utils.misctools import get_host_ip, is_ipv4_addr
+from server.utils.misc import get_host_ip, is_ipv4_addr
 
-from server.core.const import HOST, PORT
-from server.core.const import DEFAULT_SERIAL_NO_BYTES, DEFAULT_VRFCODE_BYTES, DEFAULT_PROTOCOL
+from server.core.globals import HOST, PORT
+from server.core.globals import DEFAULT_SERIAL_NO_BYTES, DEFAULT_VRFCODE_BYTES, DEFAULT_PROTOCOL
 
 VRFCODE_POOL = {}
 

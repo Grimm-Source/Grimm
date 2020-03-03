@@ -21,7 +21,7 @@ import sys
 import time
 
 if '../..' not in sys.path:
-    sys.path.append('../..')
+    sys.path.insert(1, '../..')
 
 import server.core.db as db
 import server

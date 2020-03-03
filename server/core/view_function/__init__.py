@@ -1,5 +1,5 @@
 #
-# File: core/route/__init__.py
+# File: server/core/view_function/__init__.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
@@ -17,8 +17,28 @@
 #   1. 2019/08/19, Ming, create first revision.
 #
 
-
 import sys
+import os
+import importlib
+from os.path import dirname
 
 if '../../..' not in sys.path:
-    sys.path.append('../../..')
+    sys.path.insert(2, '../../..')
+
+# Dynamically import all view function modules recursively down
+__all__ = []
+dir_triples = [x for x in os.walk(dirname(__file__), topdown=False)][:-1]
+pkg_info = {item[0].replace('/', '.').lstrip('.') : \
+            [f[:-3] for f in item[2] if f.endswith('.py') and f != '__init__.py'] \
+            for item in dir_triples if '__pycache__' not in item[0]}
+
+for package, modules in pkg_info.items():
+    for module in modules:
+        pkg = package + '.' + module
+        mod = importlib.import_module(pkg)
+        __all__.append(pkg)
+        globals()[module] = mod # add to globals
+
+view_function_package_info = pkg_info
+
+del dirname, dir_triples, pkg_info, package, modules, module, mod, pkg

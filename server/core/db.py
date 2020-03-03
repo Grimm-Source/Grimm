@@ -25,9 +25,10 @@ import getpass
 import logging
 import pymysql
 from server.core.exceptions import SQLValueError, SQLConnectionError
-from server.utils.misctools import get_pardir
+from server.utils.misc import pardir
 
-from server.core.const import DB_CONFIG_FILE, DB_LOGGER_FILE, DB_QUOTED_TYPES
+from server.core.globals import DB_CONFIG_FILE, DB_LOGGER_FILE, DB_QUOTED_TYPES
+from server.core.globals import DB_WRITE_TIMEOUT, DB_READ_TIMEOUT
 
 
 __all__ = ['expr_query', 'expr_update', 'expr_insert', 'expr_delete',
@@ -46,11 +47,11 @@ DB_LOGGER_NAME = 'db-transaction-logger'
 
 # initialize database logger
 if db_logger is None:
-    print('\ninitialize database logger...', end=' ')
+    print('initialize database logger...', end=' ')
     db_logger = logging.getLogger(DB_LOGGER_NAME)
     # set logging level as default DEBUG level.
     db_logger.setLevel(logging.DEBUG)
-    log_dir = get_pardir(DB_LOGGER_FILE)
+    log_dir = pardir(DB_LOGGER_FILE)
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
     # create logging file handler.
@@ -61,7 +62,7 @@ if db_logger is None:
     fh.setFormatter(fmter)
     # add file handler
     db_logger.addHandler(fh)
-    print('done!\n')
+    print('done!')
 
 
 # close session database connection
@@ -127,7 +128,7 @@ def init_connection(force=False):
             elif item == 'User':
                 config[item] = _input if _input else 'root'
 
-        config_dir = get_pardir(DB_CONFIG_FILE)
+        config_dir = pardir(DB_CONFIG_FILE)
         if not os.path.isdir(config_dir):
             os.mkdir(config_dir)
         with open(DB_CONFIG_FILE, "w") as fp:
@@ -174,8 +175,8 @@ def init_connection(force=False):
                                                      password=db_config['Password'],
                                                      database=db_config['DB'],
                                                      charset=db_config['Charset'],
-                                                     read_timeout=10,
-                                                     write_timeout=10)
+                                                     read_timeout=DB_READ_TIMEOUT,
+                                                     write_timeout=DB_WRITE_TIMEOUT)
             except Exception as e:
                 db_logger.error('%dth connect DB failed: %s', 3-retry, e.args[0])
                 if e.args[0] == 'cryptography is required for sha256_password or caching_sha2_password' or\
@@ -391,7 +392,7 @@ def parse_kwargs_clause(tbls, fields='*', **kwargs):
     else:
         table_count = 0
 
-    if table_count > 0 and kwargs is not None:
+    if table_count > 0 and kwargs:
         if table_count == 1:
             if isinstance(fields, str) and fields != '*':
                 fields = [fields, ]
@@ -485,7 +486,7 @@ def exist_row(tbl, **kwargs):
     if not session_connection.open:
         init_connection()
     # check kwargs argument
-    if kwargs is None:
+    if not kwargs:
         err = SQLValueError('check rows existence', 'invalid kwargs query condition')
         db_logger.error('%s: (%d, %s)', e.__class__.__name__, e.ecode, e.emsg)
         return None
@@ -624,7 +625,7 @@ def expr_query(tbls, fields='*', clauses=None, **kwargs):
         kwargs = None
 
     # **kwargs argument clause
-    if kwargs is not None:
+    if kwargs:
         where_clause = parse_kwargs_clause(tbls=tbls, fields=fields, **kwargs)
 
     # do query
@@ -717,7 +718,7 @@ def expr_update(tbl, vals, clauses=None, **kwargs):
 
     # **kwargs argument clause
     typeinfo = query_tbl_fields_datatype(table, '*')
-    if kwargs is not None:
+    if kwargs:
         where_clause = parse_kwargs_clause(tbls=tbl, **kwargs)
 
     # parse update vals
@@ -814,7 +815,7 @@ def expr_insert(tbl, vals=None, **kwargs):
         insert_values = f'{tuple(values)}'
         kwargs = None
 
-    if kwargs is not None:
+    if kwargs:
         columns = [k.strip('\'"') for k in kwargs.keys()]
         insert_columns = f"({','.join(columns)})"
         values = [v.decode('utf8') if isinstance(v, bytes) else v for v in kwargs.values()]
@@ -902,7 +903,7 @@ def expr_delete(tbl, clauses=None, **kwargs):
         kwargs = None
 
     # **kwargs argument clause
-    if kwargs is not None:
+    if kwargs:
         where_clause = parse_kwargs_clause(tbls=tbl, **kwargs)
 
     if where_clause:

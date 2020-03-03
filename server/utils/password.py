@@ -22,7 +22,7 @@ import bcrypt
 import server.core.db as db
 
 from server import sys_logger
-from server.core.const import DEFAULT_PASSWORD_SALT, DB_QUOTED_TYPES
+from server.core.globals import DEFAULT_PASSWORD_SALT, DB_QUOTED_TYPES
 
 
 def check_password_policy(password):
@@ -48,7 +48,7 @@ def check_password_policy(password):
 
 def update_password(password, tbl='admin', policy_check=True, **kwargs):
     '''update user password'''
-    if kwargs is None or len(kwargs) > 1:
+    if not kwargs or len(kwargs) > 1:
         sys_logger.error('password.update_password: invalid argument')
         return False
 

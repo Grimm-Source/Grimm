@@ -1,5 +1,5 @@
 #
-# File: utils/__init__.py
+# File: db/__init__.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
@@ -17,11 +17,7 @@
 #   1. 2019/08/19, Ming, create first revision.
 #
 
-
 import sys
-
 
 if '../..' not in sys.path:
     sys.path.insert(1, '../..')
-
-sys.path.append('utils')

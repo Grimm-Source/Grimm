@@ -22,43 +22,25 @@ import sys
 import os
 import logging
 
+
+__all__ = ['GRIMM_VERSION', 'PY_VERSION', 'sys_logger', 'admin_logger', 'user_logger']
 GRIMM_VERSION = '1.0'
 
 
 if '..' not in sys.path:
-    sys.path.append('..')
-
-if '../..' not in sys.path:
-    sys.path.append('../..')
+    sys.path.insert(0, '..')
 
 
 # get local os type
 import platform
-import server.core.const
-if server.core.const.PLATFORM is None:
-    server.core.const.PLATFORM = platform.system()
+import server.core.globals
+if server.core.globals.PLATFORM is None:
+    server.core.globals.PLATFORM = platform.system()
 del platform
-
-
-# check python version
-try:
-    print('checking python version...', end=' ')
-except SyntaxError:
-    print('checking python version...', )
-PY_MAJOR = sys.version_info.major
-PY_MINOR = sys.version_info.minor
-PY_MICRO = sys.version_info.micro
-PY_VERSION = '.'.join([str(PY_MAJOR), str(PY_MINOR), str(PY_MICRO)])
-
-if PY_VERSION < '3.6.5':
-    print("Python %s is not supported, upgrade to 3.6.5 or later!" % (PY_VERSION))
-    sys.exit(-1)
-print('done!')
 
 
 # handle user command arguments
 import argparse
-import server.core.const
 
 parser = argparse.ArgumentParser(prog='Grimm-backend',
                                  description='Load Grimm back-end service',
@@ -83,21 +65,30 @@ parser.add_argument('-D', '--daemon', dest='daemon', action='store_true',
                     help='Start in daemon mode')
 
 cmdargs = parser.parse_args()
-server.core.const.HOST = cmdargs.host
-server.core.const.PORT = cmdargs.port
-server.core.const.FORCE_LOAD = cmdargs.force
-server.core.const.DAEMON_LOAD = cmdargs.daemon
-server.core.const.SESSION_LOG = cmdargs.logfile
+server.core.globals.HOST = cmdargs.host
+server.core.globals.PORT = cmdargs.port
+server.core.globals.FORCE_LOAD = cmdargs.force
+server.core.globals.DAEMON_LOAD = cmdargs.daemon
+server.core.globals.SESSION_LOG = cmdargs.logfile
 
 del parser, argparse, cmdargs
 
 
-# print local host V4 ip
-from server.utils.misctools import get_host_ip
-if server.core.const.PLATFORM != 'Windows' and server.core.const.HOST_IP == '0.0.0.0' or server.core.const.HOST_IP is None:
-    server.core.const.HOST_IP = get_host_ip()
-print('\n>>> IPv4 Access Info: ' + server.core.const.HOST_IP + ':' + str(server.core.const.PORT) + '\n')
-del get_host_ip
+# check python version
+try:
+    print('checking python version...', end=' ')
+except SyntaxError:
+    print('checking python version...', )
+PY_MAJOR = sys.version_info.major
+PY_MINOR = sys.version_info.minor
+PY_MICRO = sys.version_info.micro
+PY_VERSION = '.'.join([str(PY_MAJOR), str(PY_MINOR), str(PY_MICRO)])
+
+if PY_VERSION < '3.6.5':
+    print("Python %s is not supported, upgrade to 3.6.5 or later!" % (PY_VERSION))
+    sys.exit(-1)
+print('done!')
+
 
 # check package dependency
 print('checking package dependency...', end=' ')
@@ -116,7 +107,7 @@ except ImportError as err:
 print('done!')
 
 
-from server.utils.misctools import get_pardir
+from server.utils.misc import pardir
 
 # initialize system logger
 print('initializing system logger...', end=' ')
@@ -124,7 +115,7 @@ sys_logger = None
 if sys_logger is None:
     sys_logger = logging.getLogger('sys-logger')
     sys_logger.setLevel(logging.DEBUG)
-    log_dir = get_pardir(os.path.abspath(__file__)) + '/log'
+    log_dir = pardir(os.path.abspath(__file__)) + '/log'
     sys_log_path = log_dir + '/sys.log'
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
@@ -143,7 +134,7 @@ admin_logger = None
 if admin_logger is None:
     admin_logger = logging.getLogger('admin-logger')
     admin_logger.setLevel(logging.DEBUG)
-    log_dir = get_pardir(os.path.abspath(__file__)) + '/log'
+    log_dir = pardir(os.path.abspath(__file__)) + '/log'
     admin_log_path = log_dir + '/admin.log'
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
@@ -162,7 +153,7 @@ user_logger = None
 if user_logger is None:
     user_logger = logging.getLogger('user-logger')
     user_logger.setLevel(logging.DEBUG)
-    log_dir = get_pardir(os.path.abspath(__file__)) + '/log'
+    log_dir = pardir(os.path.abspath(__file__)) + '/log'
     user_log_path = log_dir + '/user.log'
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
@@ -175,4 +166,10 @@ if user_logger is None:
     del fh, fmt, fmtter, user_log_path, log_dir
 print('done!')
 
-del get_pardir
+
+# print local host V4 ip
+from server.utils.misc import get_host_ip
+if server.core.globals.PLATFORM != 'Windows' and server.core.globals.HOST_IP == '0.0.0.0' or server.core.globals.HOST_IP is None:
+    server.core.globals.HOST_IP = get_host_ip()
+print('\n>>> Request Access: ' + server.core.globals.HOST_IP + ':' + str(server.core.globals.PORT) + '\n')
+del get_host_ip, pardir

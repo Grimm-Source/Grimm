@@ -1,11 +1,11 @@
 #
-# File: const.py
+# File: globals.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
 # Authors:  Ming Li(adagio.ming@gmail.com)
 #
-# Description: contains all const definitions.
+# Description: contains all global const definitions.
 #
 # To-Dos:
 #   1. make other supplements if needed.
@@ -18,25 +18,28 @@
 #
 
 import os
-from server.utils.misctools import get_pardir
+import uuid
+from server.utils.misc import pardir
 
-# regex
+# regexs
 EMAIL_REGEX = r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$'
-HOSTNAME_REGEX = r'^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$'
-IPADDR_REGEX = r'^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
+# HOSTNAME_REGEX = r'^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$'
+# IPADDR_REGEX = r'^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
 
 # database configs
-pardir = get_pardir(get_pardir(os.path.abspath(__file__)))
+pardir = pardir(pardir(os.path.abspath(__file__)))
 DB_CONFIG_FILE = pardir + '/config/db.config'
 
 # db logger configs
 DB_LOGGER_FILE = pardir + '/log/db.log'
 
-del pardir
-
 # database datatypes which needs check quotes
 DB_QUOTED_TYPES = ('char', 'varchar', 'datetime', 'date',
                    'timestamp', 'text', 'binary', 'time')
+
+# database write/read timeout
+DB_WRITE_TIMEOUT = 10
+DB_READ_TIMEOUT = 10
 
 # expiry time
 SMS_VRF_EXPIRY = 300
@@ -45,7 +48,15 @@ EMAIL_VRF_EXPIRY = 7200
 # root admin password
 ROOT_PASSWORD = 'Cisco123456.'
 
-# configuration when loading back-end
+# Flask app configs
+APP_DEBUG_MODE = False       # app debug mode
+APP_TESTING_MODE = False    # app testing mode
+APP_SECRET_KEY = os.urandom(24) # app secret key
+APP_SECURITY_PASSWORD_SALT = uuid.uuid4().hex # app security password salt
+WX_CONFIG_FILE = '../server/config/wxapp.config' # wx config path
+del pardir
+
+# config when starting back-end
 HOST = None
 PORT = None
 FORCE_LOAD = False

@@ -35,10 +35,8 @@ import server.utils.vrfcode as vrfcode
 import server.core.db as db
 from server import sys_logger
 from server.core.exceptions import UserEmailError
-from server.utils.misctools import get_pardir
-from server.core.const import DEFAULT_PROTOCOL, EMAIL_REGEX as REGEX
-
-import server.core.route.web_admin
+from server.utils.misc import pardir
+from server.core.globals import DEFAULT_PROTOCOL, EMAIL_REGEX as REGEX
 
 
 sender = None
@@ -47,7 +45,7 @@ smtp_port = None
 passcode = None
 
 if passcode is None:
-    with open(get_pardir(get_pardir(os.path.abspath(__file__))) + '/config/email.config', mode='r') as fp:
+    with open(pardir(pardir(os.path.abspath(__file__))) + '/config/email.config', mode='r') as fp:
         email_config = json.load(fp=fp, encoding='utf8')
         sender = email_config['address']
         smtp_domain = email_config['server']
@@ -121,7 +119,7 @@ def smtp_connection_status():
 def send(email_sample, receiver, subject, plain, replacement):
     '''send verification email to new user'''
     global SMTP_CONNECTION
-    path = get_pardir(os.path.abspath(__file__))
+    path = pardir(os.path.abspath(__file__))
     # check global smtp connection status and reconnect if necessary
     if not smtp_connection_status():
         context = ssl.create_default_context()
@@ -246,7 +244,7 @@ class EmailVerifyToken(object):
 
     @property
     def expiry(self):
-        '''get email verification token expiry seconds const'''
+        '''get email verification token expiry seconds globals'''
         return self.__expiry
 
     @expiry.setter

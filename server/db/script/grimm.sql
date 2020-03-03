@@ -179,12 +179,12 @@ INSERT INTO activity_tag (tag_name) VALUES ("其它");
 
 create table activity_participants
 (
-    activity_id                BIGINT,
-    participants_id            CHAR(28)            NOT NULL, 
-    interested                 TINYINT             DEFAULT 0,
-    share                      INT                 DEFAULT 0,
-    sign_up                    TINYINT             DEFAULT 0,
-    
+    activity_id                 BIGINT,
+    participants_id             CHAR(28)            NOT NULL, 
+    interest                    TINYINT             DEFAULT 0,
+    share                       INT                 DEFAULT 0,
+    sign_up                     TINYINT             DEFAULT 0,
+
     FOREIGN KEY (activity_id) REFERENCES activity(activity_id)
     ON DELETE cascade
     ON UPDATE cascade,

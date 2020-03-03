@@ -1,5 +1,5 @@
 #
-# File: misctool.py
+# File: misc.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
@@ -17,49 +17,37 @@
 #   1. 2019/09/24, Ming, create first revision.
 #
 
-
 import os
 import re
 import json
 import werkzeug
 import socket
 import datetime
+from pathlib import Path
+from flask import jsonify
 
 
 # get parent directory
-def get_pardir(_dir):
-    '''truncate path to get parent directory path'''
-    if _dir[-1] is os.path.sep:
-        _dir = _dir.rstrip(os.path.sep)
-    d = _dir.split(os.path.sep)
-    d.pop()
-    pd = os.path.sep.join(d)
-
-    return pd
-
-
-# dump json data as response
-def json_dump_http_response(data):
-    '''dump http response json data object to front-end'''
-    if isinstance(data, (list, dict)):
-        return json.dumps(data, sort_keys=True, default=str, ensure_ascii=False)
-    return json.dumps(None)
+def pardir(dirname):
+    '''get parent directory path'''
+    return str(Path(dirname).parent)
 
 
 # load json data from flask request
-def json_load_http_request(request, keys=None):
-    '''load http request json data object from front-end'''
+def json_load_request(request, keys=None):
+    '''load request json data object from front-end'''
+    info_dict = None
     if isinstance(request, werkzeug.local.LocalProxy):
         data = request.get_data().decode('utf8')
-        info_dict = json.loads(data) if data else {}
+        if data:
+            info_dict = json.loads(data)
 
     if keys is not None:
-        # get item as value if keys is specified as string key
-        if isinstance(keys, str):
-            return info_dict[keys] if keys in info_dict else None
         # get item as dict if keys is specified as dict
         if isinstance(keys, (tuple, list)):
             return {k: info_dict[k] for k in keys if k in info_dict}
+        # get item as value if keys is specified as string key
+        return info_dict[keys] if keys in info_dict else None
 
     return info_dict
 
@@ -121,3 +109,28 @@ def calc_duration(start, end):
             seconds = (delta.seconds % 3600) % 60
             return {'day': days, 'hour': hours, 'min': minites, 'sec': seconds}
     return {}
+
+
+# feedback success response
+def request_success(**kwargs):
+    if kwargs:
+        response = dict(kwargs)
+        if 'status' not in response:
+            response['status'] = 'success'
+        return jsonify(response)
+
+    return jsonify({'status': 'success'})
+
+
+# feedback failure response
+def request_fail(msg=None, **kwargs):
+    if kwargs:
+        response = dict(kwargs)
+        if 'status' not in response:
+            response['status'] = 'failure'
+    else:
+        response = {'status': 'failure'}
+    if msg is not None:
+        response['message'] = msg
+
+    return jsonify(response)

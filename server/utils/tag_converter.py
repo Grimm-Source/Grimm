@@ -18,7 +18,7 @@
 
 import server.core.db as db
 from server import admin_logger
-from server.core.const import TAG_LIST
+from server.core.globals import TAG_LIST
 
 '''Simple list version'''
 def convert_ids_to_tags(ids):
