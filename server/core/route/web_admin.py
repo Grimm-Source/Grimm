@@ -289,7 +289,7 @@ def new_activity():
         activity_info['notice'] = info['notice']
         activity_info['others'] = info['others']
         activity_info['admin_raiser'] = info['adminId']
-        activity_info['tag_ids'] = tag_converter.convert_tags_to_ids(info['tag'])
+        activity_info['tag_ids'] = tag_converter.convert_tagstring_to_idstring(info['tag'])
         try:
             if db.expr_insert('activity', activity_info) == 1:
                 admin_logger.info('%s: create new activity successfully', activity_info['title'])
@@ -306,7 +306,6 @@ def update_activity(activity_id):
     '''view function for the activity raiser to update activity info'''
     if request.method == 'GET':
         if db.exist_row('activity', activity_id=activity_id):
-            feedback = {'status': 'success'}
             try:
                 activity = db.expr_query('activity', activity_id=activity_id)[0]
                 if not activity:
@@ -315,19 +314,8 @@ def update_activity(activity_id):
             except:
                 admin_logger.warning('%d: get activity failed', activity_id)
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
-            feedback['id'] = activity['activity_id']
-            feedback['adminId'] = activity['approver']
-            feedback['title'] = activity['title']
-            feedback['location'] = activity['location']
-            start = activity['start_time']
-            end = activity['end_time']
-            feedback['start_time'] = start.strftime('%Y-%m-%d %H:%M:%S')
-            feedback['end_time'] = end.strftime('%Y-%m-%d %H:%M:%S')
-            feedback['duration'] = calc_duration(start, end)
-            feedback['content'] = activity['content']
-            feedback['notice'] = activity['notice']
-            feedback['others'] = activity['others']
-            feedback['tag'] = tag_converter.convert_ids_to_tags(activity['tag_ids'])
+            feedback = convert_activity_to_query(activity)
+            feedback = {'status': 'success'}
 
             admin_logger.info('%d: get activity successfully', activity_id)
             return json_dump_http_response(feedback)
@@ -359,7 +347,7 @@ def update_activity(activity_id):
             activity_info['notice'] = newinfo['notice']
             activity_info['others'] = newinfo['others']
             activity_info['admin_raiser'] = newinfo['adminId']
-            activity_info['tag_ids'] = tag_converter.convert_tags_to_ids(newinfo['tag'])
+            activity_info['tag_ids'] = tag_converter.convert_tagstring_to_idstring(newinfo['tag'])
             try:
                 if db.expr_update('activity', activity_info, activity_id=activity_id) == 1:
                     admin_logger.info('%d: update activity successfully', activity_id)
@@ -397,6 +385,7 @@ def delete_activity_with_id():
 def activities():
     '''view function to get all activities info'''
     if request.method == 'GET':
+        target_id_list = request.args.get('tags')
         try:
             activities_info = db.expr_query('activity')
         except:
@@ -405,21 +394,16 @@ def activities():
         queries = []
         for activity in activities_info:
             if activity is not None:
-                query = {}
-                query['id'] = activity['activity_id']
-                query['adminId'] = activity['approver']
-                query['title'] = activity['title']
-                query['location'] = activity['location']
-                start = activity['start_time']
-                end = activity['end_time']
-                query['start_time'] = start.strftime('%Y-%m-%dT%H:%M:%S')
-                query['end_time'] = end.strftime('%Y-%m-%dT%H:%M:%S')
-                query['duration'] = calc_duration(start, end)
-                query['content'] = activity['content']
-                query['notice'] = activity['content']
-                query['others'] = activity['others']
-                query['tag'] = tag_converter.convert_ids_to_tags(activity['tag_ids'])
-                queries.append(query)
+                if target_id_list:
+                    current_tag_list = activity['tag_ids'].split(',')
+                    for target_tag_id in target_id_list.split(','):
+                        if target_tag_id in current_tag_list:
+                            query = convert_activity_to_query(activity)
+                            queries.append(query)
+                            break
+                else:
+                    query = convert_activity_to_query(activity)
+                    queries.append(query)
 
         admin_logger.info('get all activities successfully')
         return json_dump_http_response(queries)
@@ -577,37 +561,19 @@ def tags_db():
         return json_dump_http_response(tags_list)
 
 
-# Reserve for custom tags, not open API now
-def update_tag(tag_name):
-    if request.method == 'DELETE':
-        try:
-            if db.expr_delete('activity_tag', tag_name=tag_name) == 1:
-                admin_logger.info('%s: delete tag successfully', tag_name)
-                return json_dump_http_response({'status': 'success'})
-        except:
-            pass
-
-        admin_logger.warning('%s: delete tag failed', tag_name)
-        return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
-
-def new_tag():
-    '''view function to add new tag'''
-    if request.method == 'POST':
-        feedback = {}
-        tag_name = json_load_http_request(request, keys='tag')
-        new_tag = {'tag_name': tag_name}
-        if not db.exist_row('activity_tag', tag_name=tag_name):
-            try:
-                if db.expr_insert('activity_tag', new_tag) == 1:
-                    admin_logger.info('%s: create new tag successfully', tag_name)
-                    return json_dump_http_response({'status': 'success'})
-            except:
-                feedback = {'status': 'failure', 'message': '未知错误'} 
-        else:
-            feedback = {'status': 'failure', 'message': '标签已存在'} 
-
-        admin_logger.warning('%s: add tag failed', tag_name)
-        return json_dump_http_response(feedback)
-
-
-    
+def convert_activity_to_query(activity):
+    query = {}
+    query['id'] = activity['activity_id']
+    query['adminId'] = activity['approver']
+    query['title'] = activity['title']
+    query['location'] = activity['location']
+    start = activity['start_time']
+    end = activity['end_time']
+    query['start_time'] = start.strftime('%Y-%m-%dT%H:%M:%S')
+    query['end_time'] = end.strftime('%Y-%m-%dT%H:%M:%S')
+    query['duration'] = calc_duration(start, end)
+    query['content'] = activity['content']
+    query['notice'] = activity['content']
+    query['others'] = activity['others']
+    query['tag'] = tag_converter.convert_idstring_to_tagstring(activity['tag_ids'])
+    return query

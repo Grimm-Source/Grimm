@@ -21,28 +21,31 @@ from server import admin_logger
 from server.core.const import TAG_LIST
 
 '''Simple list version'''
-def convert_ids_to_tags(ids):
+def convert_idstring_to_tagstring(ids):
     tag_list = []
     if not ids:
-        return tag_list
+        return ''
     for id in ids.split(','):
         if not id or int(id) not in range(6):
             continue
         tag_list.append(TAG_LIST[int(id)])
-    return tag_list
+    return ','.join(tag_list)
 
-def convert_tags_to_ids(tags_list):
-    if not tags_list:
+def convert_tagstring_to_idstring(tags):
+    if not tags:
         return ''
     id_list = []
-    for tag in tags_list:
+    for tag in tags.split(','):
         if not tag or tag not in TAG_LIST:
             continue
         id_list.append(TAG_LIST.index(tag))
     return ','.join(id_list)
 
 def get_all_tags():
-    return TAG_LIST
+    all_tags = []
+    for i in range(len(TAG_LIST)):
+        all_tags.append({'tag_id': i, 'tag_name': TAG_LIST[i]})
+    return all_tags
 
 '''DB version'''
 def convert_ids_to_tags_db(ids):
