@@ -84,7 +84,7 @@ def wxjscode2session():
             feedback['status'] = 'success'
             user_logger.info('%s: wxapp authorization success', openid)
         else:
-            user_logger.error('%s: wxapp authorization failed', openid)
+            user_logger.error('wxapp authorization failed')
             feedback['status'] = 'failure'
 
         return json_dump_http_response(feedback)
