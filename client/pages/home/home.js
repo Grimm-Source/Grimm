@@ -12,6 +12,7 @@ Page({
   },
 
   onShow: function () {
+    this.selectComponent(".home-tips-siwper").getData();
     getActivityList((res) => {
       this.setData({ activities: res });
     })

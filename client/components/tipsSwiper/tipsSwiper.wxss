@@ -4,6 +4,16 @@
   border-radius: 6px;
 }
 
+swiper-item view{
+  width:100%;
+  height:100%;
+}
+
+
+.swiper-container .item-place-holder{
+  background: #f0f8ff;
+}
+
 .swiper-item-0 {
   background: #f0f8ff;
 }

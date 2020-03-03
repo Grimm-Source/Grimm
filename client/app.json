@@ -8,6 +8,7 @@
     "pages/activityList/activityList",
     "pages/activityDetail/activityDetail",
     "pages/application/application",
+    "pages/tips/tips",
     "pages/myActivity/myActivity"
   ],
   "window": {

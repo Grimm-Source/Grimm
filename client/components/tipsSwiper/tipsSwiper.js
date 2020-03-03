@@ -1,4 +1,5 @@
-// components/tipsSwiper/tipsSwiper.js
+const {getCarousel} = require('../../utils/requestUtil.js');
+
 Component({
   /**
    * 组件的属性列表
@@ -11,15 +12,29 @@ Component({
    * 组件的初始数据
    */
   data: {
-    swiperItems: [{ 'name': '0', 'content': 'first guide' },
-      { 'name': '1', 'content': 'send guide' },
-      { 'name': '2', 'content': 'third guide'},]
+    swiperItems: [{title: "欢迎使用", url: "", photo_url: ""}]
   },
 
   /**
    * 组件的方法列表
    */
   methods: {
+    getData(){
+      getCarousel((res)=>{
+        this.setData({
+          swiperItems: res
+        });
+      }, (res)=>{
 
+      });
+    },
+    onTapItem(e){
+      if(!e.currentTarget.dataset.param ){
+        return;
+      }
+      wx.navigateTo({
+        url: "/pages/tips/tips"
+      });
+    }
   }
 })

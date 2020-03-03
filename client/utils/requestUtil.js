@@ -115,6 +115,15 @@ const arrToUrl = (baseUrl, arr, key) => {
     return `${baseUrl}?${key}=${paramUrl}`;
 }
 
+const getCarousel = (successCallback, failCallback) => {
+    return request({
+        url: 'carousel',
+        success: successCallback,
+        fail: failCallback,
+        method: "GET"
+    }); 
+}
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -126,6 +135,7 @@ module.exports = {
     getActivity,
     getRegisteredActivityList,
     postRegisteredActivityList,
-    removeRegisteredActivityList
+    removeRegisteredActivityList,
+    getCarousel
 }
   
