@@ -19,25 +19,58 @@
 
 import os
 import logging
+from flask.logging import default_handler
 from server.utils.misc import pardir
+from server.core import grimm as app
+from server.core.globals import SYS_LOG_FILE, SYS_LOGGING_LEVEL
+from server.core.globals import USER_LOG_FILE, USER_LOGGING_LEVEL
+from server.core.globals import ADMIN_LOG_FILE, ADMIN_LOGGING_LEVEL
+from server.core.globals import APP_LOG_FILE, APP_LOGGING_LEVEL
+from server.core.globals import DB_LOG_FILE, DB_LOGGING_LEVEL
 
 
 __all__ = []
 
-# initialize flask app logger
-print('initializing Flask app logger...', end=' ')
-app_logger = None
-__all__.append('app_logger')
-if app_logger is None:
-    app_logger = logging.getLogger('app-logger')
-    app_logger.setLevel(logging.DEBUG)
-    log_dir = pardir(pardir(os.path.abspath(__file__))) + '/log'
-    app_log_path = log_dir + '/app.log'
+# initialize database logger
+print('initializing database logger...', end=' ')
+db_logger = None
+__all__.append('db_logger')
+if db_logger is None:
+    db_logger = logging.getLogger('db-transaction-logger')
+    # set logging level as default DEBUG level.
+    db_logger.setLevel(DB_LOGGING_LEVEL)
+    log_dir = pardir(DB_LOG_FILE)
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
-    fh = logging.FileHandler(app_log_path, mode='a', encoding='utf8')
+    # create logging file handler.
+    fh = logging.FileHandler(DB_LOG_FILE, mode='a', encoding='utf8')
+    # format
+    fmt = '[%(asctime)s] %(levelname)s: %(message)s'
+    fmter = logging.Formatter(fmt)
+    fh.setFormatter(fmter)
+    # add file handler
+    db_logger.addHandler(fh)
+    print('done!')
+
+
+# initialize flask app logger
+print('initializing Flask app logger...', end=' ')
+app_logger = app.logger
+__all__.append('app_logger')
+if app_logger is None:
+    raise RuntimeError('Flask app logger not correctly initialized!')
+else:
+    app_logger.removeHandler(default_handler)
+    app_logger.setLevel(APP_LOGGING_LEVEL)
+    log_dir = pardir(APP_LOG_FILE)
+    if not os.path.isdir(log_dir):
+        os.mkdir(log_dir)
+    fh = logging.FileHandler(APP_LOG_FILE, mode='a', encoding='utf8')
+    fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+    fmtter = logging.Formatter(fmt)
+    fh.setFormatter(fmtter)
     app_logger.addHandler(fh)
-print('done!')
+    print('done!')
 
 
 # initialize system logger
@@ -46,17 +79,16 @@ sys_logger = None
 __all__.append('sys_logger')
 if sys_logger is None:
     sys_logger = logging.getLogger('sys-logger')
-    sys_logger.setLevel(logging.DEBUG)
-    log_dir = pardir(pardir(os.path.abspath(__file__))) + '/log'
-    sys_log_path = log_dir + '/sys.log'
+    sys_logger.setLevel(SYS_LOGGING_LEVEL)
+    log_dir = pardir(SYS_LOG_FILE)
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
-    fh = logging.FileHandler(sys_log_path, mode='a', encoding='utf8')
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fh = logging.FileHandler(SYS_LOG_FILE, mode='a', encoding='utf8')
+    fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
     fmtter = logging.Formatter(fmt)
     fh.setFormatter(fmtter)
     sys_logger.addHandler(fh)
-print('done!')
+    print('done!')
 
 
 # initialize admin logger
@@ -65,17 +97,16 @@ admin_logger = None
 __all__.append('admin_logger')
 if admin_logger is None:
     admin_logger = logging.getLogger('admin-logger')
-    admin_logger.setLevel(logging.DEBUG)
-    log_dir = pardir(pardir(os.path.abspath(__file__))) + '/log'
-    admin_log_path = log_dir + '/admin.log'
+    admin_logger.setLevel(ADMIN_LOGGING_LEVEL)
+    log_dir = pardir(ADMIN_LOG_FILE)
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
-    fh = logging.FileHandler(admin_log_path, mode='a', encoding='utf8')
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fh = logging.FileHandler(ADMIN_LOG_FILE, mode='a', encoding='utf8')
+    fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
     fmtter = logging.Formatter(fmt)
     fh.setFormatter(fmtter)
     admin_logger.addHandler(fh)
-print('done!')
+    print('done!')
 
 
 # initialize user logger
@@ -84,14 +115,13 @@ user_logger = None
 __all__.append('user_logger')
 if user_logger is None:
     user_logger = logging.getLogger('user-logger')
-    user_logger.setLevel(logging.DEBUG)
-    log_dir = pardir(pardir(os.path.abspath(__file__))) + '/log'
-    user_log_path = log_dir + '/user.log'
+    user_logger.setLevel(USER_LOGGING_LEVEL)
+    log_dir = pardir(USER_LOG_FILE)
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
-    fh = logging.FileHandler(user_log_path, mode='a', encoding='utf8')
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fh = logging.FileHandler(USER_LOG_FILE, mode='a', encoding='utf8')
+    fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
     fmtter = logging.Formatter(fmt)
     fh.setFormatter(fmtter)
     user_logger.addHandler(fh)
-print('done!')
+    print('done!')

@@ -21,6 +21,7 @@ import sys
 import os
 import urllib3
 from flask import jsonify, request
+from flask import render_template, url_for, redirect
 from datetime import datetime
 from flask_socketio import emit
 
@@ -69,7 +70,8 @@ def notice_connect():
 
 @app.route('/')
 def home():
-    return request_success()
+    app.logger.info('user request initial homepage')
+    return render_template('homepage.html')
 
 
 @app.route('/login', methods=['POST'])

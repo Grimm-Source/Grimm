@@ -18,45 +18,71 @@
 #
 
 import sys
+import logging
 import time
-
-if '../..' not in sys.path:
-    sys.path.insert(1, '../..')
-
 import server.core.db as db
-import server
+
+from server import *
 
 
 def exit_grimm(signalnum=None, frame=None):
     '''procedures to be executed when trying to exit grimm'''
     # close db_logger
-    print('\n\nclose db-logger...')
-    if db.db_logger is not None:
-        db.db_logger.disabled = True
-        db.db_logger = None
+    if db_logger is not None:
+        print('\nclose db-logger...', end=' ')
+        for handler in db_logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                handler.close()
+            db_logger.removeHandler(handler)
+        db_logger.disabled = True
+        print('done!')
 
     # close sys_logger
-    print('close sys-logger...')
-    if server.sys_logger is not None:
-        server.sys_logger.disabled = True
-        server.sys_logger = None
+    if sys_logger is not None:
+        print('close sys-logger...', end=' ')
+        for handler in sys_logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                handler.close()
+            sys_logger.removeHandler(handler)
+        sys_logger.disabled = True
+        print('done!')
 
     # close user_logger
-    print('close user-logger...')
-    if server.user_logger is not None:
-        server.user_logger.disabled = True
-        server.user_logger = None
+    if user_logger is not None:
+        print('close user-logger...', end=' ')
+        for handler in user_logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                handler.close()
+            user_logger.removeHandler(handler)
+        user_logger.disabled = True
+        print('done!')
+
+    # close admin_logger
+    if admin_logger is not None:
+        print('close admin-logger...', end=' ')
+        for handler in admin_logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                handler.close()
+            admin_logger.removeHandler(handler)
+        admin_logger.disabled = True
+        print('done!')
 
     # close app_logger
-    print('close app-logger...')
-    if server.app_logger is not None:
-        server.app_logger.disabled = True
-        server.app_logger = None
+    if app_logger is not None:
+        print('close app-logger...', end=' ')
+        for handler in app_logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                handler.close()
+                app_logger.removeHandler(handler)
+        app_logger.disabled = True
+        print('done!')
 
     # close database connection
+    print('close database connection...', end=' ')
     db.destroy_connection()
+    print('done!')
 
     # exit grimm backend service
     time.sleep(1)
-    print('\nquit grimm back-end service done!')
+    print('\nquit grimm back-end service completely!')
     sys.exit(0)

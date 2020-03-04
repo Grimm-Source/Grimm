@@ -39,8 +39,9 @@ if grimm is None:
     from flask_socketio import SocketIO
     from server.core.globals import APP_SECURITY_PASSWORD_SALT, WX_CONFIG_FILE
     from server.core.globals import APP_CONFIG_FILE, APP_SECRET_KEY
+    from server.core.globals import APP_TEMPLATE_PATH, APP_STATIC_PATH
 
-    grimm = Flask('Grimm')
+    grimm = Flask('Grimm', static_folder=APP_STATIC_PATH, template_folder=APP_TEMPLATE_PATH)
     grimm_ext = CORS(grimm)
     # Flask app config
     grimm.config['SECRET_KEY'] = APP_SECRET_KEY # app secret key, default generated as random string

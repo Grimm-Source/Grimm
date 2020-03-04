@@ -19,6 +19,7 @@
 
 import os
 import uuid
+import logging
 from server.utils.misc import pardir
 
 # regexs
@@ -27,11 +28,7 @@ EMAIL_REGEX = r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2
 # IPADDR_REGEX = r'^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
 
 # database configs
-pardir = pardir(pardir(os.path.abspath(__file__)))
-DB_CONFIG_FILE = pardir + '/config/db.cfg'
-
-# db logger configs
-DB_LOGGER_FILE = pardir + '/log/db.log'
+DB_CONFIG_FILE = '../server/config/db.cfg'
 
 # database datatypes which needs check quotes
 DB_QUOTED_TYPES = ('char', 'varchar', 'datetime', 'date',
@@ -56,6 +53,8 @@ APP_SECURITY_PASSWORD_SALT = uuid.uuid4().hex # app security password salt
 APP_TRAP_HTTP_EXCEPTIONS = False    # app trap http exceptions
 APP_TRAP_BAD_REQUEST_ERRORS = True  # app trap BadRequest errors
 APP_CONFIG_FILE = '../server/config/flaskapp.cfg' # app json config file
+APP_TEMPLATE_PATH = 'templates'
+APP_STATIC_PATH = 'static'
 del pardir
 
 # config when starting back-end
@@ -102,3 +101,15 @@ EMAIL_CONFIG_FILE = '../server/config/email.cfg'
 
 # wxapp config file
 WX_CONFIG_FILE = '../server/config/wxapp.cfg' # wx config path
+
+# log files
+SYS_LOG_FILE = '../server/log/sys.log'
+SYS_LOGGING_LEVEL = logging.DEBUG
+ADMIN_LOG_FILE = '../server/log/admin.log'
+ADMIN_LOGGING_LEVEL = logging.DEBUG
+DB_LOG_FILE = '../server/log/db.log'
+DB_LOGGING_LEVEL = logging.DEBUG
+USER_LOG_FILE = '../server/log/user.log'
+USER_LOGGING_LEVEL = logging.DEBUG
+APP_LOG_FILE = '../server/log/app.log'
+APP_LOGGING_LEVEL = logging.INFO

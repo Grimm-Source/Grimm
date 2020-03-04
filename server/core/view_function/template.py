@@ -19,10 +19,22 @@
 
 
 from flask import render_template
+from flask import url_for, redirect
 from server.core import grimm as app
 
 
+# 404 error handler
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('page_not_found.html'), 404  # ???
+    return render_template('page_not_found.html')  # ???
 
+
+# test flask url_for, redirect
+@app.route('/test-redirect')
+def test_redirect():
+    return redirect(url_for('home'))
+
+# test flask render webpage
+@app.route('/render')
+def render():
+    return render_template('patsy-doherty/index.html')

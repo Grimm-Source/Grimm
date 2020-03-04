@@ -27,9 +27,10 @@ import pymysql
 from server.core.exceptions import SQLValueError, SQLConnectionError
 from server.utils.misc import pardir
 
-from server.core.globals import DB_CONFIG_FILE, DB_LOGGER_FILE, DB_QUOTED_TYPES
+from server.core.globals import DB_CONFIG_FILE, DB_QUOTED_TYPES
 from server.core.globals import DB_WRITE_TIMEOUT, DB_READ_TIMEOUT
 
+from server.utils.logger import db_logger
 
 __all__ = ['expr_query', 'expr_update', 'expr_insert', 'expr_delete',
            'query', 'update', 'delete', 'insert', 'query_tbl_fields',
@@ -40,29 +41,8 @@ __all__ = ['expr_query', 'expr_update', 'expr_insert', 'expr_delete',
 
 # db globals
 session_connection = None
-db_logger = None
 DB_NAME = None
-DB_LOGGER_NAME = 'db-transaction-logger'
 
-
-# initialize database logger
-if db_logger is None:
-    print('initialize database logger...', end=' ')
-    db_logger = logging.getLogger(DB_LOGGER_NAME)
-    # set logging level as default DEBUG level.
-    db_logger.setLevel(logging.DEBUG)
-    log_dir = pardir(DB_LOGGER_FILE)
-    if not os.path.isdir(log_dir):
-        os.mkdir(log_dir)
-    # create logging file handler.
-    fh = logging.FileHandler(DB_LOGGER_FILE, mode='a', encoding='utf8')
-    # format
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
-    fmter = logging.Formatter(fmt)
-    fh.setFormatter(fmter)
-    # add file handler
-    db_logger.addHandler(fh)
-    print('done!')
 
 
 # close session database connection
@@ -84,12 +64,7 @@ def destroy_connection():
 # define and register signals handler
 def sig_handler(signalnum=None, frame=None):
     '''quit everything when termination signal received to kill the process'''
-    global db_logger
     destroy_connection()
-    if db_logger is not None:
-        db_logger.disabled = True
-#        logging.shutdown()
-        db_logger = None
 
 
 signal.signal(signal.SIGINT, sig_handler)
