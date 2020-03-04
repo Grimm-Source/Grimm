@@ -38,6 +38,8 @@ from server.utils.password import update_password
 from server.core.exit import exit_grimm
 from server.core import grimm
 
+print('\nApp URL Mapping:')
+print(grimm.url_map)
 
 # start Grimm back-end in daemon mode
 def start_daemon(logfile, pid_file=None):

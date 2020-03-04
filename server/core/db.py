@@ -101,7 +101,7 @@ signal.signal(signal.SIGTERM, sig_handler)
 # initialize database connection
 def init_connection(force=False):
     '''initialize database connection of server process'''
-    print('initialize database connection...')
+    print('\ninitialize database connection...')
     global DB_NAME, session_connection, db_logger
     db_config_items = ['Host', 'Port', 'DB', 'Charset', 'User']
 
@@ -148,7 +148,7 @@ def init_connection(force=False):
                 try:
                     with open(DB_CONFIG_FILE, 'r') as fp:
                         db_config = json.load(fp=fp, encoding='utf8')
-                    print('\nMySQL Login >>>\n')
+                    print('MySQL Login >>>\n')
                     db_config['Password'] = collect_db_pass(usr=db_config['User'])
                 except Exception as e:
                     db_logger.error('load json config failed: (%d, %s)', e.args[0], e.args[1])

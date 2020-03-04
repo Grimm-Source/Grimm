@@ -58,5 +58,5 @@ def exit_grimm(signalnum=None, frame=None):
 
     # exit grimm backend service
     time.sleep(1)
-    print('\nquit grimm back-end service done !')
+    print('\nquit grimm back-end service done!')
     sys.exit(0)
