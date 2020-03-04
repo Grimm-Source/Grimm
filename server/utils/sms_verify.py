@@ -1,5 +1,5 @@
 #
-# File: sms_verify.py
+# File: server/utils/sms_verify.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------

@@ -23,7 +23,7 @@ import os
 import logging
 
 
-__all__ = ['GRIMM_VERSION', 'PY_VERSION', 'sys_logger', 'admin_logger', 'user_logger']
+__all__ = ['GRIMM_VERSION', 'PY_VERSION']
 GRIMM_VERSION = '1.0'
 
 
@@ -107,69 +107,15 @@ except ImportError as err:
 print('done!')
 
 
-from server.utils.misc import pardir
-
-# initialize system logger
-print('initializing system logger...', end=' ')
-sys_logger = None
-if sys_logger is None:
-    sys_logger = logging.getLogger('sys-logger')
-    sys_logger.setLevel(logging.DEBUG)
-    log_dir = pardir(os.path.abspath(__file__)) + '/log'
-    sys_log_path = log_dir + '/sys.log'
-    if not os.path.isdir(log_dir):
-        os.mkdir(log_dir)
-    fh = logging.FileHandler(sys_log_path, mode='a', encoding='utf8')
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
-    fmtter = logging.Formatter(fmt)
-    fh.setFormatter(fmtter)
-    sys_logger.addHandler(fh)
-
-    del fh, fmt, fmtter, sys_log_path, log_dir
-print('done!')
-
-# initialize admin logger
-print('initializing admin logger...', end=' ')
-admin_logger = None
-if admin_logger is None:
-    admin_logger = logging.getLogger('admin-logger')
-    admin_logger.setLevel(logging.DEBUG)
-    log_dir = pardir(os.path.abspath(__file__)) + '/log'
-    admin_log_path = log_dir + '/admin.log'
-    if not os.path.isdir(log_dir):
-        os.mkdir(log_dir)
-    fh = logging.FileHandler(admin_log_path, mode='a', encoding='utf8')
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
-    fmtter = logging.Formatter(fmt)
-    fh.setFormatter(fmtter)
-    admin_logger.addHandler(fh)
-
-    del fh, fmt, fmtter, admin_log_path, log_dir
-print('done!')
-
-# initialize user logger
-print('initializing user logger...', end=' ')
-user_logger = None
-if user_logger is None:
-    user_logger = logging.getLogger('user-logger')
-    user_logger.setLevel(logging.DEBUG)
-    log_dir = pardir(os.path.abspath(__file__)) + '/log'
-    user_log_path = log_dir + '/user.log'
-    if not os.path.isdir(log_dir):
-        os.mkdir(log_dir)
-    fh = logging.FileHandler(user_log_path, mode='a', encoding='utf8')
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
-    fmtter = logging.Formatter(fmt)
-    fh.setFormatter(fmtter)
-    user_logger.addHandler(fh)
-
-    del fh, fmt, fmtter, user_log_path, log_dir
-print('done!')
-
-
 # print local host V4 ip
 from server.utils.misc import get_host_ip
 if server.core.globals.PLATFORM != 'Windows' and server.core.globals.HOST_IP == '0.0.0.0' or server.core.globals.HOST_IP is None:
     server.core.globals.HOST_IP = get_host_ip()
 print('\n>>> Request Access: ' + server.core.globals.HOST_IP + ':' + str(server.core.globals.PORT) + '\n')
-del get_host_ip, pardir
+del get_host_ip
+
+
+# load loggers and append namespace
+import server.utils.logger
+from server.utils.logger import *
+__all__.extend(server.utils.logger.__all__)

@@ -1,5 +1,5 @@
 #
-# File: misc.py
+# File: server/utils/password.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------

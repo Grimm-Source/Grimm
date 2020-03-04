@@ -1,5 +1,5 @@
 #
-# File: utils/__init__.py
+# File: server/utils/__init__.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------

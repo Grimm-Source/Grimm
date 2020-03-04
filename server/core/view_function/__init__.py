@@ -25,12 +25,13 @@ from os.path import dirname
 if '../../..' not in sys.path:
     sys.path.insert(2, '../../..')
 
-# Dynamically import all view function modules recursively down
 __all__ = []
-dir_triples = [x for x in os.walk(dirname(__file__), topdown=False)][:-1]
+# Dynamically import all view function modules recursively down
+dir_triples = [x for x in os.walk(dirname(__file__), topdown=False)]
 pkg_info = {item[0].replace('/', '.').lstrip('.') : \
             [f[:-3] for f in item[2] if f.endswith('.py') and f != '__init__.py'] \
             for item in dir_triples if '__pycache__' not in item[0]}
+
 
 for package, modules in pkg_info.items():
     for module in modules:

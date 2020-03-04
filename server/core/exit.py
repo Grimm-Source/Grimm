@@ -47,10 +47,16 @@ def exit_grimm(signalnum=None, frame=None):
         server.user_logger.disabled = True
         server.user_logger = None
 
+    # close app_logger
+    print('close app-logger...')
+    if server.app_logger is not None:
+        server.app_logger.disabled = True
+        server.app_logger = None
+
     # close database connection
     db.destroy_connection()
 
     # exit grimm backend service
     time.sleep(1)
-    print('\nquit grimm back-end service done !\n')
+    print('\nquit grimm back-end service done !')
     sys.exit(0)

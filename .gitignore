@@ -31,4 +31,5 @@ cscope*
 .*swp
 .*swo
 # local config files
+db.cfg
 db.config

@@ -1,5 +1,5 @@
 #
-# File: vrfcode.py
+# File: server/utils/vrfcode.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------

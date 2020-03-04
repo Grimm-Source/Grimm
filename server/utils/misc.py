@@ -1,5 +1,5 @@
 #
-# File: misc.py
+# File: server/utils/misc.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------

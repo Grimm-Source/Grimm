@@ -28,7 +28,7 @@ EMAIL_REGEX = r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2
 
 # database configs
 pardir = pardir(pardir(os.path.abspath(__file__)))
-DB_CONFIG_FILE = pardir + '/config/db.config'
+DB_CONFIG_FILE = pardir + '/config/db.cfg'
 
 # db logger configs
 DB_LOGGER_FILE = pardir + '/log/db.log'
@@ -53,7 +53,9 @@ APP_DEBUG_MODE = False       # app debug mode
 APP_TESTING_MODE = False    # app testing mode
 APP_SECRET_KEY = os.urandom(24) # app secret key
 APP_SECURITY_PASSWORD_SALT = uuid.uuid4().hex # app security password salt
-WX_CONFIG_FILE = '../server/config/wxapp.config' # wx config path
+APP_TRAP_HTTP_EXCEPTIONS = False    # app trap http exceptions
+APP_TRAP_BAD_REQUEST_ERRORS = True  # app trap BadRequest errors
+APP_CONFIG_FILE = '../server/config/flaskapp.cfg' # app json config file
 del pardir
 
 # config when starting back-end
@@ -63,7 +65,7 @@ FORCE_LOAD = False
 DAEMON_LOAD = False
 SESSION_LOG = None
 
-# send sms configuration
+# send sms config
 VRF_SIGNATURE = '视障人士志愿者平台验证'
 COM_SIGNATURE = '华晓信息'
 TEMPLATE_CODES = {
@@ -94,3 +96,9 @@ CAROUSEL_LIST = [
 
 # Tag information
 TAG_LIST = ['运动', '学习', '分享', '文娱', '保健', '其它']
+
+# Email config file
+EMAIL_CONFIG_FILE = '../server/config/email.cfg'
+
+# wxapp config file
+WX_CONFIG_FILE = '../server/config/wxapp.cfg' # wx config path

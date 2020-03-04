@@ -1,5 +1,5 @@
 #
-# File: utils/template.py
+# File: server/utils/template.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------

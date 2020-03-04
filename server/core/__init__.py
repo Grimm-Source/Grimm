@@ -1,5 +1,5 @@
 #
-# File: core/__init__.py
+# File: server/core/__init__.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
@@ -37,17 +37,18 @@ if grimm is None:
     from flask_cors import CORS
     from server.utils.misc import pardir
     from flask_socketio import SocketIO
-    from server.core.globals import APP_DEBUG_MODE, APP_TESTING_MODE, APP_SECRET_KEY
     from server.core.globals import APP_SECURITY_PASSWORD_SALT, WX_CONFIG_FILE
+    from server.core.globals import APP_CONFIG_FILE, APP_SECRET_KEY
 
     grimm = Flask('Grimm')
     grimm_ext = CORS(grimm)
-    # app configuration
-    grimm.config['DEBUG'] = APP_DEBUG_MODE # app debug mode, default off
-    grimm.config['TESTING'] = APP_TESTING_MODE # app testing mode, default off
+    # Flask app config
     grimm.config['SECRET_KEY'] = APP_SECRET_KEY # app secret key, default generated as random string
     grimm.config['SECURITY_PASSWORD_SALT'] = APP_SECURITY_PASSWORD_SALT # app security password salt
-    grimm.config['JSON_AS_ASCII'] = False   # make json data not limited as ascii
+    grimm.config['JSON_AS_ASCII'] = False   # make return json object not limited as ascii
+    grimm.config['JSON_SORT_KEYS'] = True   # sort return json object keys
+
+    grimm.config.from_json(APP_CONFIG_FILE, silent=True)
 
     socketio = SocketIO(cors_allowed_origins='*', debug=True)
     socketio.init_app(grimm)

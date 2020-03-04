@@ -1,5 +1,5 @@
 #
-# File: email_verify.py
+# File: server/utils/email_verify.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
@@ -36,7 +36,7 @@ import server.core.db as db
 from server import sys_logger
 from server.core.exceptions import UserEmailError
 from server.utils.misc import pardir
-from server.core.globals import DEFAULT_PROTOCOL, EMAIL_REGEX as REGEX
+from server.core.globals import DEFAULT_PROTOCOL, EMAIL_REGEX as REGEX, EMAIL_CONFIG_FILE
 
 
 sender = None
@@ -45,7 +45,7 @@ smtp_port = None
 passcode = None
 
 if passcode is None:
-    with open(pardir(pardir(os.path.abspath(__file__))) + '/config/email.config', mode='r') as fp:
+    with open(EMAIL_CONFIG_FILE, mode='r') as fp:
         email_config = json.load(fp=fp, encoding='utf8')
         sender = email_config['address']
         smtp_domain = email_config['server']
