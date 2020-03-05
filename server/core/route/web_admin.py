@@ -22,6 +22,7 @@ import os
 import urllib3
 from flask import request
 from datetime import datetime
+from datetime import timedelta
 from flask_socketio import emit
 
 import server.core.db as db
@@ -385,7 +386,8 @@ def delete_activity_with_id():
 def activities():
     '''view function to get all activities info'''
     if request.method == 'GET':
-        target_id_list = request.args.get('tags')
+        target_tag_list = request.args.get('tags')
+        filter_time = request.args.get('time')
         try:
             activities_info = db.expr_query('activity')
         except:
@@ -393,21 +395,40 @@ def activities():
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
         queries = []
         for activity in activities_info:
-            if activity is not None:
-                if target_id_list:
-                    current_tag_list = activity['tag_ids'].split(',')
-                    for target_tag_id in target_id_list.split(','):
-                        if target_tag_id in current_tag_list:
-                            query = convert_activity_to_query(activity)
-                            queries.append(query)
-                            break
-                else:
-                    query = convert_activity_to_query(activity)
-                    queries.append(query)
+            if should_append(activity, target_tag_list, filter_time):
+                query = convert_activity_to_query(activity)
+                queries.append(query)
 
         admin_logger.info('get all activities successfully')
         return json_dump_http_response(queries)
 
+def should_append(activity, target_tag_list, filter_time):
+    if not activity:
+        return False
+    elif not target_tag_list and not filter_time:
+        return True
+    elif not filter_time:
+        return should_append_by_tag(activity, target_tag_list)
+    elif not target_tag_list:
+        return should_append_by_time(activity, filter_time)
+    else:
+        return should_append_by_tag(activity, target_tag_list) and should_append_by_time(activity, filter_time)
+
+def should_append_by_tag(activity, target_tag_list):
+    current_tag_list = activity['tag_ids'].split(',')
+    for target_tag_id in target_tag_list.split(','):
+        if target_tag_id in current_tag_list:
+            return True
+    return False
+
+def should_append_by_time(activity, filter_time):
+    filter_start = datetime.strptime(filter_time.split(' - ')[0], '%Y-%m-%d')
+    filter_end = datetime.strptime(filter_time.split(' - ')[1], '%Y-%m-%d') + timedelta(days=1)
+    start = activity['start_time']
+    end = activity['end_time']
+    if filter_end < start or filter_start > end:
+        return False
+    return True
 
 @app.route('/admin/<int:admin_id>/update-password', methods=['POST'])
 def admin_update_password(admin_id):
