@@ -195,5 +195,5 @@ create table activity_participants
     PRIMARY KEY(activity_id, participants_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO activity_participants(activity_id, participants_id, interest, share, sign_up)
+INSERT INTO activity_participants(activity_id, participants_id, interested, share, sign_up)
 VALUES(1, 1, 0, 0, 0)
