@@ -1,5 +1,5 @@
 #
-# File: user.py
+# File: server/core/view_function/user.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------

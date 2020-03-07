@@ -17,13 +17,10 @@
 #   1. 2019/08/19, Ming, create first revision.
 #
 
-import sys
 import os
 import importlib
 from os.path import dirname
 
-if '../../..' not in sys.path:
-    sys.path.insert(2, '../../..')
 
 __all__ = []
 # Dynamically import all view function modules recursively down

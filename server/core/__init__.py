@@ -18,11 +18,7 @@
 #
 
 
-import sys
-
-if '../..' not in sys.path:
-    sys.path.insert(1, '../..')
-
+__all__ = ['grimm', 'grimm_ext', 'wxappid', 'wxsecret', 'socketio']
 
 grimm = None
 grimm_ext = None

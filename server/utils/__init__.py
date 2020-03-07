@@ -19,9 +19,11 @@
 
 
 import sys
+import os
 
+__all__ = []
 
-if '../..' not in sys.path:
-    sys.path.insert(1, '../..')
-
-sys.path.append('utils')
+DYSMS_PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+if DYSMS_PKG_DIR not in sys.path:
+    sys.path.insert(1, DYSMS_PKG_DIR)
+__all__.append(DYSMS_PKG_DIR)

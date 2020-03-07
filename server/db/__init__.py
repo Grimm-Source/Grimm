@@ -16,8 +16,3 @@
 # Revision History (Date, Editor, Description):
 #   1. 2019/08/19, Ming, create first revision.
 #
-
-import sys
-
-if '../..' not in sys.path:
-    sys.path.insert(1, '../..')

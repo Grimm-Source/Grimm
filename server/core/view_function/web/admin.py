@@ -1,5 +1,5 @@
 #
-# File: web.py
+# File: server/core/view_function/web.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------

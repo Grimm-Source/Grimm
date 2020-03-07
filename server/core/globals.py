@@ -18,9 +18,13 @@
 #
 
 import os
+import os.path as path
 import uuid
 import logging
 from server.utils.misc import pardir
+
+from server import TOP_DIR
+
 
 # regexs
 EMAIL_REGEX = r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$'
@@ -28,7 +32,7 @@ EMAIL_REGEX = r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2
 # IPADDR_REGEX = r'^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$'
 
 # database configs
-DB_CONFIG_FILE = '../server/config/db.cfg'
+DB_CONFIG_FILE = path.join(TOP_DIR, 'config/db.cfg')
 
 # database datatypes which needs check quotes
 DB_QUOTED_TYPES = ('char', 'varchar', 'datetime', 'date',
@@ -52,17 +56,16 @@ APP_SECRET_KEY = os.urandom(24) # app secret key
 APP_SECURITY_PASSWORD_SALT = uuid.uuid4().hex # app security password salt
 APP_TRAP_HTTP_EXCEPTIONS = False    # app trap http exceptions
 APP_TRAP_BAD_REQUEST_ERRORS = True  # app trap BadRequest errors
-APP_CONFIG_FILE = '../server/config/flaskapp.cfg' # app json config file
-APP_TEMPLATE_PATH = 'templates'
-APP_STATIC_PATH = 'static'
+APP_CONFIG_FILE = path.join(TOP_DIR, 'config/flaskapp.cfg') # app json config file
+APP_TEMPLATE_PATH = path.join(TOP_DIR, 'templates') # templates folder
+APP_STATIC_PATH = path.join(TOP_DIR, 'static') # static resouce folder
 del pardir
 
 # config when starting back-end
 HOST = None
 PORT = None
-FORCE_LOAD = False
 DAEMON_LOAD = False
-SESSION_LOG = None
+SESSION_LOG_FILE = None
 
 # send sms config
 VRF_SIGNATURE = '视障人士志愿者平台验证'
@@ -78,7 +81,7 @@ TEMPLATE_CODES = {
 # misc consts
 DEFAULT_SERIAL_NO_BYTES = 32
 DEFAULT_VRFCODE_BYTES = 6
-DEFAULT_PROTOCOL = 'http'
+DEFAULT_PROTOCOL = 'http' # need to update to https
 
 # default password salt
 DEFAULT_PASSWORD_SALT = 5
@@ -97,19 +100,19 @@ CAROUSEL_LIST = [
 TAG_LIST = ['运动', '学习', '分享', '文娱', '保健', '其它']
 
 # Email config file
-EMAIL_CONFIG_FILE = '../server/config/email.cfg'
+EMAIL_CONFIG_FILE = path.join(TOP_DIR, 'config/email.cfg')
 
 # wxapp config file
-WX_CONFIG_FILE = '../server/config/wxapp.cfg' # wx config path
+WX_CONFIG_FILE = path.join(TOP_DIR, 'config/wxapp.cfg')
 
 # log files
-SYS_LOG_FILE = '../server/log/sys.log'
+SYS_LOG_FILE = path.join(TOP_DIR, 'log/sys.log')
 SYS_LOGGING_LEVEL = logging.DEBUG
-ADMIN_LOG_FILE = '../server/log/admin.log'
+ADMIN_LOG_FILE = path.join(TOP_DIR, 'log/admin.log')
 ADMIN_LOGGING_LEVEL = logging.DEBUG
-DB_LOG_FILE = '../server/log/db.log'
+DB_LOG_FILE = path.join(TOP_DIR, 'log/db.log')
 DB_LOGGING_LEVEL = logging.DEBUG
-USER_LOG_FILE = '../server/log/user.log'
+USER_LOG_FILE = path.join(TOP_DIR, 'log/user.log')
 USER_LOGGING_LEVEL = logging.DEBUG
-APP_LOG_FILE = '../server/log/app.log'
+APP_LOG_FILE = path.join(TOP_DIR, 'log/app.log')
 APP_LOGGING_LEVEL = logging.INFO

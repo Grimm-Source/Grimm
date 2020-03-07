@@ -1,5 +1,5 @@
 #
-# File: activity.py
+# File: server/core/view_function/activity.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------

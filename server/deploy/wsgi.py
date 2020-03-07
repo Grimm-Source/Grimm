@@ -1,11 +1,11 @@
 #
-# File: server/utils/template.py
+# File: server/deploy/wsgi.py
 # Copyright: Grimm Project, Ren Pin NGO, all rights reserved.
 # License: MIT
 # -------------------------------------------------------------------------
 # Authors:  Ming Li(adagio.ming@gmail.com)
 #
-# Description: some template webpages.
+# Description: uwsgi application.
 #
 # To-Dos:
 #   1. make other supplements if needed.
@@ -17,18 +17,16 @@
 #   1. 2019/08/19, Ming, create first revision.
 #
 
+import sys
 
-from flask import render_template
-from flask import url_for, redirect
+if '../..' not in sys.path:
+    sys.path.insert(2, '../..')
+
+
+import server
 from server.core import grimm as app
 
 
-# test flask url_for, redirect
-@app.route('/test-redirect')
-def test_redirect():
-    return redirect(url_for('home'))
 
-# test flask render webpage
-@app.route('/render')
-def render():
-    return render_template('patsy-doherty/index.html')
+if __name__ == '__main__':
+    app.run()
