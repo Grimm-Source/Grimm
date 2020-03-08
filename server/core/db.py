@@ -25,7 +25,7 @@ import getpass
 import logging
 import pymysql
 from server.core.exceptions import SQLValueError, SQLConnectionError
-from server.utils.misc import pardir
+from server.utils.misc import pardir, tty_input
 
 from server.core.globals import DB_CONFIG_FILE, DB_QUOTED_TYPES
 from server.core.globals import DB_WRITE_TIMEOUT, DB_READ_TIMEOUT
@@ -86,22 +86,22 @@ def init_connection(force=False):
         return getpass.getpass(prompt='%10s: ' % ('Password'))
 
     def collect_db_config():
-        '''for user to input database configs, and dump configs as file'''
+        '''user input database configs, and dump configs as json file'''
         print('Configure MySQL connection >>>\n')
         config = {}
         for item in db_config_items:
-            _input = input('{:^10}: '.format(item)).strip()
-            _input = int(_input) if item == 'Port' and _input else _input
+            input = tty_input('{:^10}: '.format(item)).strip()
+            input = int(input) if item == 'Port' and input else input
             if item == 'Charset':
-                config[item] = _input if _input else 'utf8mb4'
+                config[item] = input if input else 'utf8mb4'
             elif item == 'Host':
-                config[item] = _input if _input else 'localhost'
+                config[item] = input if input else 'localhost'
             elif item == 'Port':
-                config[item] = _input if _input else 3306
+                config[item] = input if input else 3306
             elif item == 'DB':
-                config[item] = _input if _input else 'grimmdb'
+                config[item] = input if input else 'grimmdb'
             elif item == 'User':
-                config[item] = _input if _input else 'root'
+                config[item] = input if input else 'root'
 
         config_dir = pardir(DB_CONFIG_FILE)
         if not os.path.isdir(config_dir):
@@ -126,7 +126,7 @@ def init_connection(force=False):
                     print('MySQL Login >>>\n')
                     db_config['Password'] = collect_db_pass(usr=db_config['User'])
                 except Exception as e:
-                    db_logger.error('load json config failed: (%d, %s)', e.args[0], e.args[1])
+                    db_logger.error('load json config failed: f"{e.args}"')
                     db_config = collect_db_config()
 
                 for k, v in db_config.items():

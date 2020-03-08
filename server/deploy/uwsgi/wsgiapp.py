@@ -19,8 +19,8 @@
 
 import sys
 
-if '../..' not in sys.path:
-    sys.path.insert(2, '../..')
+if '../../..' not in sys.path:
+    sys.path.insert(1, '../../..')
 
 
 import server

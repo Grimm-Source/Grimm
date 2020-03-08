@@ -18,11 +18,13 @@
 #
 
 import os
+import io
 import re
 import json
 import werkzeug
 import socket
 import datetime
+import contextlib
 from pathlib import Path
 from flask import jsonify
 
@@ -134,3 +136,37 @@ def request_fail(msg=None, **kwargs):
         response['message'] = msg
 
     return jsonify(response)
+
+
+# UNIX tty input to avoid EOFError of built-in input function for subprocess method
+def tty_input(prompt=""):
+    with contextlib.ExitStack() as stack:
+        try:
+            fd = os.open('/dev/tty', os.O_RDWR|os.O_NOCTTY)
+            tty = io.FileIO(fd, 'w+')
+            stack.enter_context(tty)    # register context callback
+            stream = io.TextIOWrapper(tty)
+            stack.enter_context(stream)
+        except OSError as e:
+            # if tty dev is unavailable, raise
+            stack.close()
+            raise
+
+        prompt = str(prompt)
+        if prompt:
+            try:
+                stream.write(prompt)
+            except UnicodeEncodeError:
+                prompt = prompt.encode(stream.encoding, 'replace')
+                prompt = prompt.decode(stream.encoding)
+                stream.write(prompt)
+            stream.flush()
+
+        line = stream.readline()
+        if not line:
+            raise EOFError
+        if line[-1] == '\n':
+            line = line[:-1]
+
+        stream.flush()
+        return line
