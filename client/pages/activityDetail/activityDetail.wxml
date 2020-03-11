@@ -3,7 +3,7 @@
   <text class="detail-title">{{title}}</text>
   <view class="detail-action-wrapper">
     <view class="detail-action" bindtap="onTapLike">
-      <image class="detail-icon" src="{{isLike ? '/images/heart_selected.png' : '/images/heart.png'}}"></image>喜欢
+      <image class="detail-icon" src="{{isLike ? '/images/heart_selected.png' : '/images/heart.png'}}"></image>赞
     </view>
     <view class="detail-action" bindtap="onTapShare">
       <image class="detail-icon" src="/images/share.png"></image>分享
@@ -11,10 +11,10 @@
   </view>
   <view class="detail-block">
     <view class="detail-progress">
-      <progress border-radius="3" percent="80" />24/30志愿者
+      <progress border-radius="3" percent="80" />{{volunteerCurr}}/{{volunteerTotal}}志愿者
     </view>
     <view class="detail-progress">
-      <progress border-radius="3" percent="50" />10/20视障人士
+      <progress border-radius="3" percent="50" />{{visuallyImpairedCurr}}/{{visuallyImpairedTotal}}视障人士
     </view>
   </view>
   <view class="detail-block">
@@ -26,6 +26,9 @@
   </view>
   <view class="detail-footer">
     <button>感兴趣</button>
-    <button type="primary">我要报名</button>
+    <button type="{{isRegistered ? 'default' : 'primary'}}" bindtap="onTapRegister">
+      <text wx:if="{{isRegistered}}">取消报名</text>
+      <text wx:else>我要报名</text>
+    </button>
   </view>
 </view>

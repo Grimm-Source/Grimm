@@ -124,18 +124,48 @@ const getCarousel = (successCallback, failCallback) => {
     }); 
 }
 
+const getActivityDetail = (activityId, successCallback, failCallback) => {
+  return request({
+    url: `activity_detail?activityId=${activityId}`,
+    success: successCallback,
+    fail: failCallback,
+    method: "GET"
+  });
+}
+
+const toggleLike = (activityId, isLike, successCallback, failCallback) => {
+  return request({
+    url: `activity_detail/interest?activityId=${activityId}&interest=${isLike ? 1 : 0}`,
+    success: successCallback,
+    fail: failCallback,
+    method: "POST"
+  });
+}
+
+const toggleRegister = (activityId, isLike, successCallback, failCallback) => {
+  return request({
+    url: `activity_detail/sign_up?activityId=${activityId}&sign_up=${isLike ? 1 : 0}`,
+    success: successCallback,
+    fail: failCallback,
+    method: "POST"
+  });
+}
+
 module.exports = {
-    getProfile,
-    updateProfile,
-    getVerifyCode,
-    verifyCode,
-    register,
-    getRegisterStatus,
-    getActivityList,
-    getActivity,
-    getRegisteredActivityList,
-    postRegisteredActivityList,
-    removeRegisteredActivityList,
-    getCarousel
+  getProfile,
+  updateProfile,
+  getVerifyCode,
+  verifyCode,
+  register,
+  getRegisterStatus,
+  getActivityList,
+  getActivity,
+  getRegisteredActivityList,
+  postRegisteredActivityList,
+  removeRegisteredActivityList,
+  getCarousel,
+  getActivityDetail,
+  toggleLike,
+  toggleRegister,
 }
   
