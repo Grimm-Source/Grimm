@@ -25,6 +25,15 @@ from server.core import grimm as app
 from server import user_logger
 from server.utils.misc import request_success, request_fail
 from server.core import wxappid, wxsecret
+from server.core.globals import WX_JSAPI_URL
+
+
+def form_api_url(**kwargs):
+    url = WX_JSAPI_URL + '?'
+    for key, value in kwargs.items():
+        url = url + '&' + key + '=' + str(value)
+
+    return url
 
 
 @app.route('/jscode2session', methods=['GET'])
@@ -34,9 +43,10 @@ def wxjscode2session():
         js_code = request.args.get("js_code")
         if js_code is None:
             return request_fail()
-        prefix = 'https://api.weixin.qq.com/sns/jscode2session?appid='
-        suffix = '&grant_type=authorization_code'
-        url = prefix + wxappid + '&secret=' + wxsecret + '&js_code=' + js_code + suffix
+        url = form_api_url(appid=wxappid,
+                           secret=wxsecret,
+                           js_code=js_code,
+                           grant_type='authorization_code')
         user_logger.info('user login, wxapp authorization: %s', url)
         retry = 3
         while retry > 0:

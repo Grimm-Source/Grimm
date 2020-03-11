@@ -103,6 +103,7 @@ TAG_LIST = ['运动', '学习', '分享', '文娱', '保健', '其它']
 EMAIL_CONFIG_FILE = path.join(TOP_DIR, 'config/email.cfg')
 
 # wxapp config file
+WX_JSAPI_URL = 'https://api.weixin.qq.com/sns/jscode2session'
 WX_CONFIG_FILE = path.join(TOP_DIR, 'config/wxapp.cfg')
 
 # log files
