@@ -388,6 +388,7 @@ def activities():
     if request.method == 'GET':
         target_tag_list = request.args.get('tags')
         filter_time = request.args.get('time')
+        weekends = request.args.get('weekends') is not None
         try:
             activities_info = db.expr_query('activity')
         except:
@@ -395,24 +396,30 @@ def activities():
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
         queries = []
         for activity in activities_info:
-            if should_append(activity, target_tag_list, filter_time):
+            if should_append(activity, target_tag_list, filter_time, weekends):
                 query = convert_activity_to_query(activity)
                 queries.append(query)
 
         admin_logger.info('get all activities successfully')
         return json_dump_http_response(queries)
 
-def should_append(activity, target_tag_list, filter_time):
+def should_append(activity, target_tag_list, filter_time, weekends):
+    should_append = False
     if not activity:
         return False
     elif not target_tag_list and not filter_time:
-        return True
+        should_append = True
     elif not filter_time:
-        return should_append_by_tag(activity, target_tag_list)
+        should_append = should_append_by_tag(activity, target_tag_list)
     elif not target_tag_list:
-        return should_append_by_time(activity, filter_time)
+        should_append = should_append_by_time(activity, filter_time)
     else:
-        return should_append_by_tag(activity, target_tag_list) and should_append_by_time(activity, filter_time)
+        should_append = should_append_by_tag(activity, target_tag_list) and should_append_by_time(activity, filter_time)
+    
+    if weekends:
+        return should_append and should_append_by_weekends(activity)
+    else:
+        return should_append
 
 def should_append_by_tag(activity, target_tag_list):
     current_tag_list = activity['tag_ids'].split(',')
@@ -429,24 +436,6 @@ def should_append_by_time(activity, filter_time):
     if filter_end < start or filter_start > end:
         return False
     return True
-
-@app.route('/activities/weekends', methods=['GET'])
-def activities_on_weekends():
-    '''view function to get info of all activities since today'''
-    if request.method == 'GET':
-        try:
-            activities_info = db.expr_query('activity')
-        except:
-            admin_logger.warning('get all activities failed')
-            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
-        queries = []
-        for activity in activities_info:
-            if should_append_by_weekends(activity):
-                query = convert_activity_to_query(activity)
-                queries.append(query)
-
-        admin_logger.info('get all activities successfully')
-        return json_dump_http_response(queries)
 
 def should_append_by_weekends(activity):
     today = datetime.today()
