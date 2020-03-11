@@ -430,6 +430,36 @@ def should_append_by_time(activity, filter_time):
         return False
     return True
 
+@app.route('/activities/weekends', methods=['GET'])
+def activities_on_weekends():
+    '''view function to get info of all activities since today'''
+    if request.method == 'GET':
+        try:
+            activities_info = db.expr_query('activity')
+        except:
+            admin_logger.warning('get all activities failed')
+            return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
+        queries = []
+        for activity in activities_info:
+            if should_append_by_weekends(activity):
+                query = convert_activity_to_query(activity)
+                queries.append(query)
+
+        admin_logger.info('get all activities successfully')
+        return json_dump_http_response(queries)
+
+def should_append_by_weekends(activity):
+    today = datetime.today()
+    end = activity['end_time']
+    if today > end:
+        return False
+    start = activity['start_time'] if activity['start_time'] > today else today
+    while start < end:
+        if start.weekday() >= 5:
+            return True
+        start += timedelta(days=1)
+    return False
+
 @app.route('/admin/<int:admin_id>/update-password', methods=['POST'])
 def admin_update_password(admin_id):
     '''view function for admins to update new passwords'''
