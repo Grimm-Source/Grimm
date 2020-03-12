@@ -1,8 +1,8 @@
-const {request} = require('interceptor.js');
+const { request } = require('interceptor.js');
 
 const getProfile = (successCallback, failCallback) => {
     return request({
-        url: "profile", 
+        url: "profile",
         success: successCallback,
         fail: failCallback
     });
@@ -10,7 +10,7 @@ const getProfile = (successCallback, failCallback) => {
 
 const updateProfile = (userInfo, successCallback, failCallback) => {
     return request({
-        url: "profile", 
+        url: "profile",
         method: "POST",
         data: userInfo,
         success: successCallback,
@@ -19,26 +19,26 @@ const updateProfile = (userInfo, successCallback, failCallback) => {
 }
 
 const getVerifyCode = (tel) => {
-  const requestUrl = "smscode?tel=" + tel
-  return request({
-      url: requestUrl,
-      method: "get"
-  });
+    const requestUrl = "smscode?tel=" + tel
+    return request({
+        url: requestUrl,
+        method: "get"
+    });
 }
 
-const verifyCode = (obj, successCallback, failCallback) =>{
+const verifyCode = (obj, successCallback, failCallback) => {
     return request({
-      url: "smscode",
-      data: obj,
-      method: 'POST',
-      success: successCallback,
-      fail: failCallback,
+        url: "smscode",
+        data: obj,
+        method: 'POST',
+        success: successCallback,
+        fail: failCallback,
     })
 }
 
-const register =  (obj, successCallback, failCallback) => {
+const register = (obj, successCallback, failCallback) => {
     return request({
-        url: "register", 
+        url: "register",
         data: obj,
         success: successCallback,
         fail: failCallback,
@@ -52,7 +52,16 @@ const getRegisterStatus = (code, successCallback, failCallback) => {
         success: successCallback,
         fail: failCallback,
         method: "GET"
-    }); 
+    });
+}
+
+const getActivityTypes = (successCallback, failCallback) => {
+    return request({
+        url: 'tags',
+        success: successCallback,
+        fail: failCallback,
+        method: "GET",
+    })
 }
 
 const getActivityList = (successCallback, failCallback) => {
@@ -61,15 +70,25 @@ const getActivityList = (successCallback, failCallback) => {
         success: successCallback,
         fail: failCallback,
         method: "GET"
-    }); 
+    });
 }
-const getActivity = (activityId, successCallback, failCallback) => {
+
+const getFilteredActivities = (filteredParams, successCallback, failCallback) => {
     return request({
-        url: 'activity/'+ activityId,
+        url: "activities?" + filteredParams,
         success: successCallback,
         fail: failCallback,
         method: "GET"
-    }); 
+    });
+}
+
+const getActivity = (activityId, successCallback, failCallback) => {
+    return request({
+        url: 'activity/' + activityId,
+        success: successCallback,
+        fail: failCallback,
+        method: "GET"
+    });
 }
 
 const getRegisteredActivityList = (idList, successCallback, failCallback) => {
@@ -78,7 +97,7 @@ const getRegisteredActivityList = (idList, successCallback, failCallback) => {
         success: successCallback,
         fail: failCallback,
         method: "GET"
-    }); 
+    });
 }
 
 const postRegisteredActivityList = (obj, successCallback, failCallback) => {
@@ -88,7 +107,7 @@ const postRegisteredActivityList = (obj, successCallback, failCallback) => {
         fail: failCallback,
         method: "POST",
         data: obj
-    }); 
+    });
 }
 
 const removeRegisteredActivityList = (idList, successCallback, failCallback) => {
@@ -97,16 +116,16 @@ const removeRegisteredActivityList = (idList, successCallback, failCallback) => 
         success: successCallback,
         fail: failCallback,
         method: "DELETE"
-    }); 
+    });
 }
 
 const arrToUrl = (baseUrl, arr, key) => {
-    if(!arr || arr.length < 1){
+    if (!arr || arr.length < 1) {
         return baseUrl;
     }
     let paramUrl = "";
-    for(let i = 0; i < arr.length;i++){
-        if(i === arr.length - 1){
+    for (let i = 0; i < arr.length; i++) {
+        if (i === arr.length - 1) {
             paramUrl += `${arr[i]}`;
             break;
         }
@@ -121,51 +140,52 @@ const getCarousel = (successCallback, failCallback) => {
         success: successCallback,
         fail: failCallback,
         method: "GET"
-    }); 
+    });
 }
 
 const getActivityDetail = (activityId, successCallback, failCallback) => {
-  return request({
-    url: `activity_detail?activityId=${activityId}`,
-    success: successCallback,
-    fail: failCallback,
-    method: "GET"
-  });
+    return request({
+        url: `activity_detail?activityId=${activityId}`,
+        success: successCallback,
+        fail: failCallback,
+        method: "GET"
+    });
 }
 
 const toggleLike = (activityId, isLike, successCallback, failCallback) => {
-  return request({
-    url: `activity_detail/interest?activityId=${activityId}&interest=${isLike ? 1 : 0}`,
-    success: successCallback,
-    fail: failCallback,
-    method: "POST"
-  });
+    return request({
+        url: `activity_detail/interest?activityId=${activityId}&interest=${isLike ? 1 : 0}`,
+        success: successCallback,
+        fail: failCallback,
+        method: "POST"
+    });
 }
 
 const toggleRegister = (activityId, isLike, successCallback, failCallback) => {
-  return request({
-    url: `activity_detail/sign_up?activityId=${activityId}&sign_up=${isLike ? 1 : 0}`,
-    success: successCallback,
-    fail: failCallback,
-    method: "POST"
-  });
+    return request({
+        url: `activity_detail/sign_up?activityId=${activityId}&sign_up=${isLike ? 1 : 0}`,
+        success: successCallback,
+        fail: failCallback,
+        method: "POST"
+    });
 }
 
 module.exports = {
-  getProfile,
-  updateProfile,
-  getVerifyCode,
-  verifyCode,
-  register,
-  getRegisterStatus,
-  getActivityList,
-  getActivity,
-  getRegisteredActivityList,
-  postRegisteredActivityList,
-  removeRegisteredActivityList,
-  getCarousel,
-  getActivityDetail,
-  toggleLike,
-  toggleRegister,
+    getProfile,
+    updateProfile,
+    getVerifyCode,
+    verifyCode,
+    register,
+    getRegisterStatus,
+    getActivityTypes,
+    getActivityList,
+    getFilteredActivities,
+    getActivity,
+    getRegisteredActivityList,
+    postRegisteredActivityList,
+    removeRegisteredActivityList,
+    getCarousel,
+    getActivityDetail,
+    toggleLike,
+    toggleRegister,
 }
-  

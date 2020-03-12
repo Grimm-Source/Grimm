@@ -1,44 +1,44 @@
 /* components/activitiesPicker/activitiesPicker.wxss */
 
-.myactivities-select {
-  display: inline-block;
-  margin: 0 12px;
+.category{
+  display: flex;
+  justify-content: space-between;
+}
+
+.time {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 16px;
 }
 
 .category-all,
 .time-all {
-  position: relative;
   display: inline-block;
   font-size: 17px;
   font-weight: bold;
-  padding-left: 20px;
-  padding-right: 20px;
-  text-align: center;
-  height: auto;
+  margin-left: 14px;
 }
 
 .category-picker,
 .time-picker {
   display: inline-block;
-  position: relative;
+  /* position: relative; */
   width: 80%;
   box-sizing: border-box;
-  background:white;
+  background:#113E6F;
   white-space: nowrap;
-  padding-bottom: 10rpx;
+  padding-left: 14px;
 }
 
 .category-type,
 .time-selector {
   display: inline-block;
-  text-align: center;
   font-size: 15px;
-  box-sizing: border-box;
-  margin-right: 20px;
+  margin-right: 14px;
 }
 
 .category-picker .selected,
 .time-picker .selected{
-  color: #60D5EC;
+  color: #4FF2BE;
   scale: 1.15;
 }

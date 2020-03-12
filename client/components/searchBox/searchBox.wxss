@@ -7,11 +7,10 @@
   align-items: center;
   border-radius: 30rpx;
   background: #F5F5F5;
-  padding-left: 32rpx;
 }
 
 .searchbar icon {
-  margin-right: 12px;
+  margin: 0 12px;
 }
 
 .searchbar input {

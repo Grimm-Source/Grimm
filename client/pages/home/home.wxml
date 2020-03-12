@@ -1,8 +1,14 @@
 <view class="home">
   <tipsSwiper class="home-tips-siwper"></tipsSwiper>
-  <searchBox class="activities-searchbox"></searchBox>
-
-  <activitiesPicker class="activities-picker"></activitiesPicker>
-  <activitiesList class="filtered-activities-list" activitiesProp="{{activities}}"></activitiesList>
-
+  <view class="home-header">
+    <view class="home-person" bindtap="showPersonInfo">
+      <image src="../../images/avatar.jpg"></image>
+    </view>
+    <searchBox class="activities-searchbox"></searchBox>
+    <view class="home-scan" bindtap="scanCode">
+      <image src="../../images/scan.png"></image>
+    </view>
+  </view>
+  <activitiesList class="filtered-activities-list"></activitiesList>
+  <button bindtap="toggleTabbar">{{showTabbarText}} Tabbar</button>
 </view>

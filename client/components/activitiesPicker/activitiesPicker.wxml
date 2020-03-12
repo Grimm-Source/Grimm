@@ -1,26 +1,21 @@
 <!--components/activitiesPicker/activitiesPicker.wxml-->
 
-<!-- <view class='myactivities-tab'>
-    <view class="myactivities-select {{TypeIndex == 0 ?'active':''}}" bindtap="selectActivitiesType" data-index="0">所有活动</view>
-    <view class="myactivities-select {{TypeIndex == 1 ?'active':''}}" bindtap="selectActivitiesType" data-index="1">我的活动</view>
-</view> -->
-
 <view class="category">
-  <view class="category-all">活动</view>
+  <view class="category-all">全部活动</view>
   <scroll-view scroll-x="true" class="category-picker">
-      <block wx:for="{{activityCategories}}" wx:key="id">
-          <view id="{{item.type}}" class="category-type {{activeType == item.type ? 'selected' : ''}}" bindtap="tapCategory">
-              {{item.categoryName}}
+      <block wx:for="{{categories}}" wx:key="id">
+          <view id="{{item.tag_id}}" class="category-type {{activeCategory == item.tag_id ? 'selected' : ''}}" bindtap="tapCategory">
+              {{item.tag_name}}
           </view>
       </block>
   </scroll-view>
 </view>
 
 <view class="time">
-  <view class="time-all">全部</view>
+  <view class="time-all">时间</view>
   <scroll-view scroll-x="true" class="time-picker">
       <block wx:for="{{activityTimes}}" wx:key="id">
-          <view id="{{item.time}}" class="time-selector {{activeTime == item.time ?'selected':''}}" bindtap="tapTime">
+          <view id="{{item.time_id}}" class="time-selector {{activeTime == item.time_id ?'selected':''}}" bindtap="tapTime">
               {{item.description}}
           </view>
       </block>
