@@ -1,7 +1,7 @@
 /* components/tipsSwiper/tipsSwiper.wxss */
 .swiper-container {
-  margin: 0 24rpx;
   border-radius: 6px;
+  width: 100%;
 }
 
 swiper-item view{
