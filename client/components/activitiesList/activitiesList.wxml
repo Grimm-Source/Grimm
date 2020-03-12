@@ -1,6 +1,6 @@
 <!--components/activitiesList/activitiesList.wxml-->
 <view>
-  <activitiesPicker class="activities-picker" categories="{{activityCategories}}" bind:myEvent="onFilterParamChange"></activitiesPicker>
+  <activitiesPicker class="activities-picker" categories="{{activityCategories}}" bind:filterChange="onFilterParamChange"></activitiesPicker>
   <scroll-view class="activities-list" scroll-y="true" bindrefreshpulling="onPulling">
     <block wx:for="{{activitiesProp}}" wx:key="id">
       <view class="activity-item" id="{{item.adminId}}">
