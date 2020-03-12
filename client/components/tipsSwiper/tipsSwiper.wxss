@@ -4,11 +4,10 @@
   width: 100%;
 }
 
-swiper-item view{
+.swiper-container view, .swiper-container view image{
   width:100%;
   height:100%;
 }
-
 
 .swiper-container .item-place-holder{
   background: #f0f8ff;

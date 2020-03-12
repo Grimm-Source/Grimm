@@ -1,7 +1,7 @@
 <!--components/tipsSwiper/tipsSwiper.wxml-->
 <swiper aria-hidden="true" class="swiper-container" indicator-dots="true" autoplay="true">
   <block wx:for="{{swiperItems}}" wk:key="{{item.url}}">
-    <swiper-item class="swiper-item-{{item.title}}}">
+    <swiper-item>
       <view bindtap="onTapItem" data-param="{{item}}">
         <image wx:if="{{item.photo_url}}" class="swiper-item-preview" src="{{item.photo_url}}"/>
         <view  wx:if="{{!item.photo_url}}" class="item-place-holder swiper-item-preview" src="{{item.photo_url}}"/>
