@@ -388,7 +388,6 @@ def activities():
     if request.method == 'GET':
         target_tag_list = request.args.get('tags')
         filter_time = request.args.get('time')
-        weekends = request.args.get('weekends') is not None
         try:
             activities_info = db.expr_query('activity')
         except:
@@ -396,30 +395,25 @@ def activities():
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
         queries = []
         for activity in activities_info:
-            if should_append(activity, target_tag_list, filter_time, weekends):
+            if should_append(activity, target_tag_list, filter_time):
                 query = convert_activity_to_query(activity)
                 queries.append(query)
 
         admin_logger.info('get all activities successfully')
         return json_dump_http_response(queries)
 
-def should_append(activity, target_tag_list, filter_time, weekends):
+def should_append(activity, target_tag_list, filter_time):
     should_append = False
     if not activity:
         return False
     elif not target_tag_list and not filter_time:
-        should_append = True
+        return True
     elif not filter_time:
-        should_append = should_append_by_tag(activity, target_tag_list)
+        return should_append_by_tag(activity, target_tag_list)
     elif not target_tag_list:
-        should_append = should_append_by_time(activity, filter_time)
+        return should_append_by_time(activity, filter_time)
     else:
-        should_append = should_append_by_tag(activity, target_tag_list) and should_append_by_time(activity, filter_time)
-    
-    if weekends:
-        return should_append and should_append_by_weekends(activity)
-    else:
-        return should_append
+        return should_append_by_tag(activity, target_tag_list) and should_append_by_time(activity, filter_time)
 
 def should_append_by_tag(activity, target_tag_list):
     current_tag_list = activity['tag_ids'].split(',')
@@ -429,6 +423,14 @@ def should_append_by_tag(activity, target_tag_list):
     return False
 
 def should_append_by_time(activity, filter_time):
+    if filter_time == 'weekends':
+        return should_append_by_weekends(activity)
+    elif filter_time == 'recents':
+        return should_append_by_recents(activity)
+    else:
+        return should_append_by_time_span(activity, filter_time)
+
+def should_append_by_time_span(activity, filter_time):
     filter_start = datetime.strptime(filter_time.split(' - ')[0], '%Y-%m-%d')
     filter_end = datetime.strptime(filter_time.split(' - ')[1], '%Y-%m-%d') + timedelta(days=1)
     start = activity['start_time']
@@ -448,6 +450,15 @@ def should_append_by_weekends(activity):
             return True
         start += timedelta(days=1)
     return False
+
+def should_append_by_recents(activity):
+    filter_start = datetime.today()
+    filter_end = filter_start + timedelta(days=7)
+    start = activity['start_time']
+    end = activity['end_time']
+    if filter_end < start or filter_start > end:
+        return False
+    return True
 
 @app.route('/admin/<int:admin_id>/update-password', methods=['POST'])
 def admin_update_password(admin_id):
