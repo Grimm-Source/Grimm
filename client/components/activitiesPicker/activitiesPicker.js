@@ -1,53 +1,69 @@
 // components/activitiesPicker/activitiesPicker.js
+const { getActivityList, getFilteredActivities, getActivityTypes} = require('../../utils/requestUtil.js');
+
 Component({
   /**
    * 组件的属性列表
    */
   properties: {
-
+    categories: {
+      type: Array,
+      value: [],
+    }
   },
 
   /**
    * 组件的初始数据
    */
   data: {
-    activityCategories: [
-      { 'type': '0', 'categoryName': '全部' },
-      { 'type': '1', 'categoryName': '学习' },
-      { 'type': '2', 'categoryName': '分享' },
-      { 'type': '3', 'categoryName': '娱乐' },
-      { 'type': '4', 'categoryName': '运动' },
-      { 'type': '5', 'categoryName': '心理疏导' },
-      { 'type': '6', 'categoryName': '其他活动' },],
     activityTimes: [
-      { 'time': '0', 'description': '全部' },
-      { 'time': '1', 'description': '最新' },
-      { 'time': '2', 'description': '周末' },
-      { 'time': '3', 'description': '最近一周' },
-      { 'time': '4', 'description': '选择日期' },],
-    activeType: 0,
-    activeTime: 0,
+      { 'time_id': -1, 'description': '全部'},
+      { 'time_id': 0, 'description': '最新' },
+      { 'time_id': 1, 'description': '周末' },
+      { 'time_id': 2, 'description': '最近一周' },
+      { 'time_id': 3, 'description': '选择日期' },],
+    activeCategory: -1,
+    activeTime: -1,
+  },
+
+  pageLifetimes: {
+    show: function () {
+      getActivityTypes((res) => {
+        this.setData({ categories: [{ tag_id: -1, tag_name: "全部" }].concat(res) })
+      });
+
+    },
   },
 
   /**
    * 组件的方法列表
    */
   methods: {
+    _initTimeFilter: function() {
+      for (let index = 0; index < this.data.activeTime.length; index++) {
+
+      }
+    },
+
+    filterParamsChange: function(activeCategory, activeTime) {
+      this.triggerEvent('myEvent', {
+        category: this.data.activeCategory,
+        time: this.data.activeTime,
+      }, {})
+    },
+
     tapCategory: function (event) {
       this.setData({
-        activeType: event.currentTarget.id,
-      })
-
+        activeCategory: event.currentTarget.id,
+      });
+      this.filterParamsChange();
     },
 
     tapTime: function (event) {
       this.setData({
         activeTime: event.currentTarget.id,
-      })
+      });
+      this.filterParamsChange();
     },
-
-    requestFilteredActivities: function() {
-      // get activities by type and time
-    }
   },
 })

@@ -55,6 +55,15 @@ const getRegisterStatus = (code, successCallback, failCallback) => {
     }); 
 }
 
+const getActivityTypes = (successCallback, failCallback) => {
+  return request({
+    url: 'tags',
+    success: successCallback,
+    fail: failCallback,
+    method: "GET",
+  })
+}
+
 const getActivityList = (successCallback, failCallback) => {
     return request({
         url: 'activities',
@@ -63,6 +72,16 @@ const getActivityList = (successCallback, failCallback) => {
         method: "GET"
     }); 
 }
+
+const getFilteredActivities = (filteredParams, successCallback, failCallback) => {
+  return request({
+    url: "activities?" + filteredParams,
+    success: successCallback,
+    fail: failCallback,
+    method: "GET"
+  });
+}
+
 const getActivity = (activityId, successCallback, failCallback) => {
     return request({
         url: 'activity/'+ activityId,
@@ -131,7 +150,9 @@ module.exports = {
     verifyCode,
     register,
     getRegisterStatus,
+    getActivityTypes,
     getActivityList,
+    getFilteredActivities,
     getActivity,
     getRegisteredActivityList,
     postRegisteredActivityList,

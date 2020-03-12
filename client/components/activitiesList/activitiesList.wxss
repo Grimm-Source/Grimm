@@ -2,59 +2,65 @@
 
 .activity-item {
   margin: 16rpx 24rpx 32rpx 24rpx;
-  border-radius: 12rpx;
+  border-radius: 9px;
   border: solid gray 0rpx;
   box-shadow:  0 10rpx 20rpx rgba(0,0,0,0.3);
 }
 
 .activity-detail { 
   width: 100%;
-  height: 300rpx;
-  border-radius: 12rpx 12rpx 0rpx 0rpx;
+  height: 100px;
+  border-radius: 9px 9px 0px 0px;
 }
 
 .activity-image {
   width: 100%;
-  height: 300rpx;
-  border-radius: 12rpx 12rpx 0 0;
+  height: 100px;
+  border-radius: 9px 9px 0 0;
 }
 
 .activity-title {
   display:block;
   position: relative;
-  top: -160rpx;
-  font-size: 21px;
+  top: -70px;
+  font-size: 22px;
   color: whitesmoke;
-  padding: 0rpx 12rpx ;
+  padding: 0rpx 20px ;
 }
 
 .activity-description {
   display:block;
   position: relative;
-  font-size: 15px;
-  top: -160rpx;
+  font-size: 14px;
+  top: -70px;
   color: whitesmoke;
-  padding: 0rpx 12rpx 20rpx 12rpx ;
+  padding: 0rpx 20px 20rpx 20px ;
 }
 
 .activity-time-location {
   border-bottom: solid #d3d3d3 2rpx;
-  padding: 20rpx 12rpx ;
+  padding: 10px 20px;
+  background-color: #FFFFFF;
+  color: #000000;
 }
 
 .activity-time, .activity-location {
   display: block;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .activity-action {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: 11px;
+  height: 30px;
+  background-color: #FFFFFF;
+  color: #000000;
+  border-radius: 0 0 9px 9px;
 }
 
 .activity-people {
-  padding: 20rpx 12rpx ;
+  padding: 6px 20px ;
 }
 
 .activity-button image {

@@ -1,28 +1,31 @@
 <!--components/activitiesList/activitiesList.wxml-->
-<scroll-view class="activities-list" scroll-y="true" bindrefreshpulling="onPulling">
-  <block wx:for="{{activitiesProp}}" wx:key="id">
-    <view class="activity-item" id="{{item.adminId}}">
-      <view class="activity-detail" bindtap="onTapActivity">
-        <image class="activity-image" src="../../images/banner.jpg"></image>
-        <text class="activity-title">{{item.title}}</text>
-        <text class="activity-description">{{item.content}}</text>
-      </view>
-      <view class="activity-time-location">
-        <text class="activity-time">时间: {{item.start_time}} - {{item.end_time}}</text>
-        <text class="activity-location">地点: {{item.location}}</text>
-      </view>
-      <view class="activity-action">
-        <view class="activity-people">
-          <text>{{item.joined}}人参加 | {{item.inserted}}人感兴趣</text>
+<view>
+  <activitiesPicker class="activities-picker" categories="{{activityCategories}}" bind:myEvent="onFilterParamChange"></activitiesPicker>
+  <scroll-view class="activities-list" scroll-y="true" bindrefreshpulling="onPulling">
+    <block wx:for="{{activitiesProp}}" wx:key="id">
+      <view class="activity-item" id="{{item.adminId}}">
+        <view class="activity-detail" bindtap="onTapActivity">
+          <image class="activity-image" src="../../images/banner.jpg"></image>
+          <text class="activity-title">{{item.title}}</text>
+          <text class="activity-description">{{item.content}}</text>
         </view>
-        <view class="activity-button">
-          <image class="activity_like" src=""></image>
-          <image class="activity_share" src=""></image>
+        <view class="activity-time-location">
+          <text class="activity-time">时间: {{item.schedule}}</text>
+          <text class="activity-location">地点: {{item.location}}</text>
         </view>
-      </view>
+        <view class="activity-action">
+          <view class="activity-people">
+            <text>{{item.joined?item.joined:0}}人参加 | {{item.inserted?item.inserted:0}}人感兴趣</text>
+          </view>
+          <view class="activity-button">
+            <image class="activity_like" src=""></image>
+            <image class="activity_share" src=""></image>
+          </view>
+        </view>
 
-    </view>
-  </block>
-</scroll-view>
+      </view>
+    </block>
+  </scroll-view>
+</view>
 
 
