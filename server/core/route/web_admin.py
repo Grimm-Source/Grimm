@@ -403,6 +403,7 @@ def activities():
         return json_dump_http_response(queries)
 
 def should_append(activity, target_tag_list, filter_time):
+    should_append = False
     if not activity:
         return False
     elif not target_tag_list and not filter_time:
@@ -422,8 +423,37 @@ def should_append_by_tag(activity, target_tag_list):
     return False
 
 def should_append_by_time(activity, filter_time):
+    if filter_time == 'weekends':
+        return should_append_by_weekends(activity)
+    elif filter_time == 'recents':
+        return should_append_by_recents(activity)
+    else:
+        return should_append_by_time_span(activity, filter_time)
+
+def should_append_by_time_span(activity, filter_time):
     filter_start = datetime.strptime(filter_time.split(' - ')[0], '%Y-%m-%d')
     filter_end = datetime.strptime(filter_time.split(' - ')[1], '%Y-%m-%d') + timedelta(days=1)
+    start = activity['start_time']
+    end = activity['end_time']
+    if filter_end < start or filter_start > end:
+        return False
+    return True
+
+def should_append_by_weekends(activity):
+    today = datetime.today()
+    end = activity['end_time']
+    if today > end:
+        return False
+    start = activity['start_time'] if activity['start_time'] > today else today
+    while start < end:
+        if start.weekday() >= 5:
+            return True
+        start += timedelta(days=1)
+    return False
+
+def should_append_by_recents(activity):
+    filter_start = datetime.today()
+    filter_end = filter_start + timedelta(days=7)
     start = activity['start_time']
     end = activity['end_time']
     if filter_end < start or filter_start > end:
