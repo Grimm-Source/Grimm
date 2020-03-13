@@ -162,21 +162,6 @@ create table pickups
 INSERT INTO pickups (activity_id, offer, need, time, location)
 VALUES (1, '0', '1', NOW(), "上海市某个地方");
 
-/* activity tag table */
-CREATE table activity_tag
-(
-    tag_id                      BIGINT              NOT NULL AUTO_INCREMENT,
-    tag_name                    VARCHAR(60)         NOT NULL,
-
-    PRIMARY KEY(tag_id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-INSERT INTO activity_tag (tag_name) VALUES ("运动");
-INSERT INTO activity_tag (tag_name) VALUES ("学习");
-INSERT INTO activity_tag (tag_name) VALUES ("分享");
-INSERT INTO activity_tag (tag_name) VALUES ("文娱");
-INSERT INTO activity_tag (tag_name) VALUES ("保健");
-INSERT INTO activity_tag (tag_name) VALUES ("其它");
-
 create table activity_participants
 (
     activity_id                BIGINT,
