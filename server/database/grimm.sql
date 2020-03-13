@@ -184,6 +184,7 @@ create table activity_participants
     interested                 TINYINT             DEFAULT 0,
     share                      INT                 DEFAULT 0,
     sign_up                    TINYINT             DEFAULT 0,
+    thumbs_up                  TINYINT             DEFAULT 0,
     
     FOREIGN KEY (activity_id) REFERENCES activity(activity_id)
     ON DELETE cascade
@@ -195,5 +196,5 @@ create table activity_participants
     PRIMARY KEY(activity_id, participants_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO activity_participants(activity_id, participants_id, interested, share, sign_up)
-VALUES(1, 1, 0, 0, 0)
+INSERT INTO activity_participants(activity_id, participants_id, interested, share, sign_up, thumbs_up)
+VALUES(1, '1', 0, 0, 0, 0)

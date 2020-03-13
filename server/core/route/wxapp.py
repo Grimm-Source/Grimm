@@ -367,7 +367,7 @@ def registeredActivities():
 def get_activity():
     '''view function for the activity_detail'''
     if request.method == 'GET':
-        openid = int(request.headers.get('Authorization'))
+        openid = request.headers.get('Authorization')
         activity_id = int(request.args.get('activityId'))
         if db.exist_row('activity', activity_id=activity_id):
             feedback = {'status': 'success'}
@@ -429,7 +429,7 @@ def get_activity():
 def mark_activity():
     '''mark activity as Insterest'''
     if request.method == 'POST':
-        openid = int(request.headers.get('Authorization'))
+        openid = request.headers.get('Authorization')
         activity_id = request.args.get('activityId')
         interest = request.args.get('interest')
         feedback = {'status': 'success'}
@@ -443,11 +443,29 @@ def mark_activity():
             
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
     
+@app.route('/activity_detail/thumbs_up', methods = ['POST'])
+def thumbsup_activity():
+    '''mark activity as thumbs_up'''
+    if request.method == 'POST':
+        openid = request.headers.get('Authorization')
+        activity_id = request.args.get('activityId')
+        thumbs_up = request.args.get('thumbs_up')
+        feedback = {'status': 'success'}
+        if db.exist_row('activity_participants', activity_id = activity_id, participants_id=openid):
+            try:
+                rc = db.expr_update(tbl = 'activity_participants', vals = {'thumbs_up':thumbs_up}, activity_id = activity_id, participants_id=openid)
+                return json_dump_http_response(feedback)
+            except Exception as e:
+                user_logger.error('update push_status fail, %s', e)
+                user_logger.info('%s: complete user registration success', openid)
+            
+        return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
+    
 @app.route('/activity_detail/sign_up', methods = ['POST'])
 def enroll_activity():
     '''sign_up activity'''
     if request.method == 'POST':
-        openid = int(request.headers.get('Authorization'))
+        openid = request.headers.get('Authorization')
         activity_id = request.args.get('activityId')
         sign_up = request.args.get('sign_up')
         feedback = {'status': 'success'}
@@ -466,7 +484,7 @@ def enroll_activity():
 def share_activity():
     '''share activity'''
     if request.method == 'POST':
-        openid = int(request.headers.get('Authorization'))
+        openid = request.headers.get('Authorization')
         activity_id = request.args.get('activityId')
         is_share = int(request.args.get('share'))
         if db.exist_row('activity_participants', activity_id = activity_id, participants_id=openid):
