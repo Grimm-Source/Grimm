@@ -387,48 +387,47 @@ def activities():
     '''view function to get all activities info'''
     if request.method == 'GET':
         target_tag_list = request.args.get('tags')
+        if not target_tag_list or len(target_tag_list) == 0:
+            target_tag_list = 'all'
         filter_time = request.args.get('time')
+        if not filter_time or len(filter_time) == 0:
+            filter_time = 'all'
         try:
             activities_info = db.expr_query('activity')
         except:
             admin_logger.warning('get all activities failed')
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
-        queries = []
-        for activity in activities_info:
-            if should_append(activity, target_tag_list, filter_time):
-                query = convert_activity_to_query(activity)
-                queries.append(query)
+        sorted_activities_info = sort_by_time(activities_info, filter_time)
+        queries = [convert_activity_to_query(activity) for activity in sorted_activities_info if should_append_by_tag(activity, target_tag_list)]
 
         admin_logger.info('get all activities successfully')
         return json_dump_http_response(queries)
 
-def should_append(activity, target_tag_list, filter_time):
-    should_append = False
-    if not activity:
-        return False
-    elif not target_tag_list and not filter_time:
-        return True
-    elif not filter_time:
-        return should_append_by_tag(activity, target_tag_list)
-    elif not target_tag_list:
-        return should_append_by_time(activity, filter_time)
+def sort_by_time(activities_info, filter_time):
+    if filter_time == 'all':
+        return reversed([activity for activity in activities_info if datetime.today() - timedelta(days=365) < activity['end_time']])
+    elif filter_time == 'latest':
+        return reversed([activity for activity in activities_info if datetime.today() < activity['end_time']])
+    elif filter_time == 'weekends':
+        res_info = [activity for activity in activities_info if should_append_by_weekends(activity)]
+        return sorted(res_info, key=lambda activity: activity['start_time'])
+    elif filter_time == 'recents':
+        res_info = [activity for activity in activities_info if should_append_by_recents(activity)]
+        return sorted(res_info, key=lambda activity: activity['start_time'])
     else:
-        return should_append_by_tag(activity, target_tag_list) and should_append_by_time(activity, filter_time)
+        res_info = [activity for activity in activities_info if should_append_by_time_span(activity, filter_time)]
+        return sorted(res_info, key=lambda activity: activity['start_time'])
 
 def should_append_by_tag(activity, target_tag_list):
+    if not activity:
+        return False
+    if target_tag_list == 'all':
+        return True
     current_tag_list = activity['tag_ids'].split(',')
     for target_tag_id in target_tag_list.split(','):
         if target_tag_id in current_tag_list:
             return True
     return False
-
-def should_append_by_time(activity, filter_time):
-    if filter_time == 'weekends':
-        return should_append_by_weekends(activity)
-    elif filter_time == 'recents':
-        return should_append_by_recents(activity)
-    else:
-        return should_append_by_time_span(activity, filter_time)
 
 def should_append_by_time_span(activity, filter_time):
     filter_start = datetime.strptime(filter_time.split(' - ')[0], '%Y-%m-%d')
