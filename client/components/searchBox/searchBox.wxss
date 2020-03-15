@@ -5,22 +5,26 @@
   height: 60rpx;
   display: flex;
   align-items: center;
-  border-radius: 30rpx;
+  border-radius: 64rpx;
   background: #F5F5F5;
+  border: 2px solid #00BD7C;
 }
 
 .searchbar icon {
-  margin: 0 12px;
+  left: 298rpx;
+  position: absolute;
+  color: rgba(0, 0, 0, 0.3);
 }
 
 .searchbar input {
-  font-size: 28rpx;
   width:100%;
-  margin-right: 32rpx;
+  font-size: 26rpx;
+  position: absolute;
+  left: 330rpx;
 }
 
-.active{
+/* .active{
     color:#405F80;
     border-bottom: 5rpx solid #405F80;
     transform: scale(1.2);
-}
+} */

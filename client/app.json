@@ -9,7 +9,8 @@
     "pages/activityDetail/activityDetail",
     "pages/application/application",
     "pages/tips/tips",
-    "pages/myActivity/myActivity"
+    "pages/myActivity/myActivity",
+    "pages/search/search"
   ],
   "window": {
     "backgroundTextStyle": "light",
