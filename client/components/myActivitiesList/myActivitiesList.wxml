@@ -11,7 +11,7 @@
         <!-- </view> -->
         
       </view>
-      <button class="myActivity-state {{item.state}}">{{item.statestring}}</button>
+      <!-- <button class="myActivity-state {{item.state}}">{{item.statestring}}</button> -->
     </view>
   </block>
 </scroll-view>
