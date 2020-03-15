@@ -8,6 +8,7 @@ sudo apt --assume-yes install libssl-dev
 sudo apt --assume-yes install libffi-dev
 sudo apt --assume-yes install python3-setuptools
 sudo apt --assume-yes install nginx
+sudo add-apt-repository ppa:certbot/certbot
 sudo apt --assume-yes install python-certbot-nginx
 sudo apt --assume-yes install openssl
 
