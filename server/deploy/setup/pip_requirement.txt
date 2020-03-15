@@ -1,4 +1,5 @@
 wheel
+simplejson==3.17.0
 aliyun-python-sdk-core-v3==2.13.9
 aliyun-python-sdk-dysmsapi==1.0.0
 asn1crypto==0.24.0
