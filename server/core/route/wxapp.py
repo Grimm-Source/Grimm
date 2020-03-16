@@ -529,32 +529,35 @@ def get_favorite_activities():
         target_filter = request.args.get('filter')
         if not target_filter or len(target_filter) == 0:
             target_filter = 'all'
+        favorite_activities_info = []
+        registered_activities_info = []
         try:
             favorite_activities_info = db.expr_query(['activity_participants', 'activity'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
-                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.content', 'activity.others',\
-                                              'activity.tag_ids'], \
+                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.others', 'activity.tag_ids'], \
                                              clauses='activity_participants.participants_id="{}" and activity_participants.activity_id = activity.activity_id and activity_participants.interested = 1'.format(openid))
             registered_activities_info = db.expr_query(['registerActivities', 'activity'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
-                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.content', 'activity.others', 'activity.tag_ids'], \
+                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.others', 'activity.tag_ids'], \
                                              clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id '.format(openid))
         except Exception as e:
             print('*******************albertdbg*****************',e)
         
         target_activities_info = []
         if target_filter == 'favorite':
-            target_activities_info = favorite_activities_info
+            for item in favorite_activities_info:
+                target_activities_info.append(item)
         elif target_filter == 'registered':
-            target_activities_info = registered_activities_info
+            for item in registered_activities_info:
+                target_activities_info.append(item)
         elif target_filter == 'all':
             id_set = []
             for item in favorite_activities_info:
                 target_activities_info.append(item)
                 id_set.append(item['activity.activity_id'])
-            for item in favorite_activities_info:
+            for item in registered_activities_info:
                 if item['activity.activity_id'] not in id_set:
                     target_activities_info.append(item)
                     id_set.append(item['activity.activity_id'])
-        target_activities_info.sort(key = lambda item: item['activity.activity_id'], reversed = True)
+        target_activities_info.sort(key = lambda item: item['activity.activity_id'], reverse = True)
         target_activities_info = [item for item in target_activities_info if datetime.today() - timedelta(days=365) < item['activity.end_time']]
 
         activities = []
@@ -569,7 +572,6 @@ def get_favorite_activities():
             activity['end_time'] = end.strftime('%Y-%m-%d %H:%M:%S')
             activity['duration'] = calc_duration(start, end)
             activity['content'] = item['activity.content']
-            activity['location'] = item['activity.location']
             activity['notice'] = item['activity.notice']
             activity['others'] = item['activity.others']
             activity['tags'] = tag_converter.convert_idstring_to_tagstring(item['activity.tag_ids'])

@@ -130,7 +130,7 @@ create table registerActivities
 (
     openid                      CHAR(28)            NOT NULL,
     activity_id                 BIGINT              NOT NULL,
-    phone                       VARCHAR(16)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL UNIQUE,
+    phone                       VARCHAR(16)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
     address                     VARCHAR(80)         NOT NULL,
     needpickup                  TINYINT             NOT NULL        DEFAULT 0,
     topickup                    TINYINT             NOT NULL        DEFAULT 0,
