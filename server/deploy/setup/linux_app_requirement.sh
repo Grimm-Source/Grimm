@@ -19,5 +19,6 @@ sudo apt --assume-yes install openssl
 # mysql server
 sudo apt --assume-yes install mysql-server
 sudo apt --assume-yes autoremove
+sudo apt --assume-yes autoclean
 sudo mysql_secure_installation
 
