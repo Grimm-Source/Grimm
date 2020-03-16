@@ -1,8 +1,10 @@
 /* pages/search/search.wxss */
-.searchPage{
+Page{
     background-color: #113E6F;
+}
+
+.searchPage{
     padding: 32rpx 32rpx;
-    height: 100%;
     font-size: 26rpx;
 }
 
@@ -23,6 +25,7 @@
   
   .searchBox .inputBox{
     display: inline-flex;
+    width: 100%;
   }
 
   .searchBox .hot-word-input{
@@ -43,6 +46,7 @@
 
   .searchBox input {
     margin: 0 32rpx;
+    width: 100%;
   }
 
   .searchPage .hotWords{

@@ -8,6 +8,7 @@ Page({
     searchValue: null,
     selelctedVal: '',
     placeHolder: '关键词搜索',
+    focus: true,
     wordList: [
       {
         value: '预设词1'
@@ -23,7 +24,8 @@ Page({
       {
         value: '预设词5'
       }
-    ]
+    ],
+    searchedActivities: null
   },
 
   /**
@@ -87,7 +89,8 @@ Page({
     
     this.setData({
       selelctedVal: searchWord,
-      placeHolder: ''
+      placeHolder: '',
+      focus: true
     })
   },
 
@@ -95,6 +98,57 @@ Page({
     this.setData({
       selelctedVal: '',
       placeHolder: '关键词搜索'
+    })
+  },
+
+  searchActivities: function(e){
+    const keyCode = e.detail.keyCode;
+    if(keyCode === 8){
+      this.cancelSelect();
+    }
+  },
+
+  endsearchActivities: function(e){
+    const searchVal = e.detail.value;
+    const arr = [{ 'id': '0', 'time': '2020-01-01 13:30-14:30', 'location': '世纪公园', 'title': '世纪公园新年走走走陪走活动走走走走活动活动', state: 'joined', statestring: '报名成功' },
+    { 'id': '1', 'time': '2020-01-01 13:30-14:30', 'location': '世纪公园', 'title': '世纪公园新年陪走活动', state: 'interested', statestring: '感兴趣' },
+    { 'id': '0', 'time': '2020-01-01 13:30-14:30', 'location': '世纪公园', 'title': '世纪公园新年活动', state: 'joined', statestring: '报名成功' },
+    { 'id': '1', 'time': '2020-01-01 13:30-14:30', 'location': '世纪公园', 'title': '世纪公园新年活动', state: 'interested', statestring: '感兴趣' }]
+    const newArr = [];
+    const searchWord = this.data.selelctedVal + searchVal;
+    arr.forEach(item => {
+      if(item.title.includes(searchWord)){
+        newArr.push(item)
+      }
+    })
+    // searchActivity(this.properties.searchedVal, (res) => {
+        
+    // })
+    const arr_copy = newArr.slice();
+    if(arr_copy && arr_copy.length > 0){
+      arr_copy.forEach(item => {
+        const wordArr = item.title.split('');
+        const titleArr = []
+        wordArr.forEach(item => {
+          if(searchWord.includes(item)){
+            titleArr.push({
+              word: item,
+              className: 'green'
+            })
+          }else{
+            titleArr.push({
+              word: item,
+              className: 'black'
+            })
+          }
+        })
+        item.title = titleArr;
+      });
+    }
+    
+    this.setData({
+      searchValue: searchVal,
+      searchedActivities: arr_copy
     })
   }
 })
