@@ -1,8 +1,7 @@
-/* pages/myActivity/myActivity.wxss */
-.activities-searchbox {
-  display: block;
-  width: calc(100% - 30px);
-  margin: 0 auto;
-  text-align: center;
+
+
+.myActivities {
+  background-color: #EDEDED;
+  height: 100%;
 }
 
