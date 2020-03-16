@@ -533,10 +533,10 @@ def get_favorite_activities():
         registered_activities_info = []
         try:
             favorite_activities_info = db.expr_query(['activity_participants', 'activity'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
-                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.others', 'activity.tag_ids'], \
+                                              'activity.location', 'activity.end_time', 'activity.content', 'activity.notice', 'activity.others', 'activity.tag_ids'], \
                                              clauses='activity_participants.participants_id="{}" and activity_participants.activity_id = activity.activity_id and activity_participants.interested = 1'.format(openid))
             registered_activities_info = db.expr_query(['registerActivities', 'activity'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
-                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.others', 'activity.tag_ids'], \
+                                              'activity.location', 'activity.end_time', 'activity.content', 'activity.notice', 'activity.others', 'activity.tag_ids'], \
                                              clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id '.format(openid))
         except Exception as e:
             print('*******************albertdbg*****************',e)
@@ -576,6 +576,7 @@ def get_favorite_activities():
             activity['end_time'] = end.strftime('%Y-%m-%d %H:%M:%S')
             activity['duration'] = calc_duration(start, end)
             activity['content'] = item['activity.content']
+            activity['location'] = item['activity.location']
             activity['notice'] = item['activity.notice']
             activity['others'] = item['activity.others']
             activity['tags'] = tag_converter.convert_idstring_to_tagstring(item['activity.tag_ids'])
