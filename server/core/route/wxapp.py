@@ -543,20 +543,24 @@ def get_favorite_activities():
         
         target_activities_info = []
         if target_filter == 'favorite':
-            for item in favorite_activities_info:
-                target_activities_info.append(item)
+            if favorite_activities_info is not None:
+                for item in favorite_activities_info:
+                    target_activities_info.append(item)
         elif target_filter == 'registered':
-            for item in registered_activities_info:
-                target_activities_info.append(item)
+            if registered_activities_info is not None:
+                for item in registered_activities_info:
+                    target_activities_info.append(item)
         elif target_filter == 'all':
             id_set = []
-            for item in favorite_activities_info:
-                target_activities_info.append(item)
-                id_set.append(item['activity.activity_id'])
-            for item in registered_activities_info:
-                if item['activity.activity_id'] not in id_set:
+            if favorite_activities_info is not None:
+                for item in favorite_activities_info:
                     target_activities_info.append(item)
                     id_set.append(item['activity.activity_id'])
+            if registered_activities_info is not None:
+                for item in registered_activities_info:
+                    if item['activity.activity_id'] not in id_set:
+                        target_activities_info.append(item)
+                        id_set.append(item['activity.activity_id'])
         target_activities_info.sort(key = lambda item: item['activity.activity_id'], reverse = True)
         target_activities_info = [item for item in target_activities_info if datetime.today() - timedelta(days=365) < item['activity.end_time']]
 
