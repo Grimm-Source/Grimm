@@ -22,11 +22,12 @@ import os
 import json
 import urllib3
 import pymysql
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import request, url_for
 
 import server.core.db as db
 import server.utils.sms_verify as sms_verify
+import server.utils.tag_converter as tag_converter
 from server.core import grimm as app
 from server.core import wxappid, wxsecret, socketio
 from server import user_logger
@@ -315,7 +316,7 @@ def registeredActivities():
         activities = []
         try:
             activities_info = db.expr_query(['registerActivities', 'activity'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
-                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.content', 'activity.others',\
+                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.content', 'activity.others', 'activity.tag_ids',\
                                               'registerActivities.needpickup', 'registerActivities.topickup', 'activity.location', 'registerActivities.phone',\
                                               'registerActivities.address'], \
                                              clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id '.format(openid))
@@ -337,6 +338,7 @@ def registeredActivities():
             activity['location'] = item['activity.location']
             activity['notice'] = item['activity.notice']
             activity['others'] = item['activity.others']
+            activity['tags'] = tag_converter.convert_idstring_to_tagstring(item['activity.tag_ids'])
             activity['tel'] = item['registerActivities.phone']
             activity['address'] = item['registerActivities.address']
             activity['needPickUp'] = item['registerActivities.needpickup']
@@ -518,3 +520,58 @@ def get_carousel_list():
     if request.method == 'GET':
         user_logger.info('query all carousel info successfully')
         return json_dump_http_response(CAROUSEL_LIST)
+
+@app.route('/myActivities', methods = ['GET'])
+def get_favorite_activities():
+    '''view function for the activities'''
+    if request.method == 'GET':
+        openid = request.headers.get('Authorization')
+        target_filter = request.args.get('filter')
+        if not target_filter or len(target_filter) == 0:
+            target_filter = 'all'
+        try:
+            favorite_activities_info = db.expr_query(['activity_participants', 'activity'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
+                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.content', 'activity.others',\
+                                              'activity.tag_ids'], \
+                                             clauses='activity_participants.participants_id="{}" and activity_participants.activity_id = activity.activity_id and activity_participants.interested = 1'.format(openid))
+            registered_activities_info = db.expr_query(['registerActivities', 'activity'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
+                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.content', 'activity.others', 'activity.tag_ids'], \
+                                             clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id '.format(openid))
+        except Exception as e:
+            print('*******************albertdbg*****************',e)
+        
+        target_activities_info = []
+        if target_filter == 'favorite':
+            target_activities_info = favorite_activities_info
+        elif target_filter == 'registered':
+            target_activities_info = registered_activities_info
+        elif target_filter == 'all':
+            id_set = []
+            for item in favorite_activities_info:
+                target_activities_info.append(item)
+                id_set.append(item['activity.activity_id'])
+            for item in favorite_activities_info:
+                if item['activity.activity_id'] not in id_set:
+                    target_activities_info.append(item)
+                    id_set.append(item['activity.activity_id'])
+        target_activities_info.sort(key = lambda item: item['activity.activity_id'], reversed = True)
+        target_activities_info = [item for item in target_activities_info if datetime.today() - timedelta(days=365) < item['activity.end_time']]
+
+        activities = []
+        for item in target_activities_info:
+            activity = {}
+            print(item)
+            activity['activityId'] = item['activity.activity_id']
+            activity['title'] = item['activity.title']
+            start = item['activity.start_time']
+            end = item['activity.end_time']
+            activity['start_time'] = start.strftime('%Y-%m-%d %H:%M:%S')
+            activity['end_time'] = end.strftime('%Y-%m-%d %H:%M:%S')
+            activity['duration'] = calc_duration(start, end)
+            activity['content'] = item['activity.content']
+            activity['location'] = item['activity.location']
+            activity['notice'] = item['activity.notice']
+            activity['others'] = item['activity.others']
+            activity['tags'] = tag_converter.convert_idstring_to_tagstring(item['activity.tag_ids'])
+            activities.append(activity)
+        return json_dump_http_response(activities)
