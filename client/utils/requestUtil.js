@@ -143,11 +143,9 @@ const getCarousel = (successCallback, failCallback) => {
     }); 
 }
 
-const getMyActivities = (type, openid, successCallback, failCallback) => {
+const getMyActivities = (type, successCallback, failCallback) => {
     return request({
-      url: 'myActivities/' + type,
-      data: '',
-      header: { Authorization: openid},
+      url: 'myActivities?filter=' + type,
       method: 'GET',
       success: successCallback,
       fail: failCallback,
