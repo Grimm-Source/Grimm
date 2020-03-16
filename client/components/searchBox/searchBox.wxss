@@ -7,7 +7,7 @@
   align-items: center;
   border-radius: 64rpx;
   background: #F5F5F5;
-  border: 2px solid #00BD7C;
+  border: 2px solid var(--accent-color);
 }
 
 .searchbar icon {

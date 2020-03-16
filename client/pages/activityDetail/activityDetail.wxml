@@ -1,31 +1,31 @@
 <view class="detail-wrapper">
   <image mode="aspectFill" class="detail-banner" src="{{banner}}"></image>
-  <text class="detail-title">{{title}}</text>
+  <text class="detail-title text-xl">{{title}}</text>
   <view class="detail-action-wrapper">
-    <view class="detail-action" bindtap="onTapLike">
-      <image class="detail-icon" src="{{isLike ? '/images/heart_selected.png' : '/images/heart.png'}}"></image>喜欢
+    <view class="detail-action text" bindtap="onTapLike">
+      <image class="detail-icon icon-sm" src="{{isLike ? '/images/heart_selected.png' : '/images/heart.png'}}"></image>喜欢
     </view>
-    <view class="detail-action" bindtap="onTapShare">
-      <image class="detail-icon" src="/images/share.png"></image>分享
+    <view class="detail-action text" bindtap="onTapShare">
+      <image class="detail-icon icon-sm" src="/images/share.png"></image>分享
     </view>
   </view>
   <view class="detail-block">
-    <view class="detail-progress">
+    <view class="detail-progress text-sm">
       <progress border-radius="3" percent="80" />24/30志愿者
     </view>
-    <view class="detail-progress">
+    <view class="detail-progress text-sm">
       <progress border-radius="3" percent="50" />10/20视障人士
     </view>
   </view>
-  <view class="detail-block">
+  <view class="detail-block text">
     <view>时间: {{date}}</view>
     <view>地点: {{address}}</view>
   </view>
-  <view class="detail-content-wrapper">
+  <view class="detail-content-wrapper text">
     <text>{{content}}</text>
   </view>
   <view class="detail-footer">
-    <button>感兴趣</button>
-    <button type="primary">我要报名</button>
+    <button class="btn btn-secondary btn-sm">感兴趣</button>
+    <button type="primary" class="btn btn-primary btn-sm">我要报名</button>
   </view>
 </view>

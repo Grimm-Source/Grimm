@@ -1,6 +1,6 @@
 .home {
-  background-color: #113E6F;
-  color: #FFFFFF;
+  background: var(--background-color);
+  color: var(--light-color);
 }
 
 .home-header {

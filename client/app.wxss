@@ -1,17 +1,10 @@
 /**app.wxss**/
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 200rpx 0;
-  box-sizing: border-box;
-} 
+@import 'style/weui.wxss'
+@import 'style/common.wxss'
 
 page{
-  height: 100%;
   width: 100%;
+  height: 100%;
+  font-size: var(--sm-font);
+  color: var(--font-color);
 }
-
-@import 'style/weui.wxss'

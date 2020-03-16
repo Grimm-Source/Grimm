@@ -33,7 +33,7 @@
 }
 
 .searchActivity-title span.green{
-    color: #00BD7C;
+    color: var(--accent-color);
 }
 
 .searchActivity-detail {
