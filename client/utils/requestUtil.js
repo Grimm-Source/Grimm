@@ -143,6 +143,17 @@ const getCarousel = (successCallback, failCallback) => {
     }); 
 }
 
+const getMyActivities = (type, openid, successCallback, failCallback) => {
+    return request({
+      url: 'myActivities/' + type,
+      data: '',
+      header: { Authorization: openid},
+      method: 'GET',
+      success: successCallback,
+      fail: failCallback,
+    })
+}
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -157,6 +168,7 @@ module.exports = {
     getRegisteredActivityList,
     postRegisteredActivityList,
     removeRegisteredActivityList,
-    getCarousel
+    getCarousel,
+    getMyActivities
 }
   
