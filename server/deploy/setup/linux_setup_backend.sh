@@ -1,6 +1,9 @@
 #!/bin/bash
 
 sudo usermod -a -G www-data grimm
+sudo ln -s $(pwd)/../../static /var/www/static
+sudo ln -s $(pwd)/../../templates /var/www/templates
+#sudo ln -s $(pwd)/../../media /var/www/media
 sudo apt update
 sudo apt install --assume-yes curl
 sudo curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
