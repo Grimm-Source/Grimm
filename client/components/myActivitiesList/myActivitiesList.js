@@ -33,6 +33,45 @@ Component({
   data: {
     selectedActivities: myActivitiesType.MYALL,
     myActivities: [],
+    testActivities1: [
+      {"activityId": 47, 
+      "content": "爱心牵手，你我同行", 
+      "duration": { "day": 0, "hour": 1, "min": 0, "sec": 0 }, 
+      "end_time":"2020-03-16 10:30:00", 
+      "location": "上海市", 
+      "notice": "需要配备雨具", 
+      "others": "无", 
+      "start_time": "2020-03-16 09:30:00",
+      "tags": "学习", 
+      "title": "爱心公益活动 - test1"}],
+    
+    testActivities2: [
+      {
+        "activityId": 47,
+        "content": "爱心牵手，你我同行",
+        "duration": { "day": 0, "hour": 1, "min": 0, "sec": 0 },
+        "end_time": "2020-03-16 10:30:00",
+        "location": "上海市",
+        "notice": "需要配备雨具",
+        "others": "无",
+        "start_time": "2020-03-16 09:30:00",
+        "tags": "学习",
+        "title": "爱心公益活动 - test2"
+      }],
+
+    testActivities3: [
+      {
+        "activityId": 47,
+        "content": "爱心牵手，你我同行",
+        "duration": { "day": 0, "hour": 1, "min": 0, "sec": 0 },
+        "end_time": "2020-03-16 10:30:00",
+        "location": "上海市",
+        "notice": "需要配备雨具",
+        "others": "无",
+        "start_time": "2020-03-16 09:30:00",
+        "tags": "学习",
+        "title": "爱心公益活动 - test3"
+      }],
   },
 
   pageLifetimes: {
@@ -122,6 +161,15 @@ Component({
 
     onFilterParamChange: function (type) {
       const filterStr = this._getFilterTypeStr(type);
+      //test
+      // if(type == myActivitiesType.MYALL)
+      //   this._setMyActivities(type, this.data.testActivities1);
+      // else if(type == myActivitiesType.INTERESTED)
+      //   this._setMyActivities(type, this.data.testActivities3);
+      // else if (type == myActivitiesType.REGISTERED)
+      //   this._setMyActivities(type, this.data.testActivities2);
+        
+      
       getMyActivities(filterStr, (res) => {
         this._setMyActivities(type, res);
       });

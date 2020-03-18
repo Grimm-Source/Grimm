@@ -28,7 +28,8 @@ Page({
       },
       {
         icon: '../../images/signature.png',
-        label: '已签到'
+        label: '我的活动',
+        action: 'onTapMyActivities'
       },
       {
         icon: '../../images/no_signature.png',
@@ -141,6 +142,12 @@ Page({
   onTapRegisteredActivities: function(){
     wx.navigateTo({
       url: '/pages/activityList/activityList?type=REGISTERED',
+    });
+  },
+
+  onTapMyActivities: function () {
+    wx.navigateTo({
+      url: '/pages/myActivity/myActivity?type=0',
     });
   },
 
