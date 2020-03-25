@@ -34,12 +34,14 @@ def convert_idstring_to_tagstring(ids):
 def convert_tagstring_to_idstring(tags):
     if not tags:
         return ''
+    if isinstance(tags, str):
+        tags = tags.split(',')
     id_list = []
-    for tag in tags.split(','):
+    for tag in tags:
         if not tag or tag not in TAG_LIST:
             continue
         id_list.append(TAG_LIST.index(tag))
-    return ','.join(id_list)
+    return ','.join(str(v) for v in id_list)
 
 def get_all_tags():
     all_tags = []
