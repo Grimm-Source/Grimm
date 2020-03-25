@@ -1,4 +1,4 @@
-const { getActivityDetail, toggleLike, toggleRegister} = require('../../utils/requestUtil.js');
+const { getActivityDetail, toggleInterest, toggleThumbsUp, toggleRegister} = require('../../utils/requestUtil.js');
 
 Page({
   data: {
@@ -9,6 +9,7 @@ Page({
     address: '',
     content: '',
     isRegistered: false,
+    isInterested: false,
     volunteerTotal: 0,
     volunteerCurr: 0,
     visuallyImpairedTotal: 0,
@@ -34,9 +35,6 @@ Page({
       });
     });
   },
-  onTapShare: function () {
-    console.log('share')
-  },
   getActivity: function (){
     getActivityDetail(this.data.id, (res) => {
       this.setData({
@@ -61,11 +59,22 @@ Page({
     });
   },
   onTapRegister: function() {
-    const isRegistered = !this.data.isRegistered;
-    toggleRegister(this.data.id, isRegistered, () => {
+    // const isRegistered = !this.data.isRegistered;
+    // toggleRegister(this.data.id, isRegistered, () => {
+    //   this.setData({
+    //     isRegistered
+    //   });
+    // });
+    wx.navigateTo({
+      url: '/pages/login/login',
+    })
+  },
+  onTapInterest: function() {
+    const isInterested = !this.data.isInterested;
+    // toggleRegister(this.data.id, isInterested, () => {
       this.setData({
-        isRegistered
+        isInterested
       });
-    });
+    // });
   }
 })

@@ -15,8 +15,7 @@ const request = (option, isManualLoading = false) => {
             url: `${apiUrl}${option.url}`,
             header: {
                 'Content-type': 'application/json',
-                // 'Authorization': wx.getStorageSync('openid'),
-              'Authorization': 1,
+                'Authorization': wx.getStorageSync('openid'),
             },
             method: option.method || "GET",
             success: (res) =>{

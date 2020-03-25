@@ -3,13 +3,14 @@
     "pages/home/home",
     "pages/profile/profile",
     "pages/authorize/authorize",
-    "pages/register/register",
     "pages/personal/personal",
     "pages/activityList/activityList",
     "pages/activityDetail/activityDetail",
     "pages/application/application",
     "pages/tips/tips",
-    "pages/myActivity/myActivity"
+    "pages/myActivity/myActivity",
+    "pages/register/register",
+    "pages/login/login"
   ],
   "window": {
     "backgroundTextStyle": "light",

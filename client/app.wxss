@@ -14,4 +14,30 @@ page{
   width: 100%;
 }
 
+button,
+button[type=default]{
+  background: #f03d64;
+  color: #fff;
+}
+
+.button-hover,
+.button-hover[type=default]{
+  background: #f95e80;
+  color: #fff;
+}
+
+button[type=primary]{
+  background: #113e6e;
+  color: #fff;
+}
+
+.button-hover[type=primary]{
+  background: #195696;
+  color: #fff;
+}
+
+button::after{
+  border: 0;
+}
+
 @import 'style/weui.wxss'

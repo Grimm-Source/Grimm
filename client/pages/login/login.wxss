@@ -1,38 +1,35 @@
-.register-wrapper{
+.login-wrapper{
   padding: 0 52rpx;
 }
 
-.register-header{
+.login-header{
   display: flex;
-  height: 300rpx;
+  height: 400rpx;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  font-size: 34rpx;
 }
 
-.register-header image{
-  width: 120rpx;
-  height: 120rpx;
-  margin-bottom: 30rpx;
+.login-header image{
+  width: 196rpx;
+  height: 196rpx;
   background: #d8d8d8;
   border-radius: 50%;
 }
 
-.register-form{
+.login-form{
   
 }
 
-.register-form-item{
+.login-form-item{
   margin-bottom: 56rpx;
   font-size: 22rpx;
 }
 
-.register-form-label{
+.login-form-label{
   margin-bottom: 20rpx;
 }
 
-.register-form-item input{
+.login-form-item input{
   height: 80rpx;
   padding: 0 20rpx;
   border: 2rpx solid #f1f1f1;
@@ -40,15 +37,15 @@
   box-sizing: border-box;
 }
 
-.register-form-group{
+.login-form-group{
   display: flex;
 }
 
-.register-form-footer{
+.login-form-footer{
   margin-top: 100rpx;
 }
 
-.register-form-footer button{
+.login-form-footer button{
   height: 84rpx;
   margin-bottom: 20rpx;
 }

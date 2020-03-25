@@ -152,13 +152,22 @@ const getActivityDetail = (activityId, successCallback, failCallback) => {
     });
 }
 
-const toggleLike = (activityId, isLike, successCallback, failCallback) => {
+const toggleInterest = (activityId, isInterest, successCallback, failCallback) => {
     return request({
-        url: `activity_detail/interest?activityId=${activityId}&interest=${isLike ? 1 : 0}`,
+      url: `activity_detail/interest?activityId=${activityId}&interest=${isInterest ? 1 : 0}`,
         success: successCallback,
         fail: failCallback,
         method: "POST"
     });
+}
+
+const toggleThumbsUp = (activityId, isThumbsUp, successCallback, failCallback) => {
+  return request({
+    url: `activity_detail/thumbs_up?activityId=${activityId}&thumbs_up=${isThumbsUp ? 1 : 0}`,
+    success: successCallback,
+    fail: failCallback,
+    method: "POST"
+  });
 }
 
 const toggleRegister = (activityId, isLike, successCallback, failCallback) => {
@@ -186,6 +195,7 @@ module.exports = {
     removeRegisteredActivityList,
     getCarousel,
     getActivityDetail,
-    toggleLike,
+    toggleInterest,
+    toggleThumbsUp,
     toggleRegister,
 }

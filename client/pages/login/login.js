@@ -1,5 +1,5 @@
 import WxValidate from '../../utils/WxValidate.js';
-const { register} = require('../../utils/requestUtil.js');
+const { register } = require('../../utils/requestUtil.js');
 const { getVerifyCode } = require('../../utils/requestUtil.js');
 const { verifyCode } = require('../../utils/requestUtil.js');
 const apiUrl = require('../../config.js').apiUrl;
@@ -126,7 +126,7 @@ Page({
         name: '视障人士',
         value: '视障人士',
         checked: true,
-      }, 
+      },
       {
         index: 2,
         name: '志愿者',
@@ -134,35 +134,87 @@ Page({
         checked: false,
       }
     ],
-    currentDate: '',
-
-    // new
-    phone: '',
-    genders: ['男', '女'],
-    genderIndex: 0,
-    birthday: '',
-    region: []
+    genders: [
+      {
+        index: 1,
+        name: '男',
+        value: '男',
+        checked: true,
+      },
+      {
+        index: 2,
+        name: '女',
+        value: '女',
+        checked: false,
+      }
+    ],
+    currentDate: ''
   },
 
   /**
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
+    // 初始化表单
+    this.initValidate();
+    //获取当前日期
+    const newDate = new Date();
+    const currentYear = newDate.getFullYear();
+    const currentMonth = newDate.getMonth() + 1;
+    const currentDay = newDate.getDate();
     this.setData({
-      phone: options.phone
-    });
-    // // 初始化表单
-    // this.initValidate();
-    // //获取当前日期
-    // const newDate = new Date();
-    // const currentYear = newDate.getFullYear();
-    // const currentMonth = newDate.getMonth() + 1;
-    // const currentDay = newDate.getDate();
-    // this.setData({
-    //   currentDate: `${currentYear}-${currentMonth}-${currentDay}`
-    // })
+      currentDate: `${currentYear}-${currentMonth}-${currentDay}`
+    })
   },
 
+  /**
+   * Lifecycle function--Called when page is initially rendered
+   */
+  onReady: function () {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page show
+   */
+  onShow: function () {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page hide
+   */
+  onHide: function () {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page unload
+   */
+  onUnload: function () {
+
+  },
+
+  /**
+   * Page event handler function--Called when user drop down
+   */
+  onPullDownRefresh: function () {
+
+  },
+
+  /**
+   * Called when page reach bottom
+   */
+  onReachBottom: function () {
+
+  },
+
+  /**
+   * Called when user click on the top right corner to share
+   */
+  onShareAppMessage: function () {
+
+  },
 
   changeName: function (e) {
     this.setData({
@@ -176,9 +228,103 @@ Page({
     })
   },
 
+  inputVcode: function (e) {
+    this.setData({
+      'form.regcode': e.detail.value
+    })
+  },
+
+  bindVcodeButtonTap: function () {
+    this.setData({
+      disabled: true, //只要点击了按钮就让按钮禁用 （避免正常情况下多次触发定时器事件）
+      color: '#ccc'
+    })
+    let currentTime = this.data.currentTime;
+    const telData = {
+      tel: this.data.form.tel
+    }
+    if (!this.WxValidate.checkFormParam('tel', telData)) {
+      const error = this.WxValidate.errorList[0]
+      this.showModal(error)
+      this.setData({
+        disabled: false,
+        color: '#29a0de'
+      })
+      return;
+    } else {
+      getVerifyCode(telData.tel)
+      //当手机号正确的时候提示用户短信验证码已经发送
+      wx.showToast({
+        title: '短信验证码已发送',
+        icon: 'none',
+        duration: 2000
+      });
+      var that = this;
+      //设置一分钟倒计时
+      var interval = setInterval(function () {
+        currentTime--;
+        that.setData({
+          text: currentTime + 's'
+        });
+        if (currentTime < 0) {
+          clearInterval(interval);
+          that.setData({
+            text: '重新发送',
+            currentTime: 60,
+            disabled: false,
+            color: '#29a0de'
+          })
+        }
+      }, 1000);
+    }
+  },
+
+  roleChange: function (e) {
+    const value = e.detail.value
+    const roleList = this.data.roles;
+    const items = roleList.map(role => {
+      return Object.assign({}, role, {
+        checked: role.value === value
+      })
+    })
+    this.setData({
+      roles: items,
+      'form.role': value,
+    })
+  },
+
+  genderChange: function (e) {
+    const value = e.detail.value
+    const genderList = this.data.genders;
+    const items = genderList.map(gender => {
+      return Object.assign({}, gender, {
+        checked: gender.value === value
+      })
+    })
+    this.setData({
+      genders: items,
+      'form.gender': value,
+    })
+  },
+
+  getBirthdayFromIdCard: function (idCard) {
+    var birthday = "";
+    if (idCard != null && idCard != "") {
+      if (idCard.length == 15) {
+        birthday = "19" + idCard.substr(6, 6);
+      } else if (idCard.length == 18) {
+        birthday = idCard.substr(6, 8);
+      }
+
+      birthday = birthday.replace(/(.{4})(.{2})/, "$1-$2-");
+    }
+
+    return birthday;
+  },
+
   formSubmit: function (e) {
     const params = e.detail.value
-    if(this.data.form.role === '视障人士'){
+    if (this.data.form.role === '视障人士') {
       const disabledRule = Object.assign(rules2, rules3);
       const disabledWxValidate = new WxValidate(disabledRule, messages);
       if (!disabledWxValidate.checkForm(params)) {
@@ -186,7 +332,7 @@ Page({
         this.showModal(error)
         return false
       }
-    }else{
+    } else {
       const volunteerWxValidate = new WxValidate(rules2, messages);
       if (!volunteerWxValidate.checkForm(params)) {
         const error = volunteerWxValidate.errorList[0]
@@ -195,10 +341,10 @@ Page({
       }
     }
     const birthdate = this.getBirthdayFromIdCard(e.detail.value.idcard)
-    this.setData({'form.birthdate': birthdate})
+    this.setData({ 'form.birthdate': birthdate })
     const formData = Object.assign(this.data.form, e.detail.value);
     console.log(formData)
-    register(formData, (res)=>{
+    register(formData, (res) => {
       wx.setStorageSync('isRegistered', true)
       wx.showToast({
         title: '注册成功',
@@ -208,24 +354,24 @@ Page({
       wx.switchTab({
         url: '../home/home',
       });
-    },(err)=>{
+    }, (err) => {
       wx.showModal({
         showCancel: false,
         title: '注册失败',
         content: err || "网络失败，请稍候再试"
-      });  
+      });
       wx.setStorageSync('isRegistered', false)
     });
   },
 
-  nextStep: function(e){
+  nextStep: function (e) {
     const params = {
       tel: this.data.form.tel,
       regcode: this.data.form.regcode,
       role: this.data.form.role
     };
 
-    if (!this.WxValidate.checkForm(params)){
+    if (!this.WxValidate.checkForm(params)) {
       const error = this.WxValidate.errorList[0]
       this.showModal(error)
       return false
@@ -234,13 +380,13 @@ Page({
         tel: this.data.form.tel,
         verification_code: this.data.form.regcode
       }
-      verifyCode(formData, (res)=>{
+      verifyCode(formData, (res) => {
         this.setData({
           registerStep: 'detail',
           registeBaseActive: '',
           registeDetailActive: 'active'
         })
-      },(err)=>{
+      }, (err) => {
         wx.showModal({
           showCancel: false,
           title: '验证失败',
@@ -250,7 +396,7 @@ Page({
     }
   },
 
-  initValidate: function(){
+  initValidate: function () {
     this.WxValidate = new WxValidate(rules1, messages)
   },
 
@@ -261,55 +407,13 @@ Page({
     })
   },
 
-// new
-  bindGenderChange: function (e) {
-    console.log('picker发送选择改变，携带值为', e.detail.value)
-    this.setData({
-      genderIndex: e.detail.value
-    })
-  },
-
-  bindBirthdayChange: function(e) {
-    this.setData({
-      birthday: e.detail.value
-    })
-  },
-
-  bindRegionChange: function (e) {
-    console.log('picker发送选择改变，携带值为', e.detail.value)
-    this.setData({
-      region: e.detail.value
-    })
-  },
-
-  onSubmit: function() {
-    wx.showToast({
-      title: '注册成功',
-      icon: 'success',
-      duration: 2000
-    });
+  getPhoneNumber: function (e) {
+    console.log(e.detail.errMsg)
+    console.log(e.detail.iv)
+    console.log(e.detail.encryptedData)
 
     wx.navigateTo({
-      url: '/pages/home/home',
+      url: '/pages/register/register?phone=13888888888',
     })
-
-  //   register(formData, (res) => {
-  //     wx.setStorageSync('isRegistered', true)
-  //     wx.showToast({
-  //       title: '注册成功',
-  //       icon: 'success',
-  //       duration: 3000
-  //     });
-  //     wx.switchTab({
-  //       url: '../home/home',
-  //     });
-  //   }, (err) => {
-  //     wx.showModal({
-  //       showCancel: false,
-  //       title: '注册失败',
-  //       content: err || "网络失败，请稍候再试"
-  //     });
-  //     wx.setStorageSync('isRegistered', false)
-  //   });
   }
 })
