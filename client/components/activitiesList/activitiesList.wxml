@@ -1,21 +1,21 @@
 <!--components/activitiesList/activitiesList.wxml-->
 <view>
-  <activitiesPicker class="activities-picker" categories="{{activityCategories}}" bind:myEvent="onFilterParamChange"></activitiesPicker>
+  <activitiesPicker class="activities-picker" categories="{{activityCategories}}" bind:filterChange="onFilterParamChange"></activitiesPicker>
   <scroll-view class="activities-list" scroll-y="true" bindrefreshpulling="onPulling">
     <block wx:for="{{activitiesProp}}" wx:key="id">
       <view class="activity-item" id="{{item.adminId}}">
         <view class="activity-detail" bindtap="onTapActivity">
           <image class="activity-image" src="../../images/banner.jpg"></image>
-          <text class="activity-title">{{item.title}}</text>
-          <text class="activity-description">{{item.content}}</text>
+          <text class="activity-title text-xl">{{item.title}}</text>
+          <text class="activity-description text-md">{{item.content}}</text>
         </view>
         <view class="activity-time-location">
-          <text class="activity-time">时间: {{item.schedule}}</text>
-          <text class="activity-location">地点: {{item.location}}</text>
+          <text class="activity-time text-xl">时间: {{item.schedule}}</text>
+          <text class="activity-location text-xl">地点: {{item.location}}</text>
         </view>
         <view class="activity-action">
           <view class="activity-people">
-            <text>{{item.joined?item.joined:0}}人参加 | {{item.inserted?item.inserted:0}}人感兴趣</text>
+            <text class="text-ss">{{item.joined?item.joined:0}}人参加 | {{item.inserted?item.inserted:0}}人感兴趣</text>
           </view>
           <view class="activity-button">
             <image class="activity_like" src=""></image>

@@ -25,7 +25,7 @@
   /* position: relative; */
   width: 80%;
   box-sizing: border-box;
-  background:#113E6F;
+  background: var(--primary-color);
   white-space: nowrap;
   padding-left: 14px;
 }

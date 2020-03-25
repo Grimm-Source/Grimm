@@ -1,6 +1,6 @@
 .home {
-  background-color: #113E6F;
-  color: #FFFFFF;
+  background: var(--background-color);
+  color: var(--light-color);
 }
 
 .home-header {
@@ -23,7 +23,7 @@ home-scan {
 
 .activities-searchbox {
   width: 100%;
-  height: 30px;
+  height: 60rpx;
   margin-left: 16px;
   display: inline-block;
   align-items: center;

@@ -1,21 +1,24 @@
 /* components/myActivities/myActivitiesList.wxss */
 
 .myActivities-list {
-  margin: 5px 15px 0 15px;
+  margin-top: 6px;
   width: 100%;
 }
 .myActivity-item {
   display: flex;
   flex-direction: row;
-  margin-bottom: 30px;
-  width: 100%;
+  margin: 14px;
+  padding: 20px;
+
+  background-color: #fff;
+  border-radius: 10px;
 }
 
 .myActivity-preview {
-  display: inline-block;
+  display: flex;
   width: 65px;
   height: 80px;
-  background-color: lightgrey;
+  background-color: #EDEDED;
   border-radius: 3px;
   float: left;
 }
@@ -23,11 +26,11 @@
 .myActivity-info {
   display: flex;
   flex-direction: column;
-  padding: 2px 10px;
-  margin-left: 5px;
+  padding: 2px 0;
+  margin-left: 27px;
   top: 0;
   height: 100%;
-  width: calc(100% - 170px);
+  width: calc(100% - 100px);
 }
 
 .myActivity-state {
@@ -43,7 +46,7 @@
   line-height: 20px;
   text-align: center;
   
-  background-color: grey;
+  background-color: #EDEDED;
   border-color: rgba(0, 0, 0, 0);
   border-radius: 3px;
   color: white;
@@ -66,7 +69,7 @@
 
 .myActivity-time,
 .myActivity-location {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 20px;
 }
 

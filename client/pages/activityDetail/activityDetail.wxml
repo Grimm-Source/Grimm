@@ -1,6 +1,6 @@
 <view class="detail-wrapper">
   <image mode="aspectFill" class="detail-banner" src="{{banner}}"></image>
-  <text class="detail-title">{{title}}</text>
+  <text class="detail-title text-xl">{{title}}</text>
   <view class="detail-action-wrapper">
     <button class="detail-action" bindtap="onTapLike">
       <image class="detail-icon" src="{{isLike ? '/images/heart_selected.png' : '/images/heart.png'}}"></image>赞
@@ -18,11 +18,11 @@
       <progress border-radius="3" backgroundColor="#113e6e" activeColor="#4ff2be" percent="{{visuallyImpairedCurr/visuallyImpairedTotal*100}}" />{{visuallyImpairedCurr}}/{{visuallyImpairedTotal}}视障人士
     </view>
   </view>
-  <view class="detail-block">
+  <view class="detail-block text">
     <view>时间: {{date}}</view>
     <view>地点: {{address}}</view>
   </view>
-  <view class="detail-content-wrapper">
+  <view class="detail-content-wrapper text">
     <text>{{content}}</text>
   </view>
   <view class="detail-footer">

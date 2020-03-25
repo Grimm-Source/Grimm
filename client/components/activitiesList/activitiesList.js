@@ -33,7 +33,7 @@ Component({
     _setActivities: function (activities) {
         let formattedActivities = [];
         for (let index = 0; index < activities.length; index++) {
-          let activity = activities[0];
+          let activity = activities[index];
           let startTime = activity.start_time.replace('T', ' ');
           let endTime = activity.end_time.replace('T', ' ');
           activity.schedule = startTime + " - " + endTime;
@@ -47,21 +47,24 @@ Component({
     },
 
     _getFilteredTimeParams(time) {
-      let timeParams = "";
-      if (time == "-1") {
-        timeParams = "latest";
-      } else if (time == "2") {
-        timeParams = "weekends";
-      } else if (time == "3") {
-        let date = new Date();
-        let nextWeek = date.setDate(date.getDate() + 7);
-        timeParams = date.toISOString.substr(0, 10) + " - " + nextWeek.toISOString.substr(0, 10);
+      if (time == "all" || time == "interval") {
+        return "";
+      } else {
+        return "time=" + time;
       }
-      
-      if (timeParams != "") {
-        timeParams = "time=" + timeParams;
-      }
-      return timeParams;
+
+      // if (time == "0") {
+      //   timeParams = "latest";
+      // } else if (time == "1") {
+      //   timeParams = "weekends";
+      // } else if (time == "2") {
+      //   let date = new Date();
+      //   const currentDateStr = date.toISOString().substr(0, 10);
+      //   let nextWeek = new Date(date.setDate(date.getDate() + 7));
+      //   const weekDateStr = nextWeek.toISOString().substr(0, 10);
+      //   timeParams = "time=" + currentDateStr + " - " + weekDateStr;
+      // }
+      // return timeParams;
     },
 
     onTapActivity: function (event) {
@@ -84,7 +87,7 @@ Component({
         if (timeParam == "") {
           params = categoryParam;
         } else if (categoryParam == "") {
-          params = filteredTime;
+          params = timeParam;
         } else {
           params = timeParam + "&" + categoryParam;
         }

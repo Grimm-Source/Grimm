@@ -155,13 +155,13 @@
       </picker>
     </view>
     <view class="register-form-item">
-      <view class="register-form-label">生日</view>
+      <view class="register-form-label">出生日期</view>
       <picker mode="date" bindchange="bindBirthdayChange" value="{{birthday}}">
         <input value="{{birthday}}"/>
       </picker>
     </view>
     <view class="register-form-item">
-      <view class="register-form-label">省市区</view>
+      <view class="register-form-label">所在城市区域</view>
       <picker mode="region" bindchange="bindRegionChange" value="{{region}}">
         <input value="{{region[0]}}{{region[1]}}{{region[2]}}"/>
       </picker>

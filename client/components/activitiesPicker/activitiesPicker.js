@@ -17,13 +17,13 @@ Component({
    */
   data: {
     activityTimes: [
-      { 'time_id': -1, 'description': '全部'},
-      { 'time_id': 0, 'description': '最新' },
-      { 'time_id': 1, 'description': '周末' },
-      { 'time_id': 2, 'description': '最近一周' },
-      { 'time_id': 3, 'description': '选择日期' },],
+      { 'time_id': "all", 'description': '全部'},
+      { 'time_id': "latest", 'description': '最新' },
+      { 'time_id': "weekends", 'description': '周末' },
+      { 'time_id': "recents", 'description': '最近一周' },
+      { 'time_id': "interval", 'description': '选择日期' },],
     activeCategory: -1,
-    activeTime: -1,
+    activeTime: "all",
   },
 
   pageLifetimes: {
@@ -39,14 +39,8 @@ Component({
    * 组件的方法列表
    */
   methods: {
-    _initTimeFilter: function() {
-      for (let index = 0; index < this.data.activeTime.length; index++) {
-
-      }
-    },
-
     filterParamsChange: function(activeCategory, activeTime) {
-      this.triggerEvent('myEvent', {
+      this.triggerEvent('filterChange', {
         category: this.data.activeCategory,
         time: this.data.activeTime,
       }, {})

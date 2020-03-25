@@ -1,0 +1,57 @@
+/* components/searchActivitiesList/searchActivity.wxss */
+.searchActivities {
+    margin-top: 36rpx;
+}
+
+.searchActivity-item {
+    display: flex;
+    flex-direction: row;
+    margin: 32rpx 0;
+    padding: 36rpx 28rpx;
+    background-color: #fff;
+    border-radius: 20rpx;
+}
+
+.searchActivity-image {
+    width: 160rpx;
+    height: 168rpx;
+    background-color: #EDEDED;
+    border-radius: 8rpx;
+}
+
+.searchActivity-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 30rpx;
+    width: calc(100% - 100px);
+}
+
+.searchActivity-title {
+    font-size: 44rpx;
+    margin-bottom: 20rpx;
+    line-height: 62rpx;
+}
+
+.searchActivity-title span.green{
+    color: var(--accent-color);
+}
+
+.searchActivity-detail {
+    display: flex;
+    flex-direction: column;
+    font-size: 28rpx;
+    line-height: 46rpx;
+}
+
+.searchActivity-title {
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    display: -webkit-box; 
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; 
+}
+
+.noneActivity{
+    color: #fff;
+    text-align: center;
+}

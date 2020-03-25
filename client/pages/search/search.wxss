@@ -1,0 +1,72 @@
+/* pages/search/search.wxss */
+Page{
+    background-color: var(--primary-color);
+}
+
+.searchPage{
+    padding: 32rpx 32rpx;
+    font-size: 26rpx;
+}
+
+.searchBox {
+    width: 100%;
+    height: 60rpx;
+    display: flex;
+    align-items: center;
+    border-radius: 64rpx;
+    background: #F5F5F5;
+    border: 2px solid var(--accent-color);
+    /* margin: 0 32rpx; */
+  }
+  
+  .searchBox icon {
+    margin-left: 32rpx;
+  }
+  
+  .searchBox .inputBox{
+    display: inline-flex;
+    width: 100%;
+  }
+
+  .searchBox .hot-word-input{
+    flex-shrink: 0;
+    background: rgba(0, 199, 119, 0.1);
+    border-radius: 30px;
+    padding: 4rpx 26rpx;
+    margin-left: 14rpx;
+  }
+
+  .searchBox .hot-word-input.hide{
+      display: none;
+  }
+
+  .searchBox .hot-word-input icon{
+      margin-left: 10rpx;
+   }
+
+  .searchBox input {
+    margin: 0 32rpx;
+    width: 100%;
+  }
+
+  .searchPage .hotWords{
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .searchPage .searchItem{
+    display: flex;
+    align-items: center;
+    height: 66rpx;
+    border-radius: 66rpx;
+    background: #FFFFFF;
+    margin-top: 44rpx;
+    padding: 0 26rpx;
+    margin-right: 18rpx;
+}
+
+.searchPage .searchItem.selected{
+    background: rgba(255, 255, 255, 0.3);
+    color: #FFFFFF;
+    opacity: 0.6;
+}

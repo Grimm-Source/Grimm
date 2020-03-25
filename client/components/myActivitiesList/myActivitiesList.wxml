@@ -1,17 +1,17 @@
 <!--components/myActivities/myActivitiesList.wxml-->
 <scroll-view class="myActivities-list" scroll-y="true">
-  <block wx:for="{{myActivities}}" wx:key="id">
-    <view class="myActivity-item">
+  <block wx:for="{{myActivities}}" wx:key="activityId">
+    <view class="myActivity-item" bindtap="onTapActivity">
       <image class="myActivity-preview" src="{{item.imgSrc}}"></image>
       <view class="myActivity-info">
         <view class="myActivity-title">{{item.title}}</view>
         <!-- <view class="myActivity-detail"> -->
-          <view class="myActivity-time">时间: {{item.time}}</view>
+          <view class="myActivity-time">{{item.timeTitle}}: {{item.schedule}}</view>
           <view class="myActivity-location">地点: {{item.location}}</view>
         <!-- </view> -->
         
       </view>
-      <button class="myActivity-state {{item.state}}">{{item.statestring}}</button>
+      <!-- <button class="myActivity-state {{item.state}}">{{item.statestring}}</button> -->
     </view>
   </block>
 </scroll-view>

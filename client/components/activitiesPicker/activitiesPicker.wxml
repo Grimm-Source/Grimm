@@ -1,6 +1,6 @@
 <!--components/activitiesPicker/activitiesPicker.wxml-->
 
-<view class="category">
+<view class="category text-lg">
   <view class="category-all">全部活动</view>
   <scroll-view scroll-x="true" class="category-picker">
       <block wx:for="{{categories}}" wx:key="id">
@@ -11,7 +11,7 @@
   </scroll-view>
 </view>
 
-<view class="time">
+<view class="time text-lg">
   <view class="time-all">时间</view>
   <scroll-view scroll-x="true" class="time-picker">
       <block wx:for="{{activityTimes}}" wx:key="id">

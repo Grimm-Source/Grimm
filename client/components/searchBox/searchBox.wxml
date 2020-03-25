@@ -1,5 +1,5 @@
 <!--components/searchBox/searchBox.wxml-->
-<view class="searchbar">
-    <icon type='search' size="32rpx"></icon>
-    <input type="text" bindinput="searchActivities" bindconfirm="endsearchActivities" bindfocus='getfocus' bindblur="blursearch" confirm-type='search' value='{{searchstr}}' placeholder='请输入活动关键字...' />
+<view class="searchbar" bindtap="onTapSearch">
+    <icon type='search' size="24rpx"></icon>
+    <input type="text" confirm-type='search' placeholder='关键词搜索' />
 </view>
