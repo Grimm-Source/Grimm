@@ -1,5 +1,5 @@
 <!--components/searchBox/searchBox.wxml-->
 <view class="searchbar" bindtap="onTapSearch">
-    <icon type='search' size="24rpx"></icon>
-    <input type="text" confirm-type='search' placeholder='关键词搜索' />
+    <icon type='search' size="24rpx" aria-hidden="true"></icon>
+    <input type="text" confirm-type='search' placeholder='关键词搜索' aria-role="input" />
 </view>

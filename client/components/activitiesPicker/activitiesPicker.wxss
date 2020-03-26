@@ -3,12 +3,14 @@
 .category{
   display: flex;
   justify-content: space-between;
+  white-space: nowrap;
 }
 
 .time {
   display: flex;
   justify-content: space-between;
   padding-bottom: 16px;
+  white-space: nowrap;
 }
 
 .category-all,

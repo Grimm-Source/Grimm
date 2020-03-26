@@ -1,6 +1,7 @@
 .home {
   background: var(--background-color);
   color: var(--light-color);
+  overflow-x: hidden;
 }
 
 .home-header {
@@ -28,6 +29,7 @@ home-scan {
   display: inline-block;
   align-items: center;
 }
+
 
 
 
