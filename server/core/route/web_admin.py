@@ -316,7 +316,6 @@ def update_activity(activity_id):
                 admin_logger.warning('%d: get activity failed', activity_id)
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             feedback = convert_activity_to_query(activity)
-            feedback = {'status': 'success'}
 
             admin_logger.info('%d: get activity successfully', activity_id)
             return json_dump_http_response(feedback)
