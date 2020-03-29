@@ -8,8 +8,10 @@ const ADButtonGroup = Button.Group;
 export default class ButtonGroup extends React.Component {
   constructor(props){
       super(props);
-      let value = this.props.value || [];
+      let preValue = this._getValue();
+      let value = preValue.value;
       let map = {};
+      
       value.forEach((item)=>{
         map[item]= true;
       });
@@ -17,8 +19,23 @@ export default class ButtonGroup extends React.Component {
       this.state={
         buttons: this.props.buttons || [],
         value,
-        map
+        map,
+        isSourceList: preValue.isSourceList, 
       }
+  }
+
+  _getValue = ()=>{
+    if(Array.isArray(this.props.value)){
+      return {
+        value: this.props.value,
+        isSourceList: true
+      };
+    }
+
+    return {
+      value: this.props.value && this.props.value.split? this.props.value.split(","): [],
+      isSourceList: false
+    };
   }
 
   onClickButton=(key)=>{
@@ -33,7 +50,8 @@ export default class ButtonGroup extends React.Component {
     this.setState({
         map
     });
-    this.props.onChange(result);
+    
+    this.props.onChange(this.state.isSourceList?result: result.join(","));
   }
 
   getButtons=()=>{

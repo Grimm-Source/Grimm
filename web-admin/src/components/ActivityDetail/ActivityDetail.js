@@ -196,7 +196,7 @@ const WrappedActivityDetail = Form.create({
           value: props.activity.others || ""
         }),
         tag: Form.createFormField({
-          value: props.activity.tag || []
+          value: props.activity.tag || ""
         }),
         duration: Form.createFormField({
           value: (props.activity.duration && `${props.activity.duration.day}天${props.activity.duration.hour}小时${props.activity.duration.min}分钟${props.activity.duration.sec}秒`) || ""
