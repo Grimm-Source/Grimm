@@ -24,7 +24,7 @@ moment.locale('zh-cn');
 const store = createStore(reducer, initialState, applyMiddleware(...middleware));
 ReactDOM.render(<Provider store={store}>
     <ConfigProvider locale={zh_CN}>
-      <Router>
+      <Router basename="/admin" >
         <App />
       </Router>
     </ConfigProvider>
