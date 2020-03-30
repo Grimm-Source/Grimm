@@ -11,7 +11,7 @@ page{
 } 
 
 .personal_card{
-    width: 326px;
+    width: 100%;
     background-color: #FFFFFF;
     border-radius: 6px;
     -webkit-border-radius: 6px;
@@ -97,6 +97,7 @@ page{
 
 .user_profile .user_nav_right .user_eidt{
     color: #00A9D3;
+    font-size: 13px;
 }
 
 .registerBtn{
@@ -124,6 +125,7 @@ page{
 
 .personal_info_list{
     padding: 30px 26px;
+    font-size: 13px;
 }
 
 .personal_info_item{
