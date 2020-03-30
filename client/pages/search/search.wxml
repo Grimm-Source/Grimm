@@ -7,7 +7,7 @@
                 <span>{{selelctedVal}}</span>
                 <icon type='clear' size="20rpx" bindtap="cancelSelect"></icon>
             </view>
-            <input type="text" bindinput="searchActivities" bindconfirm="endsearchActivities" bindfocus='getfocus' bindblur="blursearch" confirm-type='search' value='{{searchValue}}' placeholder='{{placeHolder}}' focus="{{focus}}"/>
+            <input type="text" bindinput="searchActivities" bindconfirm="endsearchActivities" confirm-type='search' value='{{searchValue}}' placeholder='{{placeHolder}}' focus="{{focus}}"/>
         </view>  
     </view>
     <view class="hotWords">

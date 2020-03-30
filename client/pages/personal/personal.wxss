@@ -1,126 +1,150 @@
 /* pages/personal2/personal2.wxss */
 page{
     height: 100%;
-    background-color: rgb(241, 241, 241);
 }
-
 .personal_container{
     height: 100%;
-    background-color: rgb(241, 241, 241);
+}
+.personal_container .personal_header{
+    padding: 28px 24px 30px;
+    background-color: #F1F1F1;
+} 
+
+.personal_card{
+    width: 326px;
+    background-color: #FFFFFF;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -ms-border-radius: 6px;
+    -o-border-radius: 6px;
+    overflow: hidden;
 }
 
-.personal_header{
-    background-color: white;
-    margin-bottom: 5%;
-    padding: 40rpx 30rpx;
-}
-.personal_header .setting_nav{
-    height: 50rpx;
-    display: flex;
-    justify-content: flex-end;
+.personal_card.defaultCard{
+    height: 154px;
 }
 
-.personal_header .setting_nav .setting_item image{
-    width: 40rpx;
-    height: 40rpx;
-    margin: 0 20rpx;
+.personal_card.authorizedCard{
+    height: 205px;
 }
 
-.personal_header .user_nav{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 20rpx 0 40rpx;
+.personal_card.registerdCard{
+    height: 249px;
 }
 
-.personal_header .user_nav .user_nav_left{
-    display: flex;
-    align-items: center;
-}
-
-.personal_header .user_nav .user_nav_left .personal_banner{
-    font-size: 28rpx;
-    color: grey;
-}
-
-.personal_header .user_nav .user_nav_right{
-    display: flex;
-    align-items: center;
-    font-size: 26rpx;
-    color: grey;
-}
-
-.personal_header .user_nav .avatar{
-    width: 130rpx;
-    height: 130rpx;
-    border-radius: 65rpx;
-    margin-right: 40rpx;
-}
-.personal_header .user_nav .avatar image {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-}
-
-.personal_header .user_nav .user_nav_right .user_detail{
-    width: 50rpx;
-    height: 50rpx;
-}
-.personal_header .user_nav .user_nav_right .user_detail image{
-    width: 100%;
-    height: 100%;
-}
-
-.personal_container navigator{
-    display: inline;
-    color: #248bd6;
-}
-
-.activity_classify{
-    height: 80rpx;
-    border-top: 1px solid lightgrey;
-    display: flex;
-    justify-content: space-around;
-    font-size: 28rpx;
-    color: grey;
-    padding-top: 25rpx;
-}
-
-.activity_classify .activity_item_label{
-    display: flex;
-    align-items: center;
-    margin-bottom: 10rpx;
-}
-
-.activity_classify .activity_item_label image{
-    width: 50rpx;
-    height: 50rpx;
-}
-
-.activity_classify .activity_nav_item{
+.prompt_message{
+    width: 326px;
+    height: 40px;
+    margin-top: 36px;
     text-align: center;
+    font-size: 13px;
+    line-height: 18px;
 }
+
+.authorizeBtn {
+    width: 191px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 13px;
+    margin-top: 18px;
+}
+
+.prompt_message text{
+    display: block;
+}
+
+.user_profile{
+    display: flex;
+    padding: 17px 12px 0 27px;
+    justify-content: space-between;
+    line-height: 22px;
+}
+
+.user_profile .user_nav_left{
+    display: flex;
+}
+
+.user_profile .user_nav_left .avatar{
+    width: 42px;
+    height: 42px;
+}
+
+.user_profile .user_nav_left .avatar image{
+    width: 100%;
+    height: 100%;
+    border-radius: 42px;
+    -webkit-border-radius: 42px;
+    -moz-border-radius: 42px;
+    -ms-border-radius: 42px;
+    -o-border-radius: 42px;
+}
+
+.user_profile .user_nav_left .username_info{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.username_info .username{
+    font-size: 17px;
+}
+
+.username_info .location{
+    font-size: 13px;
+    color: #747474;
+}
+
+.user_profile .user_nav_right .user_eidt{
+    color: #00A9D3;
+}
+
+.registerBtn{
+    width: 191px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 13px;
+    margin-top: 23px;
+}
+
+.personal_card .footer_message{
+    margin: 20px 20px 0 27px;
+    border-top: 1px solid #979797;
+    padding: 10px 0;
+    text-align: center;
+    color: #757575;
+    font-size: 11px;
+}
+
+.personal_card .footer_message .volunteer_link{
+    color: #00A9D3;
+}
+
+/* personal_info_part */
 
 .personal_info_list{
-    height: 60%;
-    background-color: white;
-    padding: 30rpx 30rpx 0;
+    padding: 30px 26px;
 }
 
-.person_info_Item{
-    border-bottom: 1rpx solid #eee;
-    padding: 30rpx 0;
-    color: grey;
-    font-size: 30rpx;
+.personal_info_item{
     display: flex;
     justify-content: space-between;
+    margin-bottom: 18px;
+    align-items: center;
 }
 
-.person_info_Item image{
-    width: 40rpx;
-    height: 40rpx;
+.personal_info_item image{
+    width: 12px;
+    height: 12px;
 }
 
-.personal_container .disabled{
-    color: #ddd;
+.personal_info_item.myActivity, .personal_info_item.disabledID{
+    font-weight: 600;
+    font-size: 16px;
 }
+
+.personal_info_item.disabledID{
+    margin-top: 26px;
+}
+
+

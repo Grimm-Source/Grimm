@@ -24,13 +24,14 @@ Page({
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称
           wx.getUserInfo({
             success: function (res) {
+              app.globalData.userInfo = res.userInfo;
               console.log(res.userInfo)
             }
           })
         }
       }
     })
-    this.checkJumpToRegisterPage()    
+    // this.checkJumpToRegisterPage()    
   },
 
   /**
@@ -90,15 +91,25 @@ Page({
     }
   },
 
+  jumpToPersonalPage: function() {
+    wx.switchTab({
+      url: '../personal/personal',
+    })
+  },
+
   getUserInfo: function (e) {
     console.log(e)
-    app.globalData.userInfo = e.detail.userInfo
     console.log(app.globalData.userInfo)
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
-    })
-    this.checkJumpToRegisterPage()
+    if(e.detail.userInfo){
+      this.setData({
+        userInfo: e.detail.userInfo,
+        hasUserInfo: true
+      })
+      app.globalData.userInfo = e.detail.userInfo
+      app.globalData.isAuthorized = true;
+    }
+    this.jumpToPersonalPage()
+    // this.checkJumpToRegisterPage()
   },
 
   refuseGetUserInfo: function(){
