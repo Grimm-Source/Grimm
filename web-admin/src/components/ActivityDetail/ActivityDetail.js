@@ -98,7 +98,7 @@ class ActivityDetail extends React.Component {
                     required: true, 
                     message: '请选择时间' 
                 }],
-            })(<RangePicker disabledDate={disabledDate} onChange={this.changeDate} showTime format="YYYY-MM-DD HH:mm:ss" />)}
+            })(<RangePicker disabledDate={disabledDate} onChange={this.changeDate} showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm" />)}
        </Form.Item>
        <Form.Item label="活动主题">
            {getFieldDecorator('title', {
@@ -199,10 +199,10 @@ const WrappedActivityDetail = Form.create({
           value: props.activity.tag || ""
         }),
         duration: Form.createFormField({
-          value: (props.activity.duration && `${props.activity.duration.day}天${props.activity.duration.hour}小时${props.activity.duration.min}分钟${props.activity.duration.sec}秒`) || ""
+          value: (props.activity.duration && `${props.activity.duration.day}天${props.activity.duration.hour}小时${props.activity.duration.min}分钟`) || ""
         }),
         date: Form.createFormField({
-          value: (props.activity.start_time &&  props.activity.end_time && [moment(props.activity.start_time, 'YYYY-MM-DD HH:mm:ss'), moment(props.activity.end_time, 'YYYY-MM-DD HH:mm:ss')]) || null
+          value: (props.activity.start_time &&  props.activity.end_time && [moment(props.activity.start_time, 'YYYY-MM-DD HH:mm'), moment(props.activity.end_time, 'YYYY-MM-DD HH:mm')]) || null
         })
       }
     },
