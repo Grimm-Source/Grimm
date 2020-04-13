@@ -131,17 +131,18 @@ def register():
             else:
                 del SMS_VERIFIED_OPENID[openid]
             # mock user info and do inserting
-            userinfo['role'] = 0 if info['role'] == "志愿者" else 1
-            if userinfo['role'] == 1:
-                userinfo['disabled_id'] = info['disabledID']
-                userinfo['emergent_contact'] = info['emergencyPerson']
-                userinfo['emergent_contact_phone'] = info['emergencyTel']
+            #reduce part of user info to simplify register
+            #userinfo['role'] = 0 if info['role'] == "志愿者" else 1
+            #if userinfo['role'] == 1:
+                #userinfo['disabled_id'] = info['disabledID']
+                #userinfo['emergent_contact'] = info['emergencyPerson']
+                #userinfo['emergent_contact_phone'] = info['emergencyTel']
             userinfo['birth'] = info['birthdate']
-            userinfo['remark'] = info['comment']
+            #userinfo['remark'] = info['comment']
             userinfo['gender'] = info['gender']
-            userinfo['idcard'] = info['idcard']
+            #userinfo['idcard'] = info['idcard']
             userinfo['address'] = info['linkaddress']
-            userinfo['contact'] = info['linktel']
+            #userinfo['contact'] = info['linktel']
             userinfo['name'] = info['name']
             userinfo['audit_status'] = 0
             userinfo['registration_date'] = datetime.now().strftime('%Y-%m-%d')
