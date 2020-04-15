@@ -39,6 +39,34 @@
 
 .login-form-group{
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80rpx;
+  border: 2rpx solid #f1f1f1;
+  border-radius: 8rpx;
+  box-sizing: border-box;
+}
+
+.login-form-group input{
+  flex: 1;
+  border: 0;
+}
+
+.login-form-group button{
+  margin: 0;
+  background: transparent;
+  color: #113e6e;
+  font-size: 22rpx;
+}
+
+.login-form-group button.button-hover{
+  background: transparent;
+  color: #113e6e;
+}
+
+.login-form-group button[disabled]{
+  color: #979797;
+  background: transparent;
 }
 
 .login-form-footer{

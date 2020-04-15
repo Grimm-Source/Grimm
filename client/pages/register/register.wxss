@@ -52,3 +52,18 @@
   height: 84rpx;
   margin-bottom: 20rpx;
 }
+
+picker{
+  position: relative;
+}
+
+picker:after{
+  content: "";
+  position: absolute;
+  top: 38rpx;
+  right: 20rpx;
+  width: 0;
+  height: 0;
+  border: 10rpx solid transparent;
+  border-top-color: #000;
+}

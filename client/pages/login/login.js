@@ -412,8 +412,10 @@ Page({
     console.log(e.detail.iv)
     console.log(e.detail.encryptedData)
 
-    wx.navigateTo({
-      url: '/pages/register/register?phone=13888888888',
-    })
+    if (e.detail.iv && e.detail.encryptedData) {
+      wx.navigateTo({
+        url: '/pages/register/register?phone=13888888888',
+      })
+    }
   }
 })

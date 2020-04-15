@@ -5,14 +5,14 @@
   <view class="login-form">
     <view class="login-form-item">
       <view class="login-form-label">*手机号码</view>
-      <input auto-focus bindinput="inputPhoneNum" maxlength="11" name='tel' value="{{form.tel}}" />
+      <view class="login-form-group">
+      <input class="login-form-cell" auto-focus bindinput="inputPhoneNum" maxlength="11" name='tel' value="{{form.tel}}" />
+      <button type="primary" bindtap="bindVcodeButtonTap" disabled='{{disabled}}'>{{text}}</button>
+</view>
     </view>
     <view class="login-form-item">
       <view class="login-form-label">*验证码</view>
-      <view class="login-form-group">
-        <input class="login-form-cell" auto-focus bindinput="inputVcode" name="regcode" value="{{form.regcode}}" />
-        <button type="primary" bindtap="bindVcodeButtonTap" disabled='{{disabled}}'>{{text}}</button>
-      </view>
+      <input  auto-focus bindinput="inputVcode" name="regcode" value="{{form.regcode}}" />
     </view>
   </view>
   <view class="login-form-footer">
