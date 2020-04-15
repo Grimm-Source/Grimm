@@ -103,33 +103,33 @@ def register():
         openid = userinfo['openid']
         if not db.exist_row('user', openid=openid):
             # confirm sms-code
-            if not ('verification_code' in info or openid in SMS_VERIFIED_OPENID):
-                user_logger.warning('%s: user registers before sms verification', openid)
-                return json_dump_http_response({'status': 'failure', 'message': '未认证注册用户'})
-            if 'verification_code' in info:
-                vrfcode = info['verification_code']
-                phone_number = info['tel']
-                sms_token = sms_verify.fetch_token(phone_number)
-                if sms_token is None:
-                    user_logger.warning('%s: no such a sms token for number', phone_number)
-                    return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
-                if sms_token.expired:
-                    user_logger.warning('%s, %s: try to validate user with expired token', phone_number, sms_token.vrfcode)
-                    sms_verify.drop_token(phone_number)
-                    return json_dump_http_response({'status': 'failure', 'message': '过期验证码'})
-                if not sms_token.valid:
-                    user_logger.warning('%s: try to validate user with invalid token', phone_number)
-                    sms_verify.drop_token(phone_number)
-                    return json_dump_http_response({'status': 'failure', 'message': '无效验证码'})
+            # if not ('verification_code' in info or openid in SMS_VERIFIED_OPENID):
+            #     user_logger.warning('%s: user registers before sms verification', openid)
+            #     return json_dump_http_response({'status': 'failure', 'message': '未认证注册用户'})
+            # if 'verification_code' in info:
+            #     vrfcode = info['verification_code']
+            #     phone_number = info['tel']
+            #     sms_token = sms_verify.fetch_token(phone_number)
+            #     if sms_token is None:
+            #         user_logger.warning('%s: no such a sms token for number', phone_number)
+            #         return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
+            #     if sms_token.expired:
+            #         user_logger.warning('%s, %s: try to validate user with expired token', phone_number, sms_token.vrfcode)
+            #         sms_verify.drop_token(phone_number)
+            #         return json_dump_http_response({'status': 'failure', 'message': '过期验证码'})
+            #     if not sms_token.valid:
+            #         user_logger.warning('%s: try to validate user with invalid token', phone_number)
+            #         sms_verify.drop_token(phone_number)
+            #         return json_dump_http_response({'status': 'failure', 'message': '无效验证码'})
 
-                result = sms_token.validate(phone_number=phone_number, vrfcode=vrfcode)
-                if result is not True:
-                    user_logger.warning('%s, %s: sms code validation failed, %s', phone_number, vrfcode, result)
-                    return json_dump_http_response({'status': 'failure', 'message': result })
-                user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
-                sms_verify.drop_token(phone_number)  # drop token from pool after validation
-            else:
-                del SMS_VERIFIED_OPENID[openid]
+            #     result = sms_token.validate(phone_number=phone_number, vrfcode=vrfcode)
+            #     if result is not True:
+            #         user_logger.warning('%s, %s: sms code validation failed, %s', phone_number, vrfcode, result)
+            #         return json_dump_http_response({'status': 'failure', 'message': result })
+            #     user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
+            #     sms_verify.drop_token(phone_number)  # drop token from pool after validation
+            # else:
+            #     del SMS_VERIFIED_OPENID[openid]
             # mock user info and do inserting
             #reduce part of user info to simplify register
             #userinfo['role'] = 0 if info['role'] == "志愿者" else 1
@@ -364,8 +364,8 @@ def registeredActivities():
         except Exception as e:
             print('*******************xtydbg*****************',e)
             return json_dump_http_response({'status': '取消活动失败！'})
-        
-        
+
+
 @app.route('/activity_detail', methods = ['GET'])
 def get_activity():
     '''view function for the activity_detail'''
@@ -408,7 +408,7 @@ def get_activity():
                 vision_impaired_count = db.expr_query(['activity_participants', 'user'], 'COUNT(*)', \
                                              clauses='activity_participants.activity_id = {} ' \
                                              'and activity_participants.participants_id = user.openid and user.role = 1'.format(activity_id))
-                
+
                 if not participants:
                     user_logger.warning('%d: no such activity', activity_id)
                     return json_dump_http_response(feedback)
@@ -421,7 +421,7 @@ def get_activity():
             feedback['sign_up'] = participants['sign_up']
             feedback['volunteers'] = volunteer_count[0]['COUNT(*)']
             feedback['vision_impaireds'] = vision_impaired_count[0]['COUNT(*)']
-            
+
             user_logger.info('%d: get activity successfully', activity_id)
             return json_dump_http_response(feedback)
 
@@ -443,9 +443,9 @@ def mark_activity():
             except Exception as e:
                 user_logger.error('update push_status fail, %s', e)
                 user_logger.info('%s: complete user registration success', openid)
-            
+
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
-    
+
 @app.route('/activity_detail/thumbs_up', methods = ['POST'])
 def thumbsup_activity():
     '''mark activity as thumbs_up'''
@@ -461,9 +461,9 @@ def thumbsup_activity():
             except Exception as e:
                 user_logger.error('update push_status fail, %s', e)
                 user_logger.info('%s: complete user registration success', openid)
-            
+
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
-    
+
 @app.route('/activity_detail/sign_up', methods = ['POST'])
 def enroll_activity():
     '''sign_up activity'''
@@ -480,7 +480,7 @@ def enroll_activity():
             except Exception as e:
                 user_logger.error('update push_status fail, %s', e)
                 user_logger.info('%s: complete user registration success', openid)
-            
+
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
 
 @app.route('/activity_detail/share', methods = ['POST'])
@@ -500,7 +500,7 @@ def share_activity():
                 print('*******************mia*****************', e)
                 user_logger.warning('%d: get activity failed', activity_id)
                 return json_dump_http_response({'status': 'failure'})
-        
+
             share_count = int(participants['share'])
             if is_share == 1:
                 share_count = share_count+1
@@ -512,7 +512,7 @@ def share_activity():
             except Exception as e:
                 user_logger.error('update push_status fail, %s', e)
                 user_logger.info('%s: complete user registration success', openid)
-            
+
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
 
 @app.route('/carousel', methods = ['GET'])
@@ -541,7 +541,7 @@ def get_favorite_activities():
                                              clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id '.format(openid))
         except Exception as e:
             print('*******************albertdbg*****************',e)
-        
+
         target_activities_info = []
         if target_filter == 'favorite':
             if favorite_activities_info is not None:
