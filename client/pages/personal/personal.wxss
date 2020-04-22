@@ -34,7 +34,7 @@ page{
 }
 
 .prompt_message{
-    width: 326px;
+    width: 100%;
     height: 40px;
     margin-top: 36px;
     text-align: center;
