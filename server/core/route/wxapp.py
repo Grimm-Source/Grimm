@@ -36,6 +36,7 @@ from server.utils.misctools import json_dump_http_response, json_load_http_reque
 from server.core.const import SMS_VRF_EXPIRY
 from server.core.const import CAROUSEL_LIST
 
+from server.utils.decrypt import PhoneNumberDecrypt
 
 SMS_VERIFIED_OPENID = {}
 
@@ -90,6 +91,43 @@ def wxjscode2session():
 
         return json_dump_http_response(feedback)
 
+@app.route('/getPhoneNumber', methods=['GET'])
+def getPhoneNumber():
+    '''get weixin user phoneNumber'''
+    if request.method == 'GET':
+        info = json_load_http_request(request)  # get http POST data bytes format
+        js_code = info["js_code"]
+        encrypted_data = info["encryptedData"]
+        iv = info["iv"]
+        if js_code is None:
+            return json_dump_http_response({'status': 'failure'})
+        prefix = 'https://api.weixin.qq.com/sns/jscode2session?appid='
+        suffix = '&grant_type=authorization_code'
+        url = prefix + wxappid + '&secret=' + wxsecret + '&js_code=' + js_code + suffix
+        user_logger.info('user login, wxapp authorization: %s', url)
+        retry = 3
+        while retry > 0:
+            http = urllib3.PoolManager()
+            response = http.request('GET', url)
+            feedback = json.loads(response.data)
+            # authorization success
+            if response.status == 200 and 'openid' in feedback:
+                break
+            retry -= 1
+
+        if retry != 0:
+            feedback['server_errcode'] = 0
+            if 'session_key' in feedback:
+                sessionKey = feedback['session_key']
+                
+                phone_decrypt = PhoneNumberDecrypt(wxappid, sessionKey)
+                feedback['decrypt_data'] = phone_decrypt.decrypt(encrypted_data, iv)                
+                del feedback['session_key']
+                feedback['status'] = 'success'
+            else:
+                user_logger.error('wxapp authorization failed')
+                feedback['status'] = 'failure'
+        return json_dump_http_response(feedback)
 
 @app.route('/register', methods=['POST'])
 def register():
