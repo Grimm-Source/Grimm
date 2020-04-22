@@ -1,44 +1,53 @@
 <!--pages/personal2/personal2.wxml-->
 <view class="personal_container">
     <view class="personal_header">
-        <view class="setting_nav">
-           <block wx:for='{{setting_list}}' wx:key="item.index">
-                <view class="setting_item" bindtap="{{item.action}}"><image src="{{item.icon}}" aria-role="button" aria-label="{{item.label}}"/></view>
+        <view class="personal_card {{!isAuthorized ? 'defaultCard' : (!isRegistered ? 'authorizedCard' : 'registerdCard')}}">
+            <block wx:if='{{!isAuthorized}}'>
+                <view class="prompt_message">
+                    <text>爱心牵手你我同行 需要您授权同意</text>
+                    <text>我们将获取您的微信公开信息</text>
+                </view>
+                <button class="authorizeBtn btn-primary" lang='zh_CN' bindtap="onAuthorizeTap">
+                    点击授权
+                </button>
+            </block>
+            <block wx:else>
+                <view class="user_profile">
+                    <view class="user_nav_left">
+                        <view class="avatar"><image src="{{userInfo.avatarUrl || avatarUrl}}" aria-label="头像"/></view>
+                        <view class="username_info" wx:if='{{userInfo}}'>
+                            <span class="username">{{userInfo.nickName}}</span> 
+                            <span class="location">{{userInfo.province}} {{userInfo.city}}</span>
+                        </view>
+                    </view>
+                    <view class="user_nav_right">
+                        <view class="user_eidt" bindtap="onEditTap">
+                            编辑
+                        </view>
+                    </view>
+                </view>
+                <button wx:if='{{!isRegistered}}' class="registerBtn btn-primary" bindtap="onRegisterTap">
+                    注册解锁更多活动
+                </button>
+                <view wx:else class="activity_record">
+                    注册成功。。。。
+                </view>
+                <view class="footer_message">
+                    <view>活动结束后，志愿者可以登陆志愿者网</view>
+                    <view><span class="volunteer_link" bindtap="goVolunteerSite">sh.chinavolunteer.cn</span> 申请证书哦！</view>
+                </view>
             </block>
         </view>
-        <view class="user_nav">
-            <view class="user_nav_left">
-                <view class="avatar"><image src="{{avatarUrl}}" aria-label="头像"/></view>
-                <view class="username_info" wx:if='{{userInfo}}'>{{userInfo.nickName}} 
-                    <view class="personal_banner">
-                        <view class="audit_status" wx:if='{{auditStatus === "pending"}}'>正在审核中...</view>
-                        <view class="audit_status" wx:if='{{auditStatus === "rejected"}}'>未通过审核 <navigator role="button" url="/pages/profile/profile">重新提交</navigator></view>
-                        <view class="audit_status" wx:if='{{auditStatus === "approved"}}'>审核通过</view>
-                    </view>
-                </view>
-                <view class="personal_status" wx:else>
-                    <view class="register_login" bindtap="register">
-                        注册
-                    </view>
-                </view>
-            </view>
-            <view class="user_nav_right" bindtap="updateProfile">详情
-                <view class="user_detail"><image src="../../images/right_arrow.png" /></view>
-            </view>
-        </view>
-        <view class="activity_classify">
-            <view class="activity_nav_item" wx:for='{{activity_list}}' wx:key="item.index">
-                <view class="activity_item_label" bindtap="{{item.action}}"><image src="{{item.icon}}" />{{item.label}}</view>
-                <view class="activity_item_count">0</view>
-            </view>
-        </view>
     </view>
-    <view class="personal_info_list">
-        <block wx:for='{{personalInfoList}}' wx:key='{{item.index}}'>
-            <view class="{{'person_info_Item '+ item.class}}" bindtap="{{item.action}}">
+   <view class="personal_info_list">
+       <block wx:for='{{personalInfoList}}' wx:key='index'>
+            <view class="{{'personal_info_item '+ item.class}}" bindtap="{{item.action}}">
                 <view class="labelName">{{item.label}}</view>
                 <image src="../../images/right_arrow.png" aria-hidden="true"/>
             </view>
         </block>
-    </view>
+        <view class="personal_info_item disabledID" bindtap="">
+            <view class="labelName">添加残疾证</view>
+        </view>
+   </view>
 </view>

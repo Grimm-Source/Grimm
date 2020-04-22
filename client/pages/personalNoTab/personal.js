@@ -20,45 +20,29 @@ Page({
     ],
     avatarUrl: '../../images/avatar.jpg',
     userInfo: null,
-    activity_list: [
-      {
-        icon: '../../images/order.png',
-        label: '已报名',
-        action: 'onTapRegisteredActivities'
-      },
-      {
-        icon: '../../images/signature.png',
-        label: '已签到'
-      },
-      {
-        icon: '../../images/no_signature.png',
-        label: '未签到'
-      }
-    ],
+    isRegistered: false,
+    isAuthorized: false,
     personalInfoList: [
-      // {
-      //   label: '我的活动列表',
-      //   action: ''
-      // },
-      // {
-      //   label: '我的通知',
-      //   action: '',
-      //   class: 'disabled'
-      // },
       {
-        label: '更新个人信息',
-        action: 'updateProfile'
+        label: '我的活动',
+        action: '',
+        class: 'myActivity'
       },
-      // {
-      //   label: '常见问题',
-      //   action: '',
-      //   class: 'disabled'
-      // },
-      // {
-      //   label: '用户反馈',
-      //   action: '',
-      //   class: 'disabled'
-      // }
+      {
+        label: '已报名活动',
+        action: '',
+        class: 'registered'
+      },
+      {
+        label: '感兴趣的活动',
+        action: '',
+        class: 'myFavorite'
+      },
+      {
+        label: '参加过的活动',
+        action: '',
+        class: 'haveEntered'
+      }
     ]
   },
 
@@ -66,7 +50,9 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-
+    wx.setNavigationBarTitle({
+      title: '个人中心'
+    })
   },
 
   /**
@@ -80,27 +66,11 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-    wx.login({
-      success: res => {
-        console.log(res.code)
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        getRegisterStatus(res.code, (res)=>{//to check if any update of registeration status
-            if(!res.openid){
-              return;
-            }
-            wx.setStorageSync('openid', res.openid);
-            wx.setStorageSync('isRegistered', !!res.isRegistered);
-            wx.setStorageSync('auditStatus', res.auditStatus || "pending");
-            this.setData({
-              isRegistered: !!res.isRegistered,
-              auditStatus: res.auditStatus || "pending"
-            })
-            if(res.isRegistered){
-              this.getInfoSetting(); 
-            }
-        });       
-      }
-    });
+    this.setData({
+      isAuthorized: app.globalData.isAuthorized,
+      isRegistered: app.globalData.isRegistered,
+      userInfo: app.globalData.userInfo
+    })
   },
 
   /**
@@ -138,72 +108,70 @@ Page({
 
   },
 
-  onTapRegisteredActivities: function(){
-    wx.navigateTo({
-      url: '/pages/activityList/activityList?type=REGISTERED',
-    });
-  },
+  // onTapRegisteredActivities: function(){
+  //   wx.navigateTo({
+  //     url: '/pages/activityList/activityList?type=REGISTERED',
+  //   });
+  // },
 
-  getInfoSetting: function(){
-    wx.getSetting({
-      success: res => {
-        if (res.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          wx.getUserInfo({
-            success: res => {
-              // 可以将 res 发送给后台解码出 unionId
-              app.globalData.userInfo = res.userInfo
-              this.setData({
-                userInfo: res.userInfo,
-                avatarUrl: res.userInfo.avatarUrl
-              })
+  // getInfoSetting: function(){
+  //   wx.getSetting({
+  //     success: res => {
+  //       if (res.authSetting['scope.userInfo']) {
+  //         // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+  //         wx.getUserInfo({
+  //           success: res => {
+  //             // 可以将 res 发送给后台解码出 unionId
+  //             app.globalData.userInfo = res.userInfo
+  //             this.setData({
+  //               userInfo: res.userInfo,
+  //               avatarUrl: res.userInfo.avatarUrl
+  //             })
 
-              // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-              // 所以此处加入 callback 以防止这种情况
-              if (this.userInfoReadyCallback) {
-                this.userInfoReadyCallback(res)
-              }
-            }
-          })
-        }
-      }
-    });
+  //             // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+  //             // 所以此处加入 callback 以防止这种情况
+  //             if (this.userInfoReadyCallback) {
+  //               this.userInfoReadyCallback(res)
+  //             }
+  //           }
+  //         })
+  //       }
+  //     }
+  //   });
       
-  },
+  // },
 
-  register: function(){
+  onAuthorizeTap: function(){
     wx.navigateTo({
       url: '/pages/authorize/authorize',
     });
   },
 
-  updateProfile: function(){
-    if(this.data.isRegistered && this.data.auditStatus === "pending"){
-      wx.showToast({
-        title: '个人信息正在审核，无法更新',
-        icon: 'none', //error
-        duration: 2000
-      });
-      return;
-    }
-    if(!this.data.isRegistered){
-      wx.showToast({
-        title: '请先注册',
-        icon: 'none', //error
-        duration: 2000
-      });
-      return;
-    }
+  onRegisterTap: function(){
     wx.navigateTo({
-      url: '/pages/profile/profile',
-    })
-  },
-
-  scanCode: function(){
-    wx.scanCode({
-      success(res) {
-        console.log(res)
-      }
-    })
+      url: '/pages/register/register',
+    });
   }
+
+  // updateProfile: function(){
+  //   if(this.data.isRegistered && this.data.auditStatus === "pending"){
+  //     wx.showToast({
+  //       title: '个人信息正在审核，无法更新',
+  //       icon: 'none', //error
+  //       duration: 2000
+  //     });
+  //     return;
+  //   }
+  //   if(!this.data.isRegistered){
+  //     wx.showToast({
+  //       title: '请先注册',
+  //       icon: 'none', //error
+  //       duration: 2000
+  //     });
+  //     return;
+  //   }
+  //   wx.navigateTo({
+  //     url: '/pages/profile/profile',
+  //   })
+  // }
 })
