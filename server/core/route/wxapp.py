@@ -91,14 +91,15 @@ def wxjscode2session():
 
         return json_dump_http_response(feedback)
 
-@app.route('/getPhoneNumber', methods=['GET'])
+@app.route('/getPhoneNumber', methods=['POST'])
 def getPhoneNumber():
     '''get weixin user phoneNumber'''
-    if request.method == 'GET':
+    if request.method == 'POST':
         info = json_load_http_request(request)  # get http POST data bytes format
-        js_code = info["js_code"]
-        encrypted_data = info["encryptedData"]
-        iv = info["iv"]
+        print(info)
+        js_code = info['js_code']
+        encrypted_data = info['encryptedData']
+        iv = info['iv']
         if js_code is None:
             return json_dump_http_response({'status': 'failure'})
         prefix = 'https://api.weixin.qq.com/sns/jscode2session?appid='
@@ -121,7 +122,9 @@ def getPhoneNumber():
                 sessionKey = feedback['session_key']
                 
                 phone_decrypt = PhoneNumberDecrypt(wxappid, sessionKey)
-                feedback['decrypt_data'] = phone_decrypt.decrypt(encrypted_data, iv)                
+                decryptData = phone_decrypt.decrypt(encrypted_data, iv)
+                print(decryptData)                
+                feedback['decrypt_data'] = decryptData
                 del feedback['session_key']
                 feedback['status'] = 'success'
             else:
