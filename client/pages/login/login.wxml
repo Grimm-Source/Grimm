@@ -1,6 +1,6 @@
 <view class="login-wrapper">
   <view class="login-header">
-    <image></image>
+    <image src="/images/logo.png"></image>
   </view>
   <view class="login-form">
     <view class="login-form-item">

@@ -9,8 +9,8 @@
     "pages/application/application",
     "pages/tips/tips",
     "pages/myActivity/myActivity",
-    "pages/register/register",
     "pages/login/login",
+    "pages/register/register",
     "pages/search/search"
   ],
   "window": {

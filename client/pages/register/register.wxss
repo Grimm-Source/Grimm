@@ -40,6 +40,10 @@
   box-sizing: border-box;
 }
 
+.register-form-item input[disabled]{
+  color: #a8a8a8;
+}
+
 .register-form-group{
   display: flex;
 }

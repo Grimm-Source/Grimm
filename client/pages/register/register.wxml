@@ -1,12 +1,12 @@
 <view class="register-wrapper">
   <view class="register-header">
-    <image></image>
+    <image src="/images/logo.png"></image>
     <view>注册成为我们的一员</view>
   </view>
   <view class="register-form">
     <view class="register-form-item">
       <view class="register-form-label">手机号码</view>
-      <view>{{phone}}</view>
+      <input disabled="true" value="{{phone}}"/>
     </view>
     <view class="register-form-item">
       <view class="register-form-label">*姓名</view>

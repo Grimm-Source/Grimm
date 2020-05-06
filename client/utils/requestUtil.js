@@ -188,6 +188,16 @@ const getMyActivities = (type, successCallback, failCallback) => {
     })
 }
 
+const getPhoneNumber = (obj, successCallback, failCallback) => {
+  return request({
+    url: 'getPhoneNumber',
+    data: obj,
+    success: successCallback,
+    fail: failCallback,
+    method: "POST"
+  });
+}
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -207,5 +217,6 @@ module.exports = {
     toggleInterest,
     toggleThumbsUp,
     toggleRegister,
-    getMyActivities
+    getMyActivities,
+    getPhoneNumber
 }

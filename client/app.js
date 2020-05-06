@@ -13,6 +13,8 @@ App({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
         const token = res.code;
+        this.globalData.token = token;
+
         wx.getSetting({
           success: res => {
             if (res.authSetting['scope.userInfo']) {

@@ -1,10 +1,8 @@
 import WxValidate from '../../utils/WxValidate.js';
 const { register } = require('../../utils/requestUtil.js');
 const { getVerifyCode } = require('../../utils/requestUtil.js');
-const { verifyCode } = require('../../utils/requestUtil.js');
+const { verifyCode, getPhoneNumber } = require('../../utils/requestUtil.js');
 const apiUrl = require('../../config.js').apiUrl;
-
-const app = getApp();
 
 //配置规则
 const rules1 = {
@@ -411,10 +409,20 @@ Page({
     console.log(e.detail.errMsg)
     console.log(e.detail.iv)
     console.log(e.detail.encryptedData)
-
     if (e.detail.iv && e.detail.encryptedData) {
-      wx.navigateTo({
-        url: '/pages/register/register?phone=13888888888',
+      wx.login({
+        success: res => {
+          const param = {
+            js_code: res.code,
+            encryptedData: e.detail.encryptedData,
+            iv: e.detail.iv
+          };
+          getPhoneNumber(param, res => {
+            wx.navigateTo({
+              url: `/pages/register/register?phone=${res.decrypt_data.purePhoneNumber}`,
+            })
+          })
+        }
       })
     }
   }
