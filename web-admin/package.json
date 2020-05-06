@@ -2,6 +2,7 @@
   "name": "web-admin",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/admin/",
   "dependencies": {
     "@babel/core": "7.5.5",
     "@babel/runtime": "^7.7.1",
