@@ -4,7 +4,7 @@ const __getUrl = function(){
   switch (version)
   {
     case 'develop':
-      return 'https://173.37.22.10:18001/';
+      return 'http://47.103.133.134:3000/';
     case 'trial':
       return 'http://47.103.133.134:3000/';
     case 'release':

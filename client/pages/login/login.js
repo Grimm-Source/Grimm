@@ -417,10 +417,13 @@ Page({
             encryptedData: e.detail.encryptedData,
             iv: e.detail.iv
           };
-          getPhoneNumber(param, res => {
-            wx.navigateTo({
-              url: `/pages/register/register?phone=${res.decrypt_data.purePhoneNumber}`,
-            })
+          // getPhoneNumber(param, res => {
+          //   wx.navigateTo({
+          //     url: `/pages/register/register?phone=${res.decrypt_data.purePhoneNumber}`,
+          //   })
+          // })
+          wx.navigateTo({
+            url: `/pages/register/register?phone=18201798201`,
           })
         }
       })

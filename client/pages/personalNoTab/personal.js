@@ -25,7 +25,7 @@ Page({
     personalInfoList: [
       {
         label: '我的活动',
-        action: '',
+        action: 'tapMyActivity',
         class: 'myActivity'
       },
       {
@@ -147,11 +147,27 @@ Page({
     });
   },
 
-  onRegisterTap: function(){
-    wx.navigateTo({
-      url: '/pages/register/register',
-    });
-  }
+  onRegisterTap: function(e){
+    if (e.detail.iv && e.detail.encryptedData) {
+      wx.login({
+        success: res => {
+          const param = {
+            js_code: res.code,
+            encryptedData: e.detail.encryptedData,
+            iv: e.detail.iv
+          };
+          // getPhoneNumber(param, res => {
+          //   wx.navigateTo({
+          //     url: `/pages/register/register?phone=${res.decrypt_data.purePhoneNumber}`,
+          //   })
+          // })
+          wx.navigateTo({
+            url: `/pages/register/register?phone=18201798201`,
+          })
+        }
+      })
+    }
+  },
 
   // updateProfile: function(){
   //   if(this.data.isRegistered && this.data.auditStatus === "pending"){
@@ -174,4 +190,18 @@ Page({
   //     url: '/pages/profile/profile',
   //   })
   // }
+  tapMyActivity: function(){
+    if(this.data.isAuthorized){
+      wx.navigateTo({
+        url: `/pages/myActivity/myActivity`,
+      })
+    }else{
+      wx.showToast({
+        title: '请先授权',
+        icon: 'none', //error
+        duration: 2000
+      });
+      return;
+    }
+  }
 })

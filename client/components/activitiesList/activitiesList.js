@@ -1,5 +1,6 @@
 // components/activitiesList/activitiesList.js
 const { getActivityList, getFilteredActivities} = require('../../utils/requestUtil.js');
+var app = getApp();
 
 Component({
   /**
@@ -8,7 +9,11 @@ Component({
   properties: {
     activitiesProp: {
       type: Array,
-      value:[],
+      value:[]
+    },
+    isAuthorized: {
+      type: Boolean,
+      value: Boolean
     }
   },
 
@@ -68,9 +73,16 @@ Component({
     },
 
     onTapActivity: function (event) {
-      wx.navigateTo({
-        url: '/pages/activityDetail/activityDetail?id=1',
-      })
+      if(this.data.isAuthorized){
+        wx.navigateTo({
+          url: `/pages/activityDetail/activityDetail?id=${event.currentTarget.dataset.id}`,
+        })
+      }else{
+        wx.navigateTo({
+          url: '/pages/authorize/authorize',
+        });
+      }
+      
     },
 
     onFilterParamChange: function(event) {

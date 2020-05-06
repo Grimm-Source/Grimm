@@ -29,11 +29,11 @@ Page({
   },
   onTapLike: function() {
     const isLike = !this.data.isLike;
-    toggleLike(this.data.id, isLike, () => {
-      this.setData({
-        isLike
-      });
+    // toggleLike(this.data.id, isLike, () => {
+    this.setData({
+      isLike
     });
+    // });
   },
   getActivity: function (){
     getActivityDetail(this.data.id, (res) => {
@@ -72,9 +72,9 @@ Page({
   onTapInterest: function() {
     const isInterested = !this.data.isInterested;
     // toggleRegister(this.data.id, isInterested, () => {
-      this.setData({
-        isInterested
-      });
+        this.setData({
+          isInterested
+        });
     // });
   }
 })

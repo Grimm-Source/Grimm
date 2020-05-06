@@ -108,7 +108,10 @@ Page({
       app.globalData.userInfo = e.detail.userInfo
       app.globalData.isAuthorized = true;
     }
-    this.jumpToPersonalPage()
+    wx.navigateBack({
+      delta: 1,
+    })
+    // this.jumpToPersonalPage()
     // this.checkJumpToRegisterPage()
   },
 

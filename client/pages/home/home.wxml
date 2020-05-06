@@ -2,13 +2,13 @@
   <tipsSwiper class="home-tips-siwper"></tipsSwiper>
   <view class="home-header">
     <view class="home-person" bindtap="showPersonInfo">
-      <image src="../../images/avatar.jpg" aria-role="button" aria-label="个人中心"></image>
+      <image src="{{userInfo.avatarUrl || avatarUrl}}" aria-role="button" aria-label="个人中心"></image>
     </view>
     <searchBox class="activities-searchbox"></searchBox>
     <view class="home-scan" bindtap="scanCode">
       <image src="../../images/scan.png" aria-role="button" aria-label="扫一扫，功能未开发完毕"></image>
     </view>
   </view>
-  <activitiesList class="filtered-activities-list"></activitiesList>
+  <activitiesList class="filtered-activities-list" isAuthorized="{{isAuthorized}}"></activitiesList>
   <button bindtap="toggleTabbar">{{showTabbarText}}底部个人中心</button>
 </view>
