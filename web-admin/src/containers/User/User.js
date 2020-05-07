@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Switch } from 'antd';
+import { Button, Select } from 'antd';
 import { connect } from 'react-redux';
 import refresh from '../../images/refresh.svg';
 import TableHeader from '../../components/TableHeader/TableHeader';
@@ -9,10 +9,15 @@ import {USER_LIST_TYPE} from '../../constants';
 
 import './User.less';
 
+const { Option } = Select;
+
 class User extends React.Component {  
-  
   componentDidMount(){
     this.props.refreshTable(this.props.isVolunteer);
+  }
+
+  onChange = (value)=>{
+    this.props.onChangeType(value==="volunteers");
   }
 
   render() {  
@@ -31,7 +36,10 @@ class User extends React.Component {
                       </span>}
                       
                       left={<span>
-                        <Switch disabled={this.props.loading} checkedChildren="志愿者" unCheckedChildren="视障人士" checked={isVolunteer} onChange={this.props.onChangeType.bind(null, isVolunteer)}/>
+                        <Select defaultValue={this.props.isVolunteer?"volunteers":"disabled"} style={{ width: 120 }}  onChange={this.onChange}>
+                          <Option value="volunteers">志愿者</Option>
+                          <Option value="disabled">视障人士</Option>
+                        </Select>
                         </span>}/>
             <UserTable/>
         </div>
@@ -63,7 +71,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onChangeType: (isVolunteer) => {
     dispatch(switchUserList());
-    if(!isVolunteer){
+    if(isVolunteer){
       dispatch(getVolunteerList());
     }else{
       dispatch(getDisabledList());

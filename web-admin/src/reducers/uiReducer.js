@@ -1,5 +1,5 @@
 import {ACTION_TYPES} from '../actions/actionTypes.js';
-import {USER_LIST_TYPE} from '../constants/index.js';
+import {USER_LIST_TYPE, ACTIVITY_DETAIL_TYPE} from '../constants/index.js';
 
 const ui = (state = [], action) => {
     switch (action.type) {
@@ -44,7 +44,8 @@ const ui = (state = [], action) => {
         return {
           ...state,
           isShowActivityModal: true,
-          activityId: action.activityId || null
+          activityId: action.activityId || null,
+          activityDetailType: action.activityDetailType || ACTIVITY_DETAIL_TYPE.EDIT
         };
       case ACTION_TYPES.UI_ACTIVITY_HIDE:
         return {
@@ -52,6 +53,11 @@ const ui = (state = [], action) => {
           isShowActivityModal: false,
           activityId: null,
           activity: {}
+      };
+      case ACTION_TYPES.UI_ACTIVITY_DETAIL_SWITCH:
+        return {
+          ...state,
+          activityDetailType: action.activeKey,
       };
       case ACTION_TYPES.UI_ADMIN_SET:
         return {
@@ -78,6 +84,16 @@ const ui = (state = [], action) => {
           ...state,
           activity: action.activity || {}
         };
+      case ACTION_TYPES.UI_ACTIVITY_STATICS_SET:
+        return {
+          ...state,
+          activityStatics: action.activityStatics || {}
+        };
+        case ACTION_TYPES.UI_ACTIVITY_NAME_LIST_SET:
+          return {
+            ...state,
+            activityNameList: action.activityNameList || {}
+          };
       case ACTION_TYPES.UI_SELECTED_USER_LIST:
         return {
           ...state,

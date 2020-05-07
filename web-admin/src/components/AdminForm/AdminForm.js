@@ -40,6 +40,7 @@ class AdminForm extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
+
         return (
         <Form onSubmit={this.handleSubmit} className="admin-form">
             <Form.Item>

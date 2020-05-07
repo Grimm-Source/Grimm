@@ -13,13 +13,13 @@ class Notice extends React.Component {
         super(props);
         this.io = null;
         if(this.props.hasLogined){
-            this.initNewUsersSocket();
+            // this.initNewUsersSocket();
         }
     }
 
     componentWillReceiveProps(nextProps, prevState){
         if(!this.io && nextProps.hasLogined){
-            this.initNewUsersSocket();
+            // this.initNewUsersSocket();
         }
     }
 

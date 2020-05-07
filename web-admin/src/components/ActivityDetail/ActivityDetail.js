@@ -1,4 +1,5 @@
-import { Form, DatePicker, Input, Button, Spin } from 'antd';
+import { Form, DatePicker, Input, Button, Spin, Radio, InputNumber, message } from 'antd';
+import { SmileOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import ButtonGroup from '../ButtonGroup/ButtonGroup.js';
 import { ACTIVITY_TAGS } from '../../constants';
@@ -11,11 +12,20 @@ import './ActivityDetail.less';
 const { RangePicker } = DatePicker;
 
 class ActivityDetail extends React.Component {
+  state={
+    isVolLimited: false,
+    isDisabledLimited: false
+  }
+
   componentDidMount(){
     if(!this.props.activityId){
       return;
     }
     this.props.getActivity(this.props.activityId);
+  }
+
+  componentDidUpdate(){
+
   }
 
   handleSubmit = e => {
@@ -24,10 +34,15 @@ class ActivityDetail extends React.Component {
       if (err) {
         return;
       }
+      if(Date.parse(new Date) > moment(fieldsValue['date'][0]).valueOf()){
+        message.error('活动已经开始，无法修改');
+        return;
+      }
       const rangeTimeValue = fieldsValue['date'];
       const values = {
         ...fieldsValue,
-        // date: fieldsValue['date'].format('YYYY-MM-DD HH:mm:ss'),
+        // volunteerCount: this.state.isVolLimited?this.props.activity.volunteerCount: null,
+        // disabledCount: this.state.isDisabledLimited?this.props.activity.disabledCount: null,
         id: this.props.activity.id,
         adminId: this.props.userId,
         start_time: rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss'),
@@ -69,6 +84,18 @@ class ActivityDetail extends React.Component {
     }
   }
 
+  onChangeVolLimited=(e)=>{
+    this.setState({
+      isVolLimited: e.target.value
+    });
+  }
+
+  onChangeDisabledLimited=(e)=>{
+    this.setState({
+      isDisabledLimited: e.target.value
+    });
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
@@ -88,17 +115,28 @@ class ActivityDetail extends React.Component {
     }
 
     return (
-      
-       this.props.loading? <Spin size="large" />: <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-       <Form.Item label="活动时间">
-         {getFieldDecorator('date', {
-            rules: [
-                { 
-                    type: 'array', 
-                    required: true, 
-                    message: '请选择时间' 
-                }],
-            })(<RangePicker disabledDate={disabledDate} onChange={this.changeDate} showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm" />)}
+       this.props.loading? <Spin size="large"  />: <Form className="activity-form" {...formItemLayout} onSubmit={this.handleSubmit}>
+         <Form.Item style={{ marginBottom: 0 }} htmlFor="date-item" label="活动时间">
+          <Form.Item style={{ display: 'inline-block', width: '30%' }} >
+            {getFieldDecorator('date', {
+                rules: [
+                    { 
+                        type: 'array', 
+                        required: true, 
+                        message: '请选择时间' 
+                    }],
+                })(<RangePicker disabledDate={disabledDate} onChange={this.changeDate} showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm" />)}
+          </Form.Item>
+          <Form.Item style={{ display: 'inline-block', width: '30%' }}>
+              {getFieldDecorator('duration', {
+                rules: [
+                  {
+                    required: true,
+                    message: '活动持续时间不能为0，请重新选择开始和结束时间',
+                  },
+                ],
+              })(<Input disabled={true} placeholder="0" />)}
+          </Form.Item>
        </Form.Item>
        <Form.Item label="活动主题">
            {getFieldDecorator('title', {
@@ -121,17 +159,6 @@ class ActivityDetail extends React.Component {
              ],
            })(<Input placeholder="请输入活动地点" />)}
        </Form.Item>
-       <Form.Item label="活动持续时间">
-           {getFieldDecorator('duration', {
-            //  initialValue: '0',
-             rules: [
-               {
-                 required: true,
-                 message: '活动持续时间不能为0，请重新选择开始和结束时间',
-               },
-             ],
-           })(<Input disabled={true} placeholder="0" />)}
-       </Form.Item>
        <Form.Item label="活动内容">
            {getFieldDecorator('content', {
              rules: [
@@ -140,7 +167,37 @@ class ActivityDetail extends React.Component {
                  message: '请输入活动内容',
                },
              ],
-           })(<Input.TextArea placeholder="请输入活动内容" />)}
+           })(<Input.TextArea rows={8} placeholder="请输入活动内容" />)}
+       </Form.Item>
+       <Form.Item htmlFor="count-item" style={{ marginBottom: 0 }}  label="人数限制" >
+            <span className="inline-label">志愿者</span>
+            <Radio.Group onChange={this.onChangeVolLimited} value={this.state.isVolLimited}>
+              <Radio value={true}>有</Radio>
+              <Radio value={false}>无</Radio>
+            </Radio.Group>
+            <Form.Item  style={{ marginBottom: 0 }} style={{ display: 'inline-block', width: '30%' }}>{
+              getFieldDecorator('volunteerCount', {
+                rules: [
+                  {
+                    required: false
+                  },
+                ],
+              })(<InputNumber disabled={!this.state.isVolLimited} min={1} type="number" id="volunteerCount" placeholder="请输入志愿者人数" />)
+            }</Form.Item>
+            <span className="inline-label">视障人士</span>
+            <Radio.Group onChange={this.onChangeDisabledLimited} value={this.state.isDisabledLimited}>
+              <Radio value={true}>有</Radio>
+              <Radio value={false}>无</Radio>
+            </Radio.Group>
+            <Form.Item  style={{ marginBottom: 0 }} style={{ display: 'inline-block', width: '30%' }}>{
+              getFieldDecorator('disabledCount', {
+                rules: [
+                  {
+                    required: false
+                  },
+                ],
+              })(<InputNumber min={1} disabled={!this.state.isDisabledLimited} type="number" id="disabledCount" placeholder="请输入视障人士人数" />)
+            }</Form.Item>
        </Form.Item>
        <Form.Item label="活动标签">
            {getFieldDecorator('tag', {
@@ -149,12 +206,10 @@ class ActivityDetail extends React.Component {
                  required: false
                },
              ],
-           })(<ButtonGroup buttons={ACTIVITY_TAGS}  />)}
+           })(<ButtonGroup buttons={Object.keys(ACTIVITY_TAGS)}  />)}
        </Form.Item>
-
-       
        <Form.Item label="活动注意事项">
-           {getFieldDecorator('notice', )(<Input placeholder="请输入活动注意事项" />)}
+           {getFieldDecorator('notice', )(<Input placeholder="请输入活动注意事项"  prefix={<SmileOutlined  style={{color: "#ff5722"}}/>}/>)}
        </Form.Item>
        <Form.Item label="其它">
            {getFieldDecorator('others', )(<Input placeholder="请输入其它事项" />)}
@@ -203,7 +258,13 @@ const WrappedActivityDetail = Form.create({
         }),
         date: Form.createFormField({
           value: (props.activity.start_time &&  props.activity.end_time && [moment(props.activity.start_time, 'YYYY-MM-DD HH:mm'), moment(props.activity.end_time, 'YYYY-MM-DD HH:mm')]) || null
-        })
+        }),
+        disabledCount: Form.createFormField({
+          value: props.activity.disabledCount 
+        }),
+        volunteerCount: Form.createFormField({
+          value: props.activity.volunteerCount
+        }),
       }
     },
     })(ActivityDetail);
@@ -212,7 +273,7 @@ const mapStateToProps = (state) => ({
   activityId: state.ui.activityId,
   activity: state.ui.activity,
   loading: state.ui.loading,
-  userId: state.account.user && state.account.user.id
+  userId: state.account.user && state.account.user.id,
 })
 
 const mapDispatchToProps = (dispatch) => ({

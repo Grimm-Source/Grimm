@@ -1,10 +1,12 @@
-import { List, Skeleton, Modal } from 'antd';
+import { List, Skeleton, Modal, Tag } from 'antd';
 import React from 'react';
 import {
   showActivityModal,
   getActivityList,
-  removeActivity
+  removeActivity,
 } from '../../actions';
+import { ACTIVITY_TAGS } from '../../constants';
+import {ACTIVITY_DETAIL_TYPE} from '../../constants/index.js';
 import { connect } from 'react-redux';
 
 import './ActivityList.less';
@@ -17,41 +19,52 @@ class ActivityList extends React.Component {
 
   render() {
     return (
-      <List
-        className="activity-list"
-        loading={this.props.loading}
-        itemLayout="horizontal"
-        dataSource={this.props.activities}
-        renderItem={item => (
-          <List.Item
-            actions={[
-              <span
-                key="edit"
-                className="list-item-button"
-                onClick={this.props.onClickActivity.bind(this, item)}
-              >
-                编辑
+        <List
+          className="activity-list"
+          loading={this.props.loading}
+          itemLayout="horizontal"
+          dataSource={this.props.activities}
+          renderItem={item => (
+            <List.Item
+              actions={[
+                <span>{item.tag.split(",").map((value, index)=>{
+                  return <Tag className="tag" key={index} color={ACTIVITY_TAGS[value]}>{value}</Tag>
+                })}</span>,
+                <span
+                  key="edit"
+                  className="list-item-button"
+                  onClick={this.props.onClickActivity.bind(this, item, ACTIVITY_DETAIL_TYPE.EDIT)}
+                >
+                  编辑
+                </span>,
+                <span
+                  key="chart"
+                  className="list-item-button"
+                  onClick={this.props.onClickActivity.bind(this, item, ACTIVITY_DETAIL_TYPE.NAME_LIST)}
+                >
+                  查看
               </span>,
-              <span
-                key="delete"
-                className="list-item-button"
-                onClick={this.props.onClickRemoveActivity.bind(this, item)}
-              >
-                删除
-              </span>
-            ]}
-          >
-            <Skeleton avatar title={false} loading={this.props.loading} active>
-              <List.Item.Meta
-                title={<span><span>{(item.start_time.split("T"))[0]===(item.end_time.split("T"))[0] ? (item.start_time.split("T"))[0] : `${(item.start_time.split("T"))[0]} ~ ${(item.end_time.split("T"))[0]}`}</span> | <span>{item.title}</span> | <span>{item.location}</span></span>}
-                description={item.content}
-                className="activity-content"
-                onClick={this.props.onClickActivity.bind(this, item)}
-              />
-            </Skeleton>
-          </List.Item>
-        )}
-      />
+                <span
+                  key="delete"
+                  className="list-item-button"
+                  onClick={this.props.onClickRemoveActivity.bind(this, item)}
+                >
+                  删除
+                </span>
+              ]}
+            >
+              <Skeleton avatar title={false} loading={this.props.loading} active>
+                <List.Item.Meta
+                  title={<span><span>{(item.start_time.split("T"))[0]===(item.end_time.split("T"))[0] ? (item.start_time.split("T"))[0] : `${(item.start_time.split("T"))[0]} ~ ${(item.end_time.split("T"))[0]}`}</span> | <span>{item.title}</span> | <span>{item.location}</span></span>}
+                  description={item.content}
+                  className="activity-content"
+                  onClick={this.props.onClickActivity.bind(this, item, ACTIVITY_DETAIL_TYPE.EDIT)}
+                />
+              </Skeleton>
+            </List.Item>
+            
+          )}
+        />
     );
   }
 }
@@ -62,8 +75,8 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onClickActivity: activityInfo => {
-    dispatch(showActivityModal(activityInfo.id));
+  onClickActivity: (activityInfo, type) => {
+    dispatch(showActivityModal(activityInfo.id, type));
   },
   onClickRemoveActivity: activityInfo => {
     confirm({

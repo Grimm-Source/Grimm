@@ -2,7 +2,7 @@ import React from 'react';
 import { PageHeader, Tag, Button, Menu, Dropdown, Icon } from 'antd';
 import { switchHomeTag, logout , showActivityModal, switchAdminFormType} from '../../actions';
 import Notice from '../Notice/Notice.js';
-import { HOME_TAG_TYPE, ADMIN_FORM_TYPE } from '../../constants';
+import { HOME_TAG_TYPE, ADMIN_FORM_TYPE, ACTIVITY_DETAIL_TYPE } from '../../constants';
 import { storage } from '../../utils/localStorageHelper';
 import { withRouter} from "react-router-dom";
 import { connect } from 'react-redux';
@@ -74,7 +74,7 @@ class Header extends React.Component {
       dispatch(logout());
     },
     onClickCreateActivity: () => {
-      dispatch(showActivityModal());
+      dispatch(showActivityModal(null, ACTIVITY_DETAIL_TYPE.EDIT));
     }
   });
 

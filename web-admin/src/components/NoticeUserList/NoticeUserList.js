@@ -51,7 +51,7 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onClickNewUser : (user) => {
     dispatch(hideDrawer());
-    dispatch(switchHomeTag( HOME_TAG_TYPE.USER))
+    dispatch(switchHomeTag( HOME_TAG_TYPE.USER));
     dispatch(setNoticeUsers([]));
   }
 })

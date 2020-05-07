@@ -38,7 +38,7 @@ class Profile extends React.Component {
                                 密码修改
                                 <Link to="/profile/changePassword" />
                             </Menu.Item>
-                            <SubMenu key="sub3"
+                            {/* <SubMenu key="sub3"
                             title={
                                 <span>
                                 <Icon type="notification" />
@@ -48,7 +48,7 @@ class Profile extends React.Component {
                             >
                                 <Menu.Item key="9">option3</Menu.Item>
                                 <Menu.Item key="10">option4</Menu.Item>
-                            </SubMenu>
+                            </SubMenu> */}
                         </Menu>
                     </Sider>
                     <Content style={{ padding: '0 24px', minHeight: 280 }}>
