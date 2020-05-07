@@ -32,13 +32,19 @@ export const switchAdminFormType = (activeKey) => ({
     activeKey
 });
 
-export const showActivityModal = (activityId) => ({
+export const showActivityModal = (activityId, activityDetailType) => ({
     type: ACTION_TYPES.UI_ACTIVITY_SHOW,
-    activityId
+    activityId,
+    activityDetailType
 });
 
 export const hideActivityModal = () => ({
     type: ACTION_TYPES.UI_ACTIVITY_HIDE
+});
+
+export const switchActivityDetail = (activeKey) => ({
+    type: ACTION_TYPES.UI_ACTIVITY_DETAIL_SWITCH,
+    activeKey
 });
 
 export const showDrawer = () => ({
@@ -234,6 +240,55 @@ const deleteActivity = activityId => dispatch => {
         dispatch(hideLoading());
     });
 }
+
+export const getActivityStatics = (id) => (dispatch, getState) => {
+    dispatch(loading());
+    return dispatch(fetchActivityStatics(id))
+};
+
+const fetchActivityStatics = id => dispatch => {
+    // return request({
+    //     path: `activityStatics?id=${id}`
+    // }).then(activity => {
+    //     dispatch(setActivityStatics(activity));    
+    // }).finally(() => {
+        dispatch(hideLoading());
+    // });
+}
+
+export const setActivityStatics = activityStatics => ({
+    type: ACTION_TYPES.UI_ACTIVITY_STATICS_SET,
+    activityStatics
+});
+
+export const getActivityNameList = (id) => (dispatch, getState) => {
+    dispatch(loading());
+    return dispatch(fetchActivityNameList(id))
+};
+
+const fetchActivityNameList = id => dispatch => {
+    // if(!id){
+    //     return request({
+    //         path: `activityNameList`
+    //     }).then(namelist => {
+    //         dispatch(setActivityNameList(namelist));    
+    //     }).finally(() => {
+    //         dispatch(hideLoading());
+    //     });
+    // }
+    // return request({
+    //     path: `activityNameList?id=${id}`
+    // }).then(namelist => {
+    //     dispatch(setActivityNameList(namelist));    
+    // }).finally(() => {
+        dispatch(hideLoading());
+    // });
+}
+
+export const setActivityNameList = activityNameList => ({
+    type: ACTION_TYPES.UI_ACTIVITY_NAME_LIST_SET,
+    activityNameList
+});
 
 export const getActivityList = () => (dispatch, getState) => {
     dispatch(loading());

@@ -1,17 +1,27 @@
 import React from 'react';
-import { Modal } from 'antd';
+import { Modal, Tabs } from 'antd';
 import ActivityDetail from '../../components/ActivityDetail/ActivityDetail.js';
-import { hideActivityModal} from '../../actions';
+import ActivityChart from '../../components/ActivityChart/ActivityChart.js';
+import ActivityNameList from '../../components/ActivityNameList/ActivityNameList.js';
+import { hideActivityModal, switchActivityDetail} from '../../actions';
+import {ACTIVITY_DETAIL_TYPE} from '../../constants/index.js';
 import { connect } from 'react-redux';
 
 import './Activity.less';
 
+const { TabPane } = Tabs;
+
 class Activity extends React.Component {
+
+  onChangeTab = value => {
+    this.props.onChangeActivityDetail(value);
+  };
+
   render() {
     return (
         <Modal
           className="activity-modal"
-          title="编辑活动"
+          title={this.props.activityId?"":"活动编辑"}
           visible={this.props.isActivityVisible}
           destroyOnClose={true}
           maskClosable={false}
@@ -19,19 +29,38 @@ class Activity extends React.Component {
           cancelButtonProps={{ disabled: true }}
           okButtonProps={{ disabled: true }}
         >
-          <ActivityDetail activity={this.props.activity}/>
+
+          {
+            !this.props.activityId?<ActivityDetail />:
+            <Tabs activeKey={this.props.activityDetailType} tabPosition="top" onChange={this.onChangeTab}>
+              <TabPane tab="内容" key={ACTIVITY_DETAIL_TYPE.EDIT}>
+                <ActivityDetail />
+              </TabPane>
+              <TabPane tab="名单" key={ACTIVITY_DETAIL_TYPE.NAME_LIST}>
+                <ActivityNameList />
+              </TabPane>
+              <TabPane tab="统计" key={ACTIVITY_DETAIL_TYPE.CHART}>
+                <ActivityChart />
+              </TabPane>
+            </Tabs>
+          }
         </Modal>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  isActivityVisible: state.ui.isShowActivityModal
+  isActivityVisible: state.ui.isShowActivityModal,
+  activityId: state.ui.activityId,
+  activityDetailType: state.ui.activityDetailType
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onCancel : () => {
     dispatch(hideActivityModal());
+  },
+  onChangeActivityDetail: (type)=>{
+    dispatch(switchActivityDetail(type));
   }
 })
 

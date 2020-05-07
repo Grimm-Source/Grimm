@@ -1,4 +1,9 @@
-.activity-list {
+.activity-container .activity-list {
+    &.ant-list{
+        margin: 20px 0;
+    }
+    
+
     .ant-list-item-meta-description{
         display: -webkit-box;
         -webkit-box-orient: vertical;
@@ -16,10 +21,14 @@
             background: white;
             padding: 10px 20px;
 
-            .activity-content:hover{
+            .list-item-button:hover, .activity-content:hover{
                 cursor: pointer;
             }
+            .list-item-button[role="img"]{
+                font-size: 20px;
+            }
         }        
+
 
         .ant-list-item:hover{
             border-left: 6px solid #1990ff5c;

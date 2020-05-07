@@ -6,6 +6,12 @@ export const HOME_TAG_TYPE = {
     REPORT: "REPORT"
 };
 
+export const ACTIVITY_DETAIL_TYPE = {
+    EDIT: "EDIT",
+    CHART: "CHART",
+    NAME_LIST: "NAME_LIST"
+};
+
 export const ADMIN_PANEL_TYPE = {
     DETAIL: "DETAIL",
     ADD: "ADD"
@@ -27,11 +33,10 @@ export const AUDIT_STATUS = {
     rejected: "已拒绝"
 }
 
-export const ACTIVITY_TAGS = [
-    "运动",
-    "学习",
-    "分享",
-    "文娱",
-    "保健",
-    "其它"
-   ]
+export const ACTIVITY_TAGS = {运动:"#00bcd4",
+    学习:"#4caf50",
+    分享:"#ff9800",
+    文娱:"#ff5722",
+    保健:"#00bcd4",
+    其它:"#4caf50"
+};

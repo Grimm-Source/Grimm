@@ -5,7 +5,7 @@ import Drawer from '../Drawer/Drawer.js';
 import AdminPanel from '../AdminPanel/AdminPanel.js';
 import User from '../User/User.js';
 import Activity from '../Activity/Activity.js';
-import ActivityList from '../../components/ActivityList/ActivityList.js';
+import ActivityPanel from '../ActivityPanel/ActivityPanel.js';
 import Profile from '../Profile/Profile.js';
 import Report from '../Report/Report.js';
 import ResetPassword from '../ResetPassword/ResetPassword'
@@ -40,12 +40,8 @@ class Home extends React.Component {
         return(
             <Menu className="nav-bar" selectedKeys={[`${currentTagType()}`]} mode="horizontal">
                 <Menu.Item key={HOME_TAG_TYPE.ACTIVITY}>
-                志愿者活动
+                公益活动
                 <Link to="/" />
-                </Menu.Item>
-                <Menu.Item key={HOME_TAG_TYPE.REPORT}>
-                活动签到统计
-                <Link to="/report" />
                 </Menu.Item>
                 <Menu.Item key={HOME_TAG_TYPE.USER}>
                 微信用户
@@ -53,10 +49,9 @@ class Home extends React.Component {
                 </Menu.Item>
                 {this.props.user && this.props.user.type === "root"? <Menu.Item key={HOME_TAG_TYPE.ADMIN}>管理员<Link to="/admins" /></Menu.Item> : null}
                 <Menu.Item key={HOME_TAG_TYPE.PROFILE}>
-                个人信息管理
+                设置
                 <Link to="/profile/base-info" />
                 </Menu.Item>
-                
             </Menu>
         )
     }
@@ -69,7 +64,7 @@ class Home extends React.Component {
                 {this.getNavContent()}
                 <div className="content-wrapper" >
                 <Switch>
-                    <Route exact path="/" component={ActivityList}/>
+                    <Route exact path="/" component={ActivityPanel}/>
                     <Route path="/report" component={Report}/>
                     <Route path="/users" component={User}/>
                     <Route path="/profile" component={Profile}/>
