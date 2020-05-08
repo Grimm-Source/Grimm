@@ -43,7 +43,7 @@ class ActivityList extends React.Component {
                 <span
                   key="chart"
                   className="list-item-button"
-                  onClick={this.props.onClickActivity.bind(this, item, ACTIVITY_DETAIL_TYPE.NAME_LIST)}
+                  onClick={this.props.onClickActivity.bind(this, item, ACTIVITY_DETAIL_TYPE.CHART)}
                 >
                   查看
               </span>,
