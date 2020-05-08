@@ -1,5 +1,6 @@
 // components/myActivities/myActivitiesList.js
 const { getMyActivities } = require('../../utils/requestUtil.js');
+const app = getApp()
 
 const myActivitiesType = {
   MYALL: 0,
@@ -102,11 +103,11 @@ Component({
 
     _getFilterTypeStr: function(type) {
       if (type == myActivitiesType.MYALL) {
-        return "all";
+        return "attended";
       }
 
       if (type == myActivitiesType.INTERESTED) {
-        return "favorite";
+        return "isInterested";
       }
 
       if (type == myActivitiesType.REGISTERED) {
@@ -115,16 +116,24 @@ Component({
     },
     
     onTapActivity: function (event) {
+      console.log(event)
       wx.navigateTo({
-        url: '/pages/activityDetail/activityDetail?id=1',
+        url: `/pages/activityDetail/activityDetail?id=${event.currentTarget.dataset.id}`,
       })
     },
 
     onFilterParamChange: function (type) {
       const filterStr = this._getFilterTypeStr(type);
-      getMyActivities(filterStr, (res) => {
-        this._setMyActivities(type, res);
-      });
+      // getMyActivities(filterStr, (res) => {
+      //   this._setMyActivities(type, res);
+      // });
+      const activities = []
+      app.globalData.activityList.forEach(item => {
+        if(item[filterStr]){
+          activities.push(item)
+        }
+      })
+      this._setMyActivities(type, activities);
     }
   }
 })

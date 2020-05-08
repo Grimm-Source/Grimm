@@ -30,7 +30,20 @@
                     注册解锁更多活动
                 </button>
                 <view wx:else class="activity_record">
-                    注册成功。。。。
+                    <view class='progress_box attendMinutes'>
+                        <canvas class="progress_bg" canvas-id="canvasProgressbg1">  </canvas> 
+                        <canvas class="progress_canvas" canvas-id="canvasProgress1">  </canvas> 
+                        <view class="progress_text">
+                            <text class='progress_info'>{{progress_attendMinutes}}</text>
+                        </view>     
+                    </view>
+                    <view class='progress_box attendTimes'>
+                        <canvas class="progress_bg" canvas-id="canvasProgressbg2">  </canvas> 
+                        <canvas class="progress_canvas" canvas-id="canvasProgress2">  </canvas> 
+                        <view class="progress_text">
+                            <text class='progress_info'>{{progress_attendTimes}}</text>
+                        </view>     
+                    </view>
                 </view>
                 <view class="footer_message">
                     <view>活动结束后，志愿者可以登陆志愿者网</view>

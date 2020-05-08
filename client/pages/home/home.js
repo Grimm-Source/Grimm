@@ -42,6 +42,7 @@ Page({
                     if(!res.openid){
                       return;
                     }
+                    console.log(res)
                     wx.setStorageSync('openid', res.openid);
                     wx.setStorageSync('isRegistered', !!res.isRegistered);
                     wx.setStorageSync('auditStatus', res.auditStatus || "pending");
@@ -91,6 +92,18 @@ Page({
         console.log(res);
       }
     });
+  },
+
+  scanCode: function(){
+    wx.scanCode({
+      success: (res) => {
+        console.log("扫码结果");
+        console.log(res);
+      },
+      fail: (res) => {
+        console.log(res);
+      }
+    })
   }
   
 })

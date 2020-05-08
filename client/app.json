@@ -24,21 +24,21 @@
     "request": 10000
   },
   "tabBar": {
-    "color": "#c8db8c",
-    "selectedColor": "#afcd50",
+    "color": "#bfbfbf",
+    "selectedColor": "#113E6F",
     "borderStyle": "black",
     "backgroundColor": "#FFF",
     "list": [
       {
         "pagePath": "pages/home/home",
-        "iconPath": "images/home_de.png",
-        "selectedIconPath": "images/home_se.png",
+        "iconPath": "images/home_default.png",
+        "selectedIconPath": "images/home_select.png",
         "text": "活动"
       },
       {
         "pagePath": "pages/personal/personal",
-        "iconPath": "images/per_de.png",
-        "selectedIconPath": "images/per_se.png",
+        "iconPath": "images/user_default.png",
+        "selectedIconPath": "images/user_select.png",
         "text": "个人中心"
       }
     ]

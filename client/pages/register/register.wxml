@@ -19,15 +19,21 @@
       </picker>
     </view>
     <view class="register-form-item">
-      <view class="register-form-label">出生日期</view>
+      <view class="register-form-label">*出生日期</view>
       <picker mode="date" bindchange="bindBirthdayChange" value="{{birthday}}">
         <input disabled placeholder="请选择您的出生日期" value="{{birthday}}"/>
       </picker>
     </view>
     <view class="register-form-item">
-      <view class="register-form-label">所在城市区域</view>
+      <view class="register-form-label">*所在城市区域</view>
       <picker mode="region" bindchange="bindRegionChange" value="{{region}}">
         <input disabled placeholder="请选择您所在的城市区域" value="{{region[0]}}{{region[1]}}{{region[2]}}"/>
+      </picker>
+    </view>
+    <view class="register-form-item">
+      <view class="register-form-label">*身份</view>
+      <picker bindchange="bindRoleChange" value="{{roleIndex}}" range="{{roles}}">
+        <input disabled value="{{roles[roleIndex]}}"/>
       </picker>
     </view>
   </view>

@@ -22,6 +22,8 @@ Page({
     userInfo: null,
     isRegistered: false,
     isAuthorized: false,
+    progress_attendMinutes: '0 分钟',  
+    progress_attendTimes: '0 次活动',  
     personalInfoList: [
       {
         label: '我的活动',
@@ -57,7 +59,7 @@ Page({
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function () {
-
+    this.drawProgressbg(); 
   },
 
   /**
@@ -201,5 +203,27 @@ Page({
       });
       return;
     }
+  },
+  drawProgressbg: function(){
+    // 使用 wx.createContext 获取绘图上下文 context
+    var ctx1 = wx.createCanvasContext('canvasProgressbg1',this)
+    ctx1.setLineWidth(2);// 设置圆环的宽度
+    ctx1.setStrokeStyle('#6E6E6E'); // 设置圆环的颜色
+    ctx1.setLineCap('round') // 设置圆环端点的形状
+    ctx1.beginPath();//开始一个新的路径
+    ctx1.arc(55, 55, 50, 0, 2 * Math.PI, false);
+    //设置一个原点(50,50)，半径为100的圆的路径到当前路径
+    ctx1.stroke();//对当前路径进行描边
+    ctx1.draw();
+
+    var ctx2 = wx.createCanvasContext('canvasProgressbg2',this)
+    ctx2.setLineWidth(2);// 设置圆环的宽度
+    ctx2.setStrokeStyle('#6E6E6E'); // 设置圆环的颜色
+    ctx2.setLineCap('round') // 设置圆环端点的形状
+    ctx2.beginPath();//开始一个新的路径
+    ctx2.arc(55, 55, 50, 0, 2 * Math.PI, false);
+    //设置一个原点(110,110)，半径为100的圆的路径到当前路径
+    ctx2.stroke();//对当前路径进行描边
+    ctx2.draw();
   }
 })

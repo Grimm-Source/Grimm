@@ -3,7 +3,7 @@
   <text class="detail-title text-xl">{{title}}</text>
   <view class="detail-action-wrapper">
     <button class="detail-action" bindtap="onTapLike">
-      <image class="detail-icon" src="{{isLike ? '/images/heart_selected.png' : '/images/heart.png'}}"></image>赞
+      <image class="detail-icon" src="{{isLike ? '/images/heart_selected.png' : '/images/heart.png'}}"></image>{{likeNum === 0 ? '赞':likeNum}}
     </button>
     <button class="detail-action" open-type="share">
       <image class="detail-icon" src="/images/share.png"></image>分享
