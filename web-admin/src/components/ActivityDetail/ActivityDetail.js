@@ -35,7 +35,7 @@ class ActivityDetail extends React.Component {
         return;
       }
       if(Date.parse(new Date) > moment(fieldsValue['date'][0]).valueOf()){
-        message.error('活动已经开始，无法修改');
+        message.error('活动已经开始，或活动开始时间有误，无法保存');
         return;
       }
       const rangeTimeValue = fieldsValue['date'];
@@ -117,7 +117,7 @@ class ActivityDetail extends React.Component {
     return (
        this.props.loading? <Spin size="large"  />: <Form className="activity-form" {...formItemLayout} onSubmit={this.handleSubmit}>
          <Form.Item style={{ marginBottom: 0 }} htmlFor="date-item" label="活动时间">
-          <Form.Item style={{ display: 'inline-block', width: '30%' }} >
+          <Form.Item style={{ display: 'inline-block', width: '45%' }} >
             {getFieldDecorator('date', {
                 rules: [
                     { 
@@ -167,7 +167,7 @@ class ActivityDetail extends React.Component {
                  message: '请输入活动内容',
                },
              ],
-           })(<Input.TextArea rows={8} placeholder="请输入活动内容" />)}
+           })(<Input.TextArea rows={5} placeholder="请输入活动内容" />)}
        </Form.Item>
        <Form.Item htmlFor="count-item" style={{ marginBottom: 0 }}  label="人数限制" >
             <span className="inline-label">志愿者</span>
@@ -211,9 +211,9 @@ class ActivityDetail extends React.Component {
        <Form.Item label="活动注意事项">
            {getFieldDecorator('notice', )(<Input placeholder="请输入活动注意事项"  prefix={<SmileOutlined  style={{color: "#ff5722"}}/>}/>)}
        </Form.Item>
-       <Form.Item label="其它">
+       {/* <Form.Item label="其它">
            {getFieldDecorator('others', )(<Input placeholder="请输入其它事项" />)}
-       </Form.Item>
+       </Form.Item> */}
        <Form.Item
          wrapperCol={{
            xs: { span: 24, offset: 0 },

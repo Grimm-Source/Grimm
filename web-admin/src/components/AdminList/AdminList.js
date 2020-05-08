@@ -1,4 +1,5 @@
 import { List, Skeleton, Modal } from 'antd';
+import { CheckCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import React from 'react';
 import { getAdminList, getAdmin, removeAdmin, switchAdminPanel} from '../../actions';
 import { ADMIN_PANEL_TYPE } from "../../constants";
@@ -26,7 +27,7 @@ class AdminList extends React.Component {
                 >
                     <Skeleton title={false} loading={this.props.loading} active>
                     <List.Item.Meta
-                        title={<span className="admin-name">{item.email}</span>}
+                        title={<span className="admin-name">{(item.email_verified === 1?<CheckCircleOutlined style={{color: "#4caf50"}}/>:<ExclamationCircleOutlined  style={{color: "#ff5722"}}/>)}<span className="account-email">{item.email}</span></span>}
                     />
                     </Skeleton>
                 </List.Item>
