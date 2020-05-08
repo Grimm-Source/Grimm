@@ -3,8 +3,8 @@
   <activitiesPicker class="activities-picker" categories="{{activityCategories}}" bind:filterChange="onFilterParamChange"></activitiesPicker>
   <scroll-view class="activities-list" scroll-y="true" bindrefreshpulling="onPulling">
     <block wx:for="{{activitiesProp}}" wx:key="id">
-      <view class="activity-item" id="{{item.adminId}}">
-        <view class="activity-detail" bindtap="onTapActivity" data-id="{{item.id}}">
+      <view class="activity-item" id="{{item.adminId}}" bindtap="onTapActivity" data-id="{{item.id}}">
+        <view class="activity-detail">
           <image class="activity-image" src="../../images/banner.jpg" aria-role="row" aria-label="点击进入活动详情"></image>
           <text class="activity-title text-xl" aria-label="标题 {{item.title}}">{{item.title}}</text>
           <text class="activity-description text-md" aria-label="简介 {{item.content}}">{{item.content}}</text>
@@ -14,9 +14,9 @@
           <text class="activity-location text-xl">地点: {{item.location}}</text>
         </view>
         <view class="activity-action">
-          <view class="activity-people">
+          <!-- <view class="activity-people">
             <text class="text-ss">{{item.joined?item.joined:0}}人参加 | {{item.inserted?item.inserted:0}}人感兴趣</text>
-          </view>
+          </view> -->
           <view class="activity-button">
             <!-- <image class="activity_like" src=""></image>
             <image class="activity_share" src=""></image> -->

@@ -40,8 +40,10 @@ Component({
         for (let index = 0; index < activities.length; index++) {
           let activity = activities[index];
           let startTime = activity.start_time.replace('T', ' ');
+          let startTimeLastIndex = startTime.lastIndexOf(':')
           let endTime = activity.end_time.replace('T', ' ');
-          activity.schedule = startTime + " - " + endTime;
+          let endTimeLastIndex = endTime.lastIndexOf(':')
+          activity.schedule = startTime.substring(0, startTimeLastIndex) + " - " + endTime.substring(0, endTimeLastIndex);
           formattedActivities.push(activity);
         }
         this.setData({activitiesProp: formattedActivities});

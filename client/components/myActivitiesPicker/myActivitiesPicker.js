@@ -17,7 +17,7 @@ Component({
    */
   data: {
     myActivitiesTab: [
-      { 'idx': '0', 'tabName': '我的活动'},
+      { 'idx': '0', 'tabName': '参加过的活动'},
       { 'idx': '1', 'tabName': '已报名'},
       { 'idx': '2', 'tabName': '感兴趣'}]
   },

@@ -1,10 +1,13 @@
 const { register} = require('../../utils/requestUtil.js');
+const app = getApp();
 
 Page({
   data: {
     phone: '',
     name: '',
     genders: ['男', '女'],
+    roles: ['志愿者', '视障人士'],
+    roleIndex: 0,
     genderIndex: 0,
     birthday: '',
     region: []
@@ -25,6 +28,12 @@ Page({
   bindGenderChange: function (e) {
     this.setData({
       genderIndex: e.detail.value
+    })
+  },
+
+  bindRoleChange: function(e){
+    this.setData({
+      roleIndex: e.detail.value
     })
   },
 
@@ -54,6 +63,7 @@ Page({
       tel: this.data.phone,
       name: this.data.name,
       gender: this.data.genders[this.data.genderIndex],
+      role: this.data.roles[this.data.roleIndex],
       birthdate: this.data.birthday,
       linkaddress: this.data.region.join('')
     }, (res) => {
@@ -64,9 +74,13 @@ Page({
         icon: 'success',
         duration: 3000
       });
-      wx.switchTab({
-        url: '../home/home',
-      });
+      app.globalData.isRegistered = true;
+      wx.navigateBack({
+        delta: 1,
+      })
+      // wx.switchTab({
+      //   url: '../home/home',
+      // });
     }, (err) => {
       wx.showModal({
         showCancel: false,
