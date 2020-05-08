@@ -622,7 +622,7 @@ def convert_activity_to_query(activity):
     query['end_time'] = end.strftime('%Y-%m-%dT%H:%M:%S')
     query['duration'] = calc_duration(start, end)
     query['content'] = activity['content']
-    query['notice'] = activity['content']
+    query['notice'] = activity['notice']
     query['others'] = activity['others']
     query['tag'] = tag_converter.convert_idstring_to_tagstring(activity['tag_ids'])
     return query
