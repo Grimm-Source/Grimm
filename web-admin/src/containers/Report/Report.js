@@ -9,7 +9,7 @@ import './Report.less';
 class Report extends React.Component { 
 
   render() { 
-    return <ActivityNameList/>;
+    return <ActivityNameList className="report-table"/>;
   }
 }
 
