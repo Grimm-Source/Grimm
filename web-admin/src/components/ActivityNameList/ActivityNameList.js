@@ -119,7 +119,7 @@ class ActivityNameList extends React.Component {
           {
             title: '用户',
             dataIndex: 'name',
-            width: '25%',
+            width: '23%',
             ...this.getColumnSearchProps('name', '用户'),
           },
           {
@@ -143,13 +143,13 @@ class ActivityNameList extends React.Component {
           {
             title: '对接人',
             dataIndex: 'pickUpName',
-            width: '25%',
+            width: '23%',
             ...this.getColumnSearchProps('pickUpName', '对接人'),
           },
           {
             title: '状态',
             dataIndex: 'status',
-            width: '15%',
+            width: '20%',
             sorter: (a, b) => b.status.localeCompare(a.status),
           }
         ];
@@ -166,7 +166,7 @@ class ActivityNameList extends React.Component {
                 <Table rowKey="id" loading={this.props.loading} size="small" columns={columns} dataSource={this.props.activityNameList} 
                   onChange={this.handleChange} footer={() => <Button type="link" onClick={this.onClickDownload}>下载名单</Button>}
                   pagination={{  
-                    pageSize: this.props.activityId? 10:20,
+                    pageSize: this.props.activityId? 10:15,
                     showTotal: (total, range) => this.props.activityId?<span>{`${range[0]}-${range[1]}项，共${total}项`}</span>:<span style={{color:"white"}}>{`${range[0]}-${range[1]}项，共${total}项`}</span>
                   }}/>
                 </div>;

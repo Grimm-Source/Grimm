@@ -24,6 +24,9 @@ class ActivityList extends React.Component {
           loading={this.props.loading}
           itemLayout="horizontal"
           dataSource={this.props.activities}
+          pagination={{  
+            pageSize: 10
+          }}
           renderItem={item => (
             <List.Item
               actions={[
