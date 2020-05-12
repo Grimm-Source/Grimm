@@ -57,8 +57,6 @@ if Launcher == 'start.py':
     parser.add_argument('-v', '--version', action='version',
                         version='%(prog)s ' + GRIMM_VERSION,
                         help='Show %(prog)s version string and exit.')
-    parser.add_argument('-?', '--help', action='help',
-                        help='Show this help message and exit.')
     parser.add_argument('-h', '--host', metavar='Host IP', nargs='?',
                         default='0.0.0.0', dest='host',
                         help='Customize server host address.')
@@ -67,11 +65,13 @@ if Launcher == 'start.py':
                         help='Customize service\'s listening port.')
     parser.add_argument('-l', '--logfile', dest='logfile', metavar='Log File',
                         nargs='?', default=os.path.join(TOP_DIR, 'log/session.log'),
-                        help='Specify a logfile when starting in daemon mode')
+                        help='Specify a logfile when starting in daemon mode.')
     parser.add_argument('-f', '--force', dest='force', action='store_true',
-                        help='Force database connection when start')
+                        help='Force database connection when start.')
     parser.add_argument('-D', '--daemon', dest='daemon', action='store_true',
-                        help='Start in daemon mode')
+                        help='Start in daemon mode.')
+    parser.add_argument('-?', '--help', action='help',
+                        help='Show this help message and exit.')
 
     cmd_args = parser.parse_args()
     server.core.globals.HOST = cmd_args.host
