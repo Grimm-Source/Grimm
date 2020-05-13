@@ -2,7 +2,7 @@
   <tipsSwiper class="home-tips-siwper"></tipsSwiper>
   <view class="home-header">
     <view class="home-person" bindtap="showPersonInfo">
-      <image src="../../images/avatar.jpg" aria-role="button" aria-label="个人中心"></image>
+      <image src="{{userInfo.avatarUrl || avatarUrl}}" aria-role="button" aria-label="个人中心"></image>
     </view>
     <searchBox class="activities-searchbox"></searchBox>
     <view class="home-scan" bindtap="scanCode">
