@@ -26,7 +26,7 @@
                         </view>
                     </view>
                 </view>
-                <button wx:if='{{!isRegistered}}' class="registerBtn btn-primary" bindtap="onRegisterTap">
+                <button wx:if='{{!isRegistered}}' class="registerBtn btn-primary" open-type="getPhoneNumber" bindgetphonenumber="onRegisterTap">
                     注册解锁更多活动
                 </button>
                 <view wx:else class="activity_record">

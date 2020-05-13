@@ -1,5 +1,5 @@
 var app = getApp();
-const {getRegisterStatus} = require('../../utils/requestUtil.js');
+const {getRegisterStatus, getPhoneNumber} = require('../../utils/requestUtil.js');
 
 Page({
 
@@ -147,10 +147,23 @@ Page({
     });
   },
 
-  onRegisterTap: function(){
-    wx.navigateTo({
-      url: '/pages/register/register',
-    });
+  onRegisterTap: function(e){
+    if (e.detail.iv && e.detail.encryptedData) {
+      wx.login({
+        success: res => {
+          const param = {
+            js_code: res.code,
+            encryptedData: e.detail.encryptedData,
+            iv: e.detail.iv
+          };
+          getPhoneNumber(param, res => {
+            wx.navigateTo({
+              url: `/pages/register/register?phone=${res.decrypt_data.purePhoneNumber}`,
+            })
+          })
+        }
+      })
+    }
   },
 
   drawProgressbg: function(){
