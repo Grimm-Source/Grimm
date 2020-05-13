@@ -26,6 +26,9 @@
   font-size: 22px;
   color: whitesmoke;
   padding: 0rpx 20px ;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .activity-description {
@@ -35,6 +38,9 @@
   top: -70px;
   color: whitesmoke;
   padding: 0rpx 20px 20rpx 20px ;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .activity-time-location {

@@ -34,9 +34,7 @@ Component({
         let formattedActivities = [];
         for (let index = 0; index < activities.length; index++) {
           let activity = activities[index];
-          let startTime = activity.start_time.replace('T', ' ');
-          let endTime = activity.end_time.replace('T', ' ');
-          activity.schedule = startTime + " - " + endTime;
+          activity.schedule = this.getActivityTimeStr(activity);
           formattedActivities.push(activity);
         }
         this.setData({activitiesProp: formattedActivities});
@@ -99,6 +97,18 @@ Component({
     
     onPulling: function() {
       
+    },
+
+    getActivityTimeStr: function(activity) {
+      let startTime = activity.start_time.replace('T', ' ').replace(/-/g, ".");
+      let endTime = activity.end_time.replace('T', ' ').replace(/-/g, ".");
+      let timeStr = "";
+      if (activity.duration.day != 0) {
+        timeStr = startTime.substr(0, 10) + " - " + endTime.substr(0, 10)
+      } else {
+        timeStr = startTime.substr(0, 16) + "-" + endTime.substr(11, 16)
+      }
+      return timeStr;
     }
   }
 })

@@ -25,7 +25,7 @@
 .time-picker {
   display: inline-block;
   /* position: relative; */
-  width: 80%;
+  width: 90%;
   box-sizing: border-box;
   background: var(--primary-color);
   white-space: nowrap;

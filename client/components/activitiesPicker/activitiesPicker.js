@@ -20,8 +20,7 @@ Component({
       { 'time_id': "all", 'description': '全部'},
       { 'time_id': "latest", 'description': '最新' },
       { 'time_id': "weekends", 'description': '周末' },
-      { 'time_id': "recents", 'description': '最近一周' },
-      { 'time_id': "interval", 'description': '选择日期' },],
+      { 'time_id': "recents", 'description': '最近一周' },],
     activeCategory: -1,
     activeTime: "all",
   },
@@ -54,8 +53,12 @@ Component({
     },
 
     tapTime: function (event) {
+      let timeParam = event.currentTarget.id;
+      if (event.currentTarget.id == "interval") {
+        timeParam = event.detail.value;
+      }
       this.setData({
-        activeTime: event.currentTarget.id,
+        activeTime: timeParam,
       });
       this.filterParamsChange();
     },
