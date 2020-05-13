@@ -22,6 +22,8 @@ Page({
     userInfo: null,
     isRegistered: false,
     isAuthorized: false,
+    progress_attendMinutes: '0 分钟',  
+    progress_attendTimes: '0 次活动',  
     personalInfoList: [
       {
         label: '我的活动',
@@ -57,7 +59,7 @@ Page({
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function () {
-
+    this.drawProgressbg(); 
   },
 
   /**
@@ -149,6 +151,28 @@ Page({
     wx.navigateTo({
       url: '/pages/register/register',
     });
+  },
+
+  drawProgressbg: function(){
+    var ctx1 = wx.createCanvasContext('canvasProgressbg1',this)
+    ctx1.setLineWidth(2);
+    ctx1.setStrokeStyle('#6E6E6E');
+    ctx1.setLineCap('round');
+    ctx1.beginPath();
+    ctx1.arc(55, 55, 50, 0, 2 * Math.PI, false);
+    
+    ctx1.stroke();
+    ctx1.draw();
+
+    var ctx2 = wx.createCanvasContext('canvasProgressbg2',this)
+    ctx2.setLineWidth(2);
+    ctx2.setStrokeStyle('#6E6E6E');
+    ctx2.setLineCap('round');
+    ctx2.beginPath();
+    ctx2.arc(55, 55, 50, 0, 2 * Math.PI, false);
+    
+    ctx2.stroke();
+    ctx2.draw();
   }
 
   // updateProfile: function(){

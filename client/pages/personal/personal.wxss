@@ -150,3 +150,36 @@ page{
 }
 
 
+.activity_record{
+    display: flex;
+    justify-content: space-around;
+}
+
+.progress_box{
+    position: relative;
+    width: 110px;
+    height: 110px;  
+    display: flex;  
+    align-items: center;
+    justify-content: center;
+  }
+  .progress_bg{
+    position: absolute;
+    width:110px;
+    height: 110px; 
+  }
+  .progress_canvas{ 
+    width:110px;
+    height: 110px; 
+  } 
+  .progress_text{ 
+    position: absolute; 
+    display: flex;  
+    align-items: center;
+    justify-content: center
+  }
+  .progress_info{   
+    font-size: 24rpx;
+    padding-left: 16rpx;
+    letter-spacing: 2rpx
+  } 
