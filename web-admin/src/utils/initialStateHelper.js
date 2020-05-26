@@ -48,7 +48,7 @@ const initialState = {
               name: '王二五',
               type: 'disabled',
               activity: '爱心牵手',
-              status: '未签到',
+              status: '已报名',
               pickUp: false,
               pickUpName: ''
             },
@@ -84,7 +84,7 @@ const initialState = {
                 name: '王二六',
                 type: 'disabled',
                 activity: '爱心牵手',
-                status: '未签到',
+                status: '已报名',
                 pickUp: true,
                 pickUpName: '李四二'
               },
