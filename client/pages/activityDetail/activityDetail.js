@@ -29,7 +29,7 @@ Page({
   },
   onTapLike: function() {
     const isLike = !this.data.isLike;
-    toggleLike(this.data.id, isLike, () => {
+    toggleThumbsUp(this.data.id, isLike, () => {
       this.setData({
         isLike
       });
