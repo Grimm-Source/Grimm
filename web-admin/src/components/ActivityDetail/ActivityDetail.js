@@ -45,6 +45,7 @@ class ActivityDetail extends React.Component {
         // disabledCount: this.state.isDisabledLimited?this.props.activity.disabledCount: null,
         id: this.props.activity.id,
         adminId: this.props.userId,
+        others: "",
         start_time: rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss'),
         end_time: rangeTimeValue[1].format('YYYY-MM-DD HH:mm:ss'),
       };
