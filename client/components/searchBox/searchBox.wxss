@@ -2,7 +2,7 @@
 
 .searchbar {
   width: calc(100% - 32rpx);
-  height: 60rpx;
+  height: 28px;
   display: flex;
   align-items: center;
   border-radius: 64rpx;
