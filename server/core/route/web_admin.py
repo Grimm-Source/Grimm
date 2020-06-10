@@ -31,12 +31,13 @@ import server.utils.email_verify as email_verify
 import server.utils.sms_verify as sms_verify
 import server.utils.vrfcode as vrfcode
 import server.utils.tag_converter as tag_converter
-from server.core import grimm as app
+from server.core import api
 from server.core import socketio
 from server import admin_logger, user_logger
 from server.utils.misctools import json_dump_http_response, json_load_http_request, calc_duration
 
 from server.core.const import EMAIL_VRF_EXPIRY, COM_SIGNATURE
+from flask_restx import Resource
 
 @socketio.on('disconnect')
 def notice_disconnect():
@@ -68,16 +69,10 @@ def notice_connect():
             print(e)
 
 
-
-@app.route('/')
-def home():
-    return json_dump_http_response({'status': 'success'})
-
-
-@app.route('/login', methods=['POST'])
-def admin_login():
-    '''view funciton for admin logging'''
-    if request.method == 'POST':
+@api.route('/login')
+class admin_login(Resource):
+    def post(self):
+        '''view funciton for admin logging'''
         info = json_load_http_request(request)  # Get user POST info
         feedback = {'status': 'success'}
         if db.exist_row('admin', email=info['email']):
@@ -108,10 +103,10 @@ def admin_login():
         return json_dump_http_response(feedback)
 
 
-@app.route('/admins', methods=['GET'])
-def admins():
-    '''view function to display all admins profile'''
-    if request.method == 'GET':
+@api.route('/admins')
+class admins(Resource):
+    def get(self):
+        '''view function to display all admins profile'''
         try:
             adminsinfo = db.expr_query('admin')
         except:
@@ -131,11 +126,11 @@ def admins():
         return json_dump_http_response(queries)
 
 
-@app.route('/admin/<int:admin_id>', methods=['GET', 'DELETE'])
-def manage_admin(admin_id):
-    '''view function for root user to manage other admins'''
-    feedback = {'status': 'success'}
-    if request.method == 'GET':
+@api.route('/admin/<int:admin_id>')
+class manage_admin(Resource):
+    def get(self, admin_id):
+        """ get admin info with a specific admin_id """
+        feedback = {'status': 'success'}
         if db.exist_row('admin', admin_id=admin_id):
             try:
                 admininfo = db.expr_query('admin', admin_id=admin_id)[0]
@@ -156,7 +151,8 @@ def manage_admin(admin_id):
         admin_logger.warning('%d, no such admin', admin_id)
         return json_dump_http_response(feedback)
 
-    if request.method == 'DELETE':
+    def delete(self, admin_id):
+        """ delete admin with a admin_id"""
         if admin_id != 0:
             try:
                 if db.expr_delete('admin', admin_id=admin_id) == 1:
@@ -172,10 +168,10 @@ def manage_admin(admin_id):
         return json_dump_http_response(feedback)
 
 
-@app.route('/admin', methods=['POST'])
-def new_admin():
-    '''view function to create new admin'''
-    if request.method == 'POST':
+@api.route('/admin')
+class new_admin(Resource):
+    def post(self):
+        '''view function to create new admin'''
         info = json_load_http_request(request)
         admininfo = feedback = {}
         admininfo['email'] = info['email']
@@ -220,10 +216,10 @@ def new_admin():
         return json_dump_http_response({'status': 'failure', 'message': '已注册邮箱'})
 
 
-@app.route('/email', methods=['GET'])
-def send_vrfemail():
-    '''view function to send and validate confirm email'''
-    if request.method == 'GET':
+@api.route('/email')
+class send_vrfemail(Resource):
+    def get(self):
+        ''' view function to send and validate confirm email'''
         addr = request.args.get('email')
         feedback = {'status': 'success'}
         # send confirm email
@@ -255,30 +251,10 @@ def send_vrfemail():
         return json_dump_http_response(feedback)
 
 
-@app.route('/admin/delete', methods=['POST'])
-def delete_admin():
-    '''view function for root to delete admins'''
-    if request.method == 'POST':
-        admin_id = json_load_http_request(request, keys='id')
-        if admin_id != 0:
-            try:
-                if db.expr_delete('admin', admin_id=admin_id) == 1:
-                    admin_logger.info('%d: admin deleted successfully', admin_id)
-                    return json_dump_http_response({'status': 'success'})
-            except:
-                admin_logger.error('Critical: database delete failed !')
-                feedback = {'status': 'failure', 'message': '未知错误'}
-        else:
-            admin_logger.warning('try to delete root user!')
-            feedback = {'status': 'failure', 'message': '不能删除root用户'}
-
-        return json_dump_http_response(feedback)
-
-
-@app.route('/activity', methods=['POST'])
-def new_activity():
-    '''view function to add new activity'''
-    if request.method == 'POST':
+@api.route('/activity')
+class new_activity(Resource):
+    def post(self):
+        '''view function to add new activity'''
         info = json_load_http_request(request)
         activity_info = {}
         activity_info['approver'] = info['adminId']
@@ -302,10 +278,10 @@ def new_activity():
         return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
 
-@app.route('/activity/<int:activity_id>', methods=['POST', 'GET', 'DELETE'])
-def update_activity(activity_id):
-    '''view function for the activity raiser to update activity info'''
-    if request.method == 'GET':
+@api.route('/activity/<int:activity_id>', methods=['POST', 'GET', 'DELETE'])
+class activity(Resource):
+    def get(self, activity_id):
+        """ get a activity with a specific id """
         if db.exist_row('activity', activity_id=activity_id):
             try:
                 activity = db.expr_query('activity', activity_id=activity_id)[0]
@@ -323,7 +299,8 @@ def update_activity(activity_id):
         admin_logger.warning('%d: no such activity', activity_id)
         return json_dump_http_response({'status': 'failure', 'message': '无效活动 ID'})
 
-    if request.method == 'DELETE':
+    def delete(self, activity_id):
+        """ delete a activity with a specific id """
         try:
             if db.expr_delete('activity', activity_id=activity_id) == 1:
                 admin_logger.info('%d: delete new activity successfully', activity_id)
@@ -334,7 +311,8 @@ def update_activity(activity_id):
         admin_logger.warning('%d: delete new activity failed', activity_id)
         return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
-    if request.method == 'POST':
+    def post(self, activity_id):
+        """ update a activity with a specific id """
         if db.exist_row('activity', activity_id=activity_id):
             newinfo = json_load_http_request(request)
             activity_info = {}
@@ -360,31 +338,10 @@ def update_activity(activity_id):
         admin_logger.warning('%d: update activity failed', activity_id)
         return json_dump_http_response(feedback)
 
-
-@app.route('/activity/delete', methods=['DELETE'])
-def delete_activity_with_id():
-    '''view function to detele activity with id'''
-    if request.method == 'DELETE':
-        id_string = request.get_data().decode('utf8')
-        if not id_string.isdigit():
-            return json_dump_http_response({'status': 'failure', 'message': '请检查活动ID'})
-
-        activity_id = int(id_string)
-        try:
-            if db.expr_delete('activity', activity_id=activity_id) == 1:
-                admin_logger.info('%d: delete new activity successfully', activity_id)
-                return json_dump_http_response({'status': 'success'})
-        except:
-            pass
-
-        admin_logger.warning('%d: delete new activity failed', activity_id)
-        return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
-
-
-@app.route('/activities', methods=['GET'])
-def activities():
-    '''view function to get all activities info'''
-    if request.method == 'GET':
+@api.route('/activities')
+class activitires(Resource):
+    def get(self):
+        '''view function to get all activities info'''
         target_tag_list = request.args.get('tags')
         if not target_tag_list or len(target_tag_list) == 0:
             target_tag_list = 'all'
@@ -458,10 +415,10 @@ def should_append_by_recents(activity):
         return False
     return True
 
-@app.route('/admin/<int:admin_id>/update-password', methods=['POST'])
-def admin_update_password(admin_id):
-    '''view function for admins to update new passwords'''
-    if request.method == 'POST':
+@api.route('/admin/<int:admin_id>/update-password')
+class admin_update_password(Resource):
+    def post(self, admin_id):
+        '''view function for admins to update new passwords'''
         admin_password = json_load_http_request(request)
         old_pass = admin_password['old_password']
         new_pass = admin_password['new_password']
@@ -482,10 +439,10 @@ def admin_update_password(admin_id):
         return json_dump_http_response({'status': 'failure', 'message': '未知管理员'})
 
 
-@app.route('/admin/forget-password', methods=['GET'])
-def admin_reset_password():
-    '''view function for admins to reset new passwords'''
-    if request.method == 'GET':
+@api.route('/admin/forget-password')
+class admin_reset_password(Resource):
+    def get(self):
+        '''view function for admins to reset new passwords'''
         addr = request.args.get('email')
         if db.exist_row('admin', email=addr):
             response, new_pass = email_verify.send_reset(receiver=addr)
@@ -505,11 +462,10 @@ def admin_reset_password():
         return json_dump_http_response({'status': 'failure', 'message': '未注册邮箱'})
 
 
-@app.route('/users', methods=['GET', 'PATCH'])
-def users():
-    '''view function for admins to get all users info with role type'''
-    # for admin to get user info
-    if request.method == 'GET':
+@api.route('/users')
+class users(Resource):
+    def get(self):
+        """ get wechat user list (volunteer) """
         user_type = request.args.get('role')
         if user_type == 'volunteer':
             kwargs = {'role': 0}
@@ -530,7 +486,7 @@ def users():
             info['openid'] = userinfo['openid']
             info['name'] = userinfo['name']
             info['role'] = "视障人士" if userinfo['role'] == 1 else "志愿者"
-            info['birthdate'] = userinfo['birth']
+            info['birthdate'] = str(userinfo['birth'])
             info['comment'] = userinfo['remark']
             info['disabledID'] = userinfo['disabled_id']
             info['emergencyPerson'] = userinfo['emergent_contact']
@@ -540,7 +496,7 @@ def users():
             info['linkaddress'] = userinfo['address']
             info['linktel'] = userinfo['contact']
             info['tel'] = userinfo['phone']
-            info['registrationDate'] = userinfo['registration_date']
+            info['registrationDate'] = str(userinfo['registration_date'])
             if userinfo['audit_status'] == 0:
                 info['audit_status'] = 'pending'
             elif userinfo['audit_status'] == 1:
@@ -554,8 +510,9 @@ def users():
 
         admin_logger.info('query all user info with role type successfully')
         return json_dump_http_response(users)
-    # for admin to set user audit status
-    if request.method == 'PATCH':
+
+    def patch(self):
+        """ for admin to set user audit status """
         audit_info = json_load_http_request(request)
         for audit in audit_info:
             openid = audit['openid']
@@ -601,14 +558,13 @@ def users():
         return json_dump_http_response({'status': 'success'})
 
 
-@app.route('/tags', methods=['GET'])
-def tags_db():
-    '''view function to get all tags info'''
-    if request.method == 'GET':
+@api.route('/tags')
+class tags_db(Resource):
+    def get(self):
+        '''view function to get all tags info'''
         tags_list = tag_converter.get_all_tags()
         admin_logger.info('query all tags info successfully')
         return json_dump_http_response(tags_list)
-
 
 def convert_activity_to_query(activity):
     query = {}

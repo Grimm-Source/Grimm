@@ -87,7 +87,7 @@ def new_vrfurl(email):
     server_port = PORT
     server_host = get_host_ip() if is_ipv4_addr(HOST) or HOST == 'localhost' else HOST
 
-    vrfurl = DEFAULT_PROTOCOL + '://' + str(server_host) + ':' + str(server_port) + '/email?token=' + token
+    vrfurl = DEFAULT_PROTOCOL + '://' + '47.103.133.134' + ':' + str(server_port) + '/email?token=' + token
     return vrfurl
 
 

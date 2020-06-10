@@ -28,7 +28,7 @@ from flask import request, url_for
 import server.core.db as db
 import server.utils.sms_verify as sms_verify
 import server.utils.tag_converter as tag_converter
-from server.core import grimm as app
+from server.core import api
 from server.core import wxappid, wxsecret, socketio
 from server import user_logger
 from server.utils.misctools import json_dump_http_response, json_load_http_request, calc_duration
@@ -37,14 +37,14 @@ from server.core.const import SMS_VRF_EXPIRY
 from server.core.const import CAROUSEL_LIST
 
 from server.utils.decrypt import PhoneNumberDecrypt
-
+from flask_restx import Resource
 SMS_VERIFIED_OPENID = {}
 
 
-@app.route('/jscode2session', methods=['GET'])
-def wxjscode2session():
-    '''view function for validating weixin user openid'''
-    if request.method == 'GET':
+@api.route('/jscode2session')
+class wxjscode2session(Resource):
+    def get(self):
+        '''view function for validating weixin user openid'''
         js_code = request.args.get("js_code")
         if js_code is None:
             return json_dump_http_response({'status': 'failure'})
@@ -91,10 +91,10 @@ def wxjscode2session():
 
         return json_dump_http_response(feedback)
 
-@app.route('/getPhoneNumber', methods=['POST'])
-def getPhoneNumber():
-    '''get weixin user phoneNumber'''
-    if request.method == 'POST':
+@api.route('/getPhoneNumber')
+class getPhoneNumber(Resource):
+    def post(self):
+        '''get weixin user phoneNumber'''
         info = json_load_http_request(request)  # get http POST data bytes format
         print(info)
         js_code = info['js_code']
@@ -132,10 +132,10 @@ def getPhoneNumber():
                 feedback['status'] = 'failure'
         return json_dump_http_response(feedback)
 
-@app.route('/register', methods=['POST'])
-def register():
-    '''view function for registering new user to database'''
-    if request.method == 'POST':
+@api.route('/register')
+class register(Resource):
+    def post(self):
+        '''view function for registering new user to database'''
         global SMS_VERIFIED_OPENID
         userinfo = {}
         info = json_load_http_request(request)  # get http POST data bytes format
@@ -209,11 +209,11 @@ def register():
         return json_dump_http_response({'status': 'failure', 'message': '用户已注册，请登录'})
 
 
-@app.route('/profile', methods=['POST', 'GET'])
-def profile():
-    '''view function for displaying or updating user profile'''
+@api.route('/profile')
+class profile(Resource):
     feedback = {'status': 'success'}
-    if request.method == 'GET':
+    def get(self):
+        """ display profile """
         openid = request.headers.get('Authorization')
         if db.exist_row('user', openid=openid):
             try:
@@ -240,7 +240,8 @@ def profile():
         user_logger.warning('%s: user not registered', openid)
         return json_dump_http_response({'status': 'failure', 'message': '用户未注册'})
 
-    if request.method == 'POST':
+    def post(self):
+        " update profile"
         newinfo = json_load_http_request(request)  # get request POST user data
         userinfo = {}
         openid = request.headers.get('Authorization')
@@ -270,11 +271,10 @@ def profile():
         return json_dump_http_response({'status': 'success'})
 
 
-@app.route('/smscode', methods=['GET', 'POST'])
-def smscode():
-    '''view function to send and verify sms verification code'''
-    # send smscode
-    if request.method == 'GET':
+@api.route('/smscode')
+class smscode(Resource):
+    def get(self):
+        """ send sms code """
         phone_number = request.args.get('tel')
         if phone_number is None:
             user_logger.warning('invalid url parameter phone_number')
@@ -295,8 +295,8 @@ def smscode():
         user_logger.info('%s, %s: send sms to number successfully', phone_number, sms_token.vrfcode)
         return json_dump_http_response({'status': 'success'})
 
-    # verify smscode
-    if request.method == 'POST':
+    def post(self):
+        """ verify sms code """
         global SMS_VERIFIED_OPENID
         data = json_load_http_request(request)
         phone_number = data['tel']
@@ -322,10 +322,10 @@ def smscode():
         user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
         return json_dump_http_response({'status': 'success'})
 
-@app.route('/registeredActivities', methods = ['POST', 'GET', 'DELETE'])
-def registeredActivities():
-    # register an activity
-    if request.method == 'POST':
+@api.route('/registeredActivities')
+class registeredActivities(Resource):
+    def post(self):
+        """ register an activity """
         openid = request.headers.get('Authorization')
         info = json_load_http_request(request)[0]
         print(info)
@@ -351,8 +351,8 @@ def registeredActivities():
                 print('*********xtydbg********',e)
                 return json_dump_http_response({'status': 'failure', 'message': '重复报名'})
             return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新注册'})
-    #  view registered activities
-    if request.method == 'GET':
+    def get(self):
+        """ list registered activities """
         openid = request.headers.get('Authorization')
         activity_id = request.args.get('activityId')
         activities = []
@@ -392,8 +392,9 @@ def registeredActivities():
                     return json_dump_http_response([item])
             return json_dump_http_response([])
         return json_dump_http_response(activities)
-    # cancel specific registered activity
-    if request.method == 'DELETE':
+
+    def delete(self):
+        """ cancel specific registered activity """
         openid = request.headers.get('Authorization')
         print('*****************deleteopenid', type(openid), openid)
         activity_id = request.args.get('activityId')
@@ -407,10 +408,10 @@ def registeredActivities():
             return json_dump_http_response({'status': '取消活动失败！'})
 
 
-@app.route('/activity_detail', methods = ['GET'])
-def get_activity():
-    '''view function for the activity_detail'''
-    if request.method == 'GET':
+@api.route('/activity_detail')
+class get_activity(Resource):
+    def get(self):
+        """ get activity detail with activityId """
         openid = request.headers.get('Authorization')
         activity_id = int(request.args.get('activityId'))
         if db.exist_row('activity', activity_id=activity_id):
@@ -469,10 +470,10 @@ def get_activity():
         user_logger.warning('%d: no such activity', activity_id, )
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
 
-@app.route('/activity_detail/interest', methods = ['POST'])
-def mark_activity():
-    '''mark activity as Insterest'''
-    if request.method == 'POST':
+@api.route('/activity_detail/interest')
+class mark_activity(Resource):
+    def post(self):
+        '''mark activity as Insterest'''
         openid = request.headers.get('Authorization')
         activity_id = request.args.get('activityId')
         interest = request.args.get('interest')
@@ -487,10 +488,10 @@ def mark_activity():
 
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
 
-@app.route('/activity_detail/thumbs_up', methods = ['POST'])
-def thumbsup_activity():
-    '''mark activity as thumbs_up'''
-    if request.method == 'POST':
+@api.route('/activity_detail/thumbs_up')
+class thumbsup_activity(Resource):
+    def post(self):
+        '''mark activity as thumbs_up'''
         openid = request.headers.get('Authorization')
         activity_id = request.args.get('activityId')
         thumbs_up = request.args.get('thumbs_up')
@@ -505,10 +506,10 @@ def thumbsup_activity():
 
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
 
-@app.route('/activity_detail/sign_up', methods = ['POST'])
-def enroll_activity():
-    '''sign_up activity'''
-    if request.method == 'POST':
+@api.route('/activity_detail/sign_up')
+class enroll_activity(Resource):
+    def post(self):
+        '''sign_up activity'''
         openid = request.headers.get('Authorization')
         activity_id = request.args.get('activityId')
         sign_up = request.args.get('sign_up')
@@ -524,10 +525,10 @@ def enroll_activity():
 
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
 
-@app.route('/activity_detail/share', methods = ['POST'])
-def share_activity():
-    '''share activity'''
-    if request.method == 'POST':
+@api.route('/activity_detail/share')
+class share_activity(Resource):
+    def post(self):
+        '''share activity'''
         openid = request.headers.get('Authorization')
         activity_id = request.args.get('activityId')
         is_share = int(request.args.get('share'))
@@ -556,17 +557,17 @@ def share_activity():
 
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
 
-@app.route('/carousel', methods = ['GET'])
-def get_carousel_list():
-    '''view function for the activity_detail'''
-    if request.method == 'GET':
+@api.route('/carousel')
+class get_carousel_list(Resource):
+    def get(self):
+        '''view function for the activity_detail'''
         user_logger.info('query all carousel info successfully')
         return json_dump_http_response(CAROUSEL_LIST)
 
-@app.route('/myActivities', methods = ['GET'])
-def get_favorite_activities():
-    '''view function for the activities'''
-    if request.method == 'GET':
+@api.route('/myActivities')
+class get_favorite_activities(Resource):
+    def get(self):
+        """ list my activities"""
         openid = request.headers.get('Authorization')
         target_filter = request.args.get('filter')
         if not target_filter or len(target_filter) == 0:

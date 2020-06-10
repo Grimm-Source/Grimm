@@ -41,9 +41,7 @@ def get_pardir(_dir):
 # dump json data as response
 def json_dump_http_response(data):
     '''dump http response json data object to front-end'''
-    if isinstance(data, (list, dict)):
-        return json.dumps(data, sort_keys=True, default=str, ensure_ascii=False)
-    return json.dumps(None)
+    return data
 
 
 # load json data from flask request

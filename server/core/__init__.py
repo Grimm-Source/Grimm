@@ -32,6 +32,7 @@ grimm_ext = None
 wxappid = None
 wxsecret = None
 socketio = None
+api = None
 
 # initialize grimm back-end service
 if grimm is None:
@@ -42,6 +43,7 @@ if grimm is None:
     from flask_cors import CORS
     from server.utils.misctools import get_pardir
     from flask_socketio import SocketIO
+    from flask_restx import Api
 
     grimm = Flask('grimm')
     grimm_ext = CORS(grimm)
@@ -60,3 +62,4 @@ if grimm is None:
     wxsecret = wxconfig['secret']
 
     del wxconfig, get_pardir, path
+    api = Api(grimm)
