@@ -30,7 +30,7 @@ class ActivityList extends React.Component {
           renderItem={item => (
             <List.Item
               actions={[
-                <span>{item.tag.split(",").map((value, index)=>{
+                <span>{item.tag && item.tag.split(",").map((value, index)=>{
                   return <Tag className="tag" key={index} color={ACTIVITY_TAGS[value]}>{value}</Tag>
                 })}</span>,
                 <span
