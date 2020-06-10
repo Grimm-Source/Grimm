@@ -27,23 +27,18 @@ Page({
     personalInfoList: [
       {
         label: '我的活动',
-        action: '',
+        action: 'onMyActivityTap',
         class: 'myActivity'
       },
       {
         label: '已报名活动',
-        action: '',
+        action: 'onRegisteredTap',
         class: 'registered'
       },
       {
         label: '感兴趣的活动',
-        action: '',
+        action: 'onMyFavoriteTap',
         class: 'myFavorite'
-      },
-      {
-        label: '参加过的活动',
-        action: '',
-        class: 'haveEntered'
       }
     ]
   },
@@ -186,7 +181,25 @@ Page({
     
     ctx2.stroke();
     ctx2.draw();
-  }
+  },
+
+  onMyActivityTap: function () {
+    wx.navigateTo({
+      url: '/pages/myActivity/myActivity?selectedIdx=0',
+    });
+  },
+
+  onRegisteredTap: function () {
+    wx.navigateTo({
+      url: '/pages/myActivity/myActivity?selectedIdx=1',
+    });
+  },
+  
+  onMyFavoriteTap: function () {
+    wx.navigateTo({
+      url: '/pages/myActivity/myActivity?selectedIdx=2',
+    });
+  },
 
   // updateProfile: function(){
   //   if(this.data.isRegistered && this.data.auditStatus === "pending"){

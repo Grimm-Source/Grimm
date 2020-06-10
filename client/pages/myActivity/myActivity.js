@@ -7,6 +7,9 @@ Page({
   },
 
   onLoad: function (options) {
+    this.setData({
+      selectedIdx: options.selectedIdx
+    })
   },
 
   handleMyActivitiesPickerEvent: function (event) {
