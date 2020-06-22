@@ -3,7 +3,7 @@
   <activitiesPicker class="activities-picker" categories="{{activityCategories}}" bind:filterChange="onFilterParamChange"></activitiesPicker>
   <scroll-view class="activities-list" scroll-y="true" bindrefreshpulling="onPulling">
     <block wx:for="{{activitiesProp}}" wx:key="id">
-      <view class="activity-item" id="{{item.adminId}}" bindtap="onTapActivity">
+      <view class="activity-item" id="{{item.adminId}}" bindtap="onTapActivity"  data-item="{{item}}" >
         <view class="activity-detail">
           <image class="activity-image" src="../../images/banner.jpg" aria-role="row" aria-label="点击进入活动详情"></image>
           <text class="activity-title text-xl" aria-label="标题 {{item.title}}">{{item.title}}</text>

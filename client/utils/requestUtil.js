@@ -170,9 +170,9 @@ const toggleThumbsUp = (activityId, isThumbsUp, successCallback, failCallback) =
     });
 }
 
-const toggleRegister = (activityId, isLike, successCallback, failCallback) => {
+const toggleRegister = (activityId, isSignUp, successCallback, failCallback) => {
     return request({
-        url: `activity_detail/sign_up?activityId=${activityId}&sign_up=${isLike ? 1 : 0}`,
+        url: `activity_detail/sign_up?activityId=${activityId}&sign_up=${isSignUp ? 1 : 0}`,
         success: successCallback,
         fail: failCallback,
         method: "POST"

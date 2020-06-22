@@ -1,5 +1,7 @@
 const { getActivityDetail, toggleInterest, toggleThumbsUp, toggleRegister} = require('../../utils/requestUtil.js');
 
+const app = getApp();
+
 Page({
   data: {
     banner: '/images/banner.jpg',
@@ -59,22 +61,34 @@ Page({
     });
   },
   onTapRegister: function() {
-    // const isRegistered = !this.data.isRegistered;
-    // toggleRegister(this.data.id, isRegistered, () => {
-    //   this.setData({
-    //     isRegistered
-    //   });
-    // });
+    const isRegistered = !this.data.isRegistered;
+    if( app.globalData.userInfo && app.globalData.userInfo.isRegistered ){
+      const isVolunteer = app.globalData.userInfo.role === "志愿者";
+      toggleRegister(this.data.id, isRegistered, () => {
+        if(isVolunteer){
+          this.setData({
+            isRegistered,
+            volunteerCurr: isRegistered? this.data.volunteerCurr + 1:this.data.volunteerCurr - 1
+          });
+          return;
+        }
+        this.setData({
+          isRegistered,
+          visuallyImpairedCurr: isRegistered? this.data.visuallyImpairedCurr + 1:this.data.visuallyImpairedCurr - 1
+        });
+      });
+      return;
+    }
     wx.navigateTo({
       url: '/pages/login/login',
-    })
+    });
   },
   onTapInterest: function() {
     const isInterested = !this.data.isInterested;
-    // toggleRegister(this.data.id, isInterested, () => {
+    toggleInterest(this.data.id, isInterested, () => {
       this.setData({
         isInterested
       });
-    // });
+    });
   }
 })
