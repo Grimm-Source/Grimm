@@ -1,5 +1,5 @@
 const { register} = require('../../utils/requestUtil.js');
-
+const app = getApp();
 Page({
   data: {
     phone: '',
@@ -57,8 +57,7 @@ Page({
       birthdate: this.data.birthday,
       linkaddress: this.data.region.join('')
     }, (res) => {
-      wx.setStorageSync('isRegistered', true)
-      
+      app.globalData.isRegistered = true;
       wx.showToast({
         title: '注册成功',
         icon: 'success',
@@ -73,7 +72,7 @@ Page({
         title: '注册失败',
         content: err || "网络失败，请稍候再试"
       });
-      wx.setStorageSync('isRegistered', false)
+      app.globalData.isRegistered = false;
     });
   }
 })

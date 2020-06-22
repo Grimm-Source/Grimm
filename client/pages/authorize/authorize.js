@@ -17,6 +17,17 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
+    if(options.redirectPage){
+      const redirectPage = options.redirectPage;
+      const key = options.key;
+      const value = options.value;
+      const redirectUrl = key?`../${redirectPage}/${redirectPage}?${key}=${value}`:`../${redirectPage}/${redirectPage}`;
+      this.setData({
+        redirectUrl
+      });
+    }
+
+
     // 查看是否授权
     wx.getSetting({
       success(res) {
@@ -25,7 +36,7 @@ Page({
           wx.getUserInfo({
             success: function (res) {
               app.globalData.userInfo = res.userInfo;
-              console.log(res.userInfo)
+              console.log(res.userInfo);
             }
           })
         }
@@ -45,7 +56,11 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
-
+    if(app.globalData.isAuthorized){
+      wx.switchTab({
+        url: '../home/home',
+      });
+    }
   },
 
   /**
@@ -108,7 +123,14 @@ Page({
       app.globalData.userInfo = e.detail.userInfo
       app.globalData.isAuthorized = true;
     }
-    this.jumpToPersonalPage()
+    if(this.data.redirectUrl){
+      wx.navigateTo({
+        url: this.data.redirectUrl,
+      })
+    }else{
+      this.jumpToPersonalPage()
+    }
+    
     // this.checkJumpToRegisterPage()
   },
 

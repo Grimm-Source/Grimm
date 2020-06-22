@@ -10,12 +10,11 @@ const request = (option, isManualLoading = false) => {
     }
     
     return new Promise((resolve, reject) => {
-
         let obj = {
             url: `${apiUrl}${option.url}`,
             header: {
                 'Content-type': 'application/json',
-                'Authorization': wx.getStorageSync('openid'),
+                'Authorization': wx.getStorageSync("openid")
             },
             method: option.method || "GET",
             success: (res) =>{

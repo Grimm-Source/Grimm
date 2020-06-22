@@ -1,6 +1,8 @@
 const {userInfoMessage} = require('../../utils/messageHelper.js');
 const {getVerifyCode, verifyCode, getProfile, updateProfile} = require('../../utils/requestUtil.js');
 
+const app = getApp();
+
 Page({
   
   data: {
@@ -117,7 +119,7 @@ Page({
           isFormValid: false,
           isLoadingValid: false,
           isLoadingUpdate: false,
-          auditStatus: wx.getStorageSync('auditStatus')
+          auditStatus: app.globalData.auditStatus
       },
       error: {
         tel: false,

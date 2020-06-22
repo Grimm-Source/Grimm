@@ -4,6 +4,8 @@ const { getVerifyCode } = require('../../utils/requestUtil.js');
 const { verifyCode, getPhoneNumber } = require('../../utils/requestUtil.js');
 const apiUrl = require('../../config.js').apiUrl;
 
+const app = getApp();
+
 //配置规则
 const rules1 = {
   tel: {
@@ -343,7 +345,7 @@ Page({
     const formData = Object.assign(this.data.form, e.detail.value);
     console.log(formData)
     register(formData, (res) => {
-      wx.setStorageSync('isRegistered', true)
+      app.globalData.isRegistered = true;
       wx.showToast({
         title: '注册成功',
         icon: 'success',
@@ -358,7 +360,7 @@ Page({
         title: '注册失败',
         content: err || "网络失败，请稍候再试"
       });
-      wx.setStorageSync('isRegistered', false)
+      app.globalData.isRegistered = false;
     });
   },
 

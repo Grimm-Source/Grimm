@@ -1,4 +1,4 @@
-const { getActivityDetail, toggleInterest, toggleThumbsUp, toggleRegister} = require('../../utils/requestUtil.js');
+const { getActivityDetail, toggleInterest, toggleThumbsUp, toggleRegister, shareActivity} = require('../../utils/requestUtil.js');
 
 const app = getApp();
 
@@ -30,6 +30,10 @@ Page({
    this.getActivity();
   },
   onTapLike: function() {
+    if( !app.globalData.isAuthorized){
+      this.authorize();
+      return;
+    }
     const isLike = !this.data.isLike;
     toggleThumbsUp(this.data.id, isLike, () => {
       this.setData({
@@ -41,7 +45,9 @@ Page({
     getActivityDetail(this.data.id, (res) => {
       this.setData({
         title: res.title,
-        isLike: res.interested === 1,
+        isLike: res.interested === 1,//???????
+        isRegistered: res.sign_up === 1,
+        isInterested: res.interested === 1,
         date: `${res.start_time}至${res.end_time}`,
         address: res.location,
         volunteerTotal: res.volunteer_capacity,
@@ -60,10 +66,17 @@ Page({
       })
     });
   },
+  onShareAppMessage:function(){
+    shareActivity(this.data.id);
+  },
   onTapRegister: function() {
-    const isRegistered = !this.data.isRegistered;
-    if( app.globalData.userInfo && app.globalData.userInfo.isRegistered ){
-      const isVolunteer = app.globalData.userInfo.role === "志愿者";
+    if( !app.globalData.isAuthorized){
+      this.authorize('login');
+      return;
+    }
+    const isRegistered = !this.data.isRegistered;//activity
+    if( app.globalData.isRegistered ){ // user
+      const isVolunteer = app.globalData.userInfo.role === "志愿者"; 
       toggleRegister(this.data.id, isRegistered, () => {
         if(isVolunteer){
           this.setData({
@@ -84,11 +97,22 @@ Page({
     });
   },
   onTapInterest: function() {
+    if( !app.globalData.isAuthorized){
+      this.authorize();
+      return;
+    }
     const isInterested = !this.data.isInterested;
     toggleInterest(this.data.id, isInterested, () => {
       this.setData({
         isInterested
       });
     });
-  }
+  },
+  
+  authorize: function(redirectPage, params){
+    const page = redirectPage || `activityDetail&value=${this.data.id}&key=id`;
+    wx.navigateTo({
+      url: `/pages/authorize/authorize?redirectPage=${page}` 
+    });
+  },
 })

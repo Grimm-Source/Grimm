@@ -1,5 +1,5 @@
 //获取应用实例
-const { getActivityList, getActivityTypes, getRegisterStatus } = require('../../utils/requestUtil.js');
+const { getRegisterStatus } = require('../../utils/requestUtil.js');
 
 const app = getApp()
 
@@ -36,16 +36,14 @@ Page({
                     isAuthorized: app.globalData.isAuthorized,
                     userInfo: app.globalData.userInfo
                   })
-
                   // 检查是否已注册
                   getRegisterStatus(token, function(res){
                     if(!res.openid){
                       return;
                     }
-                    wx.setStorageSync('openid', res.openid);
-                    wx.setStorageSync('isRegistered', !!res.isRegistered);
-                    wx.setStorageSync('auditStatus', res.auditStatus || "pending");
+                    app.globalData.auditStatus = res.auditStatus || "pending";
                     app.globalData.isRegistered = !!res.isRegistered;
+                    wx.setStorageSync("openid",res.openid)
                     // this.globalData.userInfo = res.userInfo;
                 });    
 
@@ -55,7 +53,7 @@ Page({
                     this.userInfoReadyCallback(res)
                   }
                 }
-              })
+              });
             }
           }
         });   

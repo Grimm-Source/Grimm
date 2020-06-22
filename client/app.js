@@ -4,7 +4,8 @@ App({
   globalData: {
     userInfo: null,
     isAuthorized: false,
-    isRegistered: false
+    isRegistered: false,
+    auditStatus: "pending"
   },
   
   onLaunch: function () {
