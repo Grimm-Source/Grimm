@@ -179,6 +179,13 @@ const toggleRegister = (activityId, isSignUp, successCallback, failCallback) => 
     });
 }
 
+const shareActivity = (activityId) => {
+    return request({
+        url: `activity_detail/share?activityId=${activityId}`,
+        method: "POST"
+    });
+}
+
 const getMyActivities = (type, successCallback, failCallback) => {
     return request({
         url: 'myActivities?filter=' + type,
@@ -217,6 +224,7 @@ module.exports = {
     toggleInterest,
     toggleThumbsUp,
     toggleRegister,
+    shareActivity,
     getMyActivities,
     getPhoneNumber
 }
