@@ -171,12 +171,11 @@ const toggleThumbsUp = (activityId, isThumbsUp, successCallback, failCallback) =
 }
 
 const toggleRegister = (activityId, isSignUp, successCallback, failCallback) => {
-    return request({
-        url: `activity_detail/sign_up?activityId=${activityId}&sign_up=${isSignUp ? 1 : 0}`,
-        success: successCallback,
-        fail: failCallback,
-        method: "POST"
-    });
+    if(isSignUp){
+        return postRegisteredActivityList({activityId}, successCallback, failCallback);
+
+    }
+    return removeRegisteredActivityList([activityId], successCallback, failCallback);
 }
 
 const shareActivity = (activityId) => {

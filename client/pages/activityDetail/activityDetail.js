@@ -45,8 +45,8 @@ Page({
     getActivityDetail(this.data.id, (res) => {
       this.setData({
         title: res.title,
-        isLike: res.interested === 1,//???????
-        isRegistered: res.sign_up === 1,
+        isLike: res.thumbs_up === 1,
+        isRegistered: res.registered === 1,
         isInterested: res.interested === 1,
         date: `${res.start_time}至${res.end_time}`,
         address: res.location,
