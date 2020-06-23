@@ -50,6 +50,7 @@ def get_all_tags():
     return all_tags
 
 '''DB version'''
+'''
 def convert_ids_to_tags_db(ids):
     tag_list = []
     if not ids:
@@ -101,3 +102,4 @@ def get_all_tags_db():
     for tag in tags_info:
         tags_list.append(tag['tag_name'])
     return tags_list
+'''

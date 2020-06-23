@@ -327,7 +327,7 @@ class registeredActivities(Resource):
     def post(self):
         """ register an activity """
         openid = request.headers.get('Authorization')
-        info = json_load_http_request(request)[0]
+        info = json_load_http_request(request)
         print(info)
         activity_id = info['activityId']
         registerAct = {}
@@ -335,8 +335,22 @@ class registeredActivities(Resource):
             registerAct['needpickup'] = int(info['needPickUp'])
         if 'toPickUp' in info.keys():
             registerAct['topickup'] = int(info['toPickUp'])
-        registerAct['phone'] = info['tel']
-        registerAct['address'] = info['address']
+        if 'tel' in info.keys():
+            registerAct['phone'] = info['tel']
+        else:
+            try:
+                userinfo = db.expr_query('user', openid=openid)[0]
+                registerAct['phone'] = userinfo['phone']
+            except:
+                return json_dump_http_response({'status': 'failure', 'message': '未能获取用户信息'})
+        if 'address' in info.keys():
+            registerAct['address'] = info['address']
+        else:
+            try:
+                userinfo = db.expr_query('user', openid=openid)[0]
+                registerAct['address'] = userinfo['address']
+            except:
+                return json_dump_http_response({'status': 'failure', 'message': '未能获取用户信息'})
         registerAct['openid'] = openid
         # activity_id from network is str
         registerAct['activity_id'] = int(activity_id)
@@ -351,48 +365,7 @@ class registeredActivities(Resource):
                 print('*********xtydbg********',e)
                 return json_dump_http_response({'status': 'failure', 'message': '重复报名'})
             return json_dump_http_response({'status': 'failure', 'message': '未知错误，请重新注册'})
-    def get(self):
-        """ list registered activities """
-        openid = request.headers.get('Authorization')
-        activity_id = request.args.get('activityId')
-        activities = []
-        try:
-            activities_info = db.expr_query(['registerActivities', 'activity'], fields=['activity.activity_id', 'activity.title', 'activity.start_time' ,\
-                                              'activity.end_time', 'activity.content', 'activity.notice', 'activity.content', 'activity.others', 'activity.tag_ids',\
-                                              'registerActivities.needpickup', 'registerActivities.topickup', 'activity.location', 'registerActivities.phone',\
-                                              'registerActivities.address'], \
-                                             clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id '.format(openid))
-        except Exception as e:
-            print('*******************xtydbg*****************',e)
-        if activities_info is None:
-            return json_dump_http_response(activities)
-        for item in activities_info:
-            activity = {}
-            print(item)
-            activity['activityId'] = item['activity.activity_id']
-            activity['title'] = item['activity.title']
-            start = item['activity.start_time']
-            end = item['activity.end_time']
-            activity['start_time'] = start.strftime('%Y-%m-%d %H:%M:%S')
-            activity['end_time'] = end.strftime('%Y-%m-%d %H:%M:%S')
-            activity['duration'] = calc_duration(start, end)
-            activity['content'] = item['activity.content']
-            activity['location'] = item['activity.location']
-            activity['notice'] = item['activity.notice']
-            activity['others'] = item['activity.others']
-            activity['tags'] = tag_converter.convert_idstring_to_tagstring(item['activity.tag_ids'])
-            activity['tel'] = item['registerActivities.phone']
-            activity['address'] = item['registerActivities.address']
-            activity['needPickUp'] = item['registerActivities.needpickup']
-            activity['toPickUp'] = item['registerActivities.topickup']
-            activities.append(activity)
-        if activity_id is not None:
-            for item in activities:
-                if int(activity_id) == item['activityId']:
-                    return json_dump_http_response([item])
-            return json_dump_http_response([])
-        return json_dump_http_response(activities)
-
+    
     def delete(self):
         """ cancel specific registered activity """
         openid = request.headers.get('Authorization')
@@ -440,8 +413,9 @@ class get_activity(Resource):
             feedback['volunteers'] = 1
             feedback['vision_impaireds'] = 0
             feedback['interested'] = 0
+            feedback['thumbs_up'] = 0
             feedback['share'] = 0
-            feedback['sign_up'] = 0
+            feedback['registered'] = 0
             try:
                 participants = db.expr_query('activity_participants', activity_id=activity_id, participants_id=openid)[0]
                 volunteer_count = db.expr_query(['activity_participants', 'user'], 'COUNT(*)', \
@@ -450,6 +424,7 @@ class get_activity(Resource):
                 vision_impaired_count = db.expr_query(['activity_participants', 'user'], 'COUNT(*)', \
                                              clauses='activity_participants.activity_id = {} ' \
                                              'and activity_participants.participants_id = user.openid and user.role = 1'.format(activity_id))
+                registerActivities = db.expr_query('registerActivities', activity_id=activity_id, openid=openid)
 
                 if not participants:
                     user_logger.warning('%d: no such activity', activity_id)
@@ -459,8 +434,10 @@ class get_activity(Resource):
                 user_logger.warning('%d: get activity failed', activity_id)
                 return json_dump_http_response(feedback)
             feedback['interested'] = participants['interested']
+            feedback['thumbs_up'] = participants['thumbs_up']
             feedback['share'] = participants['share']
-            feedback['sign_up'] = participants['sign_up']
+            if registerActivities is not None:
+                feedback['registered'] = 1
             feedback['volunteers'] = volunteer_count[0]['COUNT(*)']
             feedback['vision_impaireds'] = vision_impaired_count[0]['COUNT(*)']
 
@@ -485,6 +462,16 @@ class mark_activity(Resource):
             except Exception as e:
                 user_logger.error('update push_status fail, %s', e)
                 user_logger.info('%s: complete user registration success', openid)
+        else:
+            activity_participants_info = {}
+            activity_participants_info['activity_id'] = activity_id
+            activity_participants_info['participants_id'] = openid
+            activity_participants_info['interested'] = interest
+            activity_participants_info['share'] = 0
+            activity_participants_info['thumbs_up'] = 0
+            if db.expr_insert('activity_participants', activity_participants_info) == 1:
+                user_logger.info('Create new activity_participants_info successfully')
+                return json_dump_http_response(feedback)
 
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
 
@@ -503,25 +490,16 @@ class thumbsup_activity(Resource):
             except Exception as e:
                 user_logger.error('update push_status fail, %s', e)
                 user_logger.info('%s: complete user registration success', openid)
-
-        return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
-
-@api.route('/activity_detail/sign_up')
-class enroll_activity(Resource):
-    def post(self):
-        '''sign_up activity'''
-        openid = request.headers.get('Authorization')
-        activity_id = request.args.get('activityId')
-        sign_up = request.args.get('sign_up')
-        feedback = {'status': 'success'}
-        if db.exist_row('activity_participants', activity_id = activity_id, participants_id=openid):
-            try:
-                print('mia sign up test')
-                rc = db.expr_update(tbl = 'activity_participants', vals = {'sign_up':sign_up}, activity_id = activity_id, participants_id=openid)
+        else:
+            activity_participants_info = {}
+            activity_participants_info['activity_id'] = activity_id
+            activity_participants_info['participants_id'] = openid
+            activity_participants_info['interested'] = 0
+            activity_participants_info['share'] = 0
+            activity_participants_info['thumbs_up'] = thumbs_up
+            if db.expr_insert('activity_participants', activity_participants_info) == 1:
+                user_logger.info('Create new activity_participants_info successfully')
                 return json_dump_http_response(feedback)
-            except Exception as e:
-                user_logger.error('update push_status fail, %s', e)
-                user_logger.info('%s: complete user registration success', openid)
 
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
 
@@ -531,7 +509,6 @@ class share_activity(Resource):
         '''share activity'''
         openid = request.headers.get('Authorization')
         activity_id = request.args.get('activityId')
-        is_share = int(request.args.get('share'))
         if db.exist_row('activity_participants', activity_id = activity_id, participants_id=openid):
             try:
                 participants = db.expr_query('activity_participants', activity_id=activity_id, participants_id=openid)[0]
@@ -544,16 +521,23 @@ class share_activity(Resource):
                 return json_dump_http_response({'status': 'failure'})
 
             share_count = int(participants['share'])
-            if is_share == 1:
-                share_count = share_count+1
-            else:
-                share_count = share_count-1
+            share_count += 1
             try:
                 rc = db.expr_update(tbl = 'activity_participants', vals = {'share':share_count}, activity_id = activity_id, participants_id=openid)
                 return json_dump_http_response({'status': 'success'})
             except Exception as e:
                 user_logger.error('update push_status fail, %s', e)
                 user_logger.info('%s: complete user registration success', openid)
+        else:
+            activity_participants_info = {}
+            activity_participants_info['activity_id'] = activity_id
+            activity_participants_info['participants_id'] = openid
+            activity_participants_info['interested'] = 0
+            activity_participants_info['share'] = 1
+            activity_participants_info['thumbs_up'] = 0
+            if db.expr_insert('activity_participants', activity_participants_info) == 1:
+                user_logger.info('Create new activity_participants_info with share successfully')
+                return json_dump_http_response({'status': 'success'})
 
         return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
 
