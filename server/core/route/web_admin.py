@@ -288,6 +288,11 @@ class activity(Resource):
                 if not activity:
                     admin_logger.warning('%d: no such activity', activity_id)
                     return json_dump_http_response({'status': 'failure', 'message': '未知活动ID'})
+                activity['share'] = db.expr_query('activity_participants', 'COUNT(*)', \
+                                             clauses='activity_participants.activity_id = {} ' \
+                                             'and activity_participants.share = 1'.format(activity_id))
+                activity['registered'] = db.expr_query('registerActivities', 'COUNT(*)', \
+                                             clauses='registerActivities.activity_id = {}'.format(activity_id))
             except:
                 admin_logger.warning('%d: get activity failed', activity_id)
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
@@ -353,6 +358,13 @@ class activitires(Resource):
         except:
             admin_logger.warning('get all activities failed')
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
+        for activity_info in activities_info:
+            activity_id = activities_info['activity_id']
+            activity_info['share'] = db.expr_query('activity_participants', 'COUNT(*)', \
+                                             clauses='activity_participants.activity_id = {} ' \
+                                             'and activity_participants.share = 1'.format(activity_id))
+            activity_info['registered'] = db.expr_query('registerActivities', 'COUNT(*)', \
+                                             clauses='registerActivities.activity_id = {}'.format(activity_id))
         sorted_activities_info = sort_by_time(activities_info, filter_time)
         queries = [convert_activity_to_query(activity) for activity in sorted_activities_info if should_append_by_tag(activity, target_tag_list)]
 
@@ -581,4 +593,6 @@ def convert_activity_to_query(activity):
     query['notice'] = activity['notice']
     query['others'] = activity['others']
     query['tag'] = tag_converter.convert_idstring_to_tagstring(activity['tag_ids'])
+    query['share'] = activity['share']
+    query['registered'] = activity['registered']
     return query
