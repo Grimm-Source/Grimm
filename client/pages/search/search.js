@@ -1,4 +1,5 @@
 // pages/search/search.js
+const { searchActivity } = require('../../utils/requestUtil');
 Page({
 
   /**
@@ -110,45 +111,69 @@ Page({
 
   endsearchActivities: function(e){
     const searchVal = e.detail.value;
-    const arr = [{ 'id': '0', 'time': '2020-01-01 13:30-14:30', 'location': '世纪公园', 'title': '世纪公园新年走走走陪走活动走走走走活动活动', state: 'joined', statestring: '报名成功' },
-    { 'id': '1', 'time': '2020-01-01 13:30-14:30', 'location': '世纪公园', 'title': '世纪公园新年陪走活动', state: 'interested', statestring: '感兴趣' },
-    { 'id': '0', 'time': '2020-01-01 13:30-14:30', 'location': '世纪公园', 'title': '世纪公园新年活动', state: 'joined', statestring: '报名成功' },
-    { 'id': '1', 'time': '2020-01-01 13:30-14:30', 'location': '世纪公园', 'title': '世纪公园新年活动', state: 'interested', statestring: '感兴趣' }]
     const newArr = [];
     const searchWord = this.data.selelctedVal + searchVal;
-    arr.forEach(item => {
-      if(item.title.includes(searchWord)){
-        newArr.push(item)
-      }
-    })
-    // searchActivity(this.properties.searchedVal, (res) => {
-        
-    // })
-    const arr_copy = newArr.slice();
-    if(arr_copy && arr_copy.length > 0){
-      arr_copy.forEach(item => {
-        const wordArr = item.title.split('');
-        const titleArr = []
-        wordArr.forEach(item => {
-          if(searchWord.includes(item)){
-            titleArr.push({
-              word: item,
-              className: 'green'
-            })
-          }else{
-            titleArr.push({
-              word: item,
-              className: 'black'
-            })
-          }
-        })
-        item.title = titleArr;
-      });
-    }
     
-    this.setData({
-      searchValue: searchVal,
-      searchedActivities: arr_copy
+    searchActivity(searchWord, (res) => {
+      res.forEach(item => {
+        if(item.title.includes(searchWord)){
+          newArr.push(item)
+        }
+      })
+      const arr_copy = newArr.slice();
+      if(arr_copy && arr_copy.length > 0){
+        arr_copy.forEach(item => {
+          const newTitle = this._highlightWord(searchWord, item)
+          const formatTime = this._activitySchedule(item)
+          item.title = newTitle;
+          item.schedule = formatTime
+        });
+      }
+      this.setData({
+        searchValue: searchVal,
+        searchedActivities: arr_copy
+      })
     })
+  },
+
+  _highlightWord: function(searchWord, activity){
+    let newStr = activity.title;
+    const titleArr = []
+    if(searchWord.length > 0 && activity.title.indexOf(searchWord) > -1){
+      newStr = activity.title.split(searchWord).join(`<span>${searchWord}<span>`);
+      const wordArr = newStr.split('<span>');
+      wordArr.forEach(item => {
+        if(searchWord === item){
+          titleArr.push({
+            word: item,
+            className: 'green'
+          })
+        }else{
+          titleArr.push({
+            word: item,
+            className: 'black'
+          })
+        }
+      })
+    }else{
+      titleArr.push({
+        word: newStr,
+        className: 'black'
+      })
+    }
+
+    return titleArr;
+  },
+
+  _activitySchedule: function(activity){
+    let startTime = activity.start_time.replace('T', ' ').replace(/-/g, ".");
+    let endTime = activity.end_time.replace('T', ' ').replace(/-/g, ".");
+    let timeStr = "";
+    if (activity.duration.day != 0) {
+      timeStr = startTime.substr(0, 10) + " - " + endTime.substr(0, 10)
+    } else {
+      timeStr = startTime.substr(0, 16) + "-" + endTime.substr(11, 16)
+    }
+    return timeStr;
   }
 })

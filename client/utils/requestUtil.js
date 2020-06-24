@@ -204,6 +204,15 @@ const getPhoneNumber = (obj, successCallback, failCallback) => {
   });
 }
 
+const searchActivity = (searchVal, successCallback, failCallback) => {
+    return request({
+        url: 'activities?keyword=' + searchVal,
+        method: 'GET',
+        success: successCallback,
+        fail: failCallback,
+    })
+}
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -225,5 +234,6 @@ module.exports = {
     toggleRegister,
     shareActivity,
     getMyActivities,
-    getPhoneNumber
+    getPhoneNumber,
+    searchActivity
 }

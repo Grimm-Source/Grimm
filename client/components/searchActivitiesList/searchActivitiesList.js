@@ -37,7 +37,7 @@ Component({
       let item = e.currentTarget.dataset && e.currentTarget.dataset.item,
       activityId = item.id;
       wx.navigateTo({
-          url: '/pages/activityDetail/activityDetail?activityId='+ activityId,
+          url: '/pages/activityDetail/activityDetail?id='+ activityId,
       })
     }
   }
