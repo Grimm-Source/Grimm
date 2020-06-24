@@ -359,7 +359,7 @@ class activitires(Resource):
             admin_logger.warning('get all activities failed')
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
         for activity_info in activities_info:
-            activity_id = activities_info['activity_id']
+            activity_id = activity_info['activity_id']
             activity_info['share'] = db.expr_query('activity_participants', 'COUNT(*)', \
                                              clauses='activity_participants.activity_id = {} ' \
                                              'and activity_participants.share = 1'.format(activity_id))
