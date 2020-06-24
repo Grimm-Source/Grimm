@@ -346,13 +346,7 @@ class activity(Resource):
 @api.route('/activities')
 class activitires(Resource):
     def get(self):
-        '''view function to get all activities info'''
-        target_tag_list = request.args.get('tags')
-        if not target_tag_list or len(target_tag_list) == 0:
-            target_tag_list = 'all'
-        filter_time = request.args.get('time')
-        if not filter_time or len(filter_time) == 0:
-            filter_time = 'all'
+        '''view function to get activities info'''
         try:
             activities_info = db.expr_query('activity')
         except:
@@ -365,6 +359,17 @@ class activitires(Resource):
                                              'and activity_participants.share = 1'.format(activity_id))
             activity_info['registered'] = db.expr_query('registerActivities', 'COUNT(*)', \
                                              clauses='registerActivities.activity_id = {}'.format(activity_id))
+        keyword = request.args.get('keyword')
+        if keyword and len(keyword) != 0:
+            queries = [convert_activity_to_query(activity) for activity in activities_info if should_append_by_keyword(activity, keyword)]
+            admin_logger.info('get all activities successfully')
+            return json_dump_http_response(queries)
+        target_tag_list = request.args.get('tags')
+        if not target_tag_list or len(target_tag_list) == 0:
+            target_tag_list = 'all'
+        filter_time = request.args.get('time')
+        if not filter_time or len(filter_time) == 0:
+            filter_time = 'all'
         sorted_activities_info = sort_by_time(activities_info, filter_time)
         queries = [convert_activity_to_query(activity) for activity in sorted_activities_info if should_append_by_tag(activity, target_tag_list)]
 
@@ -396,6 +401,14 @@ def should_append_by_tag(activity, target_tag_list):
         if target_tag_id in current_tag_list:
             return True
     return False
+
+def should_append_by_keyword(activity, keyword):
+    if not activity:
+        return False
+    if keyword in activity['title']:
+        return True
+    else:
+        return False
 
 def should_append_by_time_span(activity, filter_time):
     filter_start = datetime.strptime(filter_time.split(' - ')[0], '%Y-%m-%d')
