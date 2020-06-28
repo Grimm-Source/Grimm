@@ -211,9 +211,9 @@ class register(Resource):
 
 @api.route('/profile')
 class profile(Resource):
-    feedback = {'status': 'success'}
     def get(self):
         """ display profile """
+        feedback = {'status': 'success'}
         openid = request.headers.get('Authorization')
         if db.exist_row('user', openid=openid):
             try:
@@ -221,7 +221,7 @@ class profile(Resource):
             except:
                 return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
             feedback['openid'] = userinfo['openid']
-            feedback['birthDate'] = userinfo['birth']
+            feedback['birthDate'] = str(userinfo['birth'])
             feedback['usercomment'] = userinfo['remark']
             feedback['disabledID'] = userinfo['disabled_id']
             feedback['emergencyPerson'] = userinfo['emergent_contact']
@@ -233,7 +233,7 @@ class profile(Resource):
             feedback['name'] = userinfo['name']
             feedback['role'] = "志愿者" if userinfo['role'] == 0 else "视障人士"
             feedback['tel'] = userinfo['phone']
-            feedback['registrationDate'] = userinfo['registration_date']
+            feedback['registrationDate'] = str(userinfo['registration_date'])
             user_logger.info('%s: user login successfully', userinfo['openid'])
             return json_dump_http_response(feedback)
 
