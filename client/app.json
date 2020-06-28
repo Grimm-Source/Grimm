@@ -10,7 +10,8 @@
     "pages/myActivity/myActivity",
     "pages/login/login",
     "pages/register/register",
-    "pages/search/search"
+    "pages/search/search",
+    "pages/personalProfile/personalProfile"
   ],
   "window": {
     "backgroundTextStyle": "light",

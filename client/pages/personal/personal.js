@@ -201,6 +201,20 @@ Page({
     });
   },
 
+  onEditTap: function () {
+    // if(!this.data.isRegistered){
+    //   wx.showToast({
+    //     title: '请先注册',
+    //     icon: 'none', //error
+    //     duration: 2000
+    //   });
+    //   return;
+    // }
+    wx.navigateTo({
+      url: '/pages/personalProfile/personalProfile',
+    })
+  }
+
   // updateProfile: function(){
   //   if(this.data.isRegistered && this.data.auditStatus === "pending"){
   //     wx.showToast({

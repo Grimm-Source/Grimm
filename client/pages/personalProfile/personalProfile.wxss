@@ -1,0 +1,70 @@
+/* pages/personalProfile/personalProfile.wxss */
+.profile-wrapper{
+    padding: 0 52rpx;
+  }
+  
+  .profile-header{
+    display: flex;
+    height: 300rpx;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 34rpx;
+  }
+  
+  .profile-header image{
+    width: 120rpx;
+    height: 120rpx;
+    margin-bottom: 30rpx;
+    background: #d8d8d8;
+    border-radius: 50%;
+  }
+  
+  .profile-form-item{
+    margin-bottom: 56rpx;
+    font-size: 22rpx;
+  }
+  
+  .profile-form-label{
+    margin-bottom: 20rpx;
+  }
+  
+  .profile-form-item input{
+    height: 80rpx;
+    padding: 0 20rpx;
+    border: 2rpx solid #f1f1f1;
+    border-radius: 8rpx;
+    box-sizing: border-box;
+  }
+  
+  .profile-form-item input[disabled]{
+    color: #a8a8a8;
+  }
+  
+  .profile-form-group{
+    display: flex;
+  }
+  
+  .profile-form-footer{
+    margin-top: 100rpx;
+  }
+  
+  .profile-form-footer button{
+    height: 84rpx;
+    margin-bottom: 20rpx;
+  }
+  
+  picker{
+    position: relative;
+  }
+  
+  picker:after{
+    content: "";
+    position: absolute;
+    top: 38rpx;
+    right: 20rpx;
+    width: 0;
+    height: 0;
+    border: 10rpx solid transparent;
+    border-top-color: #000;
+  }
