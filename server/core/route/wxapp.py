@@ -243,28 +243,17 @@ class profile(Resource):
     def post(self):
         " update profile"
         newinfo = json_load_http_request(request)  # get request POST user data
-        userinfo = {}
         openid = request.headers.get('Authorization')
-        if newinfo['role'] == '视障人士':
-            userinfo['disabled_id'] = newinfo['disabledID']
-            userinfo['emergent_contact'] = newinfo['emergencyPerson']
-            userinfo['emergent_contact_phone'] = newinfo['emergencyTel']
-        userinfo['phone'] = newinfo['tel']
-        userinfo['gender'] = newinfo['gender']
-        userinfo['birth'] = newinfo['birthDate']
-        userinfo['contact'] = newinfo['linktel']
-        userinfo['address'] = newinfo['linkaddress']
-        userinfo['remark'] = newinfo['usercomment']
-        userinfo['idcard'] = newinfo['idcard']
-        userinfo['name'] = newinfo['name']
+        status = {}
+        status['gender'] = newinfo['gender']
+        status['birth'] = newinfo['birthDate']
+        status['name'] = newinfo['name']
+        status['address'] = newinfo['linkaddress']
         try:
-            status = db.expr_query('user', 'audit_status', openid=openid)[0]
-            if status['audit_status'] == -1:
-                userinfo['audit_status'] = 0
-            if db.expr_update('user', userinfo, openid=openid) != 1:
+            if db.expr_update('user', vals=status, openid=openid) != 1:
                 user_logger.error('%s: user update info failed', openid)
                 return json_dump_http_response({'status': 'failure', 'message': "更新失败，请重新输入"})
-        except:
+        except Exception as e:
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
         user_logger.info('%s: complete user profile updating successfully', openid)
