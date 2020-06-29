@@ -29,7 +29,7 @@ Page({
     })
     return getProfile((data) => {
       const defaultUserInfo = data;
-      defaultUserInfo.linkaddress = ['北京市', '北京市', '东城区'];
+      // defaultUserInfo.linkaddress = ['北京市', '北京市', '东城区'];
       // console.log(addressArr)
       this.setData({
         userInfo: defaultUserInfo,
