@@ -250,9 +250,7 @@ class profile(Resource):
         status['name'] = newinfo['name']
         status['address'] = newinfo['linkaddress']
         try:
-            if db.expr_update('user', vals=status, openid=openid) != 1:
-                user_logger.error('%s: user update info failed', openid)
-                return json_dump_http_response({'status': 'failure', 'message': "更新失败，请重新输入"})
+            db.expr_update('user', vals=status, openid=openid)
         except Exception as e:
             return json_dump_http_response({'status': 'failure', 'message': '未知错误'})
 
