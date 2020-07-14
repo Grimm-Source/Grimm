@@ -115,8 +115,13 @@ Component({
     },
     
     onTapActivity: function (event) {
+      let item = event.currentTarget.dataset && event.currentTarget.dataset.item,
+      activityId = item.id;
+      if(activityId ==  null){
+        return;
+      }
       wx.navigateTo({
-        url: '/pages/activityDetail/activityDetail?id=1',
+          url: '/pages/activityDetail/activityDetail?activityId='+ activityId,
       })
     },
 
