@@ -12,5 +12,5 @@
     </view>
   </view>
   <activitiesList class="filtered-activities-list"></activitiesList>
-  <button bindtap="toggleTabbar">{{showTabbarText}}底部个人中心</button>
+  <!-- <button bindtap="toggleTabbar">{{showTabbarText}}底部个人中心</button> -->
 </view>
