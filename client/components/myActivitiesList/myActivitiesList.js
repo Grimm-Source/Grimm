@@ -115,18 +115,20 @@ Component({
     },
     
     onTapActivity: function (event) {
-      let item = event.currentTarget.dataset && event.currentTarget.dataset.item,
-      activityId = item.id;
+      let activityId = event.currentTarget.id;
       if(activityId ==  null){
         return;
       }
       wx.navigateTo({
-          url: '/pages/activityDetail/activityDetail?activityId='+ activityId,
+          url: '/pages/activityDetail/activityDetail?id='+ activityId,
       })
     },
 
     onFilterParamChange: function (type) {
       const filterStr = this._getFilterTypeStr(type);
+      // getActivityList((res)=>{
+      //   this._setMyActivities(type, res);
+      // }); 
       getMyActivities(filterStr, (res) => {
         this._setMyActivities(type, res);
       });
