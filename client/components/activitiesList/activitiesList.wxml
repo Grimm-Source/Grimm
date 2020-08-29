@@ -15,11 +15,15 @@
         </view>
         <view class="activity-action">
           <view class="activity-people">
-            <text class="text-ss">{{item.joined?item.joined:0}}人参加 | {{item.inserted?item.inserted:0}}人感兴趣</text>
+            <text class="text-ss">{{item.registered}}人参加</text>
+            <text> | </text>
+            <text>{{item.interested}}人感兴趣</text>
           </view>
           <view class="activity-button">
-            <!-- <image class="activity_like" src=""></image>
-            <image class="activity_share" src=""></image> -->
+            <image src="/images/icon_liked.png" ></image>
+            <span >{{item.thumbs_up}}</span>
+            <image src="/images/icon_shared.png"></image>
+            <span class="action-text">{{item.share}}</span>
           </view>
         </view>
 
