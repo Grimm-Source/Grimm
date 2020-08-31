@@ -729,28 +729,5 @@ class get_favorite_activities(Resource):
             activity["tag"] = tag_converter.convert_idstring_to_tagstring(
                 item["activity.tag_ids"]
             )
-            activity["share"] = db.expr_query(
-                "activity_participants",
-                "COUNT(*)",
-                clauses="activity_participants.activity_id = {} "
-                "and activity_participants.share = 1".format(activity_id),
-            )[0]["COUNT(*)"]
-            activity["interested"] = db.expr_query(
-                "activity_participants",
-                "COUNT(*)",
-                clauses="activity_participants.activity_id = {} "
-                "and activity_participants.interested = 1".format(activity_id),
-            )[0]["COUNT(*)"]
-            activity["thumbs_up"] = db.expr_query(
-                "activity_participants",
-                "COUNT(*)",
-                clauses="activity_participants.activity_id = {} "
-                "and activity_participants.thumbs_up = 1".format(activity_id),
-            )[0]["COUNT(*)"]
-            activity["registered"] = db.expr_query(
-                "registerActivities",
-                "COUNT(*)",
-                clauses="registerActivities.activity_id = {}".format(activity_id),
-            )[0]["COUNT(*)"]
             activities.append(activity)
         return json_dump_http_response(activities)

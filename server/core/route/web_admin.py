@@ -31,6 +31,7 @@ import server.utils.email_verify as email_verify
 import server.utils.sms_verify as sms_verify
 import server.utils.vrfcode as vrfcode
 import server.utils.tag_converter as tag_converter
+import server.utils.db_utils as db_utils
 from server.core import api
 from server.core import socketio
 from server import admin_logger, user_logger
@@ -376,29 +377,10 @@ class activity(Resource):
                     return json_dump_http_response(
                         {"status": "failure", "message": "未知活动ID"}
                     )
-                activity["share"] = db.expr_query(
-                    "activity_participants",
-                    "COUNT(*)",
-                    clauses="activity_participants.activity_id = {} "
-                    "and activity_participants.share = 1".format(activity_id),
-                )[0]["COUNT(*)"]
-                activity["interested"] = db.expr_query(
-                    "activity_participants",
-                    "COUNT(*)",
-                    clauses="activity_participants.activity_id = {} "
-                    "and activity_participants.interested = 1".format(activity_id),
-                )[0]["COUNT(*)"]
-                activity["thumbs_up"] = db.expr_query(
-                    "activity_participants",
-                    "COUNT(*)",
-                    clauses="activity_participants.activity_id = {} "
-                    "and activity_participants.thumbs_up = 1".format(activity_id),
-                )[0]["COUNT(*)"]
-                activity["registered"] = db.expr_query(
-                    "registerActivities",
-                    "COUNT(*)",
-                    clauses="registerActivities.activity_id = {}".format(activity_id),
-                )[0]["COUNT(*)"]
+                activity["share"] = db_utils.get_total_share(activity_id)
+                activity["interested"] = db_utils.get_total_interested(activity_id)
+                activity["thumbs_up"] = db_utils.get_total_thumbs_up(activity_id)
+                activity["registered"] = db_utils.get_total_registered(activity_id)
             except:
                 admin_logger.warning("%d: get activity failed", activity_id)
                 return json_dump_http_response({"status": "failure", "message": "未知错误"})
@@ -466,29 +448,10 @@ class activitires(Resource):
             return json_dump_http_response({"status": "failure", "message": "未知错误"})
         for activity_info in activities_info:
             activity_id = activity_info["activity_id"]
-            activity_info["share"] = db.expr_query(
-                "activity_participants",
-                "COUNT(*)",
-                clauses="activity_participants.activity_id = {} "
-                "and activity_participants.share = 1".format(activity_id),
-            )[0]["COUNT(*)"]
-            activity_info["interested"] = db.expr_query(
-                "activity_participants",
-                "COUNT(*)",
-                clauses="activity_participants.activity_id = {} "
-                "and activity_participants.interested = 1".format(activity_id),
-            )[0]["COUNT(*)"]
-            activity_info["thumbs_up"] = db.expr_query(
-                "activity_participants",
-                "COUNT(*)",
-                clauses="activity_participants.activity_id = {} "
-                "and activity_participants.thumbs_up = 1".format(activity_id),
-            )[0]["COUNT(*)"]
-            activity_info["registered"] = db.expr_query(
-                "registerActivities",
-                "COUNT(*)",
-                clauses="registerActivities.activity_id = {}".format(activity_id),
-            )[0]["COUNT(*)"]
+            activity_info["share"] = db_utils.get_total_share(activity_id)
+            activity_info["interested"] = db_utils.get_total_interested(activity_id)
+            activity_info["thumbs_up"] = db_utils.get_total_thumbs_up(activity_id)
+            activity_info["registered"] = db_utils.get_total_registered(activity_id)
         keyword = request.args.get("keyword")
         if keyword and len(keyword) != 0:
             queries = [
