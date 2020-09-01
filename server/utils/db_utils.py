@@ -29,7 +29,7 @@ def get_total_share(activity_id):
 
 
 def get_total_interested(activity_id):
-    db.expr_query(
+    return db.expr_query(
         "activity_participants",
         "COUNT(*)",
         clauses="activity_participants.activity_id = {} "
@@ -38,7 +38,7 @@ def get_total_interested(activity_id):
 
 
 def get_total_thumbs_up(activity_id):
-    db.expr_query(
+    return db.expr_query(
         "activity_participants",
         "COUNT(*)",
         clauses="activity_participants.activity_id = {} "
@@ -47,7 +47,7 @@ def get_total_thumbs_up(activity_id):
 
 
 def get_total_registered(activity_id):
-    db.expr_query(
+    return db.expr_query(
         "registerActivities",
         "COUNT(*)",
         clauses="registerActivities.activity_id = {}".format(activity_id),
