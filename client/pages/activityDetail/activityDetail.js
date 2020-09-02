@@ -76,7 +76,7 @@ Page({
     }
     const isRegistered = !this.data.isRegistered;//activity
     if( app.globalData.isRegistered ){ // user
-      const isVolunteer = app.globalData.userInfo.role === "志愿者"; 
+      const isVolunteer =  app.globalData.isVolunteer; 
       toggleRegister(this.data.id, isRegistered, () => {
         if(isVolunteer){
           this.setData({

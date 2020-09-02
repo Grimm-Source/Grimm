@@ -1,5 +1,5 @@
 //获取应用实例
-const { getRegisterStatus } = require('../../utils/requestUtil.js');
+const { getRegisterStatus, getProfile } = require('../../utils/requestUtil.js');
 
 const app = getApp()
 
@@ -43,6 +43,7 @@ Page({
                     }
                     app.globalData.auditStatus = res.auditStatus || "pending";
                     app.globalData.isRegistered = !!res.isRegistered;
+                    app.globalData.isVolunteer = res.role == "volunteer";
                     wx.setStorageSync("openid",res.openid)
                     // this.globalData.userInfo = res.userInfo;
                 });    
