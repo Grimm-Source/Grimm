@@ -5,7 +5,8 @@ App({
     userInfo: null,
     isAuthorized: false,
     isRegistered: false,
-    auditStatus: "pending"
+    isVolunteer: true,
+    auditStatus: "pending",
   },
   
   onLaunch: function () {
