@@ -87,6 +87,7 @@ class wxjscode2session(Resource):
                     feedback["auditStatus"] = "approved"
                 elif userinfo["audit_status"] == -1:
                     feedback["auditStatus"] = "rejected"
+                feedback["role"] = "voluteer" if userinfo["role"] == 0 else "impaired"
             else:
                 feedback["isRegistered"] = False
                 feedback["auditStatus"] = "pending"
