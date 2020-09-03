@@ -352,6 +352,11 @@ class new_activity(Resource):
         activity_info["tag_ids"] = tag_converter.convert_tagstring_to_idstring(
             info["tag"]
         )
+        activity_info["volunteer_capacity"] = info["volunteer_capacity"]
+        activity_info["vision_impaired_capacity"] = info["vision_impaired_capacity"]
+        activity_info["volunteer_job_title"] = info["volunteer_job_title"]
+        activity_info["volunteer_job_content"] = info["volunteer_job_content"]
+        activity_info["activity_fee"] = info["activity_fee"]
         try:
             if db.expr_insert("activity", activity_info) == 1:
                 admin_logger.info(
@@ -421,6 +426,11 @@ class activity(Resource):
             activity_info["tag_ids"] = tag_converter.convert_tagstring_to_idstring(
                 newinfo["tag"]
             )
+            activity_info["volunteer_capacity"] = newinfo["volunteer_capacity"]
+            activity_info["vision_impaired_capacity"] = newinfo["vision_impaired_capacity"]
+            activity_info["volunteer_job_title"] = newinfo["volunteer_job_title"]
+            activity_info["volunteer_job_content"] = newinfo["volunteer_job_content"]
+            activity_info["activity_fee"] = newinfo["activity_fee"]
             try:
                 if (
                     db.expr_update("activity", activity_info, activity_id=activity_id)
@@ -771,4 +781,9 @@ def convert_activity_to_query(activity):
     query["registered"] = activity["registered"]
     query["interested"] = activity["interested"]
     query["thumbs_up"] = activity["thumbs_up"]
+    query["volunteer_capacity"] = activity["volunteer_capacity"]
+    query["vision_impaired_capacity"] = activity["vision_impaired_capacity"]
+    query["volunteer_job_title"] = activity["volunteer_job_title"]
+    query["volunteer_job_content"] = activity["volunteer_job_content"]
+    query["activity_fee"] = activity["activity_fee"]
     return query

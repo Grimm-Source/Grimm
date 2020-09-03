@@ -105,6 +105,9 @@ create table activity
     tag_ids                     VARCHAR(120),
     volunteer_capacity          INT                 DEFAULT 0,
     vision_impaired_capacity    INT                 DEFAULT 0,
+    volunteer_job_title         TEXT,
+    volunteer_job_content       TEXT,
+    activity_fee                INT                 DEFAULT 0,
 
     FOREIGN KEY (user_raiser) REFERENCES user(openid)
     ON DELETE set null
@@ -122,8 +125,8 @@ create table activity
     PRIMARY KEY (activity_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO activity (start_time, location, content, notice, user_raiser, approver, assignee, end_time, tag_ids)
-VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "需要配备雨具", '0', 0, '1', '2030-10-28 09:30:00', '1,2');
+INSERT INTO activity (start_time, location, content, notice, user_raiser, approver, assignee, end_time, tag_ids, volunteer_job_title, volunteer_job_content)
+VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "需要配备雨具", '0', 0, '1', '2030-10-28 09:30:00', '1,2', "岗位名称", "岗位内容");
 
 /* registed activities table */
 create table registerActivities

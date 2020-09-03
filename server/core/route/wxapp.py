@@ -444,6 +444,9 @@ class get_activity(Resource):
             feedback["content"] = activity["content"]
             feedback["notice"] = activity["notice"]
             feedback["others"] = activity["others"]
+            feedback["volunteer_job_title"] = activity["volunteer_job_title"]
+            feedback["volunteer_job_content"] = activity["volunteer_job_content"]
+            feedback["activity_fee"] = activity["activity_fee"]
             feedback["volunteer_capacity"] = activity["volunteer_capacity"]
             feedback["vision_impaired_capacity"] = activity["vision_impaired_capacity"]
             feedback["volunteers"] = 1
