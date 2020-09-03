@@ -40,12 +40,19 @@ class ActivityList extends React.Component {
                 >
                   编辑
                 </span>,
+              //   <span
+              //     key="chart"
+              //     className="list-item-button"
+              //     onClick={this.props.onClickActivity.bind(this, item, ACTIVITY_DETAIL_TYPE.CHART)}
+              //   >
+              //     查看
+              // </span>,
                 <span
-                  key="chart"
+                    key="register"
                   className="list-item-button"
-                  onClick={this.props.onClickActivity.bind(this, item, ACTIVITY_DETAIL_TYPE.CHART)}
+                    onClick={this.props.onClickActivity.bind(this, item, ACTIVITY_DETAIL_TYPE.VOLUNTEER_LIST)}
                 >
-                  查看
+                  报名管理
               </span>,
                 <span
                   key="delete"

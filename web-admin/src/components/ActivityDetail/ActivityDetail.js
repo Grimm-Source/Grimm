@@ -1,4 +1,4 @@
-import { Form, DatePicker, Input, Button, Spin, Radio, InputNumber, message } from 'antd';
+import { Form, DatePicker, Input, Button, Spin, Radio, InputNumber, Switch, message } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import ButtonGroup from '../ButtonGroup/ButtonGroup.js';
@@ -14,7 +14,8 @@ const { RangePicker } = DatePicker;
 class ActivityDetail extends React.Component {
   state={
     isVolLimited: false,
-    isDisabledLimited: false
+    isDisabledLimited: false,
+    isFeeNeeded: false,
   }
 
   componentDidMount(){
@@ -22,6 +23,11 @@ class ActivityDetail extends React.Component {
       return;
     }
     this.props.getActivity(this.props.activityId);
+    this.setState({
+      isVolLimited: this.props.activity.volunteer_capacity > 0,
+      isDisabledLimited: this.props.activity.vision_impaired_capacity > 0,
+      isFeeNeeded: this.props.activity.activity_fee > 0,
+    })
   }
 
   componentDidUpdate(){
@@ -94,6 +100,12 @@ class ActivityDetail extends React.Component {
   onChangeDisabledLimited=(e)=>{
     this.setState({
       isDisabledLimited: e.target.value
+    });
+  }
+
+  onChangeActivityFeeNeed = (e) => {
+    this.setState({
+      isFeeNeeded: e.target.value
     });
   }
 
@@ -170,35 +182,80 @@ class ActivityDetail extends React.Component {
              ],
            })(<Input.TextArea rows={5} placeholder="请输入活动内容" />)}
        </Form.Item>
-       <Form.Item htmlFor="count-item" style={{ marginBottom: 0 }}  label="人数限制" >
-            <span className="inline-label">志愿者</span>
-            <Radio.Group onChange={this.onChangeVolLimited} value={this.state.isVolLimited}>
-              <Radio value={true}>有</Radio>
-              <Radio value={false}>无</Radio>
-            </Radio.Group>
-            <Form.Item  style={{ marginBottom: 0 }} style={{ display: 'inline-block', width: '30%' }}>{
-              getFieldDecorator('volunteerCount', {
-                rules: [
-                  {
-                    required: false
-                  },
-                ],
-              })(<InputNumber disabled={!this.state.isVolLimited} min={1} type="number" id="volunteerCount" placeholder="请输入志愿者人数" />)
-            }</Form.Item>
-            <span className="inline-label">视障人士</span>
+       <Form.Item htmlFor="count-item"  label="招募人数" >
+        <div className="impaired-detail">
+          <span className="inline-label">视障人士</span>
             <Radio.Group onChange={this.onChangeDisabledLimited} value={this.state.isDisabledLimited}>
               <Radio value={true}>有</Radio>
               <Radio value={false}>无</Radio>
             </Radio.Group>
-            <Form.Item  style={{ marginBottom: 0 }} style={{ display: 'inline-block', width: '30%' }}>{
+            <Form.Item  style={{ marginBottom: "12px"}} style={{ display: 'inline-block'}}>{
               getFieldDecorator('disabledCount', {
                 rules: [
                   {
                     required: false
                   },
                 ],
-              })(<InputNumber min={1} disabled={!this.state.isDisabledLimited} type="number" id="disabledCount" placeholder="请输入视障人士人数" />)
+              })(<InputNumber min={0} disabled={!this.state.isDisabledLimited} type="number" id="disabledCount" placeholder="请输入视障人士人数" />)
             }</Form.Item>
+        </div>
+        <div className="volunteer-detail">
+              <div>
+                <span className="inline-label">志愿者</span>
+                <Radio.Group onChange={this.onChangeVolLimited} value={this.state.isVolLimited}>
+              <Radio value={true}>有</Radio>
+              <Radio value={false}>无</Radio>
+            </Radio.Group>
+                <span className="inline-label">自动审核</span>
+                <Switch disabled={!this.state.isVolLimited} defaultChecked={false}/>
+              </div>
+            <Form.Item label="岗位名称" style={{ display: 'inline-block', width: '50%'}}>
+                {getFieldDecorator('volunteerJobTitle', {
+                  rules: [
+                    {
+                      required: false,
+                      message: '请输入岗位名称',
+                    },
+                  ],
+                })(<Input disabled={!this.state.isVolLimited} placeholder="请输入岗位名称"/>)}
+            </Form.Item>
+            <Form.Item  label="岗位人数" style={{ display: 'inline-block', width: '50%'}}>{
+              getFieldDecorator('volunteerCount', {
+                rules: [
+                  {
+                    required: false,
+                    message: '请输入岗位人数',
+                  },
+                ],
+              })(<InputNumber disabled={!this.state.isVolLimited} min={0} type="number" id="volunteerCount" placeholder="请输入志愿者人数" />)
+            }</Form.Item>
+            <Form.Item label="岗位内容" >
+                {getFieldDecorator('volunteerJobContent', {
+                  rules: [
+                    {
+                      required: false,
+                      message: '请输入岗位内容',
+                    },
+                  ],
+                })(<Input  disabled={!this.state.isVolLimited} placeholder="请输入岗位内容" />)}
+            </Form.Item>
+            </div>
+       </Form.Item>
+       <Form.Item label="活动费用">
+        <Radio.Group onChange={this.onChangeActivityFeeNeed} value={this.state.isFeeNeeded}>
+          <Radio value={false}>免费</Radio>
+          <Radio value={true}>收费</Radio>
+        </Radio.Group>
+        <Form.Item style={{ display: 'inline-block', marginBottom:"0"}}>{
+            getFieldDecorator('activityFee', {
+                rules: [
+                  {
+                    required: false
+                  },
+                ],
+            })(<InputNumber disabled={!this.state.isFeeNeeded} min={0} type="number" id="expense" placeholder="请输入活动费用" />)
+            }</Form.Item>
+          <span className="inline-label">元/人</span>
        </Form.Item>
        <Form.Item label="活动标签">
            {getFieldDecorator('tag', {
@@ -261,11 +318,20 @@ const WrappedActivityDetail = Form.create({
           value: (props.activity.start_time &&  props.activity.end_time && [moment(props.activity.start_time, 'YYYY-MM-DD HH:mm'), moment(props.activity.end_time, 'YYYY-MM-DD HH:mm')]) || null
         }),
         disabledCount: Form.createFormField({
-          value: props.activity.disabledCount 
+          value: props.activity.vision_impaired_capacity 
         }),
         volunteerCount: Form.createFormField({
-          value: props.activity.volunteerCount
+          value: props.activity.volunteer_capacity
         }),
+        volunteerJobTitle: Form.createFormField({
+          value: props.activity.volunteer_job_title || ""
+        }),
+        volunteerJobContent: Form.createFormField({
+          value: props.activity.volunteer_job_content || ""
+        }),
+        activityFee: Form.createFormField({
+          value: props.activity.activity_fee
+        })
       }
     },
     })(ActivityDetail);
