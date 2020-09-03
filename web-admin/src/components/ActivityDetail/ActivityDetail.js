@@ -23,10 +23,16 @@ class ActivityDetail extends React.Component {
       return;
     }
     this.props.getActivity(this.props.activityId);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(!nextProps.activity){
+      return;
+    }
     this.setState({
-      isVolLimited: this.props.activity.volunteer_capacity > 0,
-      isDisabledLimited: this.props.activity.vision_impaired_capacity > 0,
-      isFeeNeeded: this.props.activity.activity_fee > 0,
+      isVolLimited: nextProps.activity.volunteer_capacity > 0,
+      isDisabledLimited: nextProps.activity.vision_impaired_capacity > 0,
+      isFeeNeeded: nextProps.activity.activity_fee > 0,
     })
   }
 
