@@ -411,6 +411,7 @@ class activity(Resource):
 
     def post(self, activity_id):
         """ update a activity with a specific id """
+        feedback = {"status": "failure", "message": "无效活动 ID"}
         if db.exist_row("activity", activity_id=activity_id):
             newinfo = json_load_http_request(request)
             activity_info = {}
@@ -440,8 +441,6 @@ class activity(Resource):
                     return json_dump_http_response({"status": "success"})
             except:
                 feedback = {"status": "failure", "message": "未知错误"}
-        else:
-            feedback = {"status": "failure", "message": "无效活动 ID"}
 
         admin_logger.warning("%d: update activity failed", activity_id)
         return json_dump_http_response(feedback)
@@ -782,8 +781,12 @@ def convert_activity_to_query(activity):
     query["interested"] = activity["interested"]
     query["thumbs_up"] = activity["thumbs_up"]
     query["volunteer_capacity"] = activity["volunteer_capacity"]
+    query["is_volunteer_limited"] = True if (activity["volunteer_capacity"] is not None and activity["volunteer_capacity"] > 0) else False
     query["vision_impaired_capacity"] = activity["vision_impaired_capacity"]
+    query["is_impaired_limited"] = True if (activity["vision_impaired_capacity"] is not None and activity["vision_impaired_capacity"] > 0) else False
     query["volunteer_job_title"] = activity["volunteer_job_title"]
     query["volunteer_job_content"] = activity["volunteer_job_content"]
     query["activity_fee"] = activity["activity_fee"]
+    query["is_fee_needed"] = True if (activity["activity_fee"] is not None and activity["activity_fee"] > 0) else False
+
     return query
