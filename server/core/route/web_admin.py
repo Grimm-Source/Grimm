@@ -38,7 +38,6 @@ from server import admin_logger, user_logger
 from server.utils.misctools import (
     json_dump_http_response,
     json_load_http_request,
-    calc_duration,
 )
 
 from server.core.const import EMAIL_VRF_EXPIRY, COM_SIGNATURE
@@ -382,14 +381,10 @@ class activity(Resource):
                     return json_dump_http_response(
                         {"status": "failure", "message": "未知活动ID"}
                     )
-                activity["share"] = db_utils.get_total_share(activity_id)
-                activity["interested"] = db_utils.get_total_interested(activity_id)
-                activity["thumbs_up"] = db_utils.get_total_thumbs_up(activity_id)
-                activity["registered"] = db_utils.get_total_registered(activity_id)
             except:
                 admin_logger.warning("%d: get activity failed", activity_id)
                 return json_dump_http_response({"status": "failure", "message": "未知错误"})
-            feedback = convert_activity_to_query(activity)
+            feedback = db_utils.convert_db_activity_to_http_query(activity)
 
             admin_logger.info("%d: get activity successfully", activity_id)
             return json_dump_http_response(feedback)
@@ -428,7 +423,9 @@ class activity(Resource):
                 newinfo["tag"]
             )
             activity_info["volunteer_capacity"] = newinfo["volunteer_capacity"]
-            activity_info["vision_impaired_capacity"] = newinfo["vision_impaired_capacity"]
+            activity_info["vision_impaired_capacity"] = newinfo[
+                "vision_impaired_capacity"
+            ]
             activity_info["volunteer_job_title"] = newinfo["volunteer_job_title"]
             activity_info["volunteer_job_content"] = newinfo["volunteer_job_content"]
             activity_info["activity_fee"] = newinfo["activity_fee"]
@@ -447,7 +444,7 @@ class activity(Resource):
 
 
 @api.route("/activities")
-class activitires(Resource):
+class activities(Resource):
     def get(self):
         """view function to get activities info"""
         try:
@@ -455,16 +452,10 @@ class activitires(Resource):
         except:
             admin_logger.warning("get all activities failed")
             return json_dump_http_response({"status": "failure", "message": "未知错误"})
-        for activity_info in activities_info:
-            activity_id = activity_info["activity_id"]
-            activity_info["share"] = db_utils.get_total_share(activity_id)
-            activity_info["interested"] = db_utils.get_total_interested(activity_id)
-            activity_info["thumbs_up"] = db_utils.get_total_thumbs_up(activity_id)
-            activity_info["registered"] = db_utils.get_total_registered(activity_id)
         keyword = request.args.get("keyword")
         if keyword and len(keyword) != 0:
             queries = [
-                convert_activity_to_query(activity)
+                db_utils.convert_db_activity_to_http_query(activity)
                 for activity in activities_info
                 if should_append_by_keyword(activity, keyword)
             ]
@@ -478,7 +469,7 @@ class activitires(Resource):
             filter_time = "all"
         sorted_activities_info = sort_by_time(activities_info, filter_time)
         queries = [
-            convert_activity_to_query(activity)
+            db_utils.convert_db_activity_to_http_query(activity)
             for activity in sorted_activities_info
             if should_append_by_tag(activity, target_tag_list)
         ]
@@ -761,32 +752,56 @@ class tags_db(Resource):
         return json_dump_http_response(tags_list)
 
 
-def convert_activity_to_query(activity):
-    query = {}
-    query["id"] = activity["activity_id"]
-    query["adminId"] = activity["approver"]
-    query["title"] = activity["title"]
-    query["location"] = activity["location"]
-    start = activity["start_time"]
-    end = activity["end_time"]
-    query["start_time"] = start.strftime("%Y-%m-%dT%H:%M:%S")
-    query["end_time"] = end.strftime("%Y-%m-%dT%H:%M:%S")
-    query["duration"] = calc_duration(start, end)
-    query["content"] = activity["content"]
-    query["notice"] = activity["notice"]
-    query["others"] = activity["others"]
-    query["tag"] = tag_converter.convert_idstring_to_tagstring(activity["tag_ids"])
-    query["share"] = activity["share"]
-    query["registered"] = activity["registered"]
-    query["interested"] = activity["interested"]
-    query["thumbs_up"] = activity["thumbs_up"]
-    query["volunteer_capacity"] = activity["volunteer_capacity"]
-    query["is_volunteer_limited"] = True if (activity["volunteer_capacity"] is not None and activity["volunteer_capacity"] > 0) else False
-    query["vision_impaired_capacity"] = activity["vision_impaired_capacity"]
-    query["is_impaired_limited"] = True if (activity["vision_impaired_capacity"] is not None and activity["vision_impaired_capacity"] > 0) else False
-    query["volunteer_job_title"] = activity["volunteer_job_title"]
-    query["volunteer_job_content"] = activity["volunteer_job_content"]
-    query["activity_fee"] = activity["activity_fee"]
-    query["is_fee_needed"] = True if (activity["activity_fee"] is not None and activity["activity_fee"] > 0) else False
+@api.route("/activityRegistration/<int:activity_id>", methods=["POST", "GET"])
+class activity_registration(Resource):
+    def get(self, activity_id):
+        """ get an activity registration list with a specific id """
+        if db.exist_row("activity", activity_id=activity_id):
+            activities_registration_list = db.expr_query(
+                "registerActivities",
+                clauses="registerActivities.activity_id = {}".format(activity_id),
+            )
+            feedback = {"status": "success"}
+            users = []
+            for item in activities_registration_list:
+                openid = item["openid"]
+                user_info = db.expr_query("user", openid=openid)[0]
+                user = {}
+                user["openid"] = openid
+                user["name"] = user_info["name"]
+                user["role"] = user_info["role"]
+                user["phone"] = item["phone"]
+                user["address"] = item["address"]
+                user["accepted"] = item["accepted"]
+                user["needpickup"] = item["needpickup"]
+                user["topickup"] = item["topickup"]
+                users.append(user)
+            feedback["users"] = users
+            return json_dump_http_response(feedback)
 
-    return query
+        admin_logger.warning("%d: no such activity", activity_id)
+        return json_dump_http_response({"status": "failure", "message": "无效活动 ID"})
+    
+    def post(self, activity_id):
+        """Modify user acceptance status of an activity"""
+        if db.exist_row("activity", activity_id=activity_id):
+            openid = request.args.get("openid")
+            accepted = request.args.get("accepted")
+            if db.exist_row(
+                "registerActivities", activity_id=activity_id, openid=openid
+            ):
+                try:
+                    rc = db.expr_update(
+                        tbl="registerActivities",
+                        vals={"accepted": accepted},
+                        activity_id=activity_id,
+                        openid=openid,
+                    )
+                    return json_dump_http_response({"status": "success"})
+                except Exception as e:
+                    user_logger.error("Update registerActivities fail, %s", e)
+                    return json_dump_http_response({"status": "failure", "message": "未知错误"})
+            else:
+                return json_dump_http_response({"status": "failure", "message": " 此人未报名"})
+        else:
+            return json_dump_http_response({"status": "failure", "message": "无效活动 ID"})

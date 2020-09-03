@@ -34,8 +34,8 @@ from server import user_logger
 from server.utils.misctools import (
     json_dump_http_response,
     json_load_http_request,
-    calc_duration,
 )
+import server.utils.db_utils as db_utils
 
 from server.core.const import SMS_VRF_EXPIRY
 from server.core.const import CAROUSEL_LIST
@@ -422,7 +422,6 @@ class get_activity(Resource):
         openid = request.headers.get("Authorization")
         activity_id = int(request.args.get("activityId"))
         if db.exist_row("activity", activity_id=activity_id):
-            feedback = {"status": "success"}
             try:
                 activity = db.expr_query("activity", activity_id=activity_id)[0]
                 if not activity:
@@ -433,69 +432,8 @@ class get_activity(Resource):
             except:
                 user_logger.warning("%d: get activity failed", activity_id)
                 return json_dump_http_response({"status": "failure", "message": "未知错误"})
-            feedback["id"] = activity["activity_id"]
-            feedback["title"] = activity["title"]
-            feedback["location"] = activity["location"]
-            start = activity["start_time"]
-            end = activity["end_time"]
-            feedback["start_time"] = start.strftime("%Y-%m-%d %H:%M:%S")
-            feedback["end_time"] = end.strftime("%Y-%m-%d %H:%M:%S")
-            feedback["duration"] = calc_duration(start, end)
-            feedback["content"] = activity["content"]
-            feedback["notice"] = activity["notice"]
-            feedback["others"] = activity["others"]
-            feedback["volunteer_job_title"] = activity["volunteer_job_title"]
-            feedback["volunteer_job_content"] = activity["volunteer_job_content"]
-            feedback["activity_fee"] = activity["activity_fee"]
-            feedback["volunteer_capacity"] = activity["volunteer_capacity"]
-            feedback["vision_impaired_capacity"] = activity["vision_impaired_capacity"]
-            feedback["volunteers"] = 1
-            feedback["vision_impaireds"] = 0
-            feedback["interested"] = 0
-            feedback["thumbs_up"] = 0
-            feedback["share"] = 0
-            feedback["registered"] = 0
-            try:
-                participants = db.expr_query(
-                    "activity_participants",
-                    activity_id=activity_id,
-                    participants_id=openid,
-                )[0]
-                volunteer_count = db.expr_query(
-                    ["activity_participants", "user"],
-                    "COUNT(*)",
-                    clauses="activity_participants.activity_id = {} "
-                    "and activity_participants.participants_id = user.openid and user.role = 0".format(
-                        activity_id
-                    ),
-                )
-                vision_impaired_count = db.expr_query(
-                    ["activity_participants", "user"],
-                    "COUNT(*)",
-                    clauses="activity_participants.activity_id = {} "
-                    "and activity_participants.participants_id = user.openid and user.role = 1".format(
-                        activity_id
-                    ),
-                )
-                registerActivities = db.expr_query(
-                    "registerActivities", activity_id=activity_id, openid=openid
-                )
-
-                if not participants:
-                    user_logger.warning("%d: no such activity", activity_id)
-                    return json_dump_http_response(feedback)
-            except Exception as e:
-                print("*******************mia*****************", e)
-                user_logger.warning("%d: get activity failed", activity_id)
-                return json_dump_http_response(feedback)
-            feedback["interested"] = participants["interested"]
-            feedback["thumbs_up"] = participants["thumbs_up"]
-            feedback["share"] = participants["share"]
-            if registerActivities is not None:
-                feedback["registered"] = 1
-            feedback["volunteers"] = volunteer_count[0]["COUNT(*)"]
-            feedback["vision_impaireds"] = vision_impaired_count[0]["COUNT(*)"]
-
+            feedback = db_utils.convert_db_activity_to_http_query(activity)
+            feedback["status"] = "success"
             user_logger.info("%d: get activity successfully", activity_id)
             return json_dump_http_response(feedback)
 
@@ -653,14 +591,7 @@ class get_favorite_activities(Resource):
                 ["activity_participants", "activity"],
                 fields=[
                     "activity.activity_id",
-                    "activity.title",
-                    "activity.start_time",
-                    "activity.location",
                     "activity.end_time",
-                    "activity.content",
-                    "activity.notice",
-                    "activity.others",
-                    "activity.tag_ids",
                 ],
                 clauses='activity_participants.participants_id="{}" and activity_participants.activity_id = activity.activity_id and activity_participants.interested = 1'.format(
                     openid
@@ -670,16 +601,9 @@ class get_favorite_activities(Resource):
                 ["registerActivities", "activity"],
                 fields=[
                     "activity.activity_id",
-                    "activity.title",
-                    "activity.start_time",
-                    "activity.location",
                     "activity.end_time",
-                    "activity.content",
-                    "activity.notice",
-                    "activity.others",
-                    "activity.tag_ids",
                 ],
-                clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id '.format(
+                clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id'.format(
                     openid
                 ),
             )
@@ -715,23 +639,9 @@ class get_favorite_activities(Resource):
             if datetime.today() - timedelta(days=365) < item["activity.end_time"]
         ]
 
-        activities = []
+        queries = []
         for item in target_activities_info:
             activity_id = item["activity.activity_id"]
-            activity = {}
-            activity["id"] = activity_id
-            activity["title"] = item["activity.title"]
-            start = item["activity.start_time"]
-            end = item["activity.end_time"]
-            activity["start_time"] = start.strftime("%Y-%m-%dT%H:%M:%S")
-            activity["end_time"] = end.strftime("%Y-%m-%dT%H:%M:%S")
-            activity["duration"] = calc_duration(start, end)
-            activity["content"] = item["activity.content"]
-            activity["location"] = item["activity.location"]
-            activity["notice"] = item["activity.notice"]
-            activity["others"] = item["activity.others"]
-            activity["tag"] = tag_converter.convert_idstring_to_tagstring(
-                item["activity.tag_ids"]
-            )
-            activities.append(activity)
-        return json_dump_http_response(activities)
+            activity = db.expr_query("activity", activity_id=activity_id)[0]
+            queries.append(db_utils.convert_db_activity_to_http_query(activity))
+        return json_dump_http_response(queries)

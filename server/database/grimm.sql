@@ -137,6 +137,7 @@ create table registerActivities
     address                     VARCHAR(80)         NOT NULL,
     needpickup                  TINYINT             NOT NULL        DEFAULT 0,
     topickup                    TINYINT             NOT NULL        DEFAULT 0,
+    accepted                    TINYINT             NOT NULL        DEFAULT -1,
     PRIMARY KEY(openid, activity_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
