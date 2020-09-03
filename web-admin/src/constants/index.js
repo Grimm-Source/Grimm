@@ -9,7 +9,8 @@ export const HOME_TAG_TYPE = {
 export const ACTIVITY_DETAIL_TYPE = {
     EDIT: "EDIT",
     CHART: "CHART",
-    NAME_LIST: "NAME_LIST"
+    NAME_LIST: "NAME_LIST",
+    VOLUNTEER_LIST: "VOLUNTEER_LIST",
 };
 
 export const ADMIN_PANEL_TYPE = {
