@@ -681,7 +681,7 @@ class users(Resource):
             info["idcard"] = userinfo["idcard"]
             info["linkaddress"] = userinfo["address"]
             info["linktel"] = userinfo["contact"]
-            info["tel"] = userinfo["phone"]
+            info["phone"] = userinfo["phone"]
             info["registrationDate"] = str(userinfo["registration_date"])
             if userinfo["audit_status"] == 0:
                 info["audit_status"] = "pending"

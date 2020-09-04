@@ -249,7 +249,7 @@ class profile(Resource):
             feedback["linktel"] = userinfo["contact"]
             feedback["name"] = userinfo["name"]
             feedback["role"] = "志愿者" if userinfo["role"] == 0 else "视障人士"
-            feedback["tel"] = userinfo["phone"]
+            feedback["phone"] = userinfo["phone"]
             feedback["registrationDate"] = str(userinfo["registration_date"])
             user_logger.info("%s: user login successfully", userinfo["openid"])
             return json_dump_http_response(feedback)
@@ -279,7 +279,7 @@ class profile(Resource):
 class smscode(Resource):
     def get(self):
         """ send sms code """
-        phone_number = request.args.get("tel")
+        phone_number = request.args.get("phone")
         if phone_number is None:
             user_logger.warning("invalid url parameter phone_number")
             return json_dump_http_response({"status": "failure", "message": "无效url参数"})
@@ -309,7 +309,7 @@ class smscode(Resource):
         """ verify sms code """
         global SMS_VERIFIED_OPENID
         data = json_load_http_request(request)
-        phone_number = data["tel"]
+        phone_number = data["phone"]
         vrfcode = data["verification_code"]
         openid = request.headers.get("Authorization")
         sms_token = sms_verify.fetch_token(phone_number)
