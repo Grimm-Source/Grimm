@@ -353,8 +353,8 @@ class registeredActivities(Resource):
             registerAct["needpickup"] = int(info["needPickUp"])
         if "toPickUp" in info.keys():
             registerAct["topickup"] = int(info["toPickUp"])
-        if "tel" in info.keys():
-            registerAct["phone"] = info["tel"]
+        if "phone" in info.keys():
+            registerAct["phone"] = info["phone"]
         else:
             try:
                 userinfo = db.expr_query("user", openid=openid)[0]
@@ -376,6 +376,7 @@ class registeredActivities(Resource):
         registerAct["openid"] = openid
         # activity_id from network is str
         registerAct["activity_id"] = int(activity_id)
+        registerAct["accepted"] = -1
         try:
             if db.expr_insert("registerActivities", registerAct) != 1:
                 user_logger.error("%s: activity registration failed", openid)
