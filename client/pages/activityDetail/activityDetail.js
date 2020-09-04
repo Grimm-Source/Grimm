@@ -7,6 +7,7 @@ Page({
     banner: '/images/banner.jpg',
     title: '',
     isLike: false,
+    start_time: '',
     date: '',
     address: '',
     content: '',
@@ -48,6 +49,7 @@ Page({
         isLike: res.thumbs_up === 1,
         isRegistered: res.registered === 1,
         isInterested: res.interested === 1,
+        start_time: res.start_time,
         date: `${res.start_time}至${res.end_time}`,
         address: res.location,
         volunteerTotal: res.volunteer_capacity,
@@ -76,6 +78,11 @@ Page({
     }
     const isRegistered = !this.data.isRegistered;//activity
     if( app.globalData.isRegistered ){ // user
+      if (this.checkActivityStarted()) {
+        console.log("用户点击已开始活动.");
+        return;
+      }
+
       const isVolunteer =  app.globalData.isVolunteer; 
       toggleRegister(this.data.id, isRegistered, () => {
         if(isVolunteer){
@@ -115,4 +122,17 @@ Page({
       url: `/pages/authorize/authorize?redirectPage=${page}` 
     });
   },
+
+  checkActivityStarted: function() {
+    if (this.data.start_time == '') return false;
+    
+    const isStarted = Date.now() > Date.parse(this.data.start_time);
+    if (isStarted) {
+      wx.showModal({
+        showCancel: false,
+        title: '活动已开始',
+        content: "您想操作的活动已开始，请选择还未开始的活动，谢谢!"
+      });
+    }
+  }
 })
