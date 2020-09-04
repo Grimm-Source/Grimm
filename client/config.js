@@ -4,9 +4,9 @@ const __getUrl = function(){
   switch (version)
   {
     case 'develop':
-      return 'https://admin.grimm.huaxiaoinfo.com/service/';
+      return 'http://47.103.133.134:3000/';
     case 'trial':
-      return 'https://admin.grimm.huaxiaoinfo.com/service/';
+      return 'http://47.103.133.134:3000/';
     case 'release':
       return 'https://admin.grimm.huaxiaoinfo.com/service/';
     default:
