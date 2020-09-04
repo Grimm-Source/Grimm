@@ -345,17 +345,14 @@ class registeredActivities(Resource):
     def post(self):
         """ register an activity """
         openid = request.headers.get("Authorization")
-        info = json_load_http_request(request)
-        print(info)
-        activity_id = info["activityId"]
+        activity_id = request.args.get("activityId")
         registerAct = {}
-        if "needPickUp" in info.keys():
-            registerAct["needpickup"] = int(info["needPickUp"])
-        if "toPickUp" in info.keys():
-            registerAct["topickup"] = int(info["toPickUp"])
-        if "phone" in info.keys():
-            registerAct["phone"] = info["phone"]
-        else:
+        needPickUp = request.args.get("needPickUp")
+        registerAct["needpickup"] = 0 if needPickUp is None else int(needPickUp)
+        topickup = request.args.get("toPickUp")
+        registerAct["topickup"] = 0 if topickup is None else int(topickup)
+        phone = request.args.get("phone")
+        if phone is None:
             try:
                 userinfo = db.expr_query("user", openid=openid)[0]
                 registerAct["phone"] = userinfo["phone"]
@@ -363,9 +360,10 @@ class registeredActivities(Resource):
                 return json_dump_http_response(
                     {"status": "failure", "message": "未能获取用户信息"}
                 )
-        if "address" in info.keys():
-            registerAct["address"] = info["address"]
         else:
+            registerAct["phone"] = phone
+        address = request.args.get("address")
+        if address is None:
             try:
                 userinfo = db.expr_query("user", openid=openid)[0]
                 registerAct["address"] = userinfo["address"]
@@ -373,6 +371,8 @@ class registeredActivities(Resource):
                 return json_dump_http_response(
                     {"status": "failure", "message": "未能获取用户信息"}
                 )
+        else:
+            registerAct["address"] = address
         registerAct["openid"] = openid
         # activity_id from network is str
         registerAct["activity_id"] = int(activity_id)
