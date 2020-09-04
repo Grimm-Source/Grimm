@@ -67,6 +67,33 @@ def get_total_registered(activity_id):
         return 0
     return registered
 
+
+def get_volunteer_registered(activity_id):
+    registered = db.expr_query(
+        ["registerActivities", "user"],
+        "COUNT(*)",
+        clauses="registerActivities.activity_id = {} and registerActivities.openid = user.openid and user.role = 0".format(
+            activity_id
+        ),
+    )[0]["COUNT(*)"]
+    if registered is None:
+        return 0
+    return registered
+
+
+def get_impaired_registered(activity_id):
+    registered = db.expr_query(
+        ["registerActivities", "user"],
+        "COUNT(*)",
+        clauses="registerActivities.activity_id = {} and registerActivities.openid = user.openid and user.role = 1".format(
+            activity_id
+        ),
+    )[0]["COUNT(*)"]
+    if registered is None:
+        return 0
+    return registered
+
+
 def convert_db_activity_to_http_query(activity):
     query = {}
     activity_id = activity["activity_id"]
@@ -87,13 +114,33 @@ def convert_db_activity_to_http_query(activity):
     query["interested"] = get_total_interested(activity_id)
     query["thumbs_up"] = get_total_thumbs_up(activity_id)
     query["registered"] = get_total_registered(activity_id)
+    query["registered_volunteer"] = get_volunteer_registered(activity_id)
+    query["registered_impaired"] = get_impaired_registered(activity_id)
     query["volunteer_capacity"] = activity["volunteer_capacity"]
-    query["is_volunteer_limited"] = True if (activity["volunteer_capacity"] is not None and activity["volunteer_capacity"] > 0) else False
+    query["is_volunteer_limited"] = (
+        True
+        if (
+            activity["volunteer_capacity"] is not None
+            and activity["volunteer_capacity"] > 0
+        )
+        else False
+    )
     query["vision_impaired_capacity"] = activity["vision_impaired_capacity"]
-    query["is_impaired_limited"] = True if (activity["vision_impaired_capacity"] is not None and activity["vision_impaired_capacity"] > 0) else False
+    query["is_impaired_limited"] = (
+        True
+        if (
+            activity["vision_impaired_capacity"] is not None
+            and activity["vision_impaired_capacity"] > 0
+        )
+        else False
+    )
     query["volunteer_job_title"] = activity["volunteer_job_title"]
     query["volunteer_job_content"] = activity["volunteer_job_content"]
     query["activity_fee"] = activity["activity_fee"]
-    query["is_fee_needed"] = True if (activity["activity_fee"] is not None and activity["activity_fee"] > 0) else False
+    query["is_fee_needed"] = (
+        True
+        if (activity["activity_fee"] is not None and activity["activity_fee"] > 0)
+        else False
+    )
 
     return query
