@@ -7,7 +7,9 @@ Page({
     genders: ['男', '女'],
     genderIndex: 0,
     birthday: '',
-    region: []
+    region: [],
+    role: '',
+    showModal: true,
   },
 
   onLoad: function (options) {
@@ -40,6 +42,20 @@ Page({
     })
   },
 
+  onImpairedSelected: function() {
+    this.setData({
+      showModal: false,
+      role: "impaired"
+    })
+  },
+
+  onVolunteerSelected: function() {
+    this.setData({
+      showModal: false,
+      role: "volunteer"
+    })
+  },
+
   onSubmit: function() {
     if (!this.data.name) {
       wx.showModal({
@@ -51,11 +67,12 @@ Page({
     }
 
     register({
-      tel: this.data.phone,
+      phone: this.data.phone,
       name: this.data.name,
       gender: this.data.genders[this.data.genderIndex],
       birthdate: this.data.birthday,
-      linkaddress: this.data.region.join('')
+      linkaddress: this.data.region.join(''),
+      role: this.data.role,
     }, (res) => {
       app.globalData.isRegistered = true;
       wx.showToast({

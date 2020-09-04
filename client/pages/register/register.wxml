@@ -1,4 +1,13 @@
 <view class="register-wrapper">
+  <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+  <view class="impaired modal" wx:if="{{showModal}}" bindtap="onImpairedSelected">
+      <image src="/images/impairedRole.png" aria-role="row" aria-label="点击选择注册视障人士" />
+      <text class="text">我是视障人士</text>
+  </view>
+  <view class="volunteer modal" wx:if="{{showModal}}" bindtap="onVolunteerSelected">
+      <image src="/images/volunteerRole.png" aria-role="row" aria-label="点击选择注册志愿者"/>
+      <text class="text">我是志愿者</text>
+  </view>
   <view class="register-header">
     <image src="/images/logo.png"></image>
     <view>注册成为我们的一员</view>
