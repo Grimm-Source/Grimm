@@ -186,19 +186,26 @@ class register(Resource):
             # userinfo['disabled_id'] = info['disabledID']
             # userinfo['emergent_contact'] = info['emergencyPerson']
             # userinfo['emergent_contact_phone'] = info['emergencyTel']
+            print(request.args)
             role = request.args.get("role")
             userinfo['role'] = 1 if role is not None and role == "impaired" else 0
             birthdate = request.args.get("birthdate")
             userinfo["birth"] = datetime.now().strftime("%Y-%m-%d") if birthdate is None else birthdate
             # userinfo['remark'] = info['comment']
-            userinfo["gender"] = request.args.get("gender")
+            gender = request.args.get("gender")
+            userinfo["gender"] = "男" if gender is None else gender
             # userinfo['idcard'] = info['idcard']
-            userinfo["address"] = request.args.get("linkaddress")
+            linkaddress = request.args.get("linkaddress")
+            userinfo["address"] = "无" if linkaddress is None else linkaddress
             # userinfo['contact'] = info['linktel']
-            userinfo["name"] = request.args.get("name")
+            name = request.args.get("name")
+            userinfo["name"] = name
+            print(name)
             userinfo["audit_status"] = 0
             userinfo["registration_date"] = datetime.now().strftime("%Y-%m-%d")
-            userinfo["phone"] = request.args.get("phone")
+            phone = request.args.get("phone")
+            userinfo["phone"] = phone
+            print(phone)
             userinfo["phone_verified"] = 1
             try:
                 if db.expr_insert("user", userinfo) != 1:
@@ -345,6 +352,9 @@ class smscode(Resource):
 class registeredActivities(Resource):
     def post(self):
         """ register an activity """
+        print(request)
+        print(request.headers)
+        print(request.view_args)
         openid = request.headers.get("Authorization")
         activity_id = request.args.get("activityId")
         registerAct = {}
