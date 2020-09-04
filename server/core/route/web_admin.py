@@ -196,6 +196,21 @@ class manage_admin(Resource):
         return json_dump_http_response(feedback)
 
 
+@api.route("/user/<int:openid>")
+class manage_user(Resource):
+    def delete(self, openid):
+        """ delete user with an openid"""
+        if openid is not None:
+            try:
+                if db.expr_delete("user", openid=openid) == 1:
+                    admin_logger.info("%d: user deleted successfully", openid)
+                    return json_dump_http_response({"status": "success"})
+            except:
+                admin_logger.error("Critical: database delete failed !")
+                json_dump_http_response({"status": "failure", "message": "无法删除用户"})
+
+        return json_dump_http_response({"status": "failure", "message": "openid 为空"})
+
 @api.route("/admin")
 class new_admin(Resource):
     def post(self):
