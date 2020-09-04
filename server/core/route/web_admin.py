@@ -538,10 +538,11 @@ def should_append_by_tag(activity, target_tag_list):
         return False
     if target_tag_list == "all":
         return True
-    current_tag_list = activity["tag_ids"].split(",")
-    for target_tag_id in target_tag_list.split(","):
-        if target_tag_id in current_tag_list:
-            return True
+    if activity["tag_ids"] is not None:
+        current_tag_list = activity["tag_ids"].split(",")
+        for target_tag_id in target_tag_list.split(","):
+            if target_tag_id in current_tag_list:
+                return True
     return False
 
 
