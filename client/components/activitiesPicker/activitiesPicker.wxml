@@ -19,11 +19,11 @@
               {{item.description}}
           </view>
       </block>
-      <view class="time-selector">
+      <!-- <view class="time-selector">
         <picker id="interval" mode="date" value="{{date}}" start="2010-01-01" bindchange="tapTime">
         <view class="picker">选择日期</view>
         </picker>
-      </view>
+      </view> -->
   </scroll-view>
 </view>
 
