@@ -7,6 +7,7 @@ Page({
     banner: '/images/banner.jpg',
     title: '',
     isLike: false,
+    start_time: '',
     date: '',
     address: '',
     content: '',
@@ -43,17 +44,20 @@ Page({
   },
   getActivity: function (){
     getActivityDetail(this.data.id, (res) => {
+      const startTime = res.start_time.replace("T", " ");
+      const endTime = res.end_time.replace("T", "");
       this.setData({
         title: res.title,
         isLike: res.thumbs_up === 1,
         isRegistered: res.registered === 1,
         isInterested: res.interested === 1,
-        date: `${res.start_time}至${res.end_time}`,
+        start_time: res.start_time,
+        date: `${startTime} 至 ${endTime}`,
         address: res.location,
         volunteerTotal: res.volunteer_capacity,
-        volunteerCurr: res.volunteers,
+        volunteerCurr: res.registered_volunteer,
         visuallyImpairedTotal: res.vision_impaired_capacity,
-        visuallyImpairedCurr: res.vision_impaireds,
+        visuallyImpairedCurr: res.registered_impaired,
         content: `
           ${res.content}
 
@@ -76,18 +80,24 @@ Page({
     }
     const isRegistered = !this.data.isRegistered;//activity
     if( app.globalData.isRegistered ){ // user
+      if (this.checkActivityStarted()) {
+        console.log("用户点击已开始活动.");
+        return;
+      }
+
       const isVolunteer =  app.globalData.isVolunteer; 
       toggleRegister(this.data.id, isRegistered, () => {
         if(isVolunteer){
           this.setData({
             isRegistered,
-            volunteerCurr: isRegistered? this.data.volunteerCurr + 1:this.data.volunteerCurr - 1
+            volunteerCurr: this.updateCurrentValue(isRegistered, true)
           });
           return;
         }
+
         this.setData({
           isRegistered,
-          visuallyImpairedCurr: isRegistered? this.data.visuallyImpairedCurr + 1:this.data.visuallyImpairedCurr - 1
+          visuallyImpairedCurr: this.updateCurrentValue(isRegistered, false)
         });
       });
       return;
@@ -115,4 +125,33 @@ Page({
       url: `/pages/authorize/authorize?redirectPage=${page}` 
     });
   },
+
+  checkActivityStarted: function() {
+    if (this.data.start_time == '') return false;
+    
+    const isStarted = Date.now() > Date.parse(this.data.start_time);
+    if (isStarted) {
+      wx.showModal({
+        showCancel: false,
+        title: '活动已开始',
+        content: "您想操作的活动已开始，请选择还未开始的活动，谢谢!"
+      });
+    }
+  },
+
+  updateCurrentValue: function(isRegistered, isVolunteer) {
+    var updatedCurr = 0;
+    if (isVolunteer && this.data.volunteerCurr) {
+      updatedCurr = this.data.volunteerCurr;
+    } else if (!isVolunteer && this.data.visuallyImpairedCurr){
+      updatedCurr = this.data.visuallyImpairedCurr;
+    }
+
+    if (isRegistered) {
+      updatedCurr++;
+    } else if (updatedCurr > 0) {
+      updatedCurr--;
+    }
+    return updatedCurr;
+  }
 })

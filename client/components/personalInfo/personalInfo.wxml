@@ -1,10 +1,10 @@
-<!--pages/personal2/personal2.wxml-->
+<!--components/personalInfo.wxml-->
 <view class="personal_container">
     <view class="personal_header">
         <view class="personal_card {{!isAuthorized ? 'defaultCard' : (!isRegistered ? 'authorizedCard' : 'registerdCard')}}">
             <block wx:if='{{!isAuthorized}}'>
                 <view class="prompt_message">
-                    <text>爱心牵手你我同行 需要您授权同意</text>
+                    <text>爱心牵手 需要您授权同意</text>
                     <text>我们将获取您的微信公开信息</text>
                 </view>
                 <button class="authorizeBtn btn-primary" lang='zh_CN' bindtap="onAuthorizeTap">
@@ -21,7 +21,7 @@
                         </view>
                     </view>
                     <view class="user_nav_right">
-                        <view class="user_eidt" bindtap="onEditTap">
+                        <view class="user_eidt" bindtap="onEditTap" aria-role="button">
                             编辑
                         </view>
                     </view>

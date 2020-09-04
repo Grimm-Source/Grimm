@@ -1,5 +1,5 @@
 //获取应用实例
-const { getRegisterStatus, getProfile } = require('../../utils/requestUtil.js');
+const { getRegisterStatus } = require('../../utils/requestUtil.js');
 
 const app = getApp()
 
@@ -85,7 +85,7 @@ Page({
 
   showPersonInfo: function() {
     wx.navigateTo({
-      url: "/pages/personalNoTab/personal",
+      url: "/pages/personalCenter/personalCenter",
       fail: function(res) {
         console.log(res);
       }

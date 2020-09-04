@@ -4,13 +4,13 @@ const __getUrl = function(){
   switch (version)
   {
     case 'develop':
-      return 'https://173.37.22.10:18001/';
+      return 'https://admin.grimm.huaxiaoinfo.com/service/';
     case 'trial':
-      return 'http://47.103.133.134:3000/';
+      return 'https://admin.grimm.huaxiaoinfo.com/service/';
     case 'release':
-      return 'http://47.103.133.134:3000/';
+      return 'https://admin.grimm.huaxiaoinfo.com/service/';
     default:
-      return 'http://47.103.133.134:3000/';
+      return 'https://admin.grimm.huaxiaoinfo.com/service/';
   }
 }
 
