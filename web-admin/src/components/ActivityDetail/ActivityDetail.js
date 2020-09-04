@@ -13,9 +13,10 @@ const { RangePicker } = DatePicker;
 
 class ActivityDetail extends React.Component {
   state={
-    isVolLimited: false,
-    isDisabledLimited: false,
-    isFeeNeeded: false,
+    isInitialized: false,
+    isVolLimited: undefined,
+    isDisabledLimited: undefined,
+    isFeeNeeded: undefined,
   }
 
   componentDidMount(){
@@ -29,11 +30,15 @@ class ActivityDetail extends React.Component {
     if(!nextProps.activity){
       return;
     }
-    this.setState({
-      isVolLimited: nextProps.activity.volunteer_capacity > 0,
-      isDisabledLimited: nextProps.activity.vision_impaired_capacity > 0,
-      isFeeNeeded: nextProps.activity.activity_fee > 0,
-    })
+
+    if (!this.state.isInitialized && Object.keys(nextProps.activity).length > 0) {
+      this.setState({
+        isInitialized: true,
+        isVolLimited: nextProps.activity.volunteer_capacity > 0,
+        isDisabledLimited: nextProps.activity.vision_impaired_capacity > 0,
+        isFeeNeeded: nextProps.activity.activity_fee > 0,
+      })
+    }
   }
 
   componentDidUpdate(){
@@ -53,8 +58,8 @@ class ActivityDetail extends React.Component {
       const rangeTimeValue = fieldsValue['date'];
       const values = {
         ...fieldsValue,
-        // volunteerCount: this.state.isVolLimited?this.props.activity.volunteerCount: null,
-        // disabledCount: this.state.isDisabledLimited?this.props.activity.disabledCount: null,
+        // volunteer_capacity: this.state.isVolLimited?this.props.activity.volunteer_capacity: null,
+        // vision_impaired_capacity: this.state.isDisabledLimited?this.props.activity.vision_impaired_capacity: null,
         id: this.props.activity.id,
         adminId: this.props.userId,
         others: "",
@@ -196,13 +201,13 @@ class ActivityDetail extends React.Component {
               <Radio value={false}>无</Radio>
             </Radio.Group>
             <Form.Item  style={{ marginBottom: "12px"}} style={{ display: 'inline-block'}}>{
-              getFieldDecorator('disabledCount', {
+              getFieldDecorator('vision_impaired_capacity', {
                 rules: [
                   {
                     required: false
                   },
                 ],
-              })(<InputNumber min={0} disabled={!this.state.isDisabledLimited} type="number" id="disabledCount" placeholder="请输入视障人士人数" />)
+              })(<InputNumber min={0} disabled={!this.state.isDisabledLimited} type="number" id="vision_impaired_capacity" placeholder="请输入视障人士人数" />)
             }</Form.Item>
         </div>
         <div className="volunteer-detail">
@@ -216,7 +221,7 @@ class ActivityDetail extends React.Component {
                 <Switch disabled={!this.state.isVolLimited} defaultChecked={false}/>
               </div>
             <Form.Item label="岗位名称" style={{ display: 'inline-block', width: '50%'}}>
-                {getFieldDecorator('volunteerJobTitle', {
+                {getFieldDecorator('volunteer_job_title', {
                   rules: [
                     {
                       required: false,
@@ -226,17 +231,17 @@ class ActivityDetail extends React.Component {
                 })(<Input disabled={!this.state.isVolLimited} placeholder="请输入岗位名称"/>)}
             </Form.Item>
             <Form.Item  label="岗位人数" style={{ display: 'inline-block', width: '50%'}}>{
-              getFieldDecorator('volunteerCount', {
+              getFieldDecorator('volunteer_capacity', {
                 rules: [
                   {
                     required: false,
                     message: '请输入岗位人数',
                   },
                 ],
-              })(<InputNumber disabled={!this.state.isVolLimited} min={0} type="number" id="volunteerCount" placeholder="请输入志愿者人数" />)
+              })(<InputNumber disabled={!this.state.isVolLimited} min={0} type="number" id="volunteer_capacity" placeholder="请输入志愿者人数" />)
             }</Form.Item>
             <Form.Item label="岗位内容" >
-                {getFieldDecorator('volunteerJobContent', {
+                {getFieldDecorator('volunteer_job_content', {
                   rules: [
                     {
                       required: false,
@@ -253,7 +258,7 @@ class ActivityDetail extends React.Component {
           <Radio value={true}>收费</Radio>
         </Radio.Group>
         <Form.Item style={{ display: 'inline-block', marginBottom:"0"}}>{
-            getFieldDecorator('activityFee', {
+            getFieldDecorator('activity_fee', {
                 rules: [
                   {
                     required: false
@@ -323,19 +328,19 @@ const WrappedActivityDetail = Form.create({
         date: Form.createFormField({
           value: (props.activity.start_time &&  props.activity.end_time && [moment(props.activity.start_time, 'YYYY-MM-DD HH:mm'), moment(props.activity.end_time, 'YYYY-MM-DD HH:mm')]) || null
         }),
-        disabledCount: Form.createFormField({
+        vision_impaired_capacity: Form.createFormField({
           value: props.activity.vision_impaired_capacity 
         }),
-        volunteerCount: Form.createFormField({
+        volunteer_capacity: Form.createFormField({
           value: props.activity.volunteer_capacity
         }),
-        volunteerJobTitle: Form.createFormField({
+        volunteer_job_title: Form.createFormField({
           value: props.activity.volunteer_job_title || ""
         }),
-        volunteerJobContent: Form.createFormField({
+        volunteer_job_content: Form.createFormField({
           value: props.activity.volunteer_job_content || ""
         }),
-        activityFee: Form.createFormField({
+        activity_fee: Form.createFormField({
           value: props.activity.activity_fee
         })
       }
