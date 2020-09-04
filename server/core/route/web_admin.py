@@ -196,10 +196,11 @@ class manage_admin(Resource):
         return json_dump_http_response(feedback)
 
 
-@api.route("/user/<int:openid>")
+@api.route("/user")
 class manage_user(Resource):
-    def delete(self, openid):
+    def delete(self):
         """ delete user with an openid"""
+        openid = request.args.get("openid")
         if openid is not None:
             try:
                 if db.expr_delete("user", openid=openid) == 1:
