@@ -353,27 +353,25 @@ class send_vrfemail(Resource):
 class new_activity(Resource):
     def post(self):
         """view function to add new activity"""
+        info = json_load_http_request(request)
         activity_info = {}
-        activity_info["approver"] = request.args.get("adminId")
-        activity_info["title"] = request.args.get("title")
-        activity_info["location"] = request.args.get("location")
-        activity_info["start_time"] = request.args.get("start_time")
-        activity_info["end_time"] = request.args.get("end_time")
-        activity_info["content"] = request.args.get("content")
-        activity_info["notice"] = request.args.get("notice")
-        activity_info["others"] = request.args.get("others")
-        activity_info["admin_raiser"] = request.args.get("adminId")
+        activity_info["approver"] = info["adminId"]
+        activity_info["title"] = info["title"]
+        activity_info["location"] = info["location"]
+        activity_info["start_time"] = info["start_time"]
+        activity_info["end_time"] = info["end_time"]
+        activity_info["content"] = info["content"]
+        activity_info["notice"] = info["notice"]
+        activity_info["others"] = info["others"]
+        activity_info["admin_raiser"] = info["adminId"]
         activity_info["tag_ids"] = tag_converter.convert_tagstring_to_idstring(
-            request.args.get("tag")
+            info["tag"]
         )
-        volunteer_capacity = request.args.get("volunteer_capacity")
-        activity_info["volunteer_capacity"] = 0 if volunteer_capacity is None else volunteer_capacity
-        vision_impaired_capacity = request.args.get("vision_impaired_capacity")
-        activity_info["vision_impaired_capacity"] = 0 if vision_impaired_capacity is None else vision_impaired_capacity
-        activity_info["volunteer_job_title"] = request.args.get("volunteer_job_title")
-        activity_info["volunteer_job_content"] = request.args.get("volunteer_job_content")
-        activity_fee = request.args.get("activity_fee")
-        activity_info["activity_fee"] = 0 if activity_fee is None else activity_fee
+        activity_info["volunteer_capacity"] = info["volunteer_capacity"]
+        activity_info["vision_impaired_capacity"] = info["vision_impaired_capacity"]
+        activity_info["volunteer_job_title"] = info["volunteer_job_title"]
+        activity_info["volunteer_job_content"] = info["volunteer_job_content"]
+        activity_info["activity_fee"] = info["activity_fee"]
         try:
             if db.expr_insert("activity", activity_info) == 1:
                 admin_logger.info(
