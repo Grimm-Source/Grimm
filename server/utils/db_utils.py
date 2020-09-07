@@ -93,8 +93,20 @@ def get_impaired_registered(activity_id):
         return 0
     return registered
 
+def get_registered_status(activity_id, openid):
+    registered = db.expr_query(
+        "registerActivities",
+        "COUNT(*)",
+        clauses="activity_id = {} and openid = '{}'".format(activity_id, openid),
+    )[0]["COUNT(*)"]
+    if registered is None:
+        return 0
+    return registered
 
-def convert_db_activity_to_http_query(activity):
+#
+# For wx, it means whether the user has registered or not
+# But I don't know the meaning for web yet'
+def convert_db_activity_to_http_query(activity, openid = 0):
     query = {}
     activity_id = activity["activity_id"]
     query["id"] = activity_id
@@ -113,7 +125,7 @@ def convert_db_activity_to_http_query(activity):
     query["share"] = get_total_share(activity_id)
     query["interested"] = get_total_interested(activity_id)
     query["thumbs_up"] = get_total_thumbs_up(activity_id)
-    query["registered"] = get_total_registered(activity_id)
+    query["registered"] = get_registered_status(activity_id, openid)
     query["registered_volunteer"] = get_volunteer_registered(activity_id)
     query["registered_impaired"] = get_impaired_registered(activity_id)
     query["volunteer_capacity"] = activity["volunteer_capacity"]

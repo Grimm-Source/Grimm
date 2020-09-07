@@ -437,7 +437,7 @@ class get_activity(Resource):
             except:
                 user_logger.warning("%d: get activity failed", activity_id)
                 return json_dump_http_response({"status": "failure", "message": "未知错误"})
-            feedback = db_utils.convert_db_activity_to_http_query(activity)
+            feedback = db_utils.convert_db_activity_to_http_query(activity, openid)
             feedback["status"] = "success"
             user_logger.info("%d: get activity successfully", activity_id)
             return json_dump_http_response(feedback)
@@ -648,5 +648,5 @@ class get_favorite_activities(Resource):
         for item in target_activities_info:
             activity_id = item["activity.activity_id"]
             activity = db.expr_query("activity", activity_id=activity_id)[0]
-            queries.append(db_utils.convert_db_activity_to_http_query(activity))
+            queries.append(db_utils.convert_db_activity_to_http_query(activity, openid))
         return json_dump_http_response(queries)
