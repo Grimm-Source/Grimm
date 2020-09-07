@@ -16,8 +16,8 @@
 
 .myActivity-preview {
   display: flex;
-  width: 65px;
-  height: 80px;
+  width: 76px;
+  height: 76px;
   background-color: #EDEDED;
   border-radius: 3px;
   float: left;

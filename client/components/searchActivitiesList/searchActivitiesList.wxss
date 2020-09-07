@@ -14,9 +14,11 @@
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
+    border: solid #D8D8D8 0rpx;
+    box-shadow: 0px 2px 10px rgba(170, 170, 170, 0.5);
 }
 
-.searchActivity-image {
+/* .searchActivity-image {
     width: 80px;
     height: 84px;
     background-color: #EDEDED;
@@ -25,13 +27,13 @@
     -moz-border-radius: 4px;
     -ms-border-radius: 4px;
     -o-border-radius: 4px;
-}
+} */
 
 .searchActivity-info {
     display: flex;
     flex-direction: column;
     margin-left: 15px;
-    width: calc(100% - 100px);
+    width: 100%;
 }
 
 .searchActivity-title {

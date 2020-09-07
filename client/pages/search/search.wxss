@@ -1,6 +1,6 @@
 /* pages/search/search.wxss */
 Page{
-    background-color: var(--primary-color);
+    /* background-color: var(--primary-color); */
 }
 
 .searchPage{

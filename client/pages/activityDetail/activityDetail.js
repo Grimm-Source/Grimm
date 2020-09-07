@@ -4,7 +4,7 @@ const app = getApp();
 
 Page({
   data: {
-    banner: '/images/banner.jpg',
+    banner: '/images/banner.png',
     title: '',
     isLike: false,
     start_time: '',
@@ -17,6 +17,7 @@ Page({
     volunteerCurr: 0,
     visuallyImpairedTotal: 0,
     visuallyImpairedCurr: 0,
+    isActivityEnd: false,
   },
   //事件处理函数
   onLoad: function (option) {
@@ -45,12 +46,14 @@ Page({
   getActivity: function (){
     getActivityDetail(this.data.id, (res) => {
       const startTime = res.start_time.replace("T", " ");
-      const endTime = res.end_time.replace("T", "");
+      const endTime = res.end_time.replace("T", " ");
+      const isStarted = Date.now() > Date.parse(res.start_time);
       this.setData({
         title: res.title,
         isLike: res.thumbs_up === 1,
         isRegistered: res.registered === 1,
         isInterested: res.interested === 1,
+        isActivityEnd: isStarted,
         start_time: res.start_time,
         date: `${startTime} 至 ${endTime}`,
         address: res.location,

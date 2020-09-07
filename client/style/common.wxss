@@ -1,8 +1,8 @@
 page{
-    --background-color: #113E6F;
+    --background-color: #fff;
     --primary-color: #113E6F;
     --secondary-color: #F03D64;
-    --accent-color: #4FF2BE;
+    --accent-color: #00BD7C;
     
     --default-color: #58585b;
     --success-color: #6cc04a;

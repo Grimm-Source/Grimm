@@ -37,7 +37,7 @@ Component({
 
   pageLifetimes: {
     show: function () {
-      this.onFilterParamChange(this.data.selectedActivities);
+      this.onFilterParamChange(this.data.selectedIdx);
     }
   },
 
@@ -75,7 +75,7 @@ Component({
         }
 
         // set default preview img
-        activity.imgSrc = "../../images/banner.jpg";
+        activity.imgSrc = "../../images/banner_icon.png";
 
         formattedActivities.push(activity);
       }
