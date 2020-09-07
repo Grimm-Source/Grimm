@@ -77,8 +77,9 @@ PLATFORM = None
 
 # Carousel information
 CAROUSEL_LIST = [
-    {'url': 'https://mp.weixin.qq.com/s/-uvqSpe7eZcF6X0pVXgjEA', 'title': '志愿者证书 申请流程', 'photo_url': 'https://s.zhiyuanyun.com/www.chinavolunteer.cn/cms/201901/18/5c41a6d2488b7.jpg'},
-    {'url': 'https://mp.weixin.qq.com/s/VG8UXhK9P-_XUJfK5wu4vQ', 'title': '引导视障者的方式方法及需注意事项', 'photo_url': 'https://s.zhiyuanyun.com/www.chinavolunteer.cn/cms/202002/11/5e41ff79263f6.jpg'}
+    {'url': 'https://mp.weixin.qq.com/s/-uvqSpe7eZcF6X0pVXgjEA', 'title': '志愿者证书 申请流程', 'photo_url': 'https://7874-xtydtc01-1259619275.tcb.qcloud.la/grimm/carousel1.jpeg?sign=acf6a23ed0f57e97dcc2793302ac7d46&t=1599459574'},
+    {'url': 'https://mp.weixin.qq.com/s/-uvqSpe7eZcF6X0pVXgjEA', 'title': '志愿者证书 申请流程', 'photo_url': 'https://7874-xtydtc01-1259619275.tcb.qcloud.la/grimm/carousel2.jpeg?sign=60ba325a07e07a14343fb366f92876af&t=1599459706'},
+    {'url': 'https://mp.weixin.qq.com/s/VG8UXhK9P-_XUJfK5wu4vQ', 'title': '引导视障者的方式方法及需注意事项', 'photo_url':'https://7874-xtydtc01-1259619275.tcb.qcloud.la/grimm/carousel3.jpeg?sign=023ac732c7e9cdf0f15f66c4ef09a8fb&t=1599459763'}
     ]
 
 # Tag information
