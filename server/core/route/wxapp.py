@@ -148,9 +148,10 @@ class register(Resource):
         """view function for registering new user to database"""
         global SMS_VERIFIED_OPENID
         userinfo = {}
+        info = json_load_http_request(request)  # get http POST data bytes format
         # fetch data from front end
-        openid = request.headers.get("Authorization")
-        userinfo["openid"] = openid
+        userinfo["openid"] = request.headers.get("Authorization")
+        openid = userinfo["openid"]
         if not db.exist_row("user", openid=openid):
             # confirm sms-code
             # if not ('verification_code' in info or openid in SMS_VERIFIED_OPENID):
@@ -182,30 +183,22 @@ class register(Resource):
             #     del SMS_VERIFIED_OPENID[openid]
             # mock user info and do inserting
             # reduce part of user info to simplify register
+            # userinfo['role'] = 0 if info['role'] == "志愿者" else 1
             # if userinfo['role'] == 1:
             # userinfo['disabled_id'] = info['disabledID']
             # userinfo['emergent_contact'] = info['emergencyPerson']
             # userinfo['emergent_contact_phone'] = info['emergencyTel']
-            print(request.args)
-            role = request.args.get("role")
-            userinfo['role'] = 1 if role is not None and role == "impaired" else 0
-            birthdate = request.args.get("birthdate")
-            userinfo["birth"] = datetime.now().strftime("%Y-%m-%d") if birthdate is None else birthdate
+            print("xtydbg", info)
+            userinfo["birth"] = info["birthdate"]
             # userinfo['remark'] = info['comment']
-            gender = request.args.get("gender")
-            userinfo["gender"] = "男" if gender is None else gender
+            userinfo["gender"] = info["gender"]
             # userinfo['idcard'] = info['idcard']
-            linkaddress = request.args.get("linkaddress")
-            userinfo["address"] = "无" if linkaddress is None else linkaddress
+            userinfo["address"] = info["linkaddress"]
             # userinfo['contact'] = info['linktel']
-            name = request.args.get("name")
-            userinfo["name"] = name
-            print(name)
+            userinfo["name"] = info["name"]
             userinfo["audit_status"] = 0
             userinfo["registration_date"] = datetime.now().strftime("%Y-%m-%d")
-            phone = request.args.get("phone")
-            userinfo["phone"] = phone
-            print(phone)
+            userinfo["phone"] = info["phone"]
             userinfo["phone_verified"] = 1
             try:
                 if db.expr_insert("user", userinfo) != 1:
