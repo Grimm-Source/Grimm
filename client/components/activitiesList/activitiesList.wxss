@@ -3,8 +3,8 @@
 .activity-item {
   margin: 16rpx 24rpx 32rpx 24rpx;
   border-radius: 9px;
-  border: solid gray 0rpx;
-  box-shadow:  0 10rpx 20rpx rgba(0,0,0,0.3);
+  border: solid #D8D8D8 0rpx;
+  box-shadow: 0px 2px 10px rgba(170, 170, 170, 0.5);
 }
 
 .activity-detail { 
@@ -72,7 +72,7 @@
 }
 
 .activity-button image {
-  width: 16px;
+  width: 14px;
   height: 14px;
   padding: 12px 4px;
   display: inline-block;

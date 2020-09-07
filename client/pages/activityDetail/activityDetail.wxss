@@ -52,7 +52,7 @@
 }
 
 .detail-progress progress{
-  width: 380rpx;
+  width: 450rpx;
 }
 
 .detail-content-wrapper{
@@ -83,4 +83,8 @@
 
 .detail-footer button:first-child{
   margin-left: 0;
+}
+
+.detail-footer .activity-end {
+  background-color: #D8D8D8;
 }

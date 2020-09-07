@@ -25,7 +25,10 @@
   <view class="detail-content-wrapper text">
     <text>{{content}}</text>
   </view>
-  <view class="detail-footer">
+  <view wx:if="{{isActivityEnd}}" class="detail-footer">
+    <button class="activity-end">活动结束</button>
+  </view>
+  <view wx:else class="detail-footer">
     <button bindtap="onTapInterest">
       <text wx:if="{{isInterested}}">不感兴趣</text>
       <text wx:else>感兴趣</text>

@@ -8,13 +8,13 @@ Page({
 
   onLoad: function (options) {
     this.setData({
-      selectedIdx: options.selectedIdx
+      selectedIdx: parseInt(options.selectedIdx)
     })
   },
 
   handleMyActivitiesPickerEvent: function (event) {
     this.setData({
-      selectedIdx: event.detail.selectedIdx
+      selectedIdx: parseInt(event.detail.selectedIdx)
     })
   },
 

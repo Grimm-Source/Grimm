@@ -42,9 +42,9 @@ Page({
         content: err,
         showCancel: false,
         success () {
-          wx.switchTab({
-            url: '../home/home',
-          });
+          // wx.switchTab({
+          //   url: '../home/home',
+          // });
         }
       });     
     });

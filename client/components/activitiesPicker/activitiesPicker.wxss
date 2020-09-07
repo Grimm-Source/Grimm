@@ -19,6 +19,7 @@
   font-size: 17px;
   font-weight: bold;
   margin-left: 14px;
+  color: var(--font-color);
 }
 
 .category-picker,
@@ -27,7 +28,7 @@
   /* position: relative; */
   width: 90%;
   box-sizing: border-box;
-  background: var(--primary-color);
+  /* background: var(--primary-color); */
   white-space: nowrap;
   padding-left: 14px;
 }
@@ -37,10 +38,11 @@
   display: inline-block;
   font-size: 15px;
   margin-right: 14px;
+  color: var(--font-color);
 }
 
 .category-picker .selected,
 .time-picker .selected{
-  color: #4FF2BE;
+  color: #00BD7C;
   scale: 1.15;
 }
