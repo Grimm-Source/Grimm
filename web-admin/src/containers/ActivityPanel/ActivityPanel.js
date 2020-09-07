@@ -1,6 +1,6 @@
 import { Button, Radio, Select } from 'antd';
 // import TableHeader from '../../components/TableHeader/TableHeader';
-import ActivityList from '../../components/ActivityList/ActivityList';
+import ActivityList from '../../components/ActivityLIst/ActivityList';
 import Report from '../../containers/Report/Report';
 import React from 'react';
 import { connect } from 'react-redux';
