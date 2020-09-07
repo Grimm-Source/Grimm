@@ -103,6 +103,20 @@ def get_registered_status(activity_id, openid):
         return 0
     return registered
 
+def get_interested_status(activity_id, openid):
+    if openid == 0:
+        return get_total_interested(activity_id)
+    interested = db.expr_query(
+        "activity_participants",
+        "COUNT(*)",
+        clauses="activity_id = {} and participants_id = '{}'"
+        "and activity_participants.interested = 1".format(activity_id, openid),
+    )[0]["COUNT(*)"]
+    if interested is None:
+        return 0
+    return interested
+
+
 #
 # For wx, it means whether the user has registered or not
 # But I don't know the meaning for web yet'
@@ -123,7 +137,7 @@ def convert_db_activity_to_http_query(activity, openid = 0):
     query["others"] = activity["others"]
     query["tag"] = tag_converter.convert_idstring_to_tagstring(activity["tag_ids"])
     query["share"] = get_total_share(activity_id)
-    query["interested"] = get_total_interested(activity_id)
+    query["interested"] = get_interested_status(activity_id, openid)
     query["thumbs_up"] = get_total_thumbs_up(activity_id)
     query["registered"] = get_registered_status(activity_id, openid)
     query["registered_volunteer"] = get_volunteer_registered(activity_id)
