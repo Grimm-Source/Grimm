@@ -1,5 +1,5 @@
 <view class="detail-wrapper">
-  <image mode="aspectFill" class="detail-banner" src="{{banner}}"></image>
+  <image aria-hidden="true" mode="aspectFill" class="detail-banner" src="{{banner}}"></image>
   <text class="detail-title text-xl">{{title}}</text>
   <view class="detail-action-wrapper">
     <button class="detail-action" bindtap="onTapLike">
