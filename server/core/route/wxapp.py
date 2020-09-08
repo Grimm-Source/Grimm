@@ -183,7 +183,7 @@ class register(Resource):
             #     del SMS_VERIFIED_OPENID[openid]
             # mock user info and do inserting
             # reduce part of user info to simplify register
-            # userinfo['role'] = 0 if info['role'] == "志愿者" else 1
+            userinfo['role'] = 0 if info['role'] == "志愿者" else 1
             # if userinfo['role'] == 1:
             # userinfo['disabled_id'] = info['disabledID']
             # userinfo['emergent_contact'] = info['emergencyPerson']
