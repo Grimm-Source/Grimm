@@ -86,4 +86,10 @@
   font-size: 12px;
 }
 
+.noneActivity{
+  color: #00BD7C;
+  text-align: center;
+  margin-top: 80px;
+}
+
 

@@ -29,6 +29,9 @@
 
       </view>
     </block>
+    <view class="noneActivity" wx:if="{{activitiesProp&&activitiesProp.length === 0}}">
+        <span>没有找到相关活动</span>
+    </view>
   </scroll-view>
 </view>
 
