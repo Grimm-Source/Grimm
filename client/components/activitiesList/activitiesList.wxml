@@ -20,7 +20,7 @@
             <text>{{item.interested}}人感兴趣</text>
           </view>
           <view class="activity-button">
-            <image src="{{item.interested ? '/images/heart_selected.png' : '/images/heart.png'}}" aria-role="button" aria-label="{{item.thumbs_up}}人点赞"></image>
+            <image src="{{item.thumbs_up ? '/images/heart_selected.png' : '/images/heart.png'}}" aria-role="button" aria-label="{{item.thumbs_up}}人点赞"></image>
             <text aria-hidden="true">{{item.thumbs_up}}</text>
             <image src="/images/share.png" aria-role="button" aria-label="{{item.share}}人分享"></image>
             <text aria-hidden="true" class="action-text">{{item.share}}</text>
