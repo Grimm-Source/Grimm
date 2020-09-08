@@ -3,7 +3,7 @@
     <view class="searchActivities-list" wx:if="{{searchedActivities&&searchedActivities.length > 0}}">
         <block wx:for="{{searchedActivities}}" wx:key="id">
             <view class="searchActivity-item" data-item="{{item}}" bindtap="onTapActivity">
-                <!-- <image class="searchActivity-image" src="../../images/banner_icon.png"></image> -->
+                <!-- <image class="searchActivity-image" src="../../images/banner_icon.jpeg"></image> -->
                 <view class="searchActivity-info">
                     <view class="searchActivity-title">
                         <block wx:for="{{item.title}}" wx:key="index" wx:for-item="wordItem"><span class="{{wordItem.className}}">{{wordItem.word}}</span></block>

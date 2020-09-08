@@ -75,7 +75,7 @@ Component({
         }
 
         // set default preview img
-        activity.imgSrc = "../../images/banner_icon.png";
+        activity.imgSrc = "../../images/banner_icon.jpeg";
 
         formattedActivities.push(activity);
       }

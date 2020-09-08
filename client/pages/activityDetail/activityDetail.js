@@ -4,7 +4,7 @@ const app = getApp();
 
 Page({
   data: {
-    banner: '/images/banner.png',
+    banner: '/images/banner.jpeg',
     title: '',
     isLike: false,
     start_time: '',
