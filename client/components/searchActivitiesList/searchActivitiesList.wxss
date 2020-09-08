@@ -62,6 +62,6 @@
 }
 
 .noneActivity{
-    color: #00BD7C;
+    color:  rgba(0,0,0,0.5);
     text-align: center;
 }
