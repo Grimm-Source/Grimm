@@ -1,7 +1,7 @@
 <!--pages/search/search.wxml-->
 <view class="searchPage">
     <view class="searchBox">
-        <icon type='search' size="24rpx"></icon>
+        <icon aria-hidden="true" type='search' size="24rpx"></icon>
         <view class="inputBox">
             <!-- <view class="hot-word-input {{selelctedVal !== '' ? '' : 'hide'}}">
                 <span>{{selelctedVal}}</span>

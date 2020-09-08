@@ -79,7 +79,7 @@
   vertical-align: middle;
 }
 
-.activity-button span {
+.activity-button text {
   padding-right: 12px;
   display: inline-block;
   vertical-align: middle;
