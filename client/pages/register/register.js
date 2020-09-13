@@ -9,6 +9,8 @@ Page({
     birthday: '',
     region: [],
     role: '',
+    roleShow: ['视障者','志愿者'],
+    roleIndex: 0, //0:impaired 1:volunteer
     showModal: true,
   },
 
@@ -45,15 +47,26 @@ Page({
   onImpairedSelected: function() {
     this.setData({
       showModal: false,
-      role: "impaired"
+      role: "impaired",
+      roleIndex: 0
     })
   },
 
   onVolunteerSelected: function() {
     this.setData({
       showModal: false,
-      role: "volunteer"
+      role: "volunteer",
+      roleIndex: 1
     })
+  },
+
+  onRoleChanged: function(e) {
+    if (e.detail.value == 0) {
+      this.onImpairedSelected();
+    }
+    else {
+      this.onVolunteerSelected();
+    }
   },
 
   onSubmit: function() {
