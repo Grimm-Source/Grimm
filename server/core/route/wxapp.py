@@ -189,7 +189,8 @@ class register(Resource):
             # userinfo['emergent_contact'] = info['emergencyPerson']
             # userinfo['emergent_contact_phone'] = info['emergencyTel']
             print("xtydbg", info)
-            userinfo["birth"] = info["birthdate"]
+            userinfo["birth"] = info["birthdate"] if "birthdate" in info.keys else datetime.now().strftime("%Y-%m-%d")
+            print(userinfo["birth"])
             # userinfo['remark'] = info['comment']
             userinfo["gender"] = info["gender"]
             # userinfo['idcard'] = info['idcard']
