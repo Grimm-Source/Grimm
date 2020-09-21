@@ -18,6 +18,12 @@
       <input disabled="true" value="{{phone}}"/>
     </view>
     <view class="register-form-item">
+      <view class="register-form-label">*角色</view>
+      <picker bindchange="onRoleChanged" value="{{roleIndex}}" range="{{roleShow}}">
+        <input disabled value="{{roleShow[roleIndex]}}"/>
+      </picker>
+    </view>
+    <view class="register-form-item">
       <view class="register-form-label">*姓名</view>
       <input name="name" placeholder="请填写姓名" bindchange="bindNameChange" value="{{name}}"/>
     </view>
