@@ -50,6 +50,7 @@ Page({
       role: "impaired",
       roleIndex: 0
     })
+    app.globalData.roleIndex = roleIndex;
   },
 
   onVolunteerSelected: function() {
@@ -58,6 +59,7 @@ Page({
       role: "volunteer",
       roleIndex: 1
     })
+    app.globalData.roleIndex = roleIndex;
   },
 
   onRoleChanged: function(e) {

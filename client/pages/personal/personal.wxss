@@ -70,14 +70,23 @@ page{
     height: 42px;
 }
 
-.user_profile .user_nav_left .avatar image{
+.user_profile .user_nav_left .avatar .avatarImage{
     width: 100%;
     height: 100%;
     border-radius: 42px;
+    position: relative;
+    z-index: 1;
     -webkit-border-radius: 42px;
     -moz-border-radius: 42px;
     -ms-border-radius: 42px;
     -o-border-radius: 42px;
+}
+
+.user_profile .user_nav_left .avatar .roleImage{
+    position: relative;
+    right: -25px;
+    bottom: 25px;
+    z-index: 2;
 }
 
 .user_profile .user_nav_left .username_info{
