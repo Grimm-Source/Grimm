@@ -32,3 +32,4 @@ cscope*
 .*swo
 # local config files
 db.config
+server/.grimm

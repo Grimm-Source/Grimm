@@ -382,6 +382,30 @@ class registeredActivities(Resource):
         # activity_id from network is str
         registerAct["activity_id"] = int(activity_id)
         registerAct["accepted"] = -1
+        
+        # Auto approve, not auto reject -- Hangzhou Backend
+        try:
+            activeinfo = db.expr_query("registerActivities", activity_id=int(activity_id))[0]
+            volunteer = db.expr_query(
+                ["activity_participants", "user"],
+                fields=[
+                    "activity_participants.activity_id","user.openid"
+                ],
+                clauses='activity_participants.activity_id="{}" and activity_participants.participants_id = user.openid and user.role=0'.format(
+                    int(activity_id)
+                ),
+            )
+            
+            user_logger.error("%s: volunteer", volunteer)
+            user_logger.error("%s: activeinfo", activeinfo)
+        
+            if (activeinfo) and (len(volunteer) < activeinfo["volunteer_capacity"]) :
+            registerAct["accepted"] = 1
+        except:
+            return json_dump_http_response(
+                {"status": "failure", "message": "未能获取活动信息"}
+            )
+
         try:
             if db.expr_insert("registerActivities", registerAct) != 1:
                 user_logger.error("%s: activity registration failed", openid)
