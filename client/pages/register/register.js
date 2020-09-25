@@ -47,14 +47,16 @@ Page({
   onImpairedSelected: function() {
     this.setData({
       showModal: false,
-      role: "impaired"
+      role: "impaired",
+      roleIndex: 0
     })
   },
 
   onVolunteerSelected: function() {
     this.setData({
       showModal: false,
-      role: "volunteer"
+      role: "volunteer",
+      roleIndex: 1
     })
   },
 
