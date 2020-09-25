@@ -22,7 +22,7 @@ Page({
     userInfo: null,
     isRegistered: false,
     isAuthorized: false,
-    roleIndex: 0,
+    isVolunteer: false,
     progress_attendMinutes: '0 分钟',  
     progress_attendTimes: '0 次活动',  
     personalInfoList: [
@@ -66,7 +66,7 @@ Page({
       isAuthorized: app.globalData.isAuthorized,
       isRegistered: app.globalData.isRegistered,
       userInfo: app.globalData.userInfo,
-      roleIndex: app.globalData.roleIndex
+      isVolunteer: app.globalData.isVolunteer
     })
   },
 

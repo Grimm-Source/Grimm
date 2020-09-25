@@ -15,9 +15,7 @@
                 <view class="user_profile">
                     <view class="user_nav_left">
                         <view class="avatar">
-                            <image class="avatarImage" src="{{userInfo.avatarUrl || avatarUrl}}" aria-label="头像"/>
-                            <image class="roleImage" src="../../images/impairedRole.png" style="width: 50%;height: 25%;" aria-label="身份标识：视障人士" wx:if='{{roleIndex === 0}}'/>
-                            <image class="roleImage" src="../../images/volunteerRole.png" style="width: 40%;height: 40%;" aria-label="身份标识：志愿者" wx:if='{{roleIndex === 1}}'/>
+                            <image src="{{userInfo.avatarUrl || avatarUrl}}" aria-label="{{isVolunteer ? '志愿者账号' : '视障人士账号'}}"/>
                         </view>
                         <view class="username_info" wx:if='{{userInfo}}'>
                             <span class="username">{{userInfo.nickName}}</span> 

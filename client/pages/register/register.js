@@ -47,19 +47,15 @@ Page({
   onImpairedSelected: function() {
     this.setData({
       showModal: false,
-      role: "impaired",
-      roleIndex: 0
+      role: "impaired"
     })
-    app.globalData.roleIndex = roleIndex;
   },
 
   onVolunteerSelected: function() {
     this.setData({
       showModal: false,
-      role: "volunteer",
-      roleIndex: 1
+      role: "volunteer"
     })
-    app.globalData.roleIndex = roleIndex;
   },
 
   onRoleChanged: function(e) {
