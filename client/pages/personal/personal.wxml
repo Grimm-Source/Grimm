@@ -14,7 +14,9 @@
             <block wx:else>
                 <view class="user_profile">
                     <view class="user_nav_left">
-                        <view class="avatar"><image src="{{userInfo.avatarUrl || avatarUrl}}" aria-label="头像"/></view>
+                        <view class="avatar">
+                            <image src="{{userInfo.avatarUrl || avatarUrl}}" aria-label="{{isVolunteer ? '志愿者账号' : '视障人士账号'}}"/>
+                        </view>
                         <view class="username_info" wx:if='{{userInfo}}'>
                             <span class="username">{{userInfo.nickName}}</span> 
                             <span class="location">{{userInfo.province}} {{userInfo.city}}</span>

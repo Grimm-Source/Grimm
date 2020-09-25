@@ -22,6 +22,7 @@ Page({
     userInfo: null,
     isRegistered: false,
     isAuthorized: false,
+    isVolunteer: false,
     progress_attendMinutes: '0 分钟',  
     progress_attendTimes: '0 次活动',  
     personalInfoList: [
@@ -64,7 +65,8 @@ Page({
     this.setData({
       isAuthorized: app.globalData.isAuthorized,
       isRegistered: app.globalData.isRegistered,
-      userInfo: app.globalData.userInfo
+      userInfo: app.globalData.userInfo,
+      isVolunteer: app.globalData.isVolunteer
     })
   },
 
