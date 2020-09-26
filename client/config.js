@@ -8,9 +8,9 @@ const __getUrl = function(){
     case 'trial':
       return 'http://47.103.133.134:3000/';
     case 'release':
-      return 'https://admin.grimm.huaxiaoinfo.com/service/';
+      return 'https://wxapi.rp-i.net/';
     default:
-      return 'https://admin.grimm.huaxiaoinfo.com/service/';
+      return 'https://wxapi.rp-i.net/';
   }
 }
 
