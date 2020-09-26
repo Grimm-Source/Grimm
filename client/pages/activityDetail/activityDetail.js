@@ -103,6 +103,10 @@ Page({
           visuallyImpairedCurr: this.updateCurrentValue(isRegistered, false)
         });
       });
+      wx.showModal({
+        title: '报名成功',
+        showCancel: false
+      });
       return;
     }
     wx.navigateTo({
