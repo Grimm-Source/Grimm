@@ -95,18 +95,25 @@ Page({
             isRegistered,
             volunteerCurr: this.updateCurrentValue(isRegistered, true)
           });
+          if(isRegistered){
+            wx.showModal({
+              title: '报名成功',
+              showCancel: false
+            });
+          } else{
+            wx.showModal({
+              title: '报名取消',
+              showCancel: false
+            });
+          }
           return;
         }
-
         this.setData({
           isRegistered,
           visuallyImpairedCurr: this.updateCurrentValue(isRegistered, false)
-        });
+        });        
       });
-      wx.showModal({
-        title: '报名成功',
-        showCancel: false
-      });
+
       return;
     }
     wx.navigateTo({
