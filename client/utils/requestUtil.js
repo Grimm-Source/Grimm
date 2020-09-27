@@ -19,7 +19,7 @@ const updateProfile = (userInfo, successCallback, failCallback) => {
 }
 
 const getVerifyCode = (tel) => {
-    const requestUrl = "smscode?tel=" + tel
+    const requestUrl = "smscode?phone=" + tel
     return request({
         url: requestUrl,
         method: "get"
