@@ -4,9 +4,9 @@ const __getUrl = function(){
   switch (version)
   {
     case 'develop':
-      return 'http://47.103.133.134:3000/';
+      return 'https://wxapi.rp-i.net/';
     case 'trial':
-      return 'http://47.103.133.134:3000/';
+      return 'https://wxapi.rp-i.net/';
     case 'release':
       return 'https://wxapi.rp-i.net/';
     default:
