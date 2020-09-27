@@ -159,7 +159,7 @@ class register(Resource):
             #     return json_dump_http_response({'status': 'failure', 'message': '未认证注册用户'})
             # if 'verification_code' in info:
             #     vrfcode = info['verification_code']
-            #     phone_number = info['tel']
+            #     phone_number = info['phone']
             #     sms_token = sms_verify.fetch_token(phone_number)
             #     if sms_token is None:
             #         user_logger.warning('%s: no such a sms token for number', phone_number)
@@ -183,13 +183,15 @@ class register(Resource):
             #     del SMS_VERIFIED_OPENID[openid]
             # mock user info and do inserting
             # reduce part of user info to simplify register
-            userinfo['role'] = 0 if info['role'] == "志愿者" else 1
+            if info['role'] == 'volunteer': userinfo['role'] = 0
+            elif info['role'] == 'impaired': userinfo['role'] = 1
+            else: userinfo['role'] = 2
             # if userinfo['role'] == 1:
             # userinfo['disabled_id'] = info['disabledID']
             # userinfo['emergent_contact'] = info['emergencyPerson']
             # userinfo['emergent_contact_phone'] = info['emergencyTel']
             print("xtydbg", info)
-            userinfo["birth"] = info["birthdate"] if "birthdate" in info.keys else datetime.now().strftime("%Y-%m-%d")
+            userinfo["birth"] = info["birthdate"] if "birthdate" in info.keys() else datetime.now().strftime("%Y-%m-%d")
             print(userinfo["birth"])
             # userinfo['remark'] = info['comment']
             userinfo["gender"] = info["gender"]
@@ -351,7 +353,6 @@ class registeredActivities(Resource):
         print(request.view_args)
         openid = request.headers.get("Authorization")
         info = json_load_http_request(request)
-        print(info)
         activity_id = info["activityId"]
         registerAct = {}
         if "needPickUp" in info.keys():
@@ -385,7 +386,7 @@ class registeredActivities(Resource):
         
         # Auto approve, not auto reject -- Hangzhou Backend
         try:
-            activeinfo = db.expr_query("registerActivities", activity_id=int(activity_id))[0]
+            activeinfo = db.expr_query("registerActivities", activity_id=int(activity_id))
             volunteer = db.expr_query(
                 ["activity_participants", "user"],
                 fields=[
@@ -395,12 +396,12 @@ class registeredActivities(Resource):
                     int(activity_id)
                 ),
             )
-            
+
             user_logger.error("%s: volunteer", volunteer)
-            user_logger.error("%s: activeinfo", activeinfo)
-        
-            if (activeinfo) and (len(volunteer) < activeinfo["volunteer_capacity"]) :
-            registerAct["accepted"] = 1
+            if activeinfo:
+                user_logger.error("%s: activeinfo", activeinfo[0])
+                if len(volunteer) < activeinfo[0]["volunteer_capacity"]:
+                    registerAct["accepted"] = 1
         except:
             return json_dump_http_response(
                 {"status": "failure", "message": "未能获取活动信息"}
@@ -416,7 +417,6 @@ class registeredActivities(Resource):
                 return json_dump_http_response({"status": "success"})
         except pymysql.err.IntegrityError as e:
             if e.args[0] == 1062:
-                print("*********xtydbg********", e)
                 return json_dump_http_response({"status": "failure", "message": "重复报名"})
             return json_dump_http_response(
                 {"status": "failure", "message": "未知错误，请重新注册"}
@@ -441,7 +441,6 @@ class registeredActivities(Resource):
             else:
                 return json_dump_http_response({"status": "取消活动失败！"})
         except Exception as e:
-            print("*******************xtydbg*****************", e)
             return json_dump_http_response({"status": "取消活动失败！"})
 
 

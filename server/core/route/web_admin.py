@@ -371,7 +371,7 @@ class new_activity(Resource):
         activity_info["vision_impaired_capacity"] = info["vision_impaired_capacity"]
         activity_info["volunteer_job_title"] = info["volunteer_job_title"]
         activity_info["volunteer_job_content"] = info["volunteer_job_content"]
-        activity_info["activity_fee"] = info["activity_fee"]
+        activity_info["activity_fee"] = info["activity_fee"] if 'activity_fee' in info else 0
         try:
             if db.expr_insert("activity", activity_info) == 1:
                 admin_logger.info(
