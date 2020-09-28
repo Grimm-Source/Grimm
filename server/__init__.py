@@ -23,6 +23,7 @@ import os
 import logging
 
 GRIMM_VERSION = '1.0'
+TOP_DIR = os.path.dirname(__file__) or "."
 
 
 if '..' not in sys.path:

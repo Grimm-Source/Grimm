@@ -20,6 +20,7 @@
 
 import json
 import time
+import os
 import re
 from datetime import datetime
 import dysms.const as const
@@ -31,12 +32,16 @@ from aliyunsdkcore.http import method_type as MT
 from aliyunsdkcore.http import format_type as FT
 
 import server.utils.vrfcode as vrf_code
-from server import sys_logger
+from server import sys_logger, TOP_DIR
 from server.core.exceptions import UserPhoneError
 
 from server.core.const import VRF_SIGNATURE, COM_SIGNATURE, TEMPLATE_CODES
 
-ACS_CLIENT = AcsClient(const.ACCESS_KEY_ID, const.ACCESS_KEY_SECRET, const.REGION)
+
+with open(os.path.join(TOP_DIR, 'config', 'dysms_access_key.json'), mode='r') as fp:
+    ACCESS_KEY = json.load(fp)
+
+ACS_CLIENT = AcsClient(ACCESS_KEY['id'], ACCESS_KEY['secret'], const.REGION)
 region_provider.add_endpoint(const.PRODUCT_NAME, const.REGION, const.DOMAIN)
 
 
@@ -99,8 +104,8 @@ def send(serial_no, phone_numbers, sign_name, template_code, template_param=None
 class SMSVerifyToken(object):
     '''sms verification token class'''
     def __init__(self, phone_number, expiry=120,
-                 access_id=const.ACCESS_KEY_ID,
-                 access_secret=const.ACCESS_KEY_SECRET,
+                 access_id=ACCESS_KEY['id'],
+                 access_secret=ACCESS_KEY['secret'],
                  signature=VRF_SIGNATURE,
                  template='AUTHENTICATE_ID'):
         '''initialize sms verification token objects'''
