@@ -55,7 +55,7 @@ Page({
         isInterested: res.interested === 1,
         isActivityEnd: isStarted,
         start_time: res.start_time,
-        date: `${startTime} 至 ${endTime}`,
+        date: `${startTime.substr(0, 16)} 至 ${endTime.substr(0,16)}`,
         address: res.location,
         volunteerTotal: res.volunteer_capacity,
         volunteerCurr: res.registered_volunteer,

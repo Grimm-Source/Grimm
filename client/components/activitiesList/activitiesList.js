@@ -111,7 +111,7 @@ Component({
       if (activity.duration.day != 0) {
         timeStr = startTime.substr(0, 10) + " - " + endTime.substr(0, 10)
       } else {
-        timeStr = startTime.substr(0, 16) + "-" + endTime.substr(11, 16)
+        timeStr = startTime.substr(0, 16) + " - " + endTime.substr(11, 5)
       }
       return timeStr;
     }
