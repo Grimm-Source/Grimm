@@ -251,7 +251,7 @@ class profile(Resource):
             feedback["linkaddress"] = userinfo["address"]
             feedback["linktel"] = userinfo["contact"]
             feedback["name"] = userinfo["name"]
-            feedback["role"] = "志愿者" if userinfo["role"] == 0 else "视障人士"
+            feedback["role"] = 'volunteer' if userinfo["role"] == 0 else 'impaired'
             feedback["phone"] = userinfo["phone"]
             feedback["registrationDate"] = str(userinfo["registration_date"])
             user_logger.info("%s: user login successfully", userinfo["openid"])
@@ -269,6 +269,9 @@ class profile(Resource):
         status["birth"] = newinfo["birthDate"]
         status["name"] = newinfo["name"]
         status["address"] = newinfo["linkaddress"]
+        if newinfo["role"] == 'volunteer': status["role"] = 0
+        elif newinfo["role"] == 'impaired': status["role"] = 1
+        else: status["role"] = 2
         try:
             db.expr_update("user", vals=status, openid=openid)
         except Exception as e:
