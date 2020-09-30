@@ -8,6 +8,8 @@ Page({
    */
   data: {
     genders: ['男', '女'],
+    roleShow: ['视障者','志愿者'],
+    roleShowIndex: 0, //0:impaired 1:volunteer
     avatarUrl: '../../images/avatar.jpg',
     userInfo: {
       tel: '',
@@ -15,7 +17,8 @@ Page({
       genderIndex: 0,
       gender: '',
       birthDate: '',
-      linkaddress: ''
+      linkaddress: '',
+      role:''
     }
   },
 
@@ -23,7 +26,6 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    console.log('kk')
     this.setData({
       avatarUrl: app.globalData.userInfo.avatarUrl
     })
@@ -35,7 +37,6 @@ Page({
         userInfo: defaultUserInfo,
         userInfoSource: Object.assign({}, data)
       });
-      console.log(this.data.userInfo)
     },(err) => {
       wx.showModal({
         title: '提示',
@@ -59,6 +60,13 @@ Page({
   bindGenderChange: function (e) {
     this.setData({
       'userInfo.gender': e.detail.value == 0 ? '男' : '女'
+    })
+  },
+
+  bindRoleChanged:function (e) {
+    this.setData({
+      'userInfo.role': e.detail.value == 0 ? 'impaired' : 'volunteer',
+      roleShowIndex: e.detail.value
     })
   },
 
@@ -89,7 +97,7 @@ Page({
         showCancel: false,
         title: '更新失败',
         content: err || "网络失败，请稍候再试"
-      });  
+      });
     });
   },
 
