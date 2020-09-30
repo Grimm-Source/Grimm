@@ -20,6 +20,13 @@
       </picker>
     </view>
     <view class="profile-form-item">
+      <view class="profile-form-label">*角色</view>
+       <picker bindchange="bindRoleChanged" value="{{userInfo.role === 'impaired' ? 0 : 1}}" range="{{roleShow}}">
+        <input aria-role='textbox' aria-label="{{userInfo.role}}"
+        disabled value="{{userInfo.role === 'impaired' ? '视障者' : '志愿者'}}"/>
+      </picker>
+    </view>
+    <view class="profile-form-item">
       <view class="profile-form-label">*出生日期</view>
       <picker mode="date" bindchange="bindBirthdayChange" value="{{userInfo.birthDate}}">
         <input aria-role='textbox' aria-label="{{userInfo.birthDate}}" disabled placeholder="请选择您的出生日期" value="{{userInfo.birthDate}}"/>
