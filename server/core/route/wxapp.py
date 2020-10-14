@@ -405,11 +405,13 @@ class registeredActivities(Resource):
                 user_logger.error("%s: activeinfo", activeinfo[0])
                 if len(volunteer) < activeinfo[0]["volunteer_capacity"]:
                     registerAct["accepted"] = 1
+            else:
+                registerAct["accepted"] = -1
         except:
             return json_dump_http_response(
                 {"status": "failure", "message": "未能获取活动信息"}
             )
-
+            
         try:
             if db.expr_insert("registerActivities", registerAct) != 1:
                 user_logger.error("%s: activity registration failed", openid)
