@@ -408,10 +408,11 @@ class registeredActivities(Resource):
             else:
                 registerAct["accepted"] = -1
         except:
-            return json_dump_http_response(
-                {"status": "failure", "message": "未能获取活动信息"}
-            )
-            
+            user_logger.error("%s: activeinfo no return. Skip to auto approve, insert register still",)
+            #return json_dump_http_response(
+            #    {"status": "failure", "message": "未能获取志愿者人数信息"}
+            #)
+
         try:
             if db.expr_insert("registerActivities", registerAct) != 1:
                 user_logger.error("%s: activity registration failed", openid)
