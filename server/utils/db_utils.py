@@ -23,10 +23,10 @@ from server.utils.misctools import calc_duration
 
 def get_total_share(activity_id):
     share = db.expr_query(
-        "activity_participants",
+        "activity_participant",
         "COUNT(*)",
-        clauses="activity_participants.activity_id = {} "
-        "and activity_participants.share = 1".format(activity_id),
+        clauses="activity_participant.activity_id = {} "
+        "and activity_participant.share = 1".format(activity_id),
     )[0]["COUNT(*)"]
     if share is None:
         return 0
@@ -35,10 +35,10 @@ def get_total_share(activity_id):
 
 def get_total_interested(activity_id):
     interested = db.expr_query(
-        "activity_participants",
+        "activity_participant",
         "COUNT(*)",
-        clauses="activity_participants.activity_id = {} "
-        "and activity_participants.interested = 1".format(activity_id),
+        clauses="activity_participant.activity_id = {} "
+        "and activity_participant.interested = 1".format(activity_id),
     )[0]["COUNT(*)"]
     if interested is None:
         return 0
@@ -47,10 +47,10 @@ def get_total_interested(activity_id):
 
 def get_total_thumbs_up(activity_id):
     thumbs_up = db.expr_query(
-        "activity_participants",
+        "activity_participant",
         "COUNT(*)",
-        clauses="activity_participants.activity_id = {} "
-        "and activity_participants.thumbs_up = 1".format(activity_id),
+        clauses="activity_participant.activity_id = {} "
+        "and activity_participant.thumbs_up = 1".format(activity_id),
     )[0]["COUNT(*)"]
     if thumbs_up is None:
         return 0
@@ -59,9 +59,9 @@ def get_total_thumbs_up(activity_id):
 
 def get_total_registered(activity_id):
     registered = db.expr_query(
-        "registerActivities",
+        "registered_activity",
         "COUNT(*)",
-        clauses="registerActivities.activity_id = {}".format(activity_id),
+        clauses="registered_activity.activity_id = {}".format(activity_id),
     )[0]["COUNT(*)"]
     if registered is None:
         return 0
@@ -70,9 +70,9 @@ def get_total_registered(activity_id):
 
 def get_volunteer_registered(activity_id):
     registered = db.expr_query(
-        ["registerActivities", "user"],
+        ["registered_activity", "user"],
         "COUNT(*)",
-        clauses="registerActivities.activity_id = {} and registerActivities.openid = user.openid and user.role = 0".format(
+        clauses="registered_activity.activity_id = {} and registered_activity.openid = user.openid and user.role = 0".format(
             activity_id
         ),
     )[0]["COUNT(*)"]
@@ -83,9 +83,9 @@ def get_volunteer_registered(activity_id):
 
 def get_impaired_registered(activity_id):
     registered = db.expr_query(
-        ["registerActivities", "user"],
+        ["registered_activity", "user"],
         "COUNT(*)",
-        clauses="registerActivities.activity_id = {} and registerActivities.openid = user.openid and user.role = 1".format(
+        clauses="registered_activity.activity_id = {} and registered_activity.openid = user.openid and user.role = 1".format(
             activity_id
         ),
     )[0]["COUNT(*)"]
@@ -95,7 +95,7 @@ def get_impaired_registered(activity_id):
 
 def get_registered_status(activity_id, openid):
     registered = db.expr_query(
-        "registerActivities",
+        "registered_activity",
         "COUNT(*)",
         clauses="activity_id = {} and openid = '{}'".format(activity_id, openid),
     )[0]["COUNT(*)"]
@@ -107,10 +107,10 @@ def get_interested_status(activity_id, openid):
     if openid == 0:
         return get_total_interested(activity_id)
     interested = db.expr_query(
-        "activity_participants",
+        "activity_participant",
         "COUNT(*)",
-        clauses="activity_id = {} and participants_id = '{}'"
-        "and activity_participants.interested = 1".format(activity_id, openid),
+        clauses="activity_id = {} and participant_id = '{}'"
+        "and activity_participant.interested = 1".format(activity_id, openid),
     )[0]["COUNT(*)"]
     if interested is None:
         return 0

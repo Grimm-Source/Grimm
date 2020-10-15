@@ -389,13 +389,13 @@ class registeredActivities(Resource):
         
         # Auto approve, not auto reject -- Hangzhou Backend
         try:
-            activeinfo = db.expr_query("registerActivities", activity_id=int(activity_id))
+            activeinfo = db.expr_query("registered_activity", activity_id=int(activity_id))
             volunteer = db.expr_query(
-                ["activity_participants", "user"],
+                ["activity_participant", "user"],
                 fields=[
-                    "activity_participants.activity_id","user.openid"
+                    "activity_participant.activity_id","user.openid"
                 ],
-                clauses='activity_participants.activity_id="{}" and activity_participants.participants_id = user.openid and user.role=0'.format(
+                clauses='activity_participant.activity_id="{}" and activity_participant.participant_id = user.openid and user.role=0'.format(
                     int(activity_id)
                 ),
             )
@@ -414,7 +414,7 @@ class registeredActivities(Resource):
             #)
 
         try:
-            if db.expr_insert("registerActivities", registerAct) != 1:
+            if db.expr_insert("registered_activity", registerAct) != 1:
                 user_logger.error("%s: activity registration failed", openid)
                 return json_dump_http_response(
                     {"status": "failure", "message": "活动注册失败，请重新注册"}
@@ -436,7 +436,7 @@ class registeredActivities(Resource):
         try:
             if (
                 db.expr_delete(
-                    ["registerActivities"],
+                    ["registered_activity"],
                     clauses='openid="{}" and activity_id={}'.format(
                         openid, activity_id
                     ),
@@ -488,28 +488,28 @@ class mark_activity(Resource):
         interest = request.args.get("interest")
         feedback = {"status": "success"}
         if db.exist_row(
-            "activity_participants", activity_id=activity_id, participants_id=openid
+            "activity_participant", activity_id=activity_id, participant_id=openid
         ):
             try:
                 rc = db.expr_update(
-                    tbl="activity_participants",
+                    tbl="activity_participant",
                     vals={"interested": interest},
                     activity_id=activity_id,
-                    participants_id=openid,
+                    participant_id=openid,
                 )
                 return json_dump_http_response(feedback)
             except Exception as e:
                 user_logger.error("update push_status fail, %s", e)
                 user_logger.info("%s: complete user registration success", openid)
         else:
-            activity_participants_info = {}
-            activity_participants_info["activity_id"] = activity_id
-            activity_participants_info["participants_id"] = openid
-            activity_participants_info["interested"] = interest
-            activity_participants_info["share"] = 0
-            activity_participants_info["thumbs_up"] = 0
-            if db.expr_insert("activity_participants", activity_participants_info) == 1:
-                user_logger.info("Create new activity_participants_info successfully")
+            activity_participant_info = {}
+            activity_participant_info["activity_id"] = activity_id
+            activity_participant_info["participant_id"] = openid
+            activity_participant_info["interested"] = interest
+            activity_participant_info["share"] = 0
+            activity_participant_info["thumbs_up"] = 0
+            if db.expr_insert("activity_participant", activity_participant_info) == 1:
+                user_logger.info("Create new activity_participant_info successfully")
                 return json_dump_http_response(feedback)
 
         return json_dump_http_response({"status": "failure", "message": "未知活动ID"})
@@ -524,28 +524,28 @@ class thumbsup_activity(Resource):
         thumbs_up = request.args.get("thumbs_up")
         feedback = {"status": "success"}
         if db.exist_row(
-            "activity_participants", activity_id=activity_id, participants_id=openid
+            "activity_participant", activity_id=activity_id, participant_id=openid
         ):
             try:
                 rc = db.expr_update(
-                    tbl="activity_participants",
+                    tbl="activity_participant",
                     vals={"thumbs_up": thumbs_up},
                     activity_id=activity_id,
-                    participants_id=openid,
+                    participant_id=openid,
                 )
                 return json_dump_http_response(feedback)
             except Exception as e:
                 user_logger.error("update push_status fail, %s", e)
                 user_logger.info("%s: complete user registration success", openid)
         else:
-            activity_participants_info = {}
-            activity_participants_info["activity_id"] = activity_id
-            activity_participants_info["participants_id"] = openid
-            activity_participants_info["interested"] = 0
-            activity_participants_info["share"] = 0
-            activity_participants_info["thumbs_up"] = thumbs_up
-            if db.expr_insert("activity_participants", activity_participants_info) == 1:
-                user_logger.info("Create new activity_participants_info successfully")
+            activity_participant_info = {}
+            activity_participant_info["activity_id"] = activity_id
+            activity_participant_info["participant_id"] = openid
+            activity_participant_info["interested"] = 0
+            activity_participant_info["share"] = 0
+            activity_participant_info["thumbs_up"] = thumbs_up
+            if db.expr_insert("activity_participant", activity_participant_info) == 1:
+                user_logger.info("Create new activity_participant_info successfully")
                 return json_dump_http_response(feedback)
 
         return json_dump_http_response({"status": "failure", "message": "未知活动ID"})
@@ -558,15 +558,15 @@ class share_activity(Resource):
         openid = request.headers.get("Authorization")
         activity_id = request.args.get("activityId")
         if db.exist_row(
-            "activity_participants", activity_id=activity_id, participants_id=openid
+            "activity_participant", activity_id=activity_id, participant_id=openid
         ):
             try:
-                participants = db.expr_query(
-                    "activity_participants",
+                participant = db.expr_query(
+                    "activity_participant",
                     activity_id=activity_id,
-                    participants_id=openid,
+                    participant_id=openid,
                 )[0]
-                if not participants:
+                if not participant:
                     user_logger.warning("%d: no such activity", activity_id)
                     return json_dump_http_response({"status": "failure"})
             except Exception as e:
@@ -574,29 +574,29 @@ class share_activity(Resource):
                 user_logger.warning("%d: get activity failed", activity_id)
                 return json_dump_http_response({"status": "failure"})
 
-            share_count = int(participants["share"])
+            share_count = int(participant["share"])
             share_count += 1
             try:
                 rc = db.expr_update(
-                    tbl="activity_participants",
+                    tbl="activity_participant",
                     vals={"share": share_count},
                     activity_id=activity_id,
-                    participants_id=openid,
+                    participant_id=openid,
                 )
                 return json_dump_http_response({"status": "success"})
             except Exception as e:
                 user_logger.error("update push_status fail, %s", e)
                 user_logger.info("%s: complete user registration success", openid)
         else:
-            activity_participants_info = {}
-            activity_participants_info["activity_id"] = activity_id
-            activity_participants_info["participants_id"] = openid
-            activity_participants_info["interested"] = 0
-            activity_participants_info["share"] = 1
-            activity_participants_info["thumbs_up"] = 0
-            if db.expr_insert("activity_participants", activity_participants_info) == 1:
+            activity_participant_info = {}
+            activity_participant_info["activity_id"] = activity_id
+            activity_participant_info["participant_id"] = openid
+            activity_participant_info["interested"] = 0
+            activity_participant_info["share"] = 1
+            activity_participant_info["thumbs_up"] = 0
+            if db.expr_insert("activity_participant", activity_participant_info) == 1:
                 user_logger.info(
-                    "Create new activity_participants_info with share successfully"
+                    "Create new activity_participant_info with share successfully"
                 )
                 return json_dump_http_response({"status": "success"})
 
@@ -623,22 +623,22 @@ class get_favorite_activities(Resource):
         registered_activities_info = []
         try:
             favorite_activities_info = db.expr_query(
-                ["activity_participants", "activity"],
+                ["activity_participant", "activity"],
                 fields=[
                     "activity.activity_id",
                     "activity.end_time",
                 ],
-                clauses='activity_participants.participants_id="{}" and activity_participants.activity_id = activity.activity_id and activity_participants.interested = 1'.format(
+                clauses='activity_participant.participant_id="{}" and activity_participant.activity_id = activity.activity_id and activity_participant.interested = 1'.format(
                     openid
                 ),
             )
             registered_activities_info = db.expr_query(
-                ["registerActivities", "activity"],
+                ["registered_activity", "activity"],
                 fields=[
                     "activity.activity_id",
                     "activity.end_time",
                 ],
-                clauses='registerActivities.openid="{}" and registerActivities.activity_id = activity.activity_id'.format(
+                clauses='registered_activity.openid="{}" and registered_activity.activity_id = activity.activity_id'.format(
                     openid
                 ),
             )

@@ -128,8 +128,8 @@ create table activity
 INSERT INTO activity (start_time, location, content, notice, user_raiser, approver, assignee, end_time, tag_ids, volunteer_job_title, volunteer_job_content)
 VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "需要配备雨具", '0', 0, '1', '2030-10-28 09:30:00', '1,2', "岗位名称", "岗位内容");
 
-/* registed activities table */
-create table registerActivities
+/* registered activities table */
+create table registered_activity
 (
     openid                      CHAR(28)            NOT NULL,
     activity_id                 BIGINT              NOT NULL,
@@ -138,11 +138,21 @@ create table registerActivities
     needpickup                  TINYINT             NOT NULL        DEFAULT 0,
     topickup                    TINYINT             NOT NULL        DEFAULT 0,
     accepted                    TINYINT             NOT NULL        DEFAULT -1,
+
+    FOREIGN KEY (openid) REFERENCES user(openid)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (activity_id) REFERENCES activity(activity_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+    INDEX(openid, activity_id),
+
     PRIMARY KEY(openid, activity_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* pickup table */
-create table pickups
+create table pickup_pair
 (
     activity_id                 BIGINT,
     offer                       CHAR(28)            NOT NULL,
@@ -163,13 +173,13 @@ create table pickups
     PRIMARY KEY(offer, need)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO pickups (activity_id, offer, need, time, location)
+INSERT INTO pickup_pair (activity_id, offer, need, time, location)
 VALUES (1, '0', '1', NOW(), "上海市某个地方");
 
-create table activity_participants
+create table activity_participant
 (
     activity_id                BIGINT,
-    participants_id            CHAR(28)            NOT NULL, 
+    participant_id             CHAR(28)            NOT NULL, 
     interested                 TINYINT             DEFAULT 0,
     share                      INT                 DEFAULT 0,
     thumbs_up                  TINYINT             DEFAULT 0,
@@ -177,12 +187,12 @@ create table activity_participants
     FOREIGN KEY (activity_id) REFERENCES activity(activity_id)
     ON DELETE cascade
     ON UPDATE cascade,
-    FOREIGN KEY (participants_id) REFERENCES user(openid)
+    FOREIGN KEY (participant_id) REFERENCES user(openid)
     ON DELETE cascade
     ON UPDATE cascade,
 
-    PRIMARY KEY(activity_id, participants_id)
+    PRIMARY KEY(activity_id, participant_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO activity_participants(activity_id, participants_id, interested, share, thumbs_up)
+INSERT INTO activity_participant(activity_id, participant_id, interested, share, thumbs_up)
 VALUES(1, '1', 0, 0, 0)

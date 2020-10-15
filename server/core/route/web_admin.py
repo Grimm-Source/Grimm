@@ -775,8 +775,8 @@ class activity_registration(Resource):
         """ get an activity registration list with a specific id """
         if db.exist_row("activity", activity_id=activity_id):
             activities_registration_list = db.expr_query(
-                "registerActivities",
-                clauses="registerActivities.activity_id = {}".format(activity_id),
+                "registered_activity",
+                clauses="registered_activity.activity_id = {}".format(activity_id),
             )
             feedback = {"status": "success"}
             users = []
@@ -805,18 +805,18 @@ class activity_registration(Resource):
             openid = request.args.get("openid")
             accepted = request.args.get("accepted")
             if db.exist_row(
-                "registerActivities", activity_id=activity_id, openid=openid
+                "registered_activity", activity_id=activity_id, openid=openid
             ):
                 try:
                     rc = db.expr_update(
-                        tbl="registerActivities",
+                        tbl="registered_activity",
                         vals={"accepted": accepted},
                         activity_id=activity_id,
                         openid=openid,
                     )
                     return json_dump_http_response({"status": "success"})
                 except Exception as e:
-                    user_logger.error("Update registerActivities fail, %s", e)
+                    user_logger.error("Update registered_activity fail, %s", e)
                     return json_dump_http_response({"status": "failure", "message": "未知错误"})
             else:
                 return json_dump_http_response({"status": "failure", "message": " 此人未报名"})
