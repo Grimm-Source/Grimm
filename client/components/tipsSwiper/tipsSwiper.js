@@ -29,12 +29,13 @@ Component({
       });
     },
     onTapItem(e){
-      if(!e.currentTarget.dataset.param ){
-        return;
-      }
-      wx.navigateTo({
-        url: "/pages/tips/tips"
-      });
+      // TODO：add external links
+      // if(!e.currentTarget.dataset.param ){
+      //   return;
+      // }
+      // wx.navigateTo({
+      //   url: "/pages/tips/tips"
+      // });
     }
   }
 })

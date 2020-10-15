@@ -71,6 +71,7 @@ Page({
           ${res.others}
         `
       })
+      console.log(this.data);
     });
   },
   onShareAppMessage:function(){
@@ -82,12 +83,11 @@ Page({
       return;
     }
     const isRegistered = !this.data.isRegistered;//activity
-    if( app.globalData.isRegistered ){ // user
+    if(app.globalData.isRegistered){ // user
       if (this.checkActivityStarted()) {
         console.log("用户点击已开始活动.");
         return;
       }
-
       const isVolunteer =  app.globalData.isVolunteer; 
       toggleRegister(this.data.id, isRegistered, () => {
         if(isVolunteer){
@@ -95,23 +95,51 @@ Page({
             isRegistered,
             volunteerCurr: this.updateCurrentValue(isRegistered, true)
           });
-          return;
+        } else {
+          this.setData({
+            isRegistered,
+            visuallyImpairedCurr: this.updateCurrentValue(isRegistered, false)
+          });
         }
-
-        this.setData({
-          isRegistered,
-          visuallyImpairedCurr: this.updateCurrentValue(isRegistered, false)
+      });
+      if(isRegistered){
+        // wx.showToast({
+        //   title: '报名成功',
+        //   icon: 'none',
+        //   duration: 1000,
+        //   mask: true
+        // });
+        wx.showModal({
+          title: '报名成功',
+          showCancel: false
         });
-      });
+      }else{
+        // wx.showToast({
+        //   title: '报名取消',
+        //   icon: 'none',
+        //   duration: 1000,
+        //   mask: true
+        // });
+        wx.showModal({
+          title: '报名取消',
+          showCancel: false
+        });
+      }
+    } else {
       wx.showModal({
-        title: '报名成功',
-        showCancel: false
+        title: "请先注册，再报名",
+        showCancel: true,
+        cancelText: "再想想",
+        confirmText: "立即注册",
+        success: function(res){
+          if(res.confirm){
+            wx.navigateTo({
+              url: '/pages/login/login',
+            });
+          }
+        }
       });
-      return;
     }
-    wx.navigateTo({
-      url: '/pages/login/login',
-    });
   },
   onTapInterest: function() {
     if( !app.globalData.isAuthorized){

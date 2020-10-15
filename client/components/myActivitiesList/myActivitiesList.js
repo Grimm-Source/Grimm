@@ -51,15 +51,14 @@ Component({
         let activity = activities[index];
         let isOneDay = activities[index].duration.day == 0;
         // remove seconds
-        const startFullTime = activity.start_time;
-        const endFullTime = activity.end_time;
+        const startFullTime = (activity.start_time).replace("T", " ");
+        const endFullTime = (activity.end_time).replace("T", " ");
         let startTime = startFullTime.substring(0, startFullTime.lastIndexOf(':'));
         let endTime = endFullTime.substring(0, endFullTime.lastIndexOf(':'));
-
         let startTimeStrs = startTime.split(' ');
         let endTimeStrs = endTime.split(' ');
-
-        activity.timeTitle = timeTitle.DATE;
+      
+        activity.timeTitle = timeTitle.TIME;
 
         if (startTimeStrs.length < 2 || endTimeStrs.length < 2) {
           activity.schedule = startTime + " - " + endTime;
@@ -67,7 +66,7 @@ Component({
         else if(isOneDay){
           // start date time - end time
           activity.schedule = startTime + " - " + endTimeStrs[1];
-          activity.timeTitle = timeTitle.TIME;
+          //activity.timeTitle = timeTitle.TIME;
         }
         else {
           // start date - end date
