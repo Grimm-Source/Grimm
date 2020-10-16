@@ -24,7 +24,7 @@ Page({
     this.setData({
       id: option.id
     });
-  }, 
+  },
   onPullDownRefresh: function () {
     this.getActivity();
   },
@@ -71,6 +71,7 @@ Page({
           ${res.others}
         `
       })
+      console.log(this.data);
     });
   },
   onShareAppMessage:function(){
@@ -82,43 +83,63 @@ Page({
       return;
     }
     const isRegistered = !this.data.isRegistered;//activity
-    if( app.globalData.isRegistered ){ // user
+    if(app.globalData.isRegistered){ // user
       if (this.checkActivityStarted()) {
         console.log("用户点击已开始活动.");
         return;
       }
-
-      const isVolunteer =  app.globalData.isVolunteer; 
+      const isVolunteer =  app.globalData.isVolunteer;
       toggleRegister(this.data.id, isRegistered, () => {
         if(isVolunteer){
           this.setData({
             isRegistered,
             volunteerCurr: this.updateCurrentValue(isRegistered, true)
           });
-          if(isRegistered){
-            wx.showModal({
-              title: '报名成功',
-              showCancel: false
-            });
-          } else{
-            wx.showModal({
-              title: '报名取消',
-              showCancel: false
+        } else {
+          this.setData({
+            isRegistered,
+            visuallyImpairedCurr: this.updateCurrentValue(isRegistered, false)
+          });
+        }
+      });
+      if(isRegistered){
+        // wx.showToast({
+        //   title: '报名成功',
+        //   icon: 'none',
+        //   duration: 1000,
+        //   mask: true
+        // });
+        wx.showModal({
+          title: '报名成功',
+          showCancel: false
+        });
+      }else{
+        // wx.showToast({
+        //   title: '报名取消',
+        //   icon: 'none',
+        //   duration: 1000,
+        //   mask: true
+        // });
+        wx.showModal({
+          title: '报名取消',
+          showCancel: false
+        });
+      }
+    } else {
+      wx.showModal({
+        title: "请先注册，再报名",
+        showCancel: true,
+        cancelText: "再想想",
+        confirmText: "立即注册",
+        success: function(res){
+          if(res.confirm){
+            wx.navigateTo({
+              url: '/pages/login/login',
             });
           }
-          return;
         }
-        this.setData({
-          isRegistered,
-          visuallyImpairedCurr: this.updateCurrentValue(isRegistered, false)
-        });        
       });
-
-      return;
     }
-    wx.navigateTo({
-      url: '/pages/login/login',
-    });
   },
   onTapInterest: function() {
     if( !app.globalData.isAuthorized){
@@ -132,17 +153,17 @@ Page({
       });
     });
   },
-  
+
   authorize: function(redirectPage, params){
     const page = redirectPage || `activityDetail&value=${this.data.id}&key=id`;
     wx.navigateTo({
-      url: `/pages/authorize/authorize?redirectPage=${page}` 
+      url: `/pages/authorize/authorize?redirectPage=${page}`
     });
   },
 
   checkActivityStarted: function() {
     if (this.data.start_time == '') return false;
-    
+
     const isStarted = Date.now() > Date.parse(this.data.start_time);
     if (isStarted) {
       wx.showModal({

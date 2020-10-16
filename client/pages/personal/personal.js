@@ -139,12 +139,21 @@ Page({
   // },
 
   onAuthorizeTap: function(){
-    wx.navigateTo({
-      url: '/pages/authorize/authorize',
-    });
+    if(!app.globalData.isAuthorized){
+      wx.navigateTo({
+        url: '/pages/authorize/authorize',
+      });
+      return;
+    }
   },
 
   onRegisterTap: function(e){
+    if(!app.globalData.isRegistered){
+      wx.navigateTo({
+        url: '/pages/login/login',
+      });
+      return;
+    }
     if (e.detail.iv && e.detail.encryptedData) {
       wx.login({
         success: res => {
@@ -204,14 +213,14 @@ Page({
   },
 
   onEditTap: function () {
-    // if(!this.data.isRegistered){
-    //   wx.showToast({
-    //     title: '请先注册',
-    //     icon: 'none', //error
-    //     duration: 2000
-    //   });
-    //   return;
-    // }
+    if(!this.data.isRegistered){
+      wx.showToast({
+        title: '请先注册',
+        icon: 'none', //error
+        duration: 2000
+      });
+      return;
+    }
     wx.navigateTo({
       url: '/pages/personalProfile/personalProfile',
     })

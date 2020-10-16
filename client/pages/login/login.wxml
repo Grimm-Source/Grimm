@@ -16,7 +16,7 @@
     </view>
   </view>
   <view class="login-form-footer">
-    <button type="primary">登录</button>
+    <!-- <button type="primary">登录</button> -->
     <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">注册新用户</button>
   </view>
 </view>

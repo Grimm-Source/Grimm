@@ -47,7 +47,7 @@ Page({
           //   url: '../home/home',
           // });
         }
-      });     
+      });
     });
   },
 
@@ -84,6 +84,7 @@ Page({
 
   updateProfile: function(){
     return updateProfile(this.data.userInfo, (res)=>{
+      console.log(this.data);
       wx.showToast({
         title: '已更新',
         icon: 'success',
