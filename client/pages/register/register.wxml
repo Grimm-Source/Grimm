@@ -45,6 +45,14 @@
         <input disabled placeholder="请选择您所在的城市区域" value="{{region[0]}}{{region[1]}}{{region[2]}}"/>
       </picker>
     </view>
+    <view wx:if="{{roleIndex === 0}}" class="register-form-item">
+      <view class="register-form-label">身份证号</view>
+      <input name="idNo" placeholder="请填写身份证号" maxlength="18" bindchange="bindIdNoChange" value="{{idNo}}"/>
+    </view>
+    <view wx:if="{{roleIndex === 0}}" class="register-form-item">
+      <view class="register-form-label">残疾证编号</view>
+      <input name="impairedNo" placeholder="请填写残疾证编号" maxlength="20" bindchange="bindImpairedNoChange" value="{{impairedNo}}"/>
+    </view>
   </view>
   <view class="register-form-footer">
     <button type="primary" bindtap="onSubmit">提交信息</button>

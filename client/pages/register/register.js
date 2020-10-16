@@ -12,6 +12,8 @@ Page({
     roleShow: ['视障者','志愿者'],
     roleIndex: 0, //0:impaired 1:volunteer
     showModal: true,
+    idNo: '',
+    impairedNo: ''
   },
 
   onLoad: function (options) {
@@ -41,6 +43,18 @@ Page({
   bindRegionChange: function (e) {
     this.setData({
       region: e.detail.value
+    })
+  },
+
+  bindIdNoChange: function (e) {
+    this.setData({
+      idNo : e.detail.value
+    })
+  },
+
+  bindImpairedNoChange: function (e) {
+    this.setData({
+      impairedNo : e.detail.value
     })
   },
 
@@ -79,6 +93,24 @@ Page({
       return;
     }
 
+    if (this.data.idNo && !/^\d{17}[\d|x]$/i.test(this.data.idNo)) {
+      wx.showModal({
+        title: '提示',
+        content: '请填写正确的身份证号',
+        showCancel: false,
+      })
+      return;
+    }
+
+    if (this.data.impairedNo && !/^\d{17}[\d|x]\d{2}$/i.test(this.data.impairedNo)) {
+      wx.showModal({
+        title: '提示',
+        content: '请填写正确的残疾证编号',
+        showCancel: false,
+      })
+      return;
+    }
+
     register({
       phone: this.data.phone,
       name: this.data.name,
@@ -86,6 +118,8 @@ Page({
       birthdate: this.data.birthday,
       linkaddress: this.data.region.join(''),
       role: this.data.role,
+      idcard: this.data.idNo,
+      disabledID: this.data.impairedNo,
     }, (res) => {
       app.globalData.isRegistered = true;
       wx.showToast({

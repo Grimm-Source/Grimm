@@ -38,6 +38,14 @@
         <input aria-role='textbox' aria-label="{{userInfo.linkaddress}}" disabled placeholder="请选择您所在的城市区域" value="{{userInfo.linkaddress}}"/>
       </picker>
     </view>
+    <view wx:if="{{roleShowIndex === 0}}" class="profile-form-item">
+      <view class="profile-form-label">身份证号</view>
+      <input name="idcard" placeholder="请填写身份证号" maxlength="18" bindchange="bindIdCardChange" value="{{idcard}}"/>
+    </view>
+    <view wx:if="{{roleShowIndex === 0}}" class="profile-form-item">
+      <view class="profile-form-label">残疾证编号</view>
+      <input name="disabledID" placeholder="请填写残疾证编号" maxlength="20" bindchange="bindDisabledIDChange" value="{{disabledID}}"/>
+    </view>
   </view>
   <view class="profile-form-footer">
     <button type="primary" bindtap="updateProfile">提交信息</button>

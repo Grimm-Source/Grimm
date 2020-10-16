@@ -18,7 +18,9 @@ Page({
       gender: '',
       birthDate: '',
       linkaddress: '',
-      role:''
+      role:'',
+      idcard: '',
+      disabledID: ''
     }
   },
 
@@ -79,6 +81,18 @@ Page({
   bindRegionChange: function (e) {
     this.setData({
       'userInfo.linkaddress': e.detail.value.join('')
+    })
+  },
+
+  bindIdCardChange: function (e) {
+    this.setData({
+      'userInfo.idcard' : e.detail.value
+    })
+  },
+
+  bindDisabledIDChange: function (e) {
+    this.setData({
+      'userInfo.disabledID' : e.detail.value
     })
   },
 
