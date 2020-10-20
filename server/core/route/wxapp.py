@@ -190,6 +190,11 @@ class register(Resource):
             # userinfo['disabled_id'] = info['disabledID']
             # userinfo['emergent_contact'] = info['emergencyPerson']
             # userinfo['emergent_contact_phone'] = info['emergencyTel']
+            if userinfo['role'] == 1:
+                userinfo['disabled_id'] = info['disabledID']
+                userinfo['disabled_id_verified'] = 0
+                userinfo['idcard'] = info['idcard']
+                userinfo['idcard_verified'] = 0
             print("xtydbg", info)
             userinfo["birth"] = info["birthdate"] if "birthdate" in info.keys() else datetime.now().strftime("%Y-%m-%d")
             print(userinfo["birth"])
@@ -272,6 +277,11 @@ class profile(Resource):
         if newinfo["role"] == 'volunteer': status["role"] = 0
         elif newinfo["role"] == 'impaired': status["role"] = 1
         else: status["role"] = 2
+        if status['role'] == 1:
+            status['disabled_id'] = newinfo['disabledID']
+            status['disabled_id_verified'] = 0
+            status['idcard'] = newinfo['idcard']
+            status['idcard_verified'] = 0
         try:
             db.expr_update("user", vals=status, openid=openid)
         except Exception as e:
