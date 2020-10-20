@@ -36,8 +36,8 @@ class UserTable extends React.Component {
             },
             {
             title: '注册手机',
-            dataIndex: 'tel',
-            key: 'tel',
+            dataIndex: 'phone',
+            key: 'phone',
             },
             {
             title: '联系地址',
