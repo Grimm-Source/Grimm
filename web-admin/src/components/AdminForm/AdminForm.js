@@ -28,6 +28,7 @@ class AdminForm extends React.Component {
             return true;
         }
         let reg = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
+        console.log(reg.test(email));
         return reg.test(email);
     }
 
