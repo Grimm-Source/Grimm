@@ -87,7 +87,7 @@ Page({
     if (!this.data.name) {
       wx.showModal({
         title: '提示',
-        content: '请填写姓名',
+        content: '请填写真实姓名',
         showCancel: false,
       })
       return;

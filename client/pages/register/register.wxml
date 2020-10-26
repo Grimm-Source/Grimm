@@ -25,7 +25,7 @@
     </view>
     <view class="register-form-item">
       <view class="register-form-label">*姓名</view>
-      <input name="name" placeholder="请填写姓名" bindchange="bindNameChange" value="{{name}}"/>
+      <input name="name" placeholder="请填写真实姓名" bindchange="bindNameChange" value="{{name}}"/>
     </view>
     <view class="register-form-item">
       <view class="register-form-label">*性别</view>

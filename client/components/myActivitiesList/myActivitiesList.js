@@ -8,8 +8,7 @@ const myActivitiesType = {
 };
 
 const timeTitle = {
-  TIME: '时间',
-  DATE: '地点' 
+  TIME: '时间'
 };
 
 Component({
@@ -50,6 +49,7 @@ Component({
       for (let index = 0; index < activities.length; index++) {
         let activity = activities[index];
         let isOneDay = activities[index].duration.day == 0;
+        console.log(activity);
         // remove seconds
         const startFullTime = (activity.start_time).replace("T", " ");
         const endFullTime = (activity.end_time).replace("T", " ");
@@ -57,22 +57,26 @@ Component({
         let endTime = endFullTime.substring(0, endFullTime.lastIndexOf(':'));
         let startTimeStrs = startTime.split(' ');
         let endTimeStrs = endTime.split(' ');
-      
         activity.timeTitle = timeTitle.TIME;
-
+        
+        // set time -> start time - end time
         if (startTimeStrs.length < 2 || endTimeStrs.length < 2) {
           activity.schedule = startTime + " - " + endTime;
         }
         else if(isOneDay){
-          // start date time - end time
           activity.schedule = startTime + " - " + endTimeStrs[1];
-          //activity.timeTitle = timeTitle.TIME;
         }
         else {
-          // start date - end date
           activity.schedule = startTimeStrs[0] + " - " + endTimeStrs[0];
         }
 
+        // set activity fee
+        if(activity.is_fee_needed){
+          activity.fee = "¥" + activity_fee;
+        } else{
+          activity.fee = "免费";
+        }
+        
         // set default preview img
         activity.imgSrc = "../../images/banner_icon.jpeg";
 

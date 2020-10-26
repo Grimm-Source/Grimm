@@ -64,7 +64,7 @@ const messages = {
     required: '请选择注册身份'
   },
   name: {
-    required: '请输入姓名'
+    required: '请输入真实姓名'
   },
   gender: {
     required: '请选择性别'

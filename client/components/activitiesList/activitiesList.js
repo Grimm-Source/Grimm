@@ -35,6 +35,7 @@ Component({
         for (let index = 0; index < activities.length; index++) {
           let activity = activities[index];
           activity.schedule = this.getActivityTimeStr(activity);
+          activity.fee = this.getActivityFee(activity);
           formattedActivities.push(activity);
         }
         this.setData({activitiesProp: formattedActivities});
@@ -114,6 +115,16 @@ Component({
         timeStr = startTime.substr(0, 16) + "-" + endTime.substr(11, 5)
       }
       return timeStr;
+    },
+
+    getActivityFee: function(activity) {
+      let fee = "";
+      if(activity.is_fee_needed){
+        fee = "¥" + activity.activity_fee;
+      } else{
+        fee = "免费";
+      }
+      return fee;
     }
   }
 })

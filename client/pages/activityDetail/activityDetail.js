@@ -48,6 +48,7 @@ Page({
       const startTime = res.start_time.replace("T", " ");
       const endTime = res.end_time.replace("T", " ");
       const isStarted = Date.now() > Date.parse(res.start_time);
+      
       this.setData({
         title: res.title,
         isLike: res.thumbs_up === 1,
@@ -71,7 +72,7 @@ Page({
           ${res.others}
         `
       })
-      console.log(this.data);
+      //console.log(res);
     });
   },
   onShareAppMessage:function(){
@@ -103,23 +104,11 @@ Page({
         }
       });
       if(isRegistered){
-        // wx.showToast({
-        //   title: '报名成功',
-        //   icon: 'none',
-        //   duration: 1000,
-        //   mask: true
-        // });
         wx.showModal({
           title: '报名成功',
           showCancel: false
         });
       }else{
-        // wx.showToast({
-        //   title: '报名取消',
-        //   icon: 'none',
-        //   duration: 1000,
-        //   mask: true
-        // });
         wx.showModal({
           title: '报名取消',
           showCancel: false

@@ -8,6 +8,7 @@
         <!-- <view class="myActivity-detail"> -->
           <view class="myActivity-time">{{item.timeTitle}}: {{item.schedule}}</view>
           <view class="myActivity-location">地点: {{item.location}}</view>
+          <view class="myActivity-location">活动收费: {{item.fee}}</view>
         <!-- </view> -->
         
       </view>
