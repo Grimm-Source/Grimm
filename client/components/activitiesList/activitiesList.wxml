@@ -7,11 +7,11 @@
         <view class="activity-detail">
           <image class="activity-image" src="../../images/banner_outer.jpeg" aria-role="row" aria-label="点击进入活动详情"></image>
           <text class="activity-title text-xl" aria-label="标题 {{item.title}}">{{item.title}}</text>
-          <text class="activity-description text-md" aria-label="简介 {{item.content}}">{{item.content}}</text>
         </view>
         <view class="activity-time-location">
           <text class="activity-time text-xl">时间: {{item.schedule}}</text>
           <text class="activity-location text-xl">地点: {{item.location}}</text>
+          <text class="activity-location text-xl">活动收费: {{item.fee}}</text>
         </view>
         <view class="activity-action">
           <view class="activity-people">

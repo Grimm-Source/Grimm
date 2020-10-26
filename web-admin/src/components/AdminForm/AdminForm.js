@@ -27,7 +27,7 @@ class AdminForm extends React.Component {
         if(this.props.type === ADMIN_FORM_TYPE.LOGIN){
             return true;
         }
-        let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        let reg = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
         return reg.test(email);
     }
 
