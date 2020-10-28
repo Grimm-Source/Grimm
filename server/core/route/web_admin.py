@@ -302,50 +302,50 @@ class new_admin(Resource):
         return json_dump_http_response({"status": "failure", "message": "已注册邮箱"})
 
 
-@api.route("/verify-email")
+@api.route("/admin-email")
 class send_vrfemail(Resource):
     def get(self):
-        """ view function to send and validate confirm email"""
-        addr = request.args.get("email")
+        """ view function to send and verify admin email"""
         feedback = {"status": "success"}
         # send confirm email
-        if db.exist_row("admin", email=addr):
-            try:
-                email_verify.drop_token(addr)
-                email_token = email_verify.EmailVerifyToken(
-                    addr, expiry=EMAIL_VRF_EXPIRY
-                )  # 2hrs expiry
-                if not email_token.send_email():
-                    admin_logger.warning("%s: send confirm email failed", addr)
+        send_addr = request.args.get('email')
+        if send_addr:
+            if db.exist_row("admin", email=send_addr):
+                try:
+                    email_verify.drop_token(send_addr)
+                    email_token = email_verify.EmailVerifyToken(
+                        send_addr, expiry=EMAIL_VRF_EXPIRY
+                    )  # 2hrs expiry
+                    if not email_token.send_email():
+                        admin_logger.warning("%s: send confirm email failed", send_addr)
+                        return json_dump_http_response(
+                            {"status": "failure", "message": "发送验证邮件失败"}
+                        )
+                except Exception as err:
+                    admin_logger.warning("%s: send confirm email failed", send_addr)
                     return json_dump_http_response(
-                        {"status": "failure", "message": "发送验证邮箱失败"}
+                        {"status": "failure", "message": f"{err.args}"}
                     )
-            except Exception as err:
-                admin_logger.warning("%s: send confirm email failed", addr)
-                return json_dump_http_response(
-                    {"status": "failure", "message": f"{err.args}"}
+                admin_logger.info("%s: send confirm email successfully", send_addr)
+                email_verify.append_token(email_token)
+                return json_dump_http_response(feedback)
+            else:
+                admin_logger.warning("%s: email is not registered", send_addr)
+                feedback = {"status": "failure", "message": "未注册邮箱"}
+
+        # verify email link
+        recv_email_token = request.args.get('verify_token')
+        if recv_email_token:
+            if email_verify.validate_email(recv_email_token):
+                admin_logger.info(
+                    "%s: email verify successfully", vrfcode.parse_vrftoken(recv_email_token)
                 )
-            admin_logger.info("%s: send confirm email successfully", addr)
-            email_verify.append_token(email_token)
-            return json_dump_http_response(feedback)
+            else:
+                admin_logger.warning(
+                    "%s: email verify failed", vrfcode.parse_vrftoken(recv_email_token)
+                )
+                feedback = {"status": "failure", "message": "邮箱验证失败"}
 
-        admin_logger.warning("%s: email is not registered", addr)
-        feedback = {"status": "failure", "message": "邮箱未注册"}
-        return json_dump_http_response(feedback)
-
-    def post(self):
-        """validate confirm email"""
-        token = request.args.get("token")
-        if not email_verify.validate_email(token):
-            admin_logger.warning(
-                "%s: email verify failed", vrfcode.parse_vrftoken(token)
-            )
-            return json_dump_http_response(
-                {"status": "failure", "message": "您的邮箱验证失败"}
-            )
-        admin_logger.info(
-            "%s: email verify successfully", vrfcode.parse_vrftoken(token)
-        )
         return json_dump_http_response(feedback)
 
 
@@ -469,6 +469,9 @@ class activities(Resource):
             admin_logger.warning("get all activities failed")
             return json_dump_http_response({"status": "failure", "message": "未知错误"})
         keyword = request.args.get("keyword")
+        queries = []
+        if not activities_info: return json_dump_http_response(queries)
+
         if keyword and len(keyword) != 0:
             queries = [
                 db_utils.convert_db_activity_to_http_query(activity)
@@ -477,6 +480,7 @@ class activities(Resource):
             ]
             admin_logger.info("get all activities successfully")
             return json_dump_http_response(queries)
+
         target_tag_list = request.args.get("tags")
         if not target_tag_list or len(target_tag_list) == 0:
             target_tag_list = "all"
@@ -665,34 +669,35 @@ class users(Resource):
             return json_dump_http_response({"status": "failure", "message": "未知错误"})
 
         users = []
-        for userinfo in usersinfo:
-            info = {}
-            info["openid"] = userinfo["openid"]
-            info["name"] = userinfo["name"]
-            info["role"] = "视障人士" if userinfo["role"] == 1 else "志愿者"
-            info["birthdate"] = str(userinfo["birth"])
-            info["comment"] = userinfo["remark"]
-            info["disabledID"] = userinfo["disabled_id"]
-            info["emergencyPerson"] = userinfo["emergent_contact"]
-            info["emergencyTel"] = userinfo["emergent_contact_phone"]
-            info["gender"] = userinfo["gender"]
-            info["idcard"] = userinfo["idcard"]
-            info["linkaddress"] = userinfo["address"]
-            info["linktel"] = userinfo["contact"]
-            info["phone"] = userinfo["phone"]
-            info["registrationDate"] = str(userinfo["registration_date"])
-            if userinfo["audit_status"] == 0:
-                info["audit_status"] = "pending"
-            elif userinfo["audit_status"] == 1:
-                info["audit_status"] = "approved"
-            elif userinfo["audit_status"] == -1:
-                info["audit_status"] = "rejected"
-            else:
-                info["audit_status"] = "unknown"
+        if usersinfo:
+            for userinfo in usersinfo:
+                info = {}
+                info["openid"] = userinfo["openid"]
+                info["name"] = userinfo["name"]
+                info["role"] = "视障人士" if userinfo["role"] == 1 else "志愿者"
+                info["birthdate"] = str(userinfo["birth"])
+                info["comment"] = userinfo["remark"]
+                info["disabledID"] = userinfo["disabled_id"]
+                info["emergencyPerson"] = userinfo["emergent_contact"]
+                info["emergencyTel"] = userinfo["emergent_contact_phone"]
+                info["gender"] = userinfo["gender"]
+                info["idcard"] = userinfo["idcard"]
+                info["linkaddress"] = userinfo["address"]
+                info["linktel"] = userinfo["contact"]
+                info["phone"] = userinfo["phone"]
+                info["registrationDate"] = str(userinfo["registration_date"])
+                if userinfo["audit_status"] == 0:
+                    info["audit_status"] = "pending"
+                elif userinfo["audit_status"] == 1:
+                    info["audit_status"] = "approved"
+                elif userinfo["audit_status"] == -1:
+                    info["audit_status"] = "rejected"
+                else:
+                    info["audit_status"] = "unknown"
 
-            users.append(info)
+                users.append(info)
 
-        admin_logger.info("query all user info with role type successfully")
+            admin_logger.info("query all user info with role type successfully")
         return json_dump_http_response(users)
 
     def patch(self):
