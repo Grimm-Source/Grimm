@@ -72,7 +72,7 @@ def get_volunteer_registered(activity_id):
     registered = db.expr_query(
         ["registered_activity", "user"],
         "COUNT(*)",
-        clauses="registered_activity.activity_id = {} and registered_activity.openid = user.openid and user.role = 0".format(
+        clauses="registered_activity.activity_id = {} and registered_activity.user_openid = user.openid and user.role = 0".format(
             activity_id
         ),
     )[0]["COUNT(*)"]
@@ -85,7 +85,7 @@ def get_impaired_registered(activity_id):
     registered = db.expr_query(
         ["registered_activity", "user"],
         "COUNT(*)",
-        clauses="registered_activity.activity_id = {} and registered_activity.openid = user.openid and user.role = 1".format(
+        clauses="registered_activity.activity_id = {} and registered_activity.user_openid = user.openid and user.role = 1".format(
             activity_id
         ),
     )[0]["COUNT(*)"]
@@ -97,7 +97,7 @@ def get_registered_status(activity_id, openid):
     registered = db.expr_query(
         "registered_activity",
         "COUNT(*)",
-        clauses="activity_id = {} and openid = '{}'".format(activity_id, openid),
+        clauses="activity_id = {} and user_openid = '{}'".format(activity_id, openid),
     )[0]["COUNT(*)"]
     if registered is None:
         return 0
@@ -109,7 +109,7 @@ def get_interested_status(activity_id, openid):
     interested = db.expr_query(
         "activity_participant",
         "COUNT(*)",
-        clauses="activity_id = {} and participant_id = '{}'"
+        clauses="activity_id = {} and participant_openid = '{}'"
         "and activity_participant.interested = 1".format(activity_id, openid),
     )[0]["COUNT(*)"]
     if interested is None:
@@ -122,7 +122,7 @@ def get_interested_status(activity_id, openid):
 # But I don't know the meaning for web yet'
 def convert_db_activity_to_http_query(activity, openid = 0):
     query = {}
-    activity_id = activity["activity_id"]
+    activity_id = activity["id"]
     query["id"] = activity_id
     query["adminId"] = activity["approver"]
     query["title"] = activity["title"]

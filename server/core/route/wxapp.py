@@ -392,7 +392,7 @@ class registeredActivities(Resource):
                 return json_dump_http_response(
                     {"status": "failure", "message": "未能获取用户信息"}
                 )
-        registerAct["openid"] = openid
+        registerAct["user_openid"] = openid
         # activity_id from network is str
         registerAct["activity_id"] = int(activity_id)
         registerAct["accepted"] = -1
@@ -405,7 +405,7 @@ class registeredActivities(Resource):
                 fields=[
                     "activity_participant.activity_id","user.openid"
                 ],
-                clauses='activity_participant.activity_id="{}" and activity_participant.participant_id = user.openid and user.role=0'.format(
+                clauses='activity_participant.activity_id="{}" and activity_participant.participant_openid = user.openid and user.role=0'.format(
                     int(activity_id)
                 ),
             )
@@ -447,7 +447,7 @@ class registeredActivities(Resource):
             if (
                 db.expr_delete(
                     ["registered_activity"],
-                    clauses='openid="{}" and activity_id={}'.format(
+                    clauses='user_openid="{}" and activity_id={}'.format(
                         openid, activity_id
                     ),
                 )
@@ -466,9 +466,9 @@ class get_activity(Resource):
         """ get activity detail with activityId """
         openid = request.headers.get("Authorization")
         activity_id = int(request.args.get("activityId"))
-        if db.exist_row("activity", activity_id=activity_id):
+        if db.exist_row("activity", id=activity_id):
             try:
-                activity = db.expr_query("activity", activity_id=activity_id)[0]
+                activity = db.expr_query("activity", id=activity_id)[0]
                 if not activity:
                     user_logger.warning("%d: no such activity", activity_id)
                     return json_dump_http_response(
@@ -498,14 +498,14 @@ class mark_activity(Resource):
         interest = request.args.get("interest")
         feedback = {"status": "success"}
         if db.exist_row(
-            "activity_participant", activity_id=activity_id, participant_id=openid
+            "activity_participant", activity_id=activity_id, participant_openid=openid
         ):
             try:
                 rc = db.expr_update(
                     tbl="activity_participant",
                     vals={"interested": interest},
                     activity_id=activity_id,
-                    participant_id=openid,
+                    participant_openid=openid,
                 )
                 return json_dump_http_response(feedback)
             except Exception as e:
@@ -514,7 +514,7 @@ class mark_activity(Resource):
         else:
             activity_participant_info = {}
             activity_participant_info["activity_id"] = activity_id
-            activity_participant_info["participant_id"] = openid
+            activity_participant_info["participant_openid"] = openid
             activity_participant_info["interested"] = interest
             activity_participant_info["share"] = 0
             activity_participant_info["thumbs_up"] = 0
@@ -534,14 +534,14 @@ class thumbsup_activity(Resource):
         thumbs_up = request.args.get("thumbs_up")
         feedback = {"status": "success"}
         if db.exist_row(
-            "activity_participant", activity_id=activity_id, participant_id=openid
+            "activity_participant", activity_id=activity_id, participant_openid=openid
         ):
             try:
                 rc = db.expr_update(
                     tbl="activity_participant",
                     vals={"thumbs_up": thumbs_up},
                     activity_id=activity_id,
-                    participant_id=openid,
+                    participant_openid=openid,
                 )
                 return json_dump_http_response(feedback)
             except Exception as e:
@@ -550,7 +550,7 @@ class thumbsup_activity(Resource):
         else:
             activity_participant_info = {}
             activity_participant_info["activity_id"] = activity_id
-            activity_participant_info["participant_id"] = openid
+            activity_participant_info["participant_openid"] = openid
             activity_participant_info["interested"] = 0
             activity_participant_info["share"] = 0
             activity_participant_info["thumbs_up"] = thumbs_up
@@ -568,13 +568,13 @@ class share_activity(Resource):
         openid = request.headers.get("Authorization")
         activity_id = request.args.get("activityId")
         if db.exist_row(
-            "activity_participant", activity_id=activity_id, participant_id=openid
+            "activity_participant", activity_id=activity_id, participant_openid=openid
         ):
             try:
                 participant = db.expr_query(
                     "activity_participant",
                     activity_id=activity_id,
-                    participant_id=openid,
+                    participant_openid=openid,
                 )[0]
                 if not participant:
                     user_logger.warning("%d: no such activity", activity_id)
@@ -591,7 +591,7 @@ class share_activity(Resource):
                     tbl="activity_participant",
                     vals={"share": share_count},
                     activity_id=activity_id,
-                    participant_id=openid,
+                    participant_openid=openid,
                 )
                 return json_dump_http_response({"status": "success"})
             except Exception as e:
@@ -600,7 +600,7 @@ class share_activity(Resource):
         else:
             activity_participant_info = {}
             activity_participant_info["activity_id"] = activity_id
-            activity_participant_info["participant_id"] = openid
+            activity_participant_info["participant_openid"] = openid
             activity_participant_info["interested"] = 0
             activity_participant_info["share"] = 1
             activity_participant_info["thumbs_up"] = 0
@@ -635,20 +635,20 @@ class get_favorite_activities(Resource):
             favorite_activities_info = db.expr_query(
                 ["activity_participant", "activity"],
                 fields=[
-                    "activity.activity_id",
+                    "activity.id",
                     "activity.end_time",
                 ],
-                clauses='activity_participant.participant_id="{}" and activity_participant.activity_id = activity.activity_id and activity_participant.interested = 1'.format(
+                clauses='activity_participant.participant_openid="{}" and activity_participant.activity_id = activity.id and activity_participant.interested = 1'.format(
                     openid
                 ),
             )
             registered_activities_info = db.expr_query(
                 ["registered_activity", "activity"],
                 fields=[
-                    "activity.activity_id",
+                    "activity.id",
                     "activity.end_time",
                 ],
-                clauses='registered_activity.openid="{}" and registered_activity.activity_id = activity.activity_id'.format(
+                clauses='registered_activity.openid="{}" and registered_activity.activity_id = activity.id'.format(
                     openid
                 ),
             )
@@ -669,14 +669,14 @@ class get_favorite_activities(Resource):
             if favorite_activities_info is not None:
                 for item in favorite_activities_info:
                     target_activities_info.append(item)
-                    id_set.append(item["activity.activity_id"])
+                    id_set.append(item["activity.id"])
             if registered_activities_info is not None:
                 for item in registered_activities_info:
-                    if item["activity.activity_id"] not in id_set:
+                    if item["activity.id"] not in id_set:
                         target_activities_info.append(item)
-                        id_set.append(item["activity.activity_id"])
+                        id_set.append(item["activity.id"])
         target_activities_info.sort(
-            key=lambda item: item["activity.activity_id"], reverse=True
+            key=lambda item: item["activity.id"], reverse=True
         )
         target_activities_info = [
             item
@@ -686,7 +686,7 @@ class get_favorite_activities(Resource):
 
         queries = []
         for item in target_activities_info:
-            activity_id = item["activity.activity_id"]
-            activity = db.expr_query("activity", activity_id=activity_id)[0]
+            activity_id = item["activity.id"]
+            activity = db.expr_query("activity", id=activity_id)[0]
             queries.append(db_utils.convert_db_activity_to_http_query(activity, openid))
         return json_dump_http_response(queries)

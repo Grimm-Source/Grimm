@@ -92,28 +92,28 @@ class admin_login(Resource):
             input_password = info["password"]
             if password.verify_password(input_password, "admin", email=info["email"]):
                 if admininfo["email_verified"]:
-                    feedback["id"] = admininfo["admin_id"]
+                    feedback["id"] = admininfo["id"]
                     feedback["email"] = admininfo["email"]
                     feedback["type"] = (
-                        "root" if admininfo["admin_id"] == 0 else "normal"
+                        "root" if admininfo["id"] == 0 else "normal"
                     )
                     admin_logger.info(
                         "%d, %s: admin login successfully",
-                        admininfo["admin_id"],
+                        admininfo["id"],
                         admininfo["name"],
                     )
                 else:
                     feedback["message"] = "请先认证邮箱"
                     admin_logger.warning(
                         "%d, %s: admin login failed, email not verified",
-                        admininfo["admin_id"],
+                        admininfo["id"],
                         admininfo["name"],
                     )
             else:
                 feedback["message"] = "密码错误"
                 admin_logger.warning(
                     "%d, %s: admin login failed, wrong password",
-                    admininfo["admin_id"],
+                    admininfo["id"],
                     admininfo["name"],
                 )
         else:
@@ -138,9 +138,9 @@ class admins(Resource):
         admin_logger.info("query all admin info successfully")
         for admin in adminsinfo:
             query = {}
-            query["id"] = admin["admin_id"]
+            query["id"] = admin["id"]
             query["email"] = admin["email"]
-            query["type"] = "root" if admin["admin_id"] == 0 else "normal"
+            query["type"] = "root" if admin["id"] == 0 else "normal"
             query["name"] = admin["name"]
             query["email_verified"] = admin["email_verified"]
             queries.append(query)
@@ -153,9 +153,9 @@ class manage_admin(Resource):
     def get(self, admin_id):
         """ get admin info with a specific admin_id """
         feedback = {"status": "success"}
-        if db.exist_row("admin", admin_id=admin_id):
+        if db.exist_row("admin", id=admin_id):
             try:
-                admininfo = db.expr_query("admin", admin_id=admin_id)[0]
+                admininfo = db.expr_query("admin", id=admin_id)[0]
                 if not admininfo:
                     admin_logger.warning("%d, no such admin id", admin_id)
                     return json_dump_http_response(
@@ -164,12 +164,12 @@ class manage_admin(Resource):
             except:
                 admin_logger.error("Critical: database query failed !")
                 return json_dump_http_response({"status": "failure", "message": "未知错误"})
-            feedback["id"] = admininfo["admin_id"]
+            feedback["id"] = admininfo["id"]
             feedback["email"] = admininfo["email"]
-            feedback["type"] = "root" if admininfo["admin_id"] == 0 else "normal"
+            feedback["type"] = "root" if admininfo["id"] == 0 else "normal"
             admin_logger.info(
                 "%d, %s: query admin info successfully",
-                admininfo["admin_id"],
+                admininfo["id"],
                 admininfo["name"],
             )
         else:
@@ -183,7 +183,7 @@ class manage_admin(Resource):
         """ delete admin with a admin_id"""
         if admin_id != 0:
             try:
-                if db.expr_delete("admin", admin_id=admin_id) == 1:
+                if db.expr_delete("admin", id=admin_id) == 1:
                     admin_logger.info("%d: admin deleted successfully", admin_id)
                     return json_dump_http_response({"status": "success"})
             except:
@@ -221,12 +221,12 @@ class new_admin(Resource):
         admininfo["email"] = info["email"]
         # add new row if current admin is new
         if not db.exist_row("admin", email=admininfo["email"]):
-            sql = "select max(admin_id) from admin"
+            sql = "select max(id) from admin"
             try:
                 max_admin_id = db.query(sql)[0]
             except:
                 return json_dump_http_response({"status": "failure", "message": "未知错误"})
-            admininfo["admin_id"] = max_admin_id + 1  # new admin id
+            admininfo["id"] = max_admin_id + 1  # new admin id
             admininfo["registration_date"] = datetime.now().strftime("%Y-%m-%d")
             admininfo["name"] = (
                 f"管理员{max_admin_id + 1}"
@@ -238,7 +238,7 @@ class new_admin(Resource):
                 if db.expr_insert("admin", admininfo) != 1:
                     admin_logger.warning(
                         "%d, %s: create new admin failed",
-                        admininfo["admin_id"],
+                        admininfo["id"],
                         admininfo["name"],
                     )
                     return json_dump_http_response(
@@ -249,11 +249,11 @@ class new_admin(Resource):
                 return json_dump_http_response({"status": "failure", "message": "未知错误"})
             # update passcode
             if not password.update_password(
-                info["password"], "admin", admin_id=admininfo["admin_id"]
+                info["password"], "admin", id=admininfo["id"]
             ):
                 admin_logger.warning(
                     "%d, %s: not strong policy password",
-                    admininfo["admin_id"],
+                    admininfo["id"],
                     admininfo["name"],
                 )
                 return json_dump_http_response(
@@ -268,7 +268,7 @@ class new_admin(Resource):
                 if not email_token.send_email():
                     admin_logger.warning(
                         "%d, %s: send confirm email failed",
-                        admininfo["admin_id"],
+                        admininfo["id"],
                         admininfo["email"],
                     )
                     return json_dump_http_response(
@@ -277,7 +277,7 @@ class new_admin(Resource):
             except Exception as err:
                 admin_logger.warning(
                     "%d, %s: send confirm email failed",
-                    admininfo["admin_id"],
+                    admininfo["id"],
                     admininfo["email"],
                 )
                 return json_dump_http_response(
@@ -285,13 +285,13 @@ class new_admin(Resource):
                 )
             admin_logger.info(
                 "%d, %s: send confirm email successfully",
-                admininfo["admin_id"],
+                admininfo["id"],
                 admininfo["email"],
             )
             email_verify.append_token(email_token)
             admin_logger.info(
                 "%d, %s: create new admin procedure completed successfully",
-                admininfo["admin_id"],
+                admininfo["id"],
                 admininfo["name"],
             )
             return json_dump_http_response({"status": "success"})
@@ -389,9 +389,9 @@ class new_activity(Resource):
 class activity(Resource):
     def get(self, activity_id):
         """ get a activity with a specific id """
-        if db.exist_row("activity", activity_id=activity_id):
+        if db.exist_row("activity", id=activity_id):
             try:
-                activity = db.expr_query("activity", activity_id=activity_id)[0]
+                activity = db.expr_query("activity", id=activity_id)[0]
                 if not activity:
                     admin_logger.warning("%d: no such activity", activity_id)
                     return json_dump_http_response(
@@ -411,7 +411,7 @@ class activity(Resource):
     def delete(self, activity_id):
         """ delete a activity with a specific id """
         try:
-            if db.expr_delete("activity", activity_id=activity_id) == 1:
+            if db.expr_delete("activity", id=activity_id) == 1:
                 admin_logger.info("%d: delete new activity successfully", activity_id)
                 return json_dump_http_response({"status": "success"})
         except:
@@ -423,7 +423,7 @@ class activity(Resource):
     def post(self, activity_id):
         """ update a activity with a specific id """
         feedback = {"status": "failure", "message": "无效活动 ID"}
-        if db.exist_row("activity", activity_id=activity_id):
+        if db.exist_row("activity", id=activity_id):
             newinfo = json_load_http_request(request)
             activity_info = {}
             activity_info["approver"] = newinfo["adminId"]
@@ -447,7 +447,7 @@ class activity(Resource):
             activity_info["activity_fee"] = newinfo["activity_fee"]
             try:
                 if (
-                    db.expr_update("activity", activity_info, activity_id=activity_id)
+                    db.expr_update("activity", activity_info, id=activity_id)
                     == 1
                 ):
                     admin_logger.info("%d: update activity successfully", activity_id)
@@ -598,13 +598,13 @@ class admin_update_password(Resource):
         admin_password = json_load_http_request(request)
         old_pass = admin_password["old_password"]
         new_pass = admin_password["new_password"]
-        if db.exist_row("admin", admin_id=admin_id):
+        if db.exist_row("admin", id=admin_id):
             # check old password
-            if not password.verify_password(old_pass, "admin", admin_id=admin_id):
+            if not password.verify_password(old_pass, "admin", id=admin_id):
                 admin_logger.warning("%d: wrong old password", admin_id)
                 return json_dump_http_response({"status": "failure", "message": "密码错误"})
             # update passcode
-            if not password.update_password(new_pass, "admin", admin_id=admin_id):
+            if not password.update_password(new_pass, "admin", id=admin_id):
                 admin_logger.warning("%d: not strong policy password", admin_id)
                 return json_dump_http_response(
                     {"status": "failure", "message": "密码不合规范"}
@@ -773,15 +773,15 @@ class tags_db(Resource):
 class activity_registration(Resource):
     def get(self, activity_id):
         """ get an activity registration list with a specific id """
-        if db.exist_row("activity", activity_id=activity_id):
+        if db.exist_row("activity", id=activity_id):
             activities_registration_list = db.expr_query(
                 "registered_activity",
-                clauses="registered_activity.activity_id = {}".format(activity_id),
+                activity_id=activity_id
             )
             feedback = {"status": "success"}
             users = []
             for item in activities_registration_list:
-                openid = item["openid"]
+                openid = item["user_openid"]
                 user_info = db.expr_query("user", openid=openid)[0]
                 user = {}
                 user["openid"] = openid
@@ -801,18 +801,18 @@ class activity_registration(Resource):
     
     def post(self, activity_id):
         """Modify user acceptance status of an activity"""
-        if db.exist_row("activity", activity_id=activity_id):
+        if db.exist_row("activity", id=activity_id):
             openid = request.args.get("openid")
             accepted = request.args.get("accepted")
             if db.exist_row(
-                "registered_activity", activity_id=activity_id, openid=openid
+                "registered_activity", activity_id=activity_id, user_openid=openid
             ):
                 try:
                     rc = db.expr_update(
                         tbl="registered_activity",
                         vals={"accepted": accepted},
                         activity_id=activity_id,
-                        openid=openid,
+                        user_openid=openid,
                     )
                     return json_dump_http_response({"status": "success"})
                 except Exception as e:

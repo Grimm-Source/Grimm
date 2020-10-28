@@ -39,17 +39,17 @@ SET character_set_server        = utf8mb4;
 /* admin table */
 create table admin
 (
-    admin_id            INT                 NOT NULL,  /* 0 是 root 用户 */
+    id                  INT                 NOT NULL,  /* 0 是 root 用户 */
     registration_date   DATE                NOT NULL,
     password            BINARY(60)          NOT NULL    DEFAULT 0,
     name                VARCHAR(8),
     email               VARCHAR(32)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin UNIQUE,
     email_verified      TINYINT             DEFAULT 0,
 
-    PRIMARY KEY (admin_id)
+    PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO admin (admin_id, registration_date, password, name, email_verified, email)
+INSERT INTO admin (id, registration_date, password, name, email_verified, email)
 VALUES (0, NOW(), 'default', 'root', 1, 'no.reply@rp-i.org');
 
 /* user table */
@@ -79,17 +79,11 @@ create table user
     PRIMARY KEY (openid)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO user (openid, registration_date, idcard, phone, phone_verified, gender, birth, address, emergent_contact, emergent_contact_phone, role, contact)
-VALUES ('0', NOW(), '000000000000000000', '13163236603', 1, '女', '1979-09-19', "湖北省武汉市洪山区", "张三", "17621533767", 0, '021-08131311');
-
-INSERT INTO user (openid, registration_date, idcard, phone, phone_verified, gender, birth, address, emergent_contact, emergent_contact_phone, name, role, contact, disabled_id)
-VALUES ('1', NOW(), '111111111111111111', '13163236604', 1, '男', '1985-08-14', "湖北省武汉市武昌区", "李四", "18256789090", "视障人士", 1, '021-08131311', '0001');
-
 
 /* activity table */
 create table activity
 (
-    activity_id                 BIGINT              NOT NULL AUTO_INCREMENT,
+    id                          BIGINT              NOT NULL        AUTO_INCREMENT,
     title                       VARCHAR(60)         NOT NULL        DEFAULT '助盲公益活动',
     start_time                  DATETIME            NOT NULL,
     location                    VARCHAR(100)        NOT NULL,
@@ -112,26 +106,24 @@ create table activity
     FOREIGN KEY (user_raiser) REFERENCES user(openid)
     ON DELETE set null
     ON UPDATE cascade,
-    FOREIGN KEY (admin_raiser) REFERENCES admin(admin_id)
+    FOREIGN KEY (admin_raiser) REFERENCES admin(id)
     ON DELETE set null
     ON UPDATE cascade,
-    FOREIGN KEY (approver) REFERENCES admin(admin_id)
+    FOREIGN KEY (approver) REFERENCES admin(id)
     ON DELETE set null
     ON UPDATE cascade,
     FOREIGN KEY (assignee) REFERENCES user(openid)
     ON DELETE set null
     ON UPDATE cascade,
 
-    PRIMARY KEY (activity_id)
+    PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO activity (start_time, location, content, notice, user_raiser, approver, assignee, end_time, tag_ids, volunteer_job_title, volunteer_job_content)
-VALUES (NOW(), "湖北省宜昌市夷陵区", "爱心牵手，你我同行", "需要配备雨具", '0', 0, '1', '2030-10-28 09:30:00', '1,2', "岗位名称", "岗位内容");
 
 /* registered activities table */
 create table registered_activity
 (
-    openid                      CHAR(28)            NOT NULL,
+    user_openid                 CHAR(28)            NOT NULL,
     activity_id                 BIGINT              NOT NULL,
     phone                       VARCHAR(16)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
     address                     VARCHAR(80)         NOT NULL,
@@ -139,16 +131,16 @@ create table registered_activity
     topickup                    TINYINT             NOT NULL        DEFAULT 0,
     accepted                    TINYINT             NOT NULL        DEFAULT -1,
 
-    FOREIGN KEY (openid) REFERENCES user(openid)
+    FOREIGN KEY (user_openid) REFERENCES user(openid)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-    FOREIGN KEY (activity_id) REFERENCES activity(activity_id)
+    FOREIGN KEY (activity_id) REFERENCES activity(id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
 
-    INDEX(openid, activity_id),
+    INDEX(user_openid, activity_id),
 
-    PRIMARY KEY(openid, activity_id)
+    PRIMARY KEY(user_openid, activity_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* pickup table */
@@ -160,7 +152,7 @@ create table pickup_pair
     time                        DATETIME            NOT NULL,
     location                    VARCHAR(100)        NOT NULL,
 
-    FOREIGN KEY (activity_id) REFERENCES activity(activity_id)
+    FOREIGN KEY (activity_id) REFERENCES activity(id)
     ON DELETE cascade
     ON UPDATE cascade,
     FOREIGN KEY (offer) REFERENCES user(openid)
@@ -173,26 +165,22 @@ create table pickup_pair
     PRIMARY KEY(offer, need)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO pickup_pair (activity_id, offer, need, time, location)
-VALUES (1, '0', '1', NOW(), "上海市某个地方");
 
 create table activity_participant
 (
-    activity_id                BIGINT,
-    participant_id             CHAR(28)            NOT NULL, 
-    interested                 TINYINT             DEFAULT 0,
-    share                      INT                 DEFAULT 0,
-    thumbs_up                  TINYINT             DEFAULT 0,
+    activity_id                 BIGINT,
+    participant_openid          CHAR(28)            NOT NULL, 
+    interested                  TINYINT             DEFAULT 0,
+    share                       INT                 DEFAULT 0,
+    thumbs_up                   TINYINT             DEFAULT 0,
     
-    FOREIGN KEY (activity_id) REFERENCES activity(activity_id)
+    FOREIGN KEY (activity_id) REFERENCES activity(id)
     ON DELETE cascade
     ON UPDATE cascade,
-    FOREIGN KEY (participant_id) REFERENCES user(openid)
+    FOREIGN KEY (participant_openid) REFERENCES user(openid)
     ON DELETE cascade
     ON UPDATE cascade,
 
-    PRIMARY KEY(activity_id, participant_id)
+    PRIMARY KEY(activity_id, participant_openid)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO activity_participant(activity_id, participant_id, interested, share, thumbs_up)
-VALUES(1, '1', 0, 0, 0)

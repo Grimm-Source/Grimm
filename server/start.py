@@ -89,9 +89,9 @@ if __name__ == '__main__':
     db.init_connection(force=FORCE_LOAD)
 
     # update root admin password
-    if db.exist_row('admin', admin_id=0):
-        if db.expr_query('admin', fields='password', admin_id=0)[0]['password'] == 'default':
-            if update_password(ROOT_PASSWORD, tbl='admin', admin_id=0):
+    if db.exist_row('admin', id=0):
+        if db.expr_query('admin', fields='password', id=0)[0]['password'] == 'default':
+            if update_password(ROOT_PASSWORD, tbl='admin', id=0):
                 print('configure root admin password ... Done\n')
             else:
                 print('configure root admin password failed')
