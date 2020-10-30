@@ -56,7 +56,7 @@ if db_logger is None:
     # create logging file handler.
     fh = logging.FileHandler(DB_LOGGER_FILE, mode='a', encoding='utf8')
     # format
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fmt = '[%(asctime)s] [%(name)s] [%(levelname)s] [%(funcName)s:%(lineno)d] %(message)s'
     fmter = logging.Formatter(fmt)
     fh.setFormatter(fmter)
     # add file handler

@@ -130,7 +130,7 @@ if sys_logger is None:
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
     fh = logging.FileHandler(sys_log_path, mode='a', encoding='utf8')
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fmt = '[%(asctime)s] [%(name)s] [%(levelname)s] [%(funcName)s:%(lineno)d] %(message)s'
     fmtter = logging.Formatter(fmt)
     fh.setFormatter(fmtter)
     sys_logger.addHandler(fh)
@@ -149,7 +149,7 @@ if admin_logger is None:
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
     fh = logging.FileHandler(admin_log_path, mode='a', encoding='utf8')
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fmt = '[%(asctime)s] [%(name)s] [%(levelname)s] [%(funcName)s:%(lineno)d] %(message)s'
     fmtter = logging.Formatter(fmt)
     fh.setFormatter(fmtter)
     admin_logger.addHandler(fh)
@@ -168,7 +168,7 @@ if user_logger is None:
     if not os.path.isdir(log_dir):
         os.mkdir(log_dir)
     fh = logging.FileHandler(user_log_path, mode='a', encoding='utf8')
-    fmt = '%(asctime)s %(name)s %(levelname)1s %(message)s'
+    fmt = '[%(asctime)s] [%(name)s] [%(levelname)s] [%(funcName)s:%(lineno)d] %(message)s'
     fmtter = logging.Formatter(fmt)
     fh.setFormatter(fmtter)
     user_logger.addHandler(fh)
