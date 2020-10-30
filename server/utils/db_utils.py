@@ -137,9 +137,9 @@ def convert_db_activity_to_http_query(activity, openid = 0):
     query["others"] = activity["others"]
     query["tag"] = tag_converter.convert_idstring_to_tagstring(activity["tag_ids"])
     query["share"] = get_total_share(activity_id)
-    query["interested"] = get_interested_status(activity_id, openid)
+    query["interested"] = get_total_interested(activity_id) if openid == 0 else get_interested_status(activity_id, openid)
     query["thumbs_up"] = get_total_thumbs_up(activity_id)
-    query["registered"] = get_registered_status(activity_id, openid)
+    query["registered"] = get_total_registered(activity_id) if openid == 0 else get_registered_status(activity_id, openid)
     query["registered_volunteer"] = get_volunteer_registered(activity_id)
     query["registered_impaired"] = get_impaired_registered(activity_id)
     query["volunteer_capacity"] = activity["volunteer_capacity"]

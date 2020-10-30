@@ -277,9 +277,10 @@ class profile(Resource):
         if newinfo["role"] == 'volunteer': status["role"] = 0
         elif newinfo["role"] == 'impaired': status["role"] = 1
         else: status["role"] = 2
-        if status['role'] == 1:
+        if status['role'] == 1 and newinfo['disabledID']:
             status['disabled_id'] = newinfo['disabledID']
             status['disabled_id_verified'] = 0
+        if newinfo['idcard']:
             status['idcard'] = newinfo['idcard']
             status['idcard_verified'] = 0
         try:
