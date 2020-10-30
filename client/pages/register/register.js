@@ -122,6 +122,7 @@ Page({
       disabledID: this.data.impairedNo,
     }, (res) => {
       app.globalData.isRegistered = true;
+      app.globalData.isVolunteer = this.data.role == 'volunteer' ? true : false;
       wx.showToast({
         title: '注册成功',
         icon: 'success',

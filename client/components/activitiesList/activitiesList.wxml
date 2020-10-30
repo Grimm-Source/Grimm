@@ -15,7 +15,7 @@
         </view>
         <view class="activity-action">
           <view class="activity-people">
-            <text class="text-ss">{{item.registered_volunteer}}人参加</text>
+            <text class="text-ss">{{item.registered}}人参加</text>
             <text aria-hidden="true"> | </text>
             <text>{{item.interested}}人感兴趣</text>
           </view>

@@ -99,6 +99,7 @@ Page({
   updateProfile: function(){
     return updateProfile(this.data.userInfo, (res)=>{
       console.log(this.data);
+      app.globalData.isVolunteer = this.data.userInfo.role == 'volunteer' ? true : false;
       wx.showToast({
         title: '已更新',
         icon: 'success',
