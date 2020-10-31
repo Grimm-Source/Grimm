@@ -649,7 +649,7 @@ class get_favorite_activities(Resource):
                     "activity.id",
                     "activity.end_time",
                 ],
-                clauses='registered_activity.openid="{}" and registered_activity.activity_id = activity.id'.format(
+                clauses='registered_activity.user_openid="{}" and registered_activity.activity_id = activity.id'.format(
                     openid
                 ),
             )
