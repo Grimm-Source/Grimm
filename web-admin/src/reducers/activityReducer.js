@@ -7,7 +7,11 @@ const activity = (state = [], action) => {
             ...state,
             activities: action.activities || []
           };
-
+      case ACTION_TYPES.ACTIVITY_REGISTERED_VOLUNTEERS_SET:
+          return {
+            ...state,
+            volunteers: action.volunteers || []
+          }
       default:
         return state;
     }

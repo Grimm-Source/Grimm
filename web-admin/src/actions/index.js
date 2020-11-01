@@ -432,6 +432,21 @@ const fetchDisabledList = () => dispatch => {
     });
 }
 
+export const getRegisteredVolunteers = (activityId) => (dispatch, getState) => {
+    dispatch(loading());
+    return dispatch(fetchRegisteredVolunteers(activityId));
+}
+
+const fetchRegisteredVolunteers = (activityId) => dispatch => {
+    return request({
+        path: "activityRegistration/" + activityId
+    }).then(result => {
+        dispatch(setRegisteredVolunteers(result.users))
+    }).finally(() => {
+        dispatch(hideLoading())
+    })
+}
+
 export const setUsers = users => ({
     type: ACTION_TYPES.USER_LIST_SET,
     users
@@ -444,6 +459,13 @@ export const setNoticeUsers = users => {
         users
     })
 };
+
+export const setRegisteredVolunteers = volunteers => {
+    return ({
+        type: ACTION_TYPES.ACTIVITY_REGISTERED_VOLUNTEERS_SET,
+        volunteers
+    })
+}
 
 export const updateUsers = (users, isVolunteer) => (dispatch, getState) => {
     dispatch(loading());
