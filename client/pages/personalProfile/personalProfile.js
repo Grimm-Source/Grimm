@@ -97,8 +97,16 @@ Page({
   },
 
   updateProfile: function(){
+    if (this.data.userInfo.role == 'impaired' && !this.data.userInfo.disabledID) {
+      wx.showModal({
+        title: '请填写残疾证号码',
+        showCancel: false
+      });
+      return;
+    }
     return updateProfile(this.data.userInfo, (res)=>{
       console.log(this.data);
+      app.globalData.isVolunteer = this.data.userInfo.role == 'volunteer' ? true : false;
       wx.showToast({
         title: '已更新',
         icon: 'success',

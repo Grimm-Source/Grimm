@@ -92,7 +92,14 @@ Page({
       })
       return;
     }
-
+    if (this.data.role == 'impaired' && !this.data.impairedNo) {
+      wx.showModal({
+        title: '提示',
+        content: '请填写残疾证编号',
+        showCancel: false,
+      })
+      return;
+    }
     if (this.data.idNo && !/^\d{17}[\d|x]$/i.test(this.data.idNo)) {
       wx.showModal({
         title: '提示',
@@ -122,6 +129,7 @@ Page({
       disabledID: this.data.impairedNo,
     }, (res) => {
       app.globalData.isRegistered = true;
+      app.globalData.isVolunteer = this.data.role == 'volunteer' ? true : false;
       wx.showToast({
         title: '注册成功',
         icon: 'success',

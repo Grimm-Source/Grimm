@@ -2,8 +2,8 @@ import React from 'react';
 import { Modal, Tabs } from 'antd';
 import ActivityDetail from '../../components/ActivityDetail/ActivityDetail.js';
 import ActivityChart from '../../components/ActivityChart/ActivityChart.js';
-// import ActivityNameList from '../../components/ActivityNameList/ActivityNameList.js';
-import ActivityVolunteerList from '../../components/ActivityVolunteerList/ActivityVolunteerList.js'
+import ActivityNameList from '../../components/ActivityNameList/ActivityNameList.js';
+import ActivityRegistrationList from '../../components/ActivityRegistrationList/ActivityRegistrationList.js'
 import { hideActivityModal, switchActivityDetail} from '../../actions';
 import {ACTIVITY_DETAIL_TYPE} from '../../constants/index.js';
 import { connect } from 'react-redux';
@@ -41,11 +41,11 @@ class Activity extends React.Component {
                 <ActivityNameList />
               </TabPane> */}
               <TabPane tab="报名管理" key={ACTIVITY_DETAIL_TYPE.VOLUNTEER_LIST}>
-                <ActivityVolunteerList />
+                <ActivityRegistrationList />
               </TabPane>
-              <TabPane tab="统计" key={ACTIVITY_DETAIL_TYPE.CHART}>
+              {/* <TabPane tab="统计" key={ACTIVITY_DETAIL_TYPE.CHART}>
                 <ActivityChart />
-              </TabPane>
+              </TabPane> */}
             </Tabs>
           }
         </Modal>
