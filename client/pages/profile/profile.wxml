@@ -10,7 +10,7 @@
     </view>
     <view class="weui-cell weui-cell_input">
       <view class="weui-cell__hd">
-        <view class="weui-label" aria-label="身份证号码">身份证号码</view>
+        <view class="weui-label" aria-label="身份证号码">身份证/护照</view>
       </view>
       <view class="{{ui.auditStatus!=='rejected'?'weui-cell__bd form-input-readonly': 'weui-cell__bd'}}">
         <input class="weui-input" disabled="{{ui.auditStatus!=='rejected'}}" maxlength="18" aria-readonly="{{ui.auditStatus!=='rejected'}}" aria-valuenow="{{userInfo.idcard}}" aria-readonly="{{ui.auditStatus!=='rejected'}}" value="{{userInfo.idcard}}"/>

@@ -122,10 +122,12 @@ class WxValidate {
                 return that.optional(value) || /^\d+$/.test(value)
             },
             /**
-             * 验证身份证号码
+             * 验证身份证号/护照号
              */
             idcard(value) {
-                return that.optional(value) || /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(value)
+                var idReg = /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/;
+                var passportReg = /^([a-zA-z]|[0-9]){5,17}$/;
+                return that.optional(value) || idReg.test(value) || passportReg.test(value)
             },
             /**
              * 验证两个输入框的内容是否相同

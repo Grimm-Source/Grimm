@@ -95,15 +95,17 @@ Page({
     if (this.data.role == 'impaired' && !this.data.impairedNo) {
       wx.showModal({
         title: '提示',
-        content: '请填写残疾证编号',
+        content: '请填写残疾证号',
         showCancel: false,
       })
       return;
     }
-    if (this.data.idNo && !/^\d{17}[\d|x]$/i.test(this.data.idNo)) {
+    var idReg = /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/;
+    var passportReg = /^([a-zA-z]|[0-9]){5,17}$/;
+    if (!idReg.test(this.data.idNo) && !passportReg.test(this.data.idNo)) {
       wx.showModal({
         title: '提示',
-        content: '请填写正确的身份证号',
+        content: '请填写正确的身份证号/护照号',
         showCancel: false,
       })
       return;
@@ -112,7 +114,7 @@ Page({
     if (this.data.impairedNo && !/^\d{17}[\d|x]\d{2}$/i.test(this.data.impairedNo)) {
       wx.showModal({
         title: '提示',
-        content: '请填写正确的残疾证编号',
+        content: '请填写正确的残疾证号',
         showCancel: false,
       })
       return;

@@ -99,13 +99,32 @@ Page({
   updateProfile: function(){
     if (this.data.userInfo.role == 'impaired' && !this.data.userInfo.disabledID) {
       wx.showModal({
-        title: '请填写残疾证号码',
-        showCancel: false
+        title: '提示',
+        content: '请填写残疾证号码',
+        showCancel: false,
       });
       return;
     }
+    if (!this.data.userInfo.name) {
+      wx.showModal({
+        title: '提示',
+        content: '请填写真实姓名',
+        showCancel: false,
+      })
+      return;
+    }
+    var idReg = /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/;
+    var passportReg = /^([a-zA-z]|[0-9]){5,17}$/;
+    if (!idReg.test(this.data.userInfo.idcard) && !passportReg.test(this.data.userInfo.idcard)) {
+      wx.showModal({
+        title: '提示',
+        content: '请输入身份证号/护照号',
+        showCancel: false,
+      })
+      return;
+    }
     return updateProfile(this.data.userInfo, (res)=>{
-      console.log(this.data);
+      //console.log(this.data);
       app.globalData.isVolunteer = this.data.userInfo.role == 'volunteer' ? true : false;
       wx.showToast({
         title: '已更新',
