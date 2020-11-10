@@ -204,6 +204,30 @@ const updateActivity = activity => dispatch => {
 }
 
 export const getActivity = (id) => (dispatch, getState) => {
+    if(id === null){
+        dispatch(setActivity({
+            "id": null,
+            "adminId": 0,
+            "title": "世纪公园- 一对一陪伴健步走",
+            "location": "锦绣路1001号 世纪公园",
+            "start_time": null,
+            "end_time":null,
+            "duration":{
+                "day": 0,
+                "hour": 0,
+                "min": 0
+            },
+            "content":"【活动地点】：锦绣路1001号 世纪公园 \n【活动时间】：yyyy年mm月dd日（周日14:00 - 16:00）\n【服务内容】：促进残障人群社区残健融合，让视障者无障碍地体验生活的喜悦！\n【注意事项】：活动会在每周日下午进行，如遇恶劣天气、特殊情况等原因会改变活动场地，将会另行通知或暂停，请保持电话畅通。",
+            "volunteer_job_title": "志愿者",
+            "volunteer_capacity": 20,
+            "vision_impaired_capacity": 20,
+            "volunteer_job_content": "积极热心公益，认真负责，耐心有爱心。一对一陪伴视障伙伴健步走，让视障伙伴们可以感受自然绿色以及和志愿者沟通聊天，让城市生活更美好，让健康和舒心陪伴我们。",
+            "activity_fee": 0,
+            "is_fee_needed": false,
+            "others": null,
+        }));
+        return;
+    }
     dispatch(loading());
     return dispatch(fetchActivity(id))
 };

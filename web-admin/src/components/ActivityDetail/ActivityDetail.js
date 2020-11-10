@@ -20,9 +20,6 @@ class ActivityDetail extends React.Component {
   }
 
   componentDidMount(){
-    if(!this.props.activityId){
-      return;
-    }
     this.props.getActivity(this.props.activityId);
   }
 
@@ -122,6 +119,7 @@ class ActivityDetail extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
+    getFieldDecorator.title = '123';
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -137,6 +135,8 @@ class ActivityDetail extends React.Component {
       // Can not select days before today
       return current < moment().startOf('day');
     }
+
+    
 
     return (
        this.props.loading? <Spin size="large"  />: <Form className="activity-form" {...formItemLayout} onSubmit={this.handleSubmit}>
@@ -164,7 +164,7 @@ class ActivityDetail extends React.Component {
        </Form.Item>
        <Form.Item label="活动主题">
            {getFieldDecorator('title', {
-             initialValue: this.props.activity.title,
+
              rules: [
                {
                  required: true,

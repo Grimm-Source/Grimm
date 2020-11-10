@@ -38,7 +38,7 @@ class ActivityNameList extends React.Component {
         link.download = '活动名单.csv';
         link.click();
         document.body.removeChild(link);
-    }
+      }
     
       getColumnSearchProps = (dataIndex, title) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
