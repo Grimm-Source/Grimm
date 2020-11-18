@@ -11,7 +11,7 @@
     </view>
     <view class="profile-form-item">
       <view class="profile-form-label">*姓名</view>
-      <input  aria-role='textbox' aria-label="{{userInfo.name}}" name="name" placeholder="请填写姓名" bindchange="bindNameChange" value="{{userInfo.name}}"/>
+      <input  aria-role='textbox' aria-label="{{userInfo.name}}" name="name" placeholder="请填写真实姓名" bindchange="bindNameChange" value="{{userInfo.name}}"/>
     </view>
     <view class="profile-form-item">
       <view class="profile-form-label">*性别</view>
@@ -27,6 +27,14 @@
       </picker>
     </view>
     <view class="profile-form-item">
+      <view class="profile-form-label">*身份证/护照</view>
+      <input name="idcard" placeholder="请填写身份证号/护照号" maxlength="18" bindchange="bindIdCardChange" value="{{userInfo.idcard}}"/>
+    </view>
+    <view wx:if="{{userInfo.role == 'impaired'}}" class="profile-form-item">
+      <view class="profile-form-label">*残疾证</view>
+      <input name="disabledID" placeholder="请填写残疾证号" maxlength="20" bindchange="bindDisabledIDChange" value="{{userInfo.disabledID}}"/>
+    </view>
+    <view class="profile-form-item">
       <view class="profile-form-label">*出生日期</view>
       <picker mode="date" bindchange="bindBirthdayChange" value="{{userInfo.birthDate}}">
         <input aria-role='textbox' aria-label="{{userInfo.birthDate}}" disabled placeholder="请选择您的出生日期" value="{{userInfo.birthDate}}"/>
@@ -37,14 +45,6 @@
       <picker mode="region" bindchange="bindRegionChange" value="{{userInfo.linkaddress}}">
         <input aria-role='textbox' aria-label="{{userInfo.linkaddress}}" disabled placeholder="请选择您所在的城市区域" value="{{userInfo.linkaddress}}"/>
       </picker>
-    </view>
-    <view wx:if="{{userInfo.role == 'impaired'}}" class="profile-form-item">
-      <view class="profile-form-label">*残疾证编号</view>
-      <input name="disabledID" placeholder="请填写残疾证编号" maxlength="20" bindchange="bindDisabledIDChange" value="{{userInfo.disabledID}}"/>
-    </view>
-    <view class="profile-form-item">
-      <view class="profile-form-label">身份证号</view>
-      <input name="idcard" placeholder="请填写身份证号" maxlength="18" bindchange="bindIdCardChange" value="{{userInfo.idcard}}"/>
     </view>
   </view>
   <view class="profile-form-footer">
