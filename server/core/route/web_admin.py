@@ -727,25 +727,35 @@ class users(Resource):
                 if status == "approved":
                     sms_template = "NOTIFY_APPROVED"
                     new_status = {"audit_status": 1}
+                    # update each user audit status
+                    try:
+                        if db.expr_update("user", new_status, openid=openid) != 1:
+                            admin_logger.warning(
+                                "%s, update user audit status failed", openid
+                            )
+                            return json_dump_http_response(
+                                {"status": "failure", "message": "审核状态更新失败"}
+                            )
+                    except:
+                        admin_logger.error("Critical: update database failed")
+                        return json_dump_http_response(
+                            {"status": "failure", "message": "未知错误"}
+                        )
                 elif status == "rejected":
                     sms_template = "NOTIFY_REJECTED"
-                    new_status = {"audit_status": -1}
+                    try:
+                        if db.expr_delete("user", openid=openid) != 1:
+                            admin_logger.warning("%s, delete user failed", openid)
+                            return json_dump_http_response(
+                                {"status": "failure", "message": "delete user failed"}
+                            )
+                    except Exception as e:
+                        admin_logger.error("Critical: delete user failed")
+                        return json_dump_http_response(
+                            {"status": "failure", "message": "未知错误"}
+                        )
                 else:
                     continue
-                # update each user audit status
-                try:
-                    if db.expr_update("user", new_status, openid=openid) != 1:
-                        admin_logger.warning(
-                            "%s, update user audit status failed", openid
-                        )
-                        return json_dump_http_response(
-                            {"status": "failure", "message": "审核状态更新失败"}
-                        )
-                except:
-                    admin_logger.error("Critical: update database failed")
-                    return json_dump_http_response(
-                        {"status": "failure", "message": "未知错误"}
-                    )
                 # send sms message to notify user the result timely
                 try:
                     sms_token = sms_verify.SMSVerifyToken(
