@@ -20,7 +20,8 @@ Page({
       linkaddress: '',
       role:'',
       idcard: '',
-      disabledID: ''
+      disabledID: '',
+      email: ''
     }
   },
 
@@ -96,6 +97,12 @@ Page({
     })
   },
 
+  bindEmailChange: function (e) {
+    this.setData({
+      'userInfo.email' : e.detail.value
+    })
+  },
+
   updateProfile: function(){
     if (this.data.userInfo.role == 'impaired' && !this.data.userInfo.disabledID) {
       wx.showModal({
@@ -119,6 +126,14 @@ Page({
       wx.showModal({
         title: '提示',
         content: '请输入身份证号/护照号',
+        showCancel: false,
+      })
+      return;
+    }
+    if (!this.data.userInfo.email) {
+      wx.showModal({
+        title: '提示',
+        content: '请输入邮箱',
         showCancel: false,
       })
       return;

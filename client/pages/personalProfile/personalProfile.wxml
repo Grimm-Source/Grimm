@@ -30,6 +30,10 @@
       <view class="profile-form-label">*身份证/护照</view>
       <input name="idcard" placeholder="请填写身份证号/护照号" maxlength="18" bindchange="bindIdCardChange" value="{{userInfo.idcard}}"/>
     </view>
+    <view class="profile-form-item">
+      <view class="profile-form-label">*邮箱</view>
+      <input name="email" placeholder="请填写邮箱" maxlength="36" bindchange="bindEmailChange" value="{{userInfo.email}}"/>
+    </view>
     <view wx:if="{{userInfo.role == 'impaired'}}" class="profile-form-item">
       <view class="profile-form-label">*残疾证</view>
       <input name="disabledID" placeholder="请填写残疾证号" maxlength="20" bindchange="bindDisabledIDChange" value="{{userInfo.disabledID}}"/>
