@@ -65,6 +65,8 @@ create table user
     disabled_id_verified        TINYINT             DEFAULT 0,
     phone                       VARCHAR(16)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL UNIQUE,
     phone_verified              TINYINT             NOT NULL        DEFAULT 0,
+    email                       VARCHAR(32)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin UNIQUE,
+    email_verified              TINYINT             DEFAULT 0,
     contact                     VARCHAR(16),
     gender                      CHAR(1)             NOT NULL,
     birth                       DATE                NOT NULL,

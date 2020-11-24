@@ -208,6 +208,8 @@ class register(Resource):
             userinfo["registration_date"] = datetime.now().strftime("%Y-%m-%d")
             userinfo["phone"] = info["phone"]
             userinfo["phone_verified"] = 1
+            userinfo["email"] = info["email"]
+            userinfo["email_verified"] = 0
             try:
                 if db.expr_insert("user", userinfo) != 1:
                     user_logger.error("%s: user registration failed", openid)
@@ -258,6 +260,7 @@ class profile(Resource):
             feedback["name"] = userinfo["name"]
             feedback["role"] = 'volunteer' if userinfo["role"] == 0 else 'impaired'
             feedback["phone"] = userinfo["phone"]
+            feedback["email"] = userinfo["email"]
             feedback["registrationDate"] = str(userinfo["registration_date"])
             user_logger.info("%s: user login successfully", userinfo["openid"])
             return json_dump_http_response(feedback)
@@ -274,6 +277,8 @@ class profile(Resource):
         status["birth"] = newinfo["birthDate"]
         status["name"] = newinfo["name"]
         status["address"] = newinfo["linkaddress"]
+        status["email"] = newinfo["email"]
+
         if newinfo["role"] == 'volunteer': status["role"] = 0
         elif newinfo["role"] == 'impaired': status["role"] = 1
         else: status["role"] = 2
