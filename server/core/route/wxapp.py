@@ -193,8 +193,6 @@ class register(Resource):
             if userinfo['role'] == 1:
                 userinfo['disabled_id'] = info['disabledID']
                 userinfo['disabled_id_verified'] = 0
-                userinfo['idcard'] = info['idcard']
-                userinfo['idcard_verified'] = 0
             print("xtydbg", info)
             userinfo["birth"] = info["birthdate"] if "birthdate" in info.keys() else datetime.now().strftime("%Y-%m-%d")
             print(userinfo["birth"])
@@ -204,6 +202,8 @@ class register(Resource):
             userinfo["address"] = info["linkaddress"]
             # userinfo['contact'] = info['linktel']
             userinfo["name"] = info["name"]
+            userinfo['idcard'] = info['idcard']
+            userinfo['idcard_verified'] = 0
             userinfo["audit_status"] = 0
             userinfo["registration_date"] = datetime.now().strftime("%Y-%m-%d")
             userinfo["phone"] = info["phone"]
