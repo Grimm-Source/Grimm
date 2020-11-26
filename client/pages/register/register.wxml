@@ -50,8 +50,12 @@
       <input name="impairedNo" placeholder="请填写残疾证号" maxlength="20" bindchange="bindImpairedNoChange" value="{{impairedNo}}"/>
     </view>
     <view class="register-form-item">
-      <view class="register-form-label">身份证/护照</view>
+      <view class="register-form-label">*身份证/护照</view>
       <input name="idNo" placeholder="请填写身份证号/护照号" maxlength="18" bindchange="bindIdNoChange" value="{{idNo}}"/>
+    </view>
+    <view class="register-form-item">
+      <view class="register-form-label">*邮箱</view>
+      <input name="email" placeholder="请填写邮箱" maxlength="36" bindchange="bindEmailChange" value="{{email}}"/>
     </view>
   </view>
   <view class="register-form-footer">

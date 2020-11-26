@@ -13,7 +13,8 @@ Page({
     roleIndex: 0, //0:impaired 1:volunteer
     showModal: true,
     idNo: '',
-    impairedNo: ''
+    impairedNo: '',
+    email: ''
   },
 
   onLoad: function (options) {
@@ -55,6 +56,12 @@ Page({
   bindImpairedNoChange: function (e) {
     this.setData({
       impairedNo : e.detail.value
+    })
+  },
+
+  bindEmailChange: function (e) {
+    this.setData({
+      email : e.detail.value
     })
   },
 
@@ -120,6 +127,14 @@ Page({
       return;
     }
 
+    if (!this.data.email) {
+      wx.showModal({
+        title: '提示',
+        content: '请填写邮箱',
+        showCancel: false,
+      })
+      return;
+    }
     register({
       phone: this.data.phone,
       name: this.data.name,
@@ -129,6 +144,7 @@ Page({
       role: this.data.role,
       idcard: this.data.idNo,
       disabledID: this.data.impairedNo,
+      email: this.data.email,
     }, (res) => {
       app.globalData.isRegistered = true;
       app.globalData.isVolunteer = this.data.role == 'volunteer' ? true : false;
