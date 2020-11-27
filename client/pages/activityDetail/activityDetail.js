@@ -84,37 +84,58 @@ Page({
       return;
     }
     const isRegistered = !this.data.isRegistered;//activity
-    if(app.globalData.isRegistered){ // user
+    if(app.globalData.isRegistered) { // user registered
       if (this.checkActivityStarted()) {
         console.log("用户点击已开始活动.");
         return;
       }
       const isVolunteer =  app.globalData.isVolunteer;
-      toggleRegister(this.data.id, isRegistered, () => {
-        if(isVolunteer){
-          this.setData({
-            isRegistered,
-            volunteerCurr: this.updateCurrentValue(isRegistered, true)
+  
+      /* check the capacity before register activity request */
+      var capacity_allow = true;
+      if (isVolunteer) {
+        if (this.data.volunteerCurr >= this.data.volunteerTotal) {
+          capacity_allow = false;
+        }
+      } else {
+        if (this.data.visuallyImpairedCurr >= this.data.visuallyImpairedTotal) {
+          capacity_allow = false;
+        }
+      }
+      if (capacity_allow || this.data.isRegistered) {
+         /* register activity request */
+        toggleRegister(this.data.id, isRegistered, () => {
+          if (isVolunteer) {
+            this.setData({
+              isRegistered,
+              volunteerCurr: this.updateCurrentValue(isRegistered, true)
+            });
+          } else { // impaired
+            this.setData({
+              isRegistered,
+              visuallyImpairedCurr: this.updateCurrentValue(isRegistered, false)
+            });
+          }
+        });
+      /* show the register/deregister modal */
+        if(isRegistered) {
+          wx.showModal({
+            title: '报名成功',
+            showCancel: false
           });
         } else {
-          this.setData({
-            isRegistered,
-            visuallyImpairedCurr: this.updateCurrentValue(isRegistered, false)
+          wx.showModal({
+            title: '报名取消',
+            showCancel: false
           });
         }
-      });
-      if(isRegistered){
+      } else { // capacity not allow the register
         wx.showModal({
-          title: '报名成功',
-          showCancel: false
-        });
-      }else{
-        wx.showModal({
-          title: '报名取消',
+          title: '报名人数已满',
           showCancel: false
         });
       }
-    } else {
+    } else { // user no register
       wx.showModal({
         title: "请先注册，再报名",
         showCancel: true,
