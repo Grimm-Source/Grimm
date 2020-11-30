@@ -15,6 +15,12 @@ Page({
   },
   
   onLoad: function (options) {
+    // 支持分享到朋友圈
+    wx.showShareMenu({
+      withShareTicket:true,
+      menus:['shareAppMessage','shareTimeline']
+      });
+
     // 登录
     wx.login({
       success: res => {
@@ -103,5 +109,4 @@ Page({
       }
     })
   }
-  
 })
