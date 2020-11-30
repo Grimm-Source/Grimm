@@ -30,7 +30,7 @@ class ActivityRegistrationList extends React.Component {
     const header = "\ufeff"+"姓名,身份类型,注册手机,联系地址,需要接送,愿意接送\n";
     const rows = [];
     this.props.volunteers.forEach(function(item) {
-          rows.push(item.name + ',' + (item.role==="0"?"志愿者":"视障人士")
+          rows.push(item.name + ',' + (item.role=== 0 ? "志愿者" : "视障人士")
           +',' + item.phone + ',' + item.address + ',' 
           + (item.needpickup?"是":"否") +',' 
           + (item.topickup?"是": "否"));
