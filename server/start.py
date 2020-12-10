@@ -33,6 +33,7 @@ import server.core.db as db
 # import view function interfaces
 import server.core.route.web_admin
 import server.core.route.wxapp
+import server.core.route.devapis
 
 from server.core.const import ROOT_PASSWORD, HOST, PORT, FORCE_LOAD, DAEMON_LOAD, SESSION_LOG
 from server.utils.password import update_password
