@@ -152,88 +152,67 @@ class register(Resource):
         # fetch data from front end
         userinfo["openid"] = request.headers.get("Authorization")
         openid = userinfo["openid"]
-        if not db.exist_row("user", openid=openid):
-            # confirm sms-code
-            # if not ('verification_code' in info or openid in SMS_VERIFIED_OPENID):
-            #     user_logger.warning('%s: user registers before sms verification', openid)
-            #     return json_dump_http_response({'status': 'failure', 'message': '未认证注册用户'})
-            # if 'verification_code' in info:
-            #     vrfcode = info['verification_code']
-            #     phone_number = info['phone']
-            #     sms_token = sms_verify.fetch_token(phone_number)
-            #     if sms_token is None:
-            #         user_logger.warning('%s: no such a sms token for number', phone_number)
-            #         return json_dump_http_response({'status': 'failure', 'message': '未向该用户发送验证短信'})
-            #     if sms_token.expired:
-            #         user_logger.warning('%s, %s: try to validate user with expired token', phone_number, sms_token.vrfcode)
-            #         sms_verify.drop_token(phone_number)
-            #         return json_dump_http_response({'status': 'failure', 'message': '过期验证码'})
-            #     if not sms_token.valid:
-            #         user_logger.warning('%s: try to validate user with invalid token', phone_number)
-            #         sms_verify.drop_token(phone_number)
-            #         return json_dump_http_response({'status': 'failure', 'message': '无效验证码'})
+        if db.exist_row('user', openid=openid):
+            user_logger.error("%s: user is registered already", openid)
+            return json_dump_http_response({"status": "failure", "message": "用户已注册，请登录"})
 
-            #     result = sms_token.validate(phone_number=phone_number, vrfcode=vrfcode)
-            #     if result is not True:
-            #         user_logger.warning('%s, %s: sms code validation failed, %s', phone_number, vrfcode, result)
-            #         return json_dump_http_response({'status': 'failure', 'message': result })
-            #     user_logger.info('%s, %s: sms code validates successfully', phone_number, vrfcode)
-            #     sms_verify.drop_token(phone_number)  # drop token from pool after validation
-            # else:
-            #     del SMS_VERIFIED_OPENID[openid]
-            # mock user info and do inserting
-            # reduce part of user info to simplify register
-            if info['role'] == 'volunteer': userinfo['role'] = 0
-            elif info['role'] == 'impaired': userinfo['role'] = 1
-            else: userinfo['role'] = 2
-            # if userinfo['role'] == 1:
-            # userinfo['disabled_id'] = info['disabledID']
-            # userinfo['emergent_contact'] = info['emergencyPerson']
-            # userinfo['emergent_contact_phone'] = info['emergencyTel']
-            if userinfo['role'] == 1:
-                userinfo['disabled_id'] = info['disabledID']
-                userinfo['disabled_id_verified'] = 0
-            print("xtydbg", info)
-            userinfo["birth"] = info["birthdate"] if "birthdate" in info.keys() else datetime.now().strftime("%Y-%m-%d")
-            print(userinfo["birth"])
-            # userinfo['remark'] = info['comment']
-            userinfo["gender"] = info["gender"]
-            # userinfo['idcard'] = info['idcard']
-            userinfo["address"] = info["linkaddress"]
-            # userinfo['contact'] = info['linktel']
-            userinfo["name"] = info["name"]
-            userinfo['idcard'] = info['idcard']
-            userinfo['idcard_verified'] = 0
-            userinfo["audit_status"] = 0
-            userinfo["registration_date"] = datetime.now().strftime("%Y-%m-%d")
-            userinfo["phone"] = info["phone"]
-            userinfo["phone_verified"] = 1
-            userinfo["email"] = info["email"]
-            userinfo["email_verified"] = 0
+        if info['role'] == 'volunteer':
+            userinfo['role'] = 0
+        elif info['role'] == 'impaired':
+            userinfo['role'] = 1
+        else:
+            userinfo['role'] = 2
+            
+        if userinfo['role'] == 1:
+            userinfo['disabled_id'] = info['disabledID']
+            userinfo['disabled_id_verified'] = 0
+        print("xtydbg", info)
+        userinfo["birth"] = info["birthdate"] if "birthdate" in info.keys() else datetime.now().strftime("%Y-%m-%d")
+        # userinfo['remark'] = info['comment']
+        userinfo["gender"] = info["gender"]
+        # userinfo['idcard'] = info['idcard']
+        userinfo["address"] = info["linkaddress"]
+        # userinfo['contact'] = info['linktel']
+        userinfo["name"] = info["name"]
+        userinfo['idcard'] = info['idcard']
+        userinfo['idcard_verified'] = 0
+        userinfo["audit_status"] = 0
+        userinfo["registration_date"] = datetime.now().strftime("%Y-%m-%d")
+        userinfo["phone"] = info["phone"]
+        userinfo["phone_verified"] = 1
+        userinfo["email"] = info["email"]
+        userinfo["email_verified"] = 0
+        db_utils.set_openid_if_user_info_exists(openid, userinfo['idcard'], userinfo["phone"], userinfo["email"], userinfo['disabled_id'] if userinfo['role'] == 1 else None)
+        if not db.exist_row("user", openid=openid):
             try:
                 if db.expr_insert("user", userinfo) != 1:
                     user_logger.error("%s: user registration failed", openid)
                     return json_dump_http_response(
                         {"status": "failure", "message": "录入用户失败，请重新注册"}
                     )
-            except:
-                user_logger.error("%s: user registration failed", openid)
+            except Exception as e:
+                user_logger.error("user registration failed: \n%s: ", e)
                 return json_dump_http_response(
                     {"status": "failure", "message": "未知错误，请重新注册"}
                 )
-
-            socketio.emit("new-users", [userinfo])
+        else:
+            # the user already improted will automatically set to approved.
+            userinfo['audit_status'] = 1
             try:
-                rc = db.expr_update(
-                    tbl="user", vals={"push_status": 1}, openid=userinfo["openid"]
-                )
+                db.expr_update(tbl='user', vals=userinfo, openid=userinfo['openid'])
             except Exception as e:
-                user_logger.error("update push_status fail, %s", e)
-            user_logger.info("%s: complete user registration success", openid)
-            return json_dump_http_response({"status": "success"})
+                user_logger.error("user registration failed as user info already imported\n %s", e)
+                return json_dump_http_response(
+                    {"status": "failure", "message": "用户信息已存在，请联系管理员。"}
+                )
 
-        user_logger.error("%s: user is registered already", openid)
-        return json_dump_http_response({"status": "failure", "message": "用户已注册，请登录"})
+        socketio.emit("new-users", [userinfo])
+        try:
+            db.expr_update(tbl="user", vals={"push_status": 1}, openid=userinfo["openid"])
+        except Exception as e:
+            user_logger.error("update push_status fail, %s", e)
+        user_logger.info("%s: complete user registration success", openid)
+        return json_dump_http_response({"status": "success"})
 
 
 @api.route("/profile")

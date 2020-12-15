@@ -170,3 +170,25 @@ def convert_db_activity_to_http_query(activity, openid = 0):
     )
 
     return query
+
+def set_openid_if_user_info_exists(openid, idcard=None, phone=None, email=None, disableidl=None):
+    if idcard is not None and db.exist_row('user', idcard=idcard):
+        userinfo = db.expr_query("user", idcard=idcard)[0]
+        if userinfo['audit_status'] == 2:
+            db.expr_update(tbl="user", vals={"openid": openid}, idcard=idcard)
+            return
+    if phone is not None and db.exist_row('user', phone=phone):
+        userinfo = db.expr_query("user", phone=phone)[0]
+        if userinfo['audit_status'] == 2:
+            db.expr_update(tbl="user", vals={"openid": openid}, phone=phone)
+            return
+    if email is not None and db.exist_row('user', email=email):
+        userinfo = db.expr_query("user", email=email)[0]
+        if userinfo['audit_status'] == 2:
+            db.expr_update(tbl="user", vals={"openid": openid}, email=email)
+            return
+    if disableidl is not None and db.exist_row('user', disabled_id=disableid):
+        userinfo = db.expr_query("user", disabled_id=disableid)[0]
+        if userinfo['audit_status'] == 2:
+            db.expr_update(tbl="user", vals={"openid": openid}, disabled_id=disableid)
+            return
