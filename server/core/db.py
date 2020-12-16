@@ -102,7 +102,7 @@ def init_connection(force=False):
     '''initialize database connection of server process'''
     print('initialize database connection...')
     global DB_NAME, session_connection, db_logger
-    db_config_items = ['Host', 'Port', 'DB', 'Charset', 'User']
+    db_config_items = ['Host', 'Port', 'DB', 'Charset', 'User', 'Password']
 
     def collect_db_pass(usr=None):
         if usr is not None:
@@ -126,6 +126,8 @@ def init_connection(force=False):
                 config[item] = _input if _input else 'grimmdb'
             elif item == 'User':
                 config[item] = _input if _input else 'root'
+            elif item == 'Password' and _input:
+                config[item] = _input
 
         config_dir = get_pardir(DB_CONFIG_FILE)
         if not os.path.isdir(config_dir):
@@ -133,7 +135,8 @@ def init_connection(force=False):
         with open(DB_CONFIG_FILE, "w") as fp:
             json.dump(obj=config, fp=fp, ensure_ascii=False, indent=4)
 
-        config['Password'] = collect_db_pass()
+        if 'Password' not in config:
+            config['Password'] = collect_db_pass()
 
         print('\nDone!')
         return config
@@ -147,8 +150,9 @@ def init_connection(force=False):
                 try:
                     with open(DB_CONFIG_FILE, 'r') as fp:
                         db_config = json.load(fp=fp, encoding='utf8')
-                    print('\nMySQL Login >>>\n')
-                    db_config['Password'] = collect_db_pass(usr=db_config['User'])
+                    if 'Password' not in db_config:
+                        print('\nMySQL Login >>>\n')
+                        db_config['Password'] = collect_db_pass(usr=db_config['User'])
                 except Exception as e:
                     db_logger.error('load json config failed: (%d, %s)', e.args[0], e.args[1])
                     db_config = collect_db_config()
@@ -944,8 +948,6 @@ def query(_query):
     if row_count == 0:
         db_logger.warning('Empty fetched record, query: %s', _query)
         result = records
-    elif row_count == 1:
-        result = tuple([formatter(x) for x in records[0]])
     else:
         result = tuple([tuple([formatter(x) for x in row]) for row in records])
 

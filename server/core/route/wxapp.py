@@ -162,7 +162,7 @@ class register(Resource):
             userinfo['role'] = 1
         else:
             userinfo['role'] = 2
-            
+
         if userinfo['role'] == 1:
             userinfo['disabled_id'] = info['disabledID']
             userinfo['disabled_id_verified'] = 0
@@ -174,8 +174,9 @@ class register(Resource):
         userinfo["address"] = info["linkaddress"]
         # userinfo['contact'] = info['linktel']
         userinfo["name"] = info["name"]
-        userinfo['idcard'] = info['idcard']
-        userinfo['idcard_verified'] = 0
+        if 'idcard' in info:
+            userinfo['idcard'] = info['idcard']
+            userinfo['idcard_verified'] = 0
         userinfo["audit_status"] = 0
         userinfo["registration_date"] = datetime.now().strftime("%Y-%m-%d")
         userinfo["phone"] = info["phone"]
@@ -264,7 +265,7 @@ class profile(Resource):
         if status['role'] == 1 and newinfo['disabledID']:
             status['disabled_id'] = newinfo['disabledID']
             status['disabled_id_verified'] = 0
-        if newinfo['idcard']:
+        if 'idcard' in newinfo:
             status['idcard'] = newinfo['idcard']
             status['idcard_verified'] = 0
         try:
