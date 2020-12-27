@@ -23,8 +23,8 @@ Component({
     ],
     avatarUrl: '../../images/avatar.jpg',
     userInfo: null,
-    isRegistered: false,
-    isAuthorized: false,
+    isRegistered: app.globalData.isRegistered,
+    isAuthorized: app.globalData.isAuthorized,
     progress_attendMinutes: '0 分钟',  
     progress_attendTimes: '0 次活动',  
     personalInfoList: [

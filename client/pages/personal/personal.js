@@ -20,9 +20,9 @@ Page({
     ],
     avatarUrl: '../../images/avatar.jpg',
     userInfo: null,
-    isRegistered: false,
-    isAuthorized: false,
-    isVolunteer: false,
+    isRegistered: app.globalData.isRegistered,
+    isAuthorized: app.globalData.isAuthorized,
+    isVolunteer: app.globalData.isVolunteer,
     progress_attendMinutes: '0 分钟',  
     progress_attendTimes: '0 次活动',  
     personalInfoList: [
@@ -48,7 +48,12 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    
+    this.setData({
+      isAuthorized: app.globalData.isAuthorized,
+      isRegistered: app.globalData.isRegistered,
+      userInfo: app.globalData.userInfo,
+      isVolunteer: app.globalData.isVolunteer
+    })
   },
 
   /**
