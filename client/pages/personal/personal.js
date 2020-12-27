@@ -148,12 +148,6 @@ Page({
   },
 
   onRegisterTap: function(e){
-    if(!app.globalData.isRegistered){
-      wx.navigateTo({
-        url: '/pages/login/login',
-      });
-      return;
-    }
     if (e.detail.iv && e.detail.encryptedData) {
       wx.login({
         success: res => {
@@ -163,9 +157,17 @@ Page({
             iv: e.detail.iv
           };
           getPhoneNumber(param, res => {
-            wx.navigateTo({
-              url: `/pages/register/register?phone=${res.decrypt_data.purePhoneNumber}`,
-            })
+            if (res.decrypt_data.phoneNumber) {
+              wx.navigateTo({
+                url: `/pages/register/register?phone=${res.decrypt_data.purePhoneNumber}`,
+              })
+            } else {
+              // TODO 如果获取到微信绑定的手机号则不再发短信验证手机号，原先这部分逻辑是把注册和登录分开，登录时必须验证手机号，现在是整合成自动登录，后续可以再详细分开
+              console.log("get no phone number")
+              wx.navigateTo({
+                url: '/pages/login/login',
+              });
+            }
           })
         }
       })
