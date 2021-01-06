@@ -21,6 +21,8 @@ import sys
 import os
 import signal
 import atexit
+# handle user command arguments
+import argparse
 # jump out to upper directory, then `server` becomes a pure python package.
 # must be placed ahead of other imports !!!
 if '..' not in sys.path:
@@ -29,17 +31,55 @@ if '..' not in sys.path:
 # load services
 import server
 import server.core.db as db
+import server.core.const as const
 
 # import view function interfaces
 import server.core.route.web_admin
 import server.core.route.wxapp
 import server.core.route.devapis
 
-from server.core.const import ROOT_PASSWORD, HOST, PORT, FORCE_LOAD, DAEMON_LOAD, SESSION_LOG
 from server.utils.password import update_password
 from server.core.exit import exit_grimm
 from server.core import grimm
 
+GRIMM_VERSION = '1.0'
+
+def initialize():
+    parser = argparse.ArgumentParser(prog='Grimm-backend',
+                                     description='Load Grimm back-end service',
+                                     add_help=False)
+    parser.add_argument('-v', '--version', action='version',
+                        version='%(prog)s ' + GRIMM_VERSION,
+                        help='Show %(prog)s version string and exit.')
+    parser.add_argument('-?', '--help', action='help',
+                        help='Show this help message and exit.')
+    parser.add_argument('-h', '--host', metavar='Host IP', nargs='?',
+                        default='0.0.0.0', dest='host',
+                        help='Customize server host address.')
+    parser.add_argument('-p', '--port', metavar='Port Num', nargs='?',
+                        default=5000, type=int, dest='port',
+                        help='Customize service\'s listening port.')
+    parser.add_argument('-l', '--logfile', dest='logfile', metavar='Log File',
+                        nargs='?', default='./log/session.log',
+                        help='Specify a logfile when starting in daemon mode')
+    parser.add_argument('-f', '--force', dest='force', action='store_true',
+                        help='Force database connection when start')
+    parser.add_argument('-D', '--daemon', dest='daemon', action='store_true',
+                        help='Start in daemon mode')
+
+    cmdargs = parser.parse_args()
+    const.HOST = cmdargs.host
+    const.PORT = cmdargs.port
+    const.FORCE_LOAD = cmdargs.force
+    const.DAEMON_LOAD = cmdargs.daemon
+    const.SESSION_LOG = cmdargs.logfile
+
+    # print local host V4 ip
+    from server.utils.misctools import get_host_ip
+    if const.PLATFORM != 'Windows' and const.HOST_IP == '0.0.0.0' or const.HOST_IP is None:
+        const.HOST_IP = get_host_ip()
+    print('\n>>> IPv4 Access Info: ' + const.HOST_IP + ':' + str(const.PORT) + '\n')
+    del get_host_ip
 
 # start Grimm back-end in daemon mode
 def start_daemon(logfile, pid_file=None):
@@ -75,19 +115,20 @@ def start_daemon(logfile, pid_file=None):
         atexit.register(os.remove, pid_file)
 
     # start grimm back-end server
-    grimm.run(host=HOST, port=PORT)
+    grimm.run(host=const.HOST, port=const.PORT)
 
 
 
 # Grimm back-end main entry
 if __name__ == '__main__':
+    initialize()
     # register signal handler
     signal.signal(signal.SIGINT, exit_grimm)
     # signal.signal(signal.SIGQUIT, exit_grimm)
     signal.signal(signal.SIGTERM, exit_grimm)
 
     # initialize database connection
-    db.init_connection(force=FORCE_LOAD)
+    db.init_connection(force=const.FORCE_LOAD)
 
     # update root admin password
     if db.exist_row('admin', id=0):
@@ -102,7 +143,7 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     # start grimm back-end server
-    if DAEMON_LOAD:
-        start_daemon(SESSION_LOG)
+    if const.DAEMON_LOAD:
+        start_daemon(const.SESSION_LOG)
     else:
-        grimm.run(host=HOST, port=PORT)
+        grimm.run(host=const.HOST, port=const.PORT)

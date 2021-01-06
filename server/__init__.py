@@ -22,7 +22,6 @@ import sys
 import os
 import logging
 
-GRIMM_VERSION = '1.0'
 TOP_DIR = os.path.dirname(__file__) or "."
 
 
@@ -55,50 +54,6 @@ if PY_VERSION < '3.6.5':
     print("Python %s is not supported, upgrade to 3.6.5 or later!" % (PY_VERSION))
     sys.exit(-1)
 print('done!')
-
-
-# handle user command arguments
-import argparse
-import server.core.const
-
-parser = argparse.ArgumentParser(prog='Grimm-backend',
-                                 description='Load Grimm back-end service',
-                                 add_help=False)
-parser.add_argument('-v', '--version', action='version',
-                    version='%(prog)s ' + GRIMM_VERSION,
-                    help='Show %(prog)s version string and exit.')
-parser.add_argument('-?', '--help', action='help',
-                    help='Show this help message and exit.')
-parser.add_argument('-h', '--host', metavar='Host IP', nargs='?',
-                    default='0.0.0.0', dest='host',
-                    help='Customize server host address.')
-parser.add_argument('-p', '--port', metavar='Port Num', nargs='?',
-                    default=5000, type=int, dest='port',
-                    help='Customize service\'s listening port.')
-parser.add_argument('-l', '--logfile', dest='logfile', metavar='Log File',
-                    nargs='?', default='./log/session.log',
-                    help='Specify a logfile when starting in daemon mode')
-parser.add_argument('-f', '--force', dest='force', action='store_true',
-                    help='Force database connection when start')
-parser.add_argument('-D', '--daemon', dest='daemon', action='store_true',
-                    help='Start in daemon mode')
-
-cmdargs = parser.parse_args()
-server.core.const.HOST = cmdargs.host
-server.core.const.PORT = cmdargs.port
-server.core.const.FORCE_LOAD = cmdargs.force
-server.core.const.DAEMON_LOAD = cmdargs.daemon
-server.core.const.SESSION_LOG = cmdargs.logfile
-
-del parser, argparse, cmdargs
-
-
-# print local host V4 ip
-from server.utils.misctools import get_host_ip
-if server.core.const.PLATFORM != 'Windows' and server.core.const.HOST_IP == '0.0.0.0' or server.core.const.HOST_IP is None:
-    server.core.const.HOST_IP = get_host_ip()
-print('\n>>> IPv4 Access Info: ' + server.core.const.HOST_IP + ':' + str(server.core.const.PORT) + '\n')
-del get_host_ip
 
 # check package dependency
 print('checking package dependency...', end=' ')

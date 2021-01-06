@@ -479,7 +479,7 @@ def exist_fields(tbl, fields):
 #
 # Return row count if some rows are found else None
 #
-def exist_row(tbl, **kwargs):
+def exist_row(tbl, clauses=None, **kwargs):
     '''standard SQL API for checking item existence using SQL script'''
     # check database connection session status
     if session_connection is None:
@@ -509,7 +509,10 @@ def exist_row(tbl, **kwargs):
         table = tbl[0] if isinstance(tbl[0], str) else tbl[0].decode('utf8')
         table = table.strip('\'" ')
 
-    where_clause = parse_kwargs_clause(tbls=tbl, **kwargs)
+    if clauses is not None:
+        kwargs = None
+
+    where_clause = join_exprs_clause(clauses) if clauses is not None else parse_kwargs_clause(tbls=tbl, **kwargs)
     # do query and check existence
     _query = f"SELECT EXISTS(SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1)"
     cursor = session_connection.cursor()
@@ -523,6 +526,25 @@ def exist_row(tbl, **kwargs):
 
     return True if cursor.fetchone()[0] == 1 else None
 
+#
+# MySQL API check table existence.
+#   1. tbl: which table to query
+#
+# Return True if table exists else False
+#
+def exist_table(tbl):
+    _query = """
+    SELECT COUNT(*) from information_schema.tables where table_name = '%s' and table_schema = '%s'
+    """ % (tbl, DB_NAME)
+    cursor = execute(_query)
+    records = cursor.fetchall()
+    if records is None:
+        return False
+    record, = records
+    if record is None:
+        return False
+    count, = record
+    return count is not None and count != 0
 
 # connect exprs where clause exprs list
 def join_exprs_clause(clauses):
