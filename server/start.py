@@ -133,7 +133,7 @@ if __name__ == '__main__':
     # update root admin password
     if db.exist_row('admin', id=0):
         if db.expr_query('admin', fields='password', id=0)[0]['password'] == 'default':
-            if update_password(ROOT_PASSWORD, tbl='admin', id=0):
+            if update_password(const.ROOT_PASSWORD, tbl='admin', id=0):
                 print('configure root admin password ... Done\n')
             else:
                 print('configure root admin password failed')

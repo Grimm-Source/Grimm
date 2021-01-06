@@ -677,7 +677,8 @@ class users(Resource):
                 info["role"] = "视障人士" if userinfo["role"] == 1 else "志愿者"
                 info["birthdate"] = str(userinfo["birth"])
                 info["comment"] = userinfo["remark"]
-                info["disabledID"] = userinfo["disabled_id"]
+                if userinfo["role"] == 1:
+                    info["disabledID"] = userinfo["disabled_id"]
                 info["emergencyPerson"] = userinfo["emergent_contact"]
                 info["emergencyTel"] = userinfo["emergent_contact_phone"]
                 info["gender"] = userinfo["gender"]
@@ -686,10 +687,15 @@ class users(Resource):
                 info["linktel"] = userinfo["contact"]
                 info["phone"] = userinfo["phone"]
                 info["registrationDate"] = str(userinfo["registration_date"])
+                info["activitiesJoined"] = userinfo["activities_joined"]
+                info["activitiesAbsence"] = userinfo["activities_absence"]
+                info["joindHours"] = 4 * userinfo["activities_joined"]
                 if userinfo["audit_status"] == 0:
                     info["audit_status"] = "pending"
                 elif userinfo["audit_status"] == 1:
                     info["audit_status"] = "approved"
+                elif userinfo["audit_status"] == 2:
+                    info["audit_status"] = "imported"
                 elif userinfo["audit_status"] == -1:
                     info["audit_status"] = "rejected"
                 else:
