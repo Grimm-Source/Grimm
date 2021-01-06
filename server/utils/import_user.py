@@ -44,6 +44,14 @@ def importUser(f, r):
         else:
             act_joined = int(vs[3])
         v_user['act_joined'] = act_joined
+        act_absence = vs[4]
+        if not vs[4].isnumeric():
+            act_absence = 0
+            if not vs[4] == '':
+                print(v)
+        else:
+            act_absence = int(vs[4])
+        v_user['act_absence'] = act_absence
         v_user['remark'] = vs[9]
         reg_date = vs[10]
         if '年' in reg_date:
