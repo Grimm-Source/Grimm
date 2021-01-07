@@ -242,6 +242,9 @@ class profile(Resource):
             feedback["phone"] = userinfo["phone"]
             feedback["email"] = userinfo["email"]
             feedback["registrationDate"] = str(userinfo["registration_date"])
+            feedback["activitiesJoined"] = userinfo["activities_joined"]
+            feedback["activitiesAbsence"] = userinfo["activities_absence"]
+            feedback["joindHours"] = 4 * userinfo["activities_joined"]
             user_logger.info("%s: user login successfully", userinfo["openid"])
             return json_dump_http_response(feedback)
 
