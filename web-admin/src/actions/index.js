@@ -1,6 +1,6 @@
 import {ACTION_TYPES} from './actionTypes';
 import request from '../utils/request';
-import { ADMIN_PANEL_TYPE, ADMIN_FORM_TYPE } from "../constants";
+import { ADMIN_PANEL_TYPE, ADMIN_FORM_TYPE, ACTIVITY_DETAIL_TYPE } from "../constants";
 import { storage } from "../utils/localStorageHelper";
 import { message } from 'antd';
 
@@ -35,8 +35,9 @@ export const switchAdminFormType = (activeKey) => ({
 export const showActivityModal = (activityId, activityDetailType) => ({
     type: ACTION_TYPES.UI_ACTIVITY_SHOW,
     activityId,
-    activityDetailType
-});
+    activityDetailType: activityDetailType === ACTIVITY_DETAIL_TYPE.COPY ? ACTIVITY_DETAIL_TYPE.EDIT : activityDetailType,
+    isCopy: activityDetailType === ACTIVITY_DETAIL_TYPE.COPY
+})
 
 export const hideActivityModal = () => ({
     type: ACTION_TYPES.UI_ACTIVITY_HIDE
@@ -203,9 +204,9 @@ const updateActivity = activity => dispatch => {
     });
 }
 
-export const getActivity = (id) => (dispatch, getState) => {
-    if(id === null){
-        dispatch(setActivity({
+export const getActivity = (id, isCopy) => (dispatch, getState) => {
+    if(!id && !isCopy){
+        return dispatch(setActivity({
             "id": null,
             "adminId": 0,
             "title": "世纪公园- 一对一陪伴健步走",
@@ -226,17 +227,22 @@ export const getActivity = (id) => (dispatch, getState) => {
             "is_fee_needed": false,
             "others": null,
         }));
-        return;
     }
+
     dispatch(loading());
-    return dispatch(fetchActivity(id))
+    return dispatch(fetchActivity(id, isCopy))
 };
 
-const fetchActivity = id => dispatch => {
+const fetchActivity = (id, isCopy = false) => dispatch => {
     return request({
         path: `activity/${id}`
     }).then(activity => {
-        dispatch(setActivity(activity));    
+        if (isCopy) {
+            activity.id = null
+            activity.start_time = null
+            activity.end_time = null
+        }
+        dispatch(setActivity(activity));
     }).finally(() => {
         dispatch(hideLoading());
     });

@@ -20,7 +20,7 @@ class ActivityDetail extends React.Component {
   }
 
   componentDidMount(){
-    this.props.getActivity(this.props.activityId);
+    this.props.getActivity(this.props.activityId, this.props.isCopy);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -39,7 +39,6 @@ class ActivityDetail extends React.Component {
   }
 
   componentDidUpdate(){
-
   }
 
   handleSubmit = e => {
@@ -352,14 +351,15 @@ const mapStateToProps = (state) => ({
   activity: state.ui.activity,
   loading: state.ui.loading,
   userId: state.account.user && state.account.user.id,
+  isCopy: state.ui.isCopy
 })
 
 const mapDispatchToProps = (dispatch) => ({
   hideActivityModal : () => {
     dispatch(hideActivityModal());
   },
-  getActivity : (activityId) => {
-    dispatch(getActivity(activityId));
+  getActivity : (activityId, isCopy) => {
+    dispatch(getActivity(activityId, isCopy));
   },
   publishActivity : (activity) => {
     dispatch(publishActivity(activity));

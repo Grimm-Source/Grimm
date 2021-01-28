@@ -8,7 +8,7 @@ export const HOME_TAG_TYPE = {
 
 export const ACTIVITY_DETAIL_TYPE = {
     EDIT: "EDIT",
-    CHART: "CHART",
+    COPY: "COPY",
     NAME_LIST: "NAME_LIST",
     VOLUNTEER_LIST: "VOLUNTEER_LIST",
 };
