@@ -1,5 +1,6 @@
 var app = getApp();
 const {getRegisterStatus, getPhoneNumber} = require('../../utils/requestUtil.js');
+const {getProfile} = require('../../utils/requestUtil.js');
 
 Page({
 
@@ -68,6 +69,12 @@ Page({
       userInfo: app.globalData.userInfo,
       isVolunteer: app.globalData.isVolunteer
     })
+    getProfile((res)=>{
+      this.setData({
+        progress_attendMinutes: res.joindHours * 60 + '分钟',
+        progress_attendTimes: res.activitiesJoined + '次活动'
+      })
+    });
   },
 
   /**
