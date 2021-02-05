@@ -43,9 +43,10 @@ const ui = (state = [], action) => {
       case ACTION_TYPES.UI_ACTIVITY_SHOW:
         return {
           ...state,
+          isCopy: action.isCopy,
           isShowActivityModal: true,
           activityId: action.activityId || null,
-          activityDetailType: action.activityDetailType || ACTIVITY_DETAIL_TYPE.EDIT
+          activityDetailType: action.activityDetailType || ACTIVITY_DETAIL_TYPE.EDIT || ACTIVITY_DETAIL_TYPE.COPY
         };
       case ACTION_TYPES.UI_ACTIVITY_HIDE:
         return {

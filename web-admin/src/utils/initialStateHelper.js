@@ -10,6 +10,7 @@ let newUsers = storage.getItem("notice-new-users");
 
 const initialState = {
     ui: {
+        isCopy: false,
         isShowActivityModal: false,
         isShowDrawer: false,
         isShowUserDetail: false,

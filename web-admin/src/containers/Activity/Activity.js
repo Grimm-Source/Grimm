@@ -32,7 +32,7 @@ class Activity extends React.Component {
         >
 
           {
-            !this.props.activityId?<ActivityDetail />:
+            !this.props.isCopy && !this.props.activityId?<ActivityDetail />:
             <Tabs activeKey={this.props.activityDetailType} tabPosition="top" onChange={this.onChangeTab}>
               <TabPane tab="内容" key={ACTIVITY_DETAIL_TYPE.EDIT}>
                 <ActivityDetail />
@@ -55,7 +55,7 @@ class Activity extends React.Component {
 
 const mapStateToProps = (state, ownProps) => ({
   isActivityVisible: state.ui.isShowActivityModal,
-  activityId: state.ui.activityId,
+  activityId: state.ui.isCopy ? null : state.ui.activityId,
   activityDetailType: state.ui.activityDetailType
 })
 
