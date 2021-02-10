@@ -47,8 +47,8 @@ smtp_port = None
 passcode = None
 
 if passcode is None:
-    with open(get_pardir(get_pardir(os.path.abspath(__file__))) + '/config/email.config', mode='r') as fp:
-        email_config = json.load(fp=fp, encoding='utf8')
+    with open(get_pardir(get_pardir(os.path.abspath(__file__))) + '/config/email.config', mode='r', encoding='utf8') as fp:
+        email_config = json.load(fp=fp)
         sender = email_config['address']
         smtp_domain = email_config['server']
         smtp_port = email_config['port']

@@ -26,7 +26,7 @@ import logging
 import pymysql
 from server.core.exceptions import SQLValueError, SQLConnectionError
 from server.utils.misctools import get_pardir
-
+from server.utils.decrypt import encrypt_pwd,decrypt_pwd
 from server.core.const import DB_CONFIG_FILE, DB_LOGGER_FILE, DB_QUOTED_TYPES
 
 
@@ -109,6 +109,18 @@ def init_connection(force=False):
             print('{:^10}: '.format('User'), usr)
         return getpass.getpass(prompt='%10s: ' % ('Password'))
 
+    def save_config(config):
+        config_dir = get_pardir(DB_CONFIG_FILE)
+        if not os.path.isdir(config_dir):
+            os.mkdir(config_dir)
+        cfg = encrypt_pwd(config['Password'])
+        config_en = {k: v for k,v in config.items()}
+        for k, v in cfg.items():
+            config_en[k] = v
+        config_en['encrypted'] = True
+        with open(DB_CONFIG_FILE, "w") as fp:
+            json.dump(obj=config_en, fp=fp, ensure_ascii=False, indent=4)
+
     def collect_db_config():
         '''for user to input database configs, and dump configs as file'''
         print('Configure MySQL connection >>>\n')
@@ -129,43 +141,43 @@ def init_connection(force=False):
             elif item == 'Password' and _input:
                 config[item] = _input
 
-        config_dir = get_pardir(DB_CONFIG_FILE)
-        if not os.path.isdir(config_dir):
-            os.mkdir(config_dir)
-        with open(DB_CONFIG_FILE, "w") as fp:
-            json.dump(obj=config, fp=fp, ensure_ascii=False, indent=4)
-
         if 'Password' not in config:
             config['Password'] = collect_db_pass()
+        
+        save_config(config)
 
         print('\nDone!')
         return config
 
     # create and initialize db connection
     if session_connection is None:
-        if force is True:
+        if force or not os.path.isfile(DB_CONFIG_FILE):
             db_config = collect_db_config()
         else:
-            if os.path.isfile(DB_CONFIG_FILE):
-                try:
-                    with open(DB_CONFIG_FILE, 'r') as fp:
-                        db_config = json.load(fp=fp, encoding='utf8')
-                    if 'Password' not in db_config:
-                        print('\nMySQL Login >>>\n')
-                        db_config['Password'] = collect_db_pass(usr=db_config['User'])
-                except Exception as e:
-                    db_logger.error('load json config failed: (%d, %s)', e.args[0], e.args[1])
-                    db_config = collect_db_config()
-
-                for k, v in db_config.items():
-                    if k == 'Password':
-                        continue
-                    if v is None or k not in db_config_items:
-                        print('\nCorrupt config file, need input config >>>')
-                        db_config = collect_db_config()
-                        break
-            else:
+            try:
+                with open(DB_CONFIG_FILE, 'r', encoding='utf8') as fp:
+                    db_config = json.load(fp=fp)
+                if 'Password' not in db_config:
+                    print('\nMySQL Login >>>\n')
+                    db_config['Password'] = collect_db_pass(usr=db_config['User'])
+                if 'encrypted' in db_config and db_config['encrypted']:
+                    db_config['Password'] = decrypt_pwd(db_config)
+                else:
+                    save_config(db_config)
+            except Exception as e:
+                db_logger.error('load json config failed: (%d, %s)', e.args[0], e.args[1])
                 db_config = collect_db_config()
+
+            for v in db_config.values():
+                if v is None:
+                    print('\nNone value in config file, need input config >>>')
+                    db_config = collect_db_config()
+                    break
+            for k in db_config_items:
+                if not k in db_config.keys():
+                    print('\nCorrupted in config file, need input config >>>')
+                    db_config = collect_db_config()
+                    break
         DB_NAME = db_config['DB']
 
         # initialize db connection

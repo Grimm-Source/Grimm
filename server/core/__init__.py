@@ -55,8 +55,8 @@ if grimm is None:
     socketio.init_app(grimm)
 
     path = get_pardir(get_pardir(os.path.abspath(__file__)))
-    with open(path + '/config/wxapp.config', mode='r') as fp:
-        wxconfig = json.load(fp=fp, encoding='utf8')
+    with open(path + '/config/wxapp.config', mode='r', encoding='utf8') as fp:
+        wxconfig = json.load(fp=fp)
 
     wxappid = wxconfig['appid']
     wxsecret = wxconfig['secret']
