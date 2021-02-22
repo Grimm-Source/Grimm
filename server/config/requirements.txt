@@ -10,4 +10,4 @@ urllib3>=1.26.3
 aliyun_python_sdk_core>=2.13.30
 dnspython>=2.1.0
 pycryptodome>=3.9.9
-python_bcrypt>=0.3.2
+py_bcrypt>=0.4
