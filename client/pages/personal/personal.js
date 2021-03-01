@@ -21,9 +21,9 @@ Page({
     ],
     avatarUrl: '../../images/avatar.jpg',
     userInfo: null,
-    isRegistered: false,
-    isAuthorized: false,
-    isVolunteer: false,
+    isRegistered: app.globalData.isRegistered,
+    isAuthorized: app.globalData.isAuthorized,
+    isVolunteer: app.globalData.isVolunteer,
     progress_attendMinutes: '0 分钟',  
     progress_attendTimes: '0 次活动',  
     personalInfoList: [
@@ -49,7 +49,12 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    
+    this.setData({
+      isAuthorized: app.globalData.isAuthorized,
+      isRegistered: app.globalData.isRegistered,
+      userInfo: app.globalData.userInfo,
+      isVolunteer: app.globalData.isVolunteer
+    })
   },
 
   /**
@@ -155,12 +160,6 @@ Page({
   },
 
   onRegisterTap: function(e){
-    if(!app.globalData.isRegistered){
-      wx.navigateTo({
-        url: '/pages/login/login',
-      });
-      return;
-    }
     if (e.detail.iv && e.detail.encryptedData) {
       wx.login({
         success: res => {
@@ -170,9 +169,17 @@ Page({
             iv: e.detail.iv
           };
           getPhoneNumber(param, res => {
-            wx.navigateTo({
-              url: `/pages/register/register?phone=${res.decrypt_data.purePhoneNumber}`,
-            })
+            if (res.decrypt_data.phoneNumber) {
+              wx.navigateTo({
+                url: `/pages/register/register?phone=${res.decrypt_data.purePhoneNumber}`,
+              })
+            } else {
+              // TODO 如果获取到微信绑定的手机号则不再发短信验证手机号，原先这部分逻辑是把注册和登录分开，登录时必须验证手机号，现在是整合成自动登录，后续可以再详细分开
+              console.log("get no phone number")
+              wx.navigateTo({
+                url: '/pages/login/login',
+              });
+            }
           })
         }
       })

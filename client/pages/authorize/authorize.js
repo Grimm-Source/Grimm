@@ -1,5 +1,5 @@
 // pages/register/userlogin.js
-
+const { getRegisterStatus } = require('../../utils/requestUtil.js');
 const app = getApp()
 
 Page({
@@ -119,6 +119,28 @@ Page({
       this.setData({
         userInfo: e.detail.userInfo,
         hasUserInfo: true
+      })
+      // 检查是否授权
+      wx.login({
+        success: res => {
+          getRegisterStatus(res.code, function(res){
+            console.log("resopenid")
+            console.log(res.openid)
+            if(!res.openid){
+              return;
+            }
+            app.globalData.auditStatus = res.auditStatus || "pending";
+            app.globalData.isRegistered = res.isRegistered;
+            app.globalData.isVolunteer = res.role == "volunteer";
+            wx.setStorageSync("openid",res.openid)
+          }).then(res => {
+            console.log("global register")
+            console.log(app.globalData.isRegistered)
+            wx.switchTab({
+              url: '../home/home',
+            })
+          });
+        },
       })
       app.globalData.userInfo = e.detail.userInfo
       app.globalData.isAuthorized = true;
