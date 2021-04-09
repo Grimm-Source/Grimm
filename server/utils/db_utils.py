@@ -127,6 +127,7 @@ def convert_db_activity_to_http_query(activity, openid = 0):
     query["adminId"] = activity["approver"]
     query["title"] = activity["title"]
     query["location"] = activity["location"]
+    query["sign_in_radius"] = activity["sign_in_radius"]
     start = activity["start_time"]
     end = activity["end_time"]
     query["start_time"] = start.strftime("%Y-%m-%dT%H:%M:%S")
