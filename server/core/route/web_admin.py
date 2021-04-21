@@ -845,3 +845,42 @@ class activity_registration(Resource):
                 return json_dump_http_response({"status": "failure", "message": " 此人未报名"})
         else:
             return json_dump_http_response({"status": "failure", "message": "无效活动 ID"})
+
+
+@api.route("/activityParticipant")
+class activity_participant(Resource):
+    def get(self):
+        """ get an activity participant list with a participant_openid """
+        participant_openid = request.args.get("participant_openid")
+        try:
+            activity_participant_info = db.expr_query("activity_participant")
+        except:
+            admin_logger.warning("get all activity_participant info failed")
+            return json_dump_http_response({"status": "failure", "message": "未知错误"})
+
+        admin_logger.info("query all activity_participant info successfully")
+        feedback = {"status": "success", "participant_openid": participant_openid, "activities": []}
+
+        for activity_participant in activity_participant_info:
+            if activity_participant["participant_openid"] == participant_openid:
+                activity_id = int(activity_participant["activity_id"])
+                try:
+                    activity_info = db.expr_query("activity", id=activity_id)[0]
+                except:
+                    admin_logger.warning("get activity info failed")
+                    return json_dump_http_response({"status": "failure", "message": "未知错误"})
+                activity = {"id": activity_info["id"], "title": activity_info["title"],
+                            "location": activity_info["location"]}
+                start = activity_info["start_time"]
+                end = activity_info["end_time"]
+                activity["start_time"] = start.strftime("%Y-%m-%dT%H:%M:%S")
+                activity["end_time"] = end.strftime("%Y-%m-%dT%H:%M:%S")
+                activity["content"] = activity_info["content"]
+
+                activity["certificated"] = activity_participant["certificated"]
+
+                feedback["activities"].append(activity)
+                # email_verify.send("email_resource/confirm-user.html",
+                # "jftt_pt@hotmail.com", "test", "test", "12345678")
+
+        return json_dump_http_response(feedback)
