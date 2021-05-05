@@ -59,6 +59,8 @@ create table user
     registration_date           DATE                NOT NULL,
     role                        TINYINT             NOT NULL        DEFAULT 0,  /* 0 是志愿者， 1 是视障人士 */
     name                        VARCHAR(100)        DEFAULT "志愿者",
+    real_name                   VARCHAR(100),
+    id_type                     VARCHAR(100)        DEFAULT "身份证",
     idcard                      CHAR(18)            UNIQUE,
     idcard_verified             TINYINT             DEFAULT 0,
     disabled_id                 VARCHAR(60)         CHARACTER SET utf8mb4 COLLATE utf8mb4_bin UNIQUE ,
@@ -78,6 +80,9 @@ create table user
     remark                      VARCHAR(255)        DEFAULT "无",
     audit_status                TINYINT             NOT NULL        DEFAULT 0,
     push_status                 TINYINT             NOT NULL        DEFAULT 0,
+    recipient_name              VARCHAR(100),
+    recipient_address           VARCHAR(80),
+    recipient_phone             VARCHAR(16),
 
     PRIMARY KEY (openid)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -105,7 +110,6 @@ create table activity
     volunteer_job_title         TEXT,
     volunteer_job_content       TEXT,
     activity_fee                INT                 DEFAULT 0,
-    sign_in_radius              INT                 DEFAULT NULL,
 
     FOREIGN KEY (user_raiser) REFERENCES user(openid)
     ON DELETE set null
@@ -177,6 +181,9 @@ create table activity_participant
     interested                  TINYINT             DEFAULT 0,
     share                       INT                 DEFAULT 0,
     thumbs_up                   TINYINT             DEFAULT 0,
+    certificated                TINYINT,
+    certificate_date            DATE,
+    paper_certificate           TINYINT,
     
     FOREIGN KEY (activity_id) REFERENCES activity(id)
     ON DELETE cascade
