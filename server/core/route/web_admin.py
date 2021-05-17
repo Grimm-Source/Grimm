@@ -17,9 +17,9 @@
 #   1. 2019/09/19, Ming, create first revision.
 #
 
-import sys
-import os
-import urllib3
+# import sys
+# import os
+# import urllib3
 from flask import request
 from datetime import datetime
 from datetime import timedelta
@@ -32,6 +32,7 @@ import server.utils.sms_verify as sms_verify
 import server.utils.vrfcode as vrfcode
 import server.utils.tag_converter as tag_converter
 import server.utils.db_utils as db_utils
+import server.utils.certification_generate as certification_generate
 from server.core import api
 from server.core import socketio
 from server import admin_logger, user_logger
@@ -853,7 +854,7 @@ class activity_participant(Resource):
         """ get an activity participant list with a participant_openid """
         participant_openid = request.args.get("participant_openid")
         try:
-            activity_participant_info = db.expr_query("activity_participant")
+            activity_participant_infos = db.expr_query("activity_participant")
         except:
             admin_logger.warning("get all activity_participant info failed")
             return json_dump_http_response({"status": "failure", "message": "未知错误"})
@@ -861,7 +862,7 @@ class activity_participant(Resource):
         admin_logger.info("query all activity_participant info successfully")
         feedback = {"status": "success", "participant_openid": participant_openid, "activities": []}
 
-        for activity_participant in activity_participant_info:
+        for activity_participant in activity_participant_infos:
             if activity_participant["participant_openid"] == participant_openid:
                 activity_id = int(activity_participant["activity_id"])
                 try:
@@ -882,5 +883,123 @@ class activity_participant(Resource):
                 feedback["activities"].append(activity)
                 # email_verify.send("email_resource/confirm-user.html",
                 # "jftt_pt@hotmail.com", "test", "test", "12345678")
+
+        return json_dump_http_response(feedback)
+
+    def post(self):
+        """ sent certification to participant according to user's input """
+        info = json_load_http_request(request)
+        participant_openid = info.get("participant_openid", None)
+        activity_id = info.get("activity_id", None)
+        real_name = info.get("real_name", None)
+        id_type = info.get("id_type", None)
+        idcard = info.get("idcard", None)
+        email = info.get("email", None)
+        paper_certificate = info.get("paper_certificate", None)
+        try:
+            activity_info = db.expr_query("activity", id=activity_id)[0]
+        except:
+            admin_logger.warning("get activity info failed")
+            return json_dump_http_response({"status": "failure", "message": "未知错误"})
+        activity_title = activity_info.get("title", None)
+        start = activity_info["start_time"]
+        end = activity_info["end_time"]
+        activity_duration = (end - start).days * 24 + (end - start).seconds//3600
+
+        feedback = {"status": "success",
+                    "participant_openid": participant_openid,
+                    "activity_id": activity_id,
+                    "activity_title": activity_title,
+                    "real_name": real_name,
+                    "id_type": id_type,
+                    "idcard": idcard,
+                    "email": email,
+                    "paper_certificate": paper_certificate
+                    }
+
+        # Always set "certificated" to 0 when test
+        db.expr_update("activity_participant", {"certificated": 0},
+                       activity_id=activity_id, participant_openid=participant_openid)
+
+        try:
+            activity_participant_info = db.expr_query("activity_participant",
+                                                      activity_id=activity_id,
+                                                      participant_openid=participant_openid)[0]
+        except:
+            admin_logger.warning("get all activity_participant info failed")
+            return json_dump_http_response({"status": "failure", "message": "未知错误"})
+
+        print(activity_participant_info)
+
+        certificated_user_info = {"real_name": real_name,
+                                  "id_type": id_type,
+                                  "idcard": idcard,
+                                  "email": email}
+        certificated_info = {"paper_certificate": paper_certificate}
+
+        if paper_certificate:
+            recipient_name = info.get("recipient_name", None)
+            recipient_address = info.get("recipient_address", None)
+            recipient_phone = info.get("recipient_phone", None)
+            certificated_user_info["recipient_name"] = recipient_name
+            certificated_user_info["recipient_address"] = recipient_address
+            certificated_user_info["recipient_phone"] = recipient_phone
+            feedback["recipient_name"] = recipient_name
+            feedback["recipient_address"] = recipient_address
+            feedback["recipient_phone"] = recipient_phone
+
+        if not activity_participant_info["certificated"]:
+            certificated_info["certificated"] = 1
+            certificated_info["certificate_date"] = datetime.now().strftime("%Y-%m-%d")
+            try:
+                if db.expr_update("activity_participant", certificated_info,
+                                  activity_id=activity_id, participant_openid=participant_openid) != 1:
+                    admin_logger.warning(
+                        f"participant_openid:{participant_openid} "
+                        f"activity_id:{activity_id} "
+                        f"update participant certificated status failed"
+                    )
+                    return json_dump_http_response(
+                        {"status": "failure", "message": "证书状态更新失败"}
+                    )
+            except:
+                admin_logger.error("Critical: update database failed")
+                return json_dump_http_response(
+                    {"status": "failure", "message": "未知错误 in activity_participant update"}
+                )
+
+            # update participant's related user info in user table
+            print(certificated_user_info)
+            try:
+                # if db.expr_update("user", certificated_user_info, openid=participant_openid) != 1:
+                #     admin_logger.warning(
+                #         "%s, update user audit status failed", participant_openid
+                #     )
+                #     return json_dump_http_response(
+                #         {"status": "failure", "message": "证书用户信息更新失败"}
+                #     )
+                db.expr_update("user", certificated_user_info, openid=participant_openid)
+            except:
+                admin_logger.error("Critical: update database failed")
+                return json_dump_http_response(
+                    {"status": "failure", "message": "未知错误 in user update"}
+                )
+
+            certification_info = {"name": real_name,
+                                  "certificate_type": id_type,
+                                  "certificate_code": idcard,
+                                  "activity_title": activity_title,
+                                  "activity_during": str(activity_duration) + "小时",
+                                  "director": "王臻",
+                                  "manager": "刘莉娟",
+                                  "contact_code": "1388888888"
+                                  }
+
+            certification_file = certification_generate.generate_certification(certification_info)
+
+            email_verify.send("email_resource/certificate-letter.html",
+                              email, real_name + "'s certification",
+                              "test", "12345678",
+                              attachment_file=certification_file)
 
         return json_dump_http_response(feedback)

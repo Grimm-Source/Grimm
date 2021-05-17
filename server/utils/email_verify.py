@@ -29,6 +29,7 @@ from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
+from email.mime.application import MIMEApplication
 from flask import abort, redirect, url_for
 
 import server.utils.vrfcode as vrfcode
@@ -118,7 +119,7 @@ def smtp_connection_status():
     return False
 
 
-def send(email_sample, receiver, subject, plain, replacement):
+def send(email_sample, receiver, subject, plain, replacement, attachment_file=None):
     '''send verification email to new user'''
     global SMTP_CONNECTION
     path = get_pardir(os.path.abspath(__file__))
@@ -143,6 +144,18 @@ def send(email_sample, receiver, subject, plain, replacement):
     content['From'] = sender
     content['To'] = receiver
     message.attach(content)
+
+    ## add attachment file
+    file_name = os.path.basename(attachment_file)
+    with open(attachment_file, "rb") as attachment:
+        part = MIMEApplication(attachment.read(),
+                               Name=file_name)
+
+    part['Content-Disposition'] = 'attachment; filename="%s"' % file_name
+
+    # Add attachment to message
+    message.attach(part)
+
     # add html part
     fp_email = open(path + '/' + email_sample, mode='r')
     html_src = email.message_from_file(fp_email).as_string()
