@@ -110,6 +110,7 @@ create table activity
     volunteer_job_title         TEXT,
     volunteer_job_content       TEXT,
     activity_fee                INT                 DEFAULT 0,
+    sign_in_radius              INT                 DEFAULT NULL,
 
     FOREIGN KEY (user_raiser) REFERENCES user(openid)
     ON DELETE set null
