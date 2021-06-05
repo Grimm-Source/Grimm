@@ -36,3 +36,5 @@ server/.grimm
 # aliyun cloud dysms access key
 dysms_access_key.json
 /server/dbbk
+.idea/*
+.pycharm/*
