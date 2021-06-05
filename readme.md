@@ -1,4 +1,4 @@
-# Grimm-backend
+# Grimm-backend v2
 
 > Technology makes tomorrow better.
 
@@ -27,7 +27,7 @@ $ pip install -r requirements.txt
 
 ## Changelog
 
-Detailed changes for each release are documented in the [release notes](https://github.com/SincerelyUnique/grimm-backend/releases).
+Detailed changes for each release are documented in the [release notes](https://github.com/Grimm-Source/Grimm/releases).
 
 
 ## Online Demo
