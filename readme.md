@@ -80,9 +80,141 @@ def get(self):
         10086: "Email not verified."
     }
 )
-@admin.expect(AdminDto.login, validate=True)
+@admin.expect(AdminDto.login, validate=False)
 def post(self):
     pass
 ```
 
 There are many other methods that can be used in project, for more info, please visit to [Flask-RESTX](https://flask-restx.readthedocs.io/en/latest/) or [Github](https://github.com/python-restx/flask-restx)
+
+### - flask_sqlalchemy
+
+Below is the sqlalchemy usage demo script. 
+
+```python
+from datetime import datetime
+
+import pandas as pd
+
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
+
+from grimm import engine
+from grimm.models.activity import Activity, RegisteredActivity
+from grimm.models.admin import Admin, User
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost:3306/grimmdb'
+db = SQLAlchemy(app)
+
+
+def raw_usage():
+    """
+    Execute raw sql expression directly use orm.
+    The following operations do not depend on the web application context.
+    Include: 1) sqlalchemy engine operations;
+             2) pandas db operations;
+    Advantages: 1) SQL-injection protect,
+             ref: http://www.rmunn.com/sqlalchemy-tutorial/tutorial.html
+                  https://github.com/zzzeek/sqlalchemy
+                  https://github.com/pallets/flask-sqlalchemy
+                2) Easy to use and avoid writing sql everywhere in your code.
+                3) Have some integration with other Flask extension like flask-migrate, etc.
+    :return: None
+    """
+    # insert
+    data = {
+        'id': 1000,
+        'registration_date': datetime.now(),
+        'password': '123456',
+        'name': 'test',
+        'email': 'test@cisco.com',
+        'email_verified': 0
+    }
+    df = pd.DataFrame([data])
+    df.to_sql('admin', engine, if_exists='append', index=False)
+
+    # select
+    sql = "select * from admin"
+    result1 = engine.execute(sql).fetchall()
+    result2 = engine.execute(sql).fetchone()
+    result3 = engine.execute(sql).first()
+    print(result1)
+    print(result2)
+    print(result3)
+
+    # select
+    sql = "select * from admin where id=:admin_id"
+    result = engine.execute(text(sql), admin_id=1000).first()
+    print(result)
+
+    # select
+    sql = "select name, email from admin where id=:admin_id"
+    df = pd.read_sql_query(text(sql), engine, params={'admin_id': 1000})
+    print(df)
+
+    # select
+    sql = "select * from admin"
+    df = pd.read_sql_query(sql, engine)
+    print(df)
+
+    # update
+    sql = "update admin set name=:admin_name where ID=:admin_id "
+    engine.execute(text(sql).execution_options(autocommit=True), admin_name='root', admin_id=1000)
+
+    # delete
+    sql = text("delete from admin where id=:admin_id")
+    engine.execute(sql.execution_options(autocommit=True), admin_id=1000)
+
+
+def orm_usage():
+    """
+    Execute with orm models.
+    Attention, the following operations can not execute outside application.
+    :return: None
+    """
+    # insert
+    admin = Admin()
+    admin.registration_date = datetime.now()
+    admin.id = 1000
+    admin.password = '123456'
+    admin.name = 'test'
+    admin.email = 'test@test.com'
+    admin.email_verified = 1
+    db.session.add(admin)
+    db.session.commit()
+
+    # select
+    res = Admin.query.all()
+    res = Admin.query.filter(Admin.id == 1000).first()
+    res = db.session.query(Admin).all()
+    res = db.session.query(Admin).filter(Admin.id == 1000).first()
+    res = Admin.query.filter(Admin.id == 1000, Admin.name == 'test').first()
+    res = db.session.query(User, RegisteredActivity).filter(User.openid == RegisteredActivity.user_openid).filter(User.openid == 'xxx').all()
+    res = db.session.query(User.openid, RegisteredActivity.activity_id).filter(User.openid == RegisteredActivity.user_openid).filter(User.openid == 'xxx').all()
+
+    # update
+    db.session.query(Admin).filter(Admin.id == 1000).update({Admin.name: 'root'})
+    db.session.commit()
+
+    # delete
+    db.session.delete(admin)
+    db.session.commit()
+
+
+@app.route('/test/raw')
+def raw_test():
+    raw_usage()
+    return 'success'
+
+
+@app.route('/test/orm')
+def orm_test():
+    orm_usage()
+    return 'success'
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
