@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "mp-checkbox": "weui-miniprogram/checkbox/checkbox"
+  }
+}

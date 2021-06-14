@@ -140,7 +140,9 @@ page{
     height: 12px;
 }
 
-.personal_info_item.myActivity, .personal_info_item.disabledID{
+.personal_info_item.myActivity, 
+.personal_info_item.disabledID,
+.personal_info_item.certificate_apply{
     font-weight: 600;
     font-size: 16px;
 }

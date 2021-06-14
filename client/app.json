@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/certificate/applyForm",
     "pages/home/home",
     "pages/profile/profile",
     "pages/authorize/authorize",
@@ -12,7 +13,10 @@
     "pages/register/register",
     "pages/search/search",
     "pages/personalProfile/personalProfile",
-    "pages/personalCenter/personalCenter"
+    "pages/personalCenter/personalCenter",
+    "pages/certificate/applyList"
+
+    
   ],
   "window": {
     "backgroundTextStyle": "light",

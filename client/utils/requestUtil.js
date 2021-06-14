@@ -213,6 +213,14 @@ const searchActivity = (searchVal, successCallback, failCallback) => {
     })
 }
 
+const getCertificatectivity = (param, successCallback, failCallback)=>{
+    return request({
+        url:'activityParticipant',
+        method: 'GET',
+        success: successCallback,
+        fail: failCallback,
+    })
+}
 module.exports = {
     getProfile,
     updateProfile,
@@ -235,5 +243,6 @@ module.exports = {
     shareActivity,
     getMyActivities,
     getPhoneNumber,
-    searchActivity
+    searchActivity,
+    getCertificatectivity
 }

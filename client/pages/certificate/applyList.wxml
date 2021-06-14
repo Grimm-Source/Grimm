@@ -1,0 +1,31 @@
+<!--pages/certificate/applyList.wxml-->
+<view class="apply-container">
+  <text class="page-head"> 可开具证明的活动</text>
+
+  <view class="scroll-container">
+    <scroll-view>
+      <mp-checkbox-group bindchange="onActCheck">
+        <block 
+          wx:for="{{activityList}}" 
+          wx:key="{{item.index}}"
+        >
+          <view class="activity-block" >
+            <view class="activity-info">
+              <text class="activity-time">2020-01-01 13:30-16:30</text>
+              <text class="activity-title"> 世纪公园新年陪走活动</text>
+              <text class="activity-addr">地点：{{'上海世纪公园'}}</text>
+            </view>
+            <view class="check-area">
+              <view class="checked">
+                <mp-checkbox label="{{item.name}}" value="{{item.id}}"></mp-checkbox>
+              </view>
+            </view>
+          </view>
+        </block>
+      </mp-checkbox-group>
+    </scroll-view>
+  </view>
+  <view class="page-footer">
+    <button class="self-btn" type="primary" disabled="{{submitDisabled}}" size="mini">提交</button>
+  </view>
+</view>

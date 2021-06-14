@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "mp-checkbox-group": "weui-miniprogram/checkbox-group/checkbox-group",
+    "mp-dialog": "weui-miniprogram/dialog/dialog",
+    "mp-checkbox": "weui-miniprogram/checkbox/checkbox",
+    "mp-cells": "weui-miniprogram/cells/cells"
+  }
+}
