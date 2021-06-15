@@ -15,7 +15,7 @@ class Activity(db.Model):
     user_raiser = db.Column(db.String(28), db.ForeignKey('USER.openid'))
     approver = db.Column(db.Integer, db.ForeignKey('ADMIN.id'))
     assignee = db.Column(db.String(28), db.ForeignKey('USER.openid'))
-    published = db.Column(db.Integer, nullable=False, default=0)
+    published = db.Column(db.Integer, nullable=False, server_default='0')
     tag_ids = db.Column(db.String(120))
     volunteer_capacity = db.Column(db.Integer)
     vision_impaired_capacity = db.Column(db.Integer)
