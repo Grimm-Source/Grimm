@@ -54,19 +54,37 @@ jobs:
 #          echo "$pid"
 #          kill -9 $pid
 #          nohup ./run_grimm.sh >> grimm.out 2>&1 &
-    - name: CD(Internal public backend server)
+#    - name: CD(Internal public backend server)
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.DEV_HOST }}
+#        USERNAME: ${{ secrets.DEV_USERNAME }}
+#        KEY: ${{ secrets.DEV_SSHKEY }}
+#        command_timeout: 6m
+#        PORT: ${{ secrets.DEV_PORT }}
+#        script: |
+#          cd /home/grimm/grimm_v2/Grimm
+#          echo 'pull source code'
+#          git pull https://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
+#          conda activate py36grimm2
+#          pip install -r requirements.txt
+#          pid=$(cat /usr/local/app/grimm-backend/logs/grimm.pid)
+#          echo "$pid"
+#          kill -9 $pid
+#          nohup ./run_grimm.sh >> grimm.out 2>&1 &
+    - name: CD(External public backend server)
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.DEV_HOST }}
-        USERNAME: ${{ secrets.DEV_USERNAME }}
-        KEY: ${{ secrets.DEV_SSHKEY }}
-        command_timeout: 6m
-        PORT: ${{ secrets.DEV_PORT }}
+        host: ${{ secrets.TEST_HOST }}
+        USERNAME: ${{ secrets.TEST_USERNAME }}
+        KEY: ${{ secrets.TEST_SSHKEY }}
+        command_timeout: 5m
+        PORT: ${{ secrets.TEST_PORT }}
         script: |
-          cd /home/grimm/grimm_v2/Grimm
+          /home/grimm2/Grimm
           echo 'pull source code'
           git pull https://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
-          conda activate py36grimm2
+          source ../venv/bin/activate
           pip install -r requirements.txt
           pid=$(cat /usr/local/app/grimm-backend/logs/grimm.pid)
           echo "$pid"
