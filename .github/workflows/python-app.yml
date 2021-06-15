@@ -36,7 +36,7 @@ jobs:
 #    - name: Test with pytest
 #      run: |
 #        pytest
-#    - name: CD
+#    - name: CD(External public backend server)
 #      uses: appleboy/ssh-action@master
 #      with:
 #        host: ${{ secrets.DEV_HOST }}
