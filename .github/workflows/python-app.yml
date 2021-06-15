@@ -60,7 +60,7 @@ jobs:
         host: ${{ secrets.DEV_HOST }}
         USERNAME: ${{ secrets.DEV_USERNAME }}
         KEY: ${{ secrets.DEV_SSHKEY }}
-        command_timeout: 5m
+        command_timeout: 6m
         PORT: ${{ secrets.DEV_PORT }}
         script: |
           cd /home/grimm/grimm_v2/Grimm
