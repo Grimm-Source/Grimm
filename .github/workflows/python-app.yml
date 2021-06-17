@@ -36,24 +36,24 @@ jobs:
 #    - name: Test with pytest
 #      run: |
 #        pytest
-#    - name: CD
-#      uses: appleboy/ssh-action@master
-#      with:
-#        host: ${{ secrets.DEV_HOST }}
-#        USERNAME: ${{ secrets.DEV_USERNAME }}
-#        KEY: ${{ secrets.DEV_SSHKEY }}
-#        command_timeout: 5m
-#        PORT: ${{ secrets.DEV_PORT }}
-#        script: |
-#          cd /home/grimm/project/Grimm2/Grimm
-#          echo 'source code'
-#          git pull https://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
-#          source ../venv/bin/activate
-#          pip install -r requirements.txt
-#          pid=$(cat /usr/local/app/grimm-backend/logs/grimm.pid)
-#          echo "$pid"
-#          kill -9 $pid
-#          nohup ./run_grimm.sh >> grimm.out 2>&1 &
+    - name: CD(Jalen-VPS)
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.JALEN_HOST }}
+        USERNAME: ${{ secrets.JALEN_USERNAME }}
+        KEY: ${{ secrets.JALEN_SSHKEY }}
+        command_timeout: 5m
+        PORT: ${{ secrets.JALEN_PORT }}
+        script: |
+          cd /usr/local/app2/Grimm
+          echo 'pull source code'
+          git pull https://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
+          source ../venv/bin/activate
+          pip install -r requirements.txt
+          pid=$(cat /usr/local/app/grimm-backend/logs/grimm.pid)
+          echo "$pid"
+          kill -9 $pid
+          nohup ./run_grimm.sh >> grimm.out 2>&1 &
 #    - name: CD(Internal public backend server)
 #      uses: appleboy/ssh-action@master
 #      with:
