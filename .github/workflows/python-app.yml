@@ -36,7 +36,7 @@ jobs:
 #    - name: Test with pytest
 #      run: |
 #        pytest
-    - name: CD(Jalen-VPS)
+    - name: CD
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.JALEN_HOST }}
