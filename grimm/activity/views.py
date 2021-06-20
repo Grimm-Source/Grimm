@@ -2,7 +2,7 @@ import json
 from datetime import datetime, timedelta
 
 from flask import request, jsonify
-from flask_restx import Resource
+from flask_restx import Resource, reqparse
 
 from grimm import logger, db
 from grimm.activity import activity, activitybiz
@@ -51,6 +51,8 @@ class NewActivity(Resource):
         activity_info.approver = info["adminId"]
         activity_info.title = info["title"]
         activity_info.location = info["location"]
+        activity_info.location_latitude = info["location_latitude"]
+        activity_info.location_longitude = info["location_longitude"]
         activity_info.sign_in_radius = info["sign_in_radius"]
         activity_info.start_time = info["start_time"]
         activity_info.end_time = info["end_time"]
@@ -93,6 +95,8 @@ class ActivityOperate(Resource):
         activity_info.approver = new_info["adminId"]
         activity_info.title = new_info["title"]
         activity_info.location = new_info["location"]
+        activity_info.location_latitude = info["location_latitude"]
+        activity_info.location_longitude = info["location_longitude"]
         activity_info.sign_in_radius = new_info["sign_in_radius"]
         activity_info.start_time = new_info["start_time"]
         activity_info.end_time = new_info["end_time"]
@@ -162,25 +166,44 @@ class ActivityRegistration(Resource):
         return jsonify({"status": "success"})
 
 
+class ActivityParticipantParser(object):
+    @staticmethod
+    def get():
+        parser = reqparse.RequestParser()
+        parser.add_argument('participant_openid', type=str, location='args', help='Open User ID')
+        return parser
+
 @activity.route("/activityParticipant", methods=["GET", 'POST'])
 class ActivityParticipant_(Resource):
+    @activity.expect(ActivityParticipantParser.get())
     def get(self):
-        participant_openid = request.args.get("participant_openid")
+        new_info = ActivityParticipantParser.get().parse_args()
+        participant_openid = new_info.get('participant_openid')
+
         activity_participant_infos = ActivityParticipant.query.all()
         logger.info("query all activity_participant info successfully")
         feedback = {"status": "success", "participant_openid": participant_openid, "activities": []}
         for activity_participant in activity_participant_infos:
-            if activity_participant["participant_openid"] == participant_openid:
-                activity_id = int(activity_participant["activity_id"])
+            if activity_participant.participant_openid == participant_openid:
+                feedback.update({
+                    'signup_time':       activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    'signup_latitude':   str(activity_participant.signup_latitude),
+                    'signup_longtitude': str(activity_participant.signup_longitude),
+                    'signoff_time':       activity_participant.signoff_time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    'signoff_latitude':   str(activity_participant.signoff_latitude),
+                    'signoff_longtitude': str(activity_participant.signoff_longitude)
+                    })
+
+                activity_id = int(activity_participant.activity_id)
                 activity_info = Activity.query.filter(Activity.id == activity_id).first()
-                activity = {"id": activity_info["id"], "title": activity_info["title"],
-                            "location": activity_info["location"]}
-                start = activity_info["start_time"]
-                end = activity_info["end_time"]
+                activity = {"id": activity_info.id, "title": activity_info.title,
+                            "location": activity_info.location}
+                start = activity_info.start_time
+                end = activity_info.end_time
                 activity["start_time"] = start.strftime("%Y-%m-%dT%H:%M:%S")
                 activity["end_time"] = end.strftime("%Y-%m-%dT%H:%M:%S")
-                activity["content"] = activity_info["content"]
-                activity["certificated"] = activity_participant["certificated"]
+                activity["content"] = activity_info.content
+                activity["certificated"] = activity_participant.certificated
                 feedback["activities"].append(activity)
                 # email_verify.send("email_resource/confirm-user.html",
                 # "jftt_pt@hotmail.com", "test", "test", "12345678")
@@ -616,3 +639,103 @@ class PickUpVolunteer(Resource):
         db.session.add(new_pickup_info)
         db.session.commit()
         return jsonify({'status': 'success', 'message': '提交成功'})
+
+class SignupParser(object):
+    @staticmethod
+    def post():
+        parser = reqparse.RequestParser()
+        parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
+        parser.add_argument('activityId', type=int, location='form', help='Activity ID')
+        parser.add_argument('signup_time', type=str, location='form', help='sign up time')
+        parser.add_argument('signup_latitude', type=float, location='form', help='sign up latitude')
+        parser.add_argument('signup_longitude', type=float, location='form', help='sign up longitude')
+        return parser
+
+@activity.route("/activityParticipant/signup", methods=["POST"])
+class SignupActivity(Resource):
+    @activity.expect(SignupParser.post())
+    def post(self):
+        """Sign up an activity"""
+        new_info = SignupParser.post().parse_args()
+        # new_info = {'Authorization': 'om68340DDXrYTpfKM6SuM6XTm44s',
+        #         'activityId':10,
+        #         'signup_time':'2021-02-10 14:25:09',
+        #         'signup_latitude':31.2,
+        #         'signup_longitude':121.3
+        #         }
+        openid = new_info.get("Authorization")
+        activity_id = new_info.get("activityId")
+        logger.info('Loading participant sign up info ...')
+
+        activity_participant_info = db.session.query(ActivityParticipant).\
+            filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
+        if activity_participant_info:
+            activity_participant_info.signup_time = new_info.get("signup_time")
+            activity_participant_info.signup_latitude = new_info.get("signup_latitude")
+            activity_participant_info.signup_longitude = new_info.get("signup_longitude")
+            db.session.commit()
+            logger.info("%s in %d: update activity_participant successfully", openid, activity_id)
+            return jsonify({"status": "success"})
+
+        activity_info = db.session.query(Activity).\
+            filter(Activity.id == activity_id).first()
+        if not activity_info:
+            return jsonify({"status": "failure"})
+
+        activity_participant_info = ActivityParticipant()
+        activity_participant_info.activity_id = activity_id
+        activity_participant_info.participant_openid = openid
+        activity_participant_info.interested = 0 
+        activity_participant_info.share = 0
+        activity_participant_info.thumbs_up = 0
+        activity_participant_info.certificated = 0
+        activity_participant_info.certiticate_date = 0
+        activity_participant_info.paper_certificate = 0
+        activity_participant_info.signup_time = new_info.get("signup_time")
+        activity_participant_info.signup_latitude = new_info.get("signup_latitude")
+        activity_participant_info.signup_longitude = new_info.get("signup_longitude")
+        db.session.add(activity_participant_info)
+        db.session.commit()
+
+        return jsonify({"status": "success"})
+
+
+class SignoffParser(object):
+    @staticmethod
+    def post():
+        parser = reqparse.RequestParser()
+        parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
+        parser.add_argument('activityId', type=int, location='form', help='Activity ID')
+        parser.add_argument('signoff_time', type=str, location='form', help='sign off time')
+        parser.add_argument('signoff_latitude', type=float, location='form', help='sign off latitude')
+        parser.add_argument('signoff_longitude', type=float, location='form', help='sign off longitude')
+        return parser
+
+@activity.route("/activityParticipant/signoff", methods=['POST'])
+class SignoffActivity(Resource):
+    @activity.expect(SignoffParser.post())
+    def post(self):
+        """Sign off an activity"""
+        new_info = SignoffParser.post().parse_args()
+        # new_info = {'Authorization': 'om68340DDXrYTpfKM6SuM6XTm44s',
+        #         'activityId':10,
+        #         'signoff_time':'2021-02-10 14:25:09',
+        #         'signoff_latitude':31.2,
+        #         'signoff_longitude':121.3
+        #         }
+        openid = new_info.get('Authorization')
+        activity_id = new_info.get('activityId')
+        logger.info('Loading participant sign up info ...')
+
+        activity_participant_info = db.session.query(ActivityParticipant).\
+            filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
+        if activity_participant_info:
+            activity_participant_info.signoff_time = new_info.get("signoff_time")
+            activity_participant_info.signoff_latitude = new_info.get("signoff_latitude")
+            activity_participant_info.signoff_longitude = new_info.get("signoff_longitude")
+            db.session.commit()
+            logger.info("%s in %d: update activity successfully", openid, activity_id)
+            return jsonify({"status": "success"})
+
+        logger.info("user_openid %s in activity %d not found", openid, activity_id)
+        return jsonify({"status": "failure"})
