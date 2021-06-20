@@ -44,7 +44,7 @@ class AddAdmin(Resource):
 @main.route("/tags", methods=['GET'])
 class TagsDB(Resource):
     def get(self):
-        """view function to get all tags info"""
+        """view function to get all tags info."""
         tag_list = [{'tag_id': i, 'tag_name': constants.TAG_LIST[i]} for i in range(len(constants.TAG_LIST))]
         logger.info("query all tags info successfully")
         return jsonify(tag_list)
