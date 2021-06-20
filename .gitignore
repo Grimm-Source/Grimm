@@ -38,3 +38,5 @@ dysms_access_key.json
 /server/dbbk
 .idea/*
 .pycharm/*
+grimm-prod.ini
+grimm-test.ini

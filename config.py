@@ -14,7 +14,7 @@ class Config(object):
 
 class GrimmConfig(Config):
     config = configparser.RawConfigParser()
-    config.read(BASE_DIR + '/grimm-dev.ini')  # switch env here if needed
+    config.read(BASE_DIR + '/grimm-test.ini')  # switch env here if needed
 
     # for wei xin setting
     WX_APP_ID = config.get('WX', 'WX_APP_ID')
