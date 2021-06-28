@@ -215,8 +215,17 @@ const searchActivity = (searchVal, successCallback, failCallback) => {
 
 const getCertificatectivity = (param, successCallback, failCallback)=>{
     return request({
-        url:'activityParticipant',
+        url:`activityParticipant/${wx.getStorageSync("openid")}`,
         method: 'GET',
+        success: successCallback,
+        fail: failCallback,
+    })
+}
+const submitCertificatectivity = (param, successCallback, failCallback)=>{
+    return request({
+        url:`activityParticipant/${wx.getStorageSync("openid")}`,
+        method: 'POST',
+        data: param,
         success: successCallback,
         fail: failCallback,
     })
@@ -244,5 +253,6 @@ module.exports = {
     getMyActivities,
     getPhoneNumber,
     searchActivity,
-    getCertificatectivity
+    getCertificatectivity,
+    submitCertificatectivity
 }

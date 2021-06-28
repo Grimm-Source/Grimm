@@ -88,3 +88,6 @@ page{
 .self-btn[disabled]{
   background-color: #ccc !important;
 }
+.weui-cell_checkbox::before{
+  border-top: none;
+}

@@ -1,18 +1,31 @@
 // pages/certificate/applyList.js
-const { getCertificatectivity } = require('../../utils/requestUtil.js');
+const {
+  getCertificatectivity
+} = require('../../utils/requestUtil.js');
 
 /**
  * 
  * 
  * 
-    activity_id                 BIGINT,
-    participant_openid          CHAR(28)            NOT NULL, 
-    interested                  TINYINT             DEFAULT 0,
-    share                       INT                 DEFAULT 0,
-    thumbs_up                   TINYINT             DEFAULT 0,
-    certificated                TINYINT,
-    certificate_date            DATE,
-    paper_certificate           TINYINT,
+    id                          BIGINT              NOT NULL        AUTO_INCREMENT,
+    title                       VARCHAR(60)         NOT NULL        DEFAULT '助盲公益活动',
+    start_time                  DATETIME            NOT NULL,
+    location                    VARCHAR(100)        NOT NULL,
+    end_time                    DATETIME,
+    content                     TEXT                NOT NULL,
+    notice                      TEXT,
+    others                      VARCHAR(120)        NOT NULL        DEFAULT '无',
+    admin_raiser                INT                 DEFAULT NULL,
+    user_raiser                 CHAR(28),
+    approver                    INT                 DEFAULT NULL,
+    assignee                    CHAR(28),
+    published                   TINYINT             NOT NULL        DEFAULT 0,
+    tag_ids                     VARCHAR(120),
+    volunteer_capacity          INT                 DEFAULT 0,
+    vision_impaired_capacity    INT                 DEFAULT 0,
+    volunteer_job_title         TEXT,
+    volunteer_job_content       TEXT,
+    activity_fee                INT                 DEFAULT 0,
  */
 
 Page({
@@ -21,8 +34,50 @@ Page({
    * 页面的初始数据
    */
   data: {
-    activityList: [{activity_id: 1}, {activity_id: 2}, {activity_id: 3}, {activity_id: 4}, {activity_id: 5}, {activity_id: 6}, {activity_id: 7}],
-    checkList:[],
+    activityList: [{
+        id: 1,
+        start_time: '2021-06-28',
+        content: '世纪公园新年陪走活动',
+        location: '上海世纪公园'
+      },
+      {
+        id: 2,
+        start_time: '2021-06-28',
+        content: '世纪公园新年陪走活动',
+        location: '上海世纪公园'
+      },
+      {
+        id: 3,
+        start_time: '2021-06-28',
+        content: '世纪公园新年陪走活动',
+        location: '上海世纪公园'
+      },
+      {
+        id: 4,
+        start_time: '2021-06-28',
+        content: '世纪公园新年陪走活动',
+        location: '上海世纪公园'
+      },
+      {
+        id: 5,
+        start_time: '2021-06-28',
+        content: '世纪公园新年陪走活动',
+        location: '上海世纪公园'
+      },
+      {
+        id: 6,
+        start_time: '2021-06-28',
+        content: '世纪公园新年陪走活动',
+        location: '上海世纪公园'
+      },
+      {
+        id: 7,
+        start_time: '2021-06-28',
+        content: '世纪公园新年陪走活动',
+        location: '上海世纪公园'
+      }
+    ],
+    checkList: [],
     participant_openid: '',
     isLoading: false,
     submitDisabled: false
@@ -34,20 +89,19 @@ Page({
    */
   onLoad: function (options) {
     getCertificatectivity({},
-      (res)=>{
+      (res) => {
         this.setData({
-          activityList: res.activities,
           participant_openid: res.participant_openid
         })
-    },
-    (fail)=>{
-      wx.showToast({
-        title: fail || '活动获取失败',
-        icon: 'none', //error
-        duration: 2000
-      });
-    }
-  ); 
+      },
+      (fail) => {
+        wx.showToast({
+          title: fail || '活动获取失败',
+          icon: 'none', //error
+          duration: 2000
+        });
+      }
+    );
   },
 
   /**
@@ -102,20 +156,20 @@ Page({
   /**
    * 获取可开具证明的活动
    */
-  getActivitData: function(){
+  getActivitData: function () {
 
   },
   /**
    * 选择活动
    */
-  onActCheck: function(e){
+  onActCheck: function (e) {
     this.setData({
       checkList: e.detail.value,
       submitDisabled: false
-    }) 
+    })
   },
 
-  onSubmit: function(){
+  onSubmit: function () {
 
   }
 })

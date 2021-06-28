@@ -1,4 +1,7 @@
 // pages/certificate/applyForm.js
+const {
+  submitCertificatectivity
+} = require('../../utils/requestUtil.js');
 Page({
 
   /**
@@ -79,6 +82,19 @@ Page({
     });
   },
   onSubmit: function(e){
-
+    const { applyData } = this.data
+    submitCertificatectivity(applyData,
+      (res) => {
+      
+      },
+      (fail) => {
+        wx.showToast({
+          title: fail || '证书生成失败',
+          icon: 'none', //error
+          duration: 2000
+        });
+      }
+    );
+    console.log(applyData)
   }
 })

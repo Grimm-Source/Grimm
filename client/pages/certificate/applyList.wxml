@@ -11,13 +11,13 @@
         >
           <view class="activity-block" >
             <view class="activity-info">
-              <text class="activity-time">2020-01-01 13:30-16:30</text>
-              <text class="activity-title"> 世纪公园新年陪走活动</text>
-              <text class="activity-addr">地点：{{'上海世纪公园'}}</text>
+              <text class="activity-time">{{item.start_time}}</text>
+              <text class="activity-title"> {{item.content}}</text>
+              <text class="activity-addr">地点：{{item.location}}</text>
             </view>
             <view class="check-area">
               <view class="checked">
-                <mp-checkbox label="{{item.name}}" value="{{item.id}}"></mp-checkbox>
+                <mp-checkbox label="{{item.text}}" value="{{item.id}}"></mp-checkbox>
               </view>
             </view>
           </view>

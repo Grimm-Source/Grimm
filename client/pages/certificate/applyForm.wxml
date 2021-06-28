@@ -54,6 +54,6 @@
   </block>
   </view>
   <view class="page-footer">
-    <button type="primary"  class="self-btn" size="mini">提交</button>
+    <button type="primary"  class="self-btn" size="mini" bindtap="onSubmit">提交</button>
   </view>
 </view>
