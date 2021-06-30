@@ -90,7 +90,13 @@ Page({
   onLoad: function (options) {
     getCertificatectivity({},
       (res) => {
+        debugger
+        const activities = res.activities.map(((item)=>{
+          item.start_time = item.start_time.replace('T', ' ');
+          return item;
+        }))
         this.setData({
+          activityList: activities,
           participant_openid: res.participant_openid
         })
       },

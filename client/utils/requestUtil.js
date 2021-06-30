@@ -215,15 +215,18 @@ const searchActivity = (searchVal, successCallback, failCallback) => {
 
 const getCertificatectivity = (param, successCallback, failCallback)=>{
     return request({
-        url:`activityParticipant/${wx.getStorageSync("openid")}`,
+        url:`activityParticipant/${wx.getStorageSync("openid") || 'om6834wWFZ_yjiMVbcVp2thK-LAQ'}`,
         method: 'GET',
         success: successCallback,
         fail: failCallback,
     })
 }
 const submitCertificatectivity = (param, successCallback, failCallback)=>{
+    console.log(wx.getStorageSync("openid"))
+
+    debugger
     return request({
-        url:`activityParticipant/${wx.getStorageSync("openid")}`,
+        url:`activityParticipant/${wx.getStorageSync("openid") || 'om6834wWFZ_yjiMVbcVp2thK-LAQ'}`,
         method: 'POST',
         data: param,
         success: successCallback,
