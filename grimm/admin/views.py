@@ -518,3 +518,11 @@ class SMSCode(Resource):
             "%s, %s: sms code validates successfully", phone_number, vrfcode
         )
         return jsonify({"status": "success"})
+
+
+@admin.route("/authorize_user", methods=['GET'])
+class AuthorizeUser(Resource):
+    def get(self):
+        openid = request.headers.get('Authorization')
+        user_info = User.query.filter(User.openid == openid).first()
+        return jsonify(dbutils.serialize(user_info))
