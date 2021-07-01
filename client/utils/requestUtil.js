@@ -213,6 +213,54 @@ const searchActivity = (searchVal, successCallback, failCallback) => {
     })
 }
 
+const pickUpImpaired = (obj, successCallback, failCallback) => {
+    return request({
+        url: "pickUpImpaired",
+        data: obj,
+        success: successCallback,
+        fail: failCallback,
+        method: "POST"
+    });
+}
+
+const cancelSignUp = (obj, successCallback, failCallback) => {
+    return request({
+        url: "cancelSignUp",
+        data: obj,
+        success: successCallback,
+        fail: failCallback,
+        method: "POST"
+    });
+}
+
+const pickUpVolunteer = (obj, successCallback, failCallback) => {
+    return request({
+        url: "pickUpVolunteer",
+        data: obj,
+        success: successCallback,
+        fail: failCallback,
+        method: "POST"
+    });
+}
+
+const getNeedPickupImpaired = (activityId, successCallback, failCallback) => {
+    return request({
+        url: 'pickUpImpaired?activityId=' + activityId,
+        success: successCallback,
+        fail: failCallback,
+        method: "GET"
+    });
+}
+
+const getCurrentUserDetail = (successCallback, failCallback) => {
+    return request({
+        url: 'authorize_user',
+        success: successCallback,
+        fail: failCallback,
+        method: "GET"
+    });
+}
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -235,5 +283,10 @@ module.exports = {
     shareActivity,
     getMyActivities,
     getPhoneNumber,
-    searchActivity
+    searchActivity,
+    pickUpImpaired,   // 提交视障人士接送信息
+    cancelSignUp,     // 取消报名 - 需要做删除接送信息等操作
+    pickUpVolunteer,  // 志愿者点击愿意接送后 弹出的表单 提交
+    getNeedPickupImpaired,  // 获取志愿者可接送视障人士们
+    getCurrentUserDetail, // 获取当前注册用户详细信息
 }

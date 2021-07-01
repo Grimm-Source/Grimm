@@ -88,3 +88,30 @@
 .detail-footer .activity-end {
   background-color: #D8D8D8;
 }
+
+.modal-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  background-color: #fff;
+  border-radius: 10rpx;
+}
+
+.modal-main-content {
+  flex: 1;
+  height: 100%;
+  overflow-y: hidden;
+}
