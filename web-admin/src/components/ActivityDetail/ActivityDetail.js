@@ -182,14 +182,27 @@ class ActivityDetail extends React.Component {
                             ],
                         })(<Input placeholder="请输入活动地点" />)}
                     </Form.Item>
-                    <Form.Item label="签到半径">
-                        {getFieldDecorator('sign_in_radius', {
-                            rules: [
-                                {
-                                    required: true
-                                },
-                            ],
-                        })(<InputNumber min={0} type="number" id="sign_in_radius" placeholder=""/>)} &emsp;公里
+                    <Form.Item htmlFor="count-item" label="签到信息">
+                        <div className="volunteer-detail">
+                            <Form.Item label="签到半径" style={{display: 'inline-block', width: '50%'}}>
+                                {getFieldDecorator('sign_in_radius', {
+                                    rules: [
+                                        {
+                                            required: true
+                                        },
+                                    ],
+                                })(<InputNumber min={0} type="number" id="sign_in_radius" placeholder=""/>)} &emsp;公里
+                            </Form.Item>
+                            <Form.Item label="签到口令" style={{display: 'inline-block', width: '50%'}}>
+                                {getFieldDecorator('sign_in_token', {
+                                    rules: [
+                                        {
+                                            required: true
+                                        },
+                                    ],
+                                })(<Input disabled={!this.state.isVolLimited} placeholder="请输入签到口令"/>)}
+                            </Form.Item>
+                        </div>
                     </Form.Item>
                     <Form.Item label="活动内容">
                         {getFieldDecorator('content', {
@@ -327,6 +340,9 @@ const WrappedActivityDetail = Form.create({
             }),
             sign_in_radius: Form.createFormField({
                 value: props.activity.sign_in_radius || ""
+            }),
+            sign_in_token: Form.createFormField({
+                value: props.activity.sign_in_token || ""
             }),
             notice: Form.createFormField({
                 value: props.activity.notice || ""

@@ -210,8 +210,9 @@ export const getActivity = (id, isCopy) => (dispatch, getState) => {
             "id": null,
             "adminId": 0,
             "title": "世纪公园- 一对一陪伴健步走",
-            "location": "锦绣路1001号 世纪公园",
+            "location": "上海市浦东新区锦绣路1001号 世纪公园",
             "sign_in_radius": 10,
+            "sign_in_token": "",
             "start_time": null,
             "end_time":null,
             "duration":{
