@@ -8,7 +8,7 @@ from grimm import logger, db
 from grimm.activity import activity, activitybiz
 from grimm.models.activity import Activity, RegisteredActivity, ActivityParticipant, PickupVolunteer, PickupImpaired
 from grimm.models.admin import User
-from grimm.utils import dbutils, certificationgenerate, emailverify
+from grimm.utils import dbutils, certificationgenerate, emailverify, areautils
 from grimm.utils.constants import TAG_LIST
 
 
@@ -51,9 +51,16 @@ class NewActivity(Resource):
         activity_info.approver = info["adminId"]
         activity_info.title = info["title"]
         activity_info.location = info["location"]
-        activity_info.location_latitude = info["location_latitude"]
-        activity_info.location_longitude = info["location_longitude"]
+        status, lat_lng = areautils.address_to_coordinate(info["location"])
+        if status:
+            activity_info.location_latitude = lat_lng['lat']
+            activity_info.location_longitude = lat_lng['lng']
+        else:
+            jsonify({"status": "failure"})
+        # activity_info.location_latitude = info["location_latitude"]
+        # activity_info.location_longitude = info["location_longitude"]
         activity_info.sign_in_radius = info["sign_in_radius"]
+        activity_info.sign_in_token = info["sign_in_token"]
         activity_info.start_time = info["start_time"]
         activity_info.end_time = info["end_time"]
         activity_info.content = info["content"]
@@ -95,9 +102,16 @@ class ActivityOperate(Resource):
         activity_info.approver = new_info["adminId"]
         activity_info.title = new_info["title"]
         activity_info.location = new_info["location"]
-        activity_info.location_latitude = new_info["location_latitude"]
-        activity_info.location_longitude = new_info["location_longitude"]
+        status, lat_lng = areautils.address_to_coordinate(new_info["location"])
+        if status:
+            activity_info.location_latitude = lat_lng['lat']
+            activity_info.location_longitude = lat_lng['lng']
+        else:
+            jsonify({"status": "failure"})
+        # activity_info.location_latitude = new_info["location_latitude"]
+        # activity_info.location_longitude = new_info["location_longitude"]
         activity_info.sign_in_radius = new_info["sign_in_radius"]
+        activity_info.sign_in_token = new_info["sign_in_token"]
         activity_info.start_time = new_info["start_time"]
         activity_info.end_time = new_info["end_time"]
         activity_info.content = new_info["content"]

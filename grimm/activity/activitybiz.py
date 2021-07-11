@@ -14,6 +14,7 @@ def activity_converter(activity, openid=0):
     query["title"] = activity["title"]
     query["location"] = activity["location"]
     query["sign_in_radius"] = activity["sign_in_radius"]
+    query["sign_in_token"] = activity["sign_in_token"]
     query["start_time"] = activity["start_time"].strftime("%Y-%m-%dT%H:%M:%S")
     query["end_time"] = activity["end_time"].strftime("%Y-%m-%dT%H:%M:%S")
     query["duration"] = misctools.calc_duration(activity["start_time"], activity["end_time"])

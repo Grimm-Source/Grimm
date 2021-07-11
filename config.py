@@ -14,7 +14,7 @@ class Config(object):
 
 class GrimmConfig(Config):
     config = configparser.RawConfigParser()
-    config.read(BASE_DIR + '/grimm-test.ini')  # switch env here if needed
+    config.read(BASE_DIR + '/grimm-dev.ini')  # switch env here if needed
 
     # for wei xin setting
     WX_APP_ID = config.get('WX', 'WX_APP_ID')
@@ -32,3 +32,7 @@ class GrimmConfig(Config):
     SMTP_PORT = config.get('SMTP', 'SMTP_PORT')
     SMTP_SERVER = config.get('SMTP', 'SMTP_SERVER')
     SMTP_PASSWORD = config.get('SMTP', 'SMTP_PASSWORD')
+
+    # for api
+    TENCENT_LOCATION_SERVICE_URL = config.get('API', 'TENCENT_LOCATION_SERVICE_URL')
+    TENCENT_LOCATION_SERVICE_KEY = config.get('API', 'TENCENT_LOCATION_SERVICE_KEY')

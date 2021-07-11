@@ -25,6 +25,7 @@ class Activity(db.Model):
     volunteer_job_content = db.Column(db.String(100))
     activity_fee = db.Column(db.Integer, server_default='0')
     sign_in_radius = db.Column(db.Integer)
+    sign_in_token = db.Column(db.String(10), nullable=False, comment='Sign in token')
 
 
 class RegisteredActivity(db.Model):
