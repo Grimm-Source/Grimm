@@ -9,6 +9,10 @@ import {connect} from 'react-redux';
 
 import './ActivityDetail.less';
 
+// For upload
+import { Upload, Icon } from 'antd';
+import baseUrl from '../../config/config';
+
 const {RangePicker} = DatePicker;
 
 class ActivityDetail extends React.Component {
@@ -52,6 +56,7 @@ class ActivityDetail extends React.Component {
                 return;
             }
             const rangeTimeValue = fieldsValue['date'];
+
             const values = {
                 ...fieldsValue,
                 // volunteer_capacity: this.state.isVolLimited?this.props.activity.volunteer_capacity: null,
@@ -62,6 +67,11 @@ class ActivityDetail extends React.Component {
                 start_time: rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss'),
                 end_time: rangeTimeValue[1].format('YYYY-MM-DD HH:mm:ss'),
             };
+            if (values['activity_them_pic_name'].length > 0){
+                let url = values['activity_them_pic_name'][0]['url']
+                let picGetUrl = baseUrl + 'activity/themePic?activity_them_pic_name='
+                values['activity_them_pic_name'][0]['url'] = url.replace(picGetUrl, '')
+            }
             this.props.publishActivity(values);
             this.props.hideActivityModal();
         });
@@ -135,6 +145,32 @@ class ActivityDetail extends React.Component {
             return current < moment().startOf('day');
         };
 
+        const uploadUrl = baseUrl + 'activity/themePic'
+        // 处理上传按钮每次触发事件
+        const handleChange = info => {
+            let changedFileList = info.fileList;
+            const curFile = info.file;
+            if (curFile.response && curFile.response.status === 1) {
+                message.success('上传成功')
+            }
+            if (curFile.response && curFile.response.status !== 1) {
+                message.error(curFile.response.message)
+            }
+            // 向fileList中增加url字段来记录每次上传成功后服务端返回的图片名字
+            changedFileList = changedFileList.
+            map((file: { response: { errno: number; data: any; }; url: any; }) => {
+                if (file.response && file.response.status === 1) {
+                    file.url = file.response.fileName
+                } else {
+                    file.url = 0
+                }
+                return file;
+            });
+        }
+        const uploadImgConfig = {
+            action: uploadUrl,
+            name: 'activity_them_pic_name',
+        }
 
         return (
             this.props.loading ? <Spin size="large"/> :
@@ -182,27 +218,48 @@ class ActivityDetail extends React.Component {
                             ],
                         })(<Input placeholder="请输入活动地点" />)}
                     </Form.Item>
-                    <Form.Item htmlFor="count-item" label="签到信息">
-                        <div className="volunteer-detail">
-                            <Form.Item label="签到半径" style={{display: 'inline-block', width: '50%'}}>
-                                {getFieldDecorator('sign_in_radius', {
-                                    rules: [
-                                        {
-                                            required: true
-                                        },
-                                    ],
-                                })(<InputNumber min={0} type="number" id="sign_in_radius" placeholder=""/>)} &emsp;公里
-                            </Form.Item>
-                            <Form.Item label="签到口令" style={{display: 'inline-block', width: '50%'}}>
-                                {getFieldDecorator('sign_in_token', {
-                                    rules: [
-                                        {
-                                            required: true
-                                        },
-                                    ],
-                                })(<Input disabled={!this.state.isVolLimited} placeholder="请输入签到口令"/>)}
-                            </Form.Item>
-                        </div>
+                    <Form.Item label="主题图片" style={{marginBottom: 0}}>
+                        {getFieldDecorator('activity_them_pic_name', {
+                            valuePropName: 'fileList',
+                            getValueFromEvent: e => {
+                                if (Array.isArray(e)) {
+                                    return e;
+                                }
+                                return e && e.fileList;
+                            },
+                            rules: [
+                                {
+                                    required: true,
+                                },
+                            ],
+                        })(<Upload
+                            {...uploadImgConfig}
+                            listType="picture-card"
+                            onChange={handleChange}
+                        >
+                            <div>
+                                <Icon type="plus" />
+                                <div className="ant-upload-text">上传</div>
+                            </div>
+                        </Upload>)}
+                    </Form.Item>
+                    <Form.Item label="签到半径">
+                        {getFieldDecorator('sign_in_radius', {
+                            rules: [
+                                {
+                                    required: true
+                                },
+                            ],
+                        })(<InputNumber min={0} type="number" id="sign_in_radius" placeholder=""/>)} &emsp;公里
+                    </Form.Item>
+                    <Form.Item label="签到口令">
+                        {getFieldDecorator('sign_in_token', {
+                            rules: [
+                                {
+                                    required: true
+                                },
+                            ],
+                        })(<Input disabled={!this.state.isVolLimited} style={{width: '200px'}} placeholder="请输入签到口令"/>)}
                     </Form.Item>
                     <Form.Item label="活动内容">
                         {getFieldDecorator('content', {
@@ -328,6 +385,10 @@ const WrappedActivityDetail = Form.create({
         if (!props.activity) {
             return {};
         }
+        let picUrl = []
+        if (props.activity.activity_them_pic_name){
+            picUrl = [{"uid": "1", "url": baseUrl + "activity/themePic?activity_them_pic_name=" + props.activity.activity_them_pic_name}]
+        }
         return {
             title: Form.createFormField({
                 value: props.activity.title || ""
@@ -337,6 +398,9 @@ const WrappedActivityDetail = Form.create({
             }),
             location: Form.createFormField({
                 value: props.activity.location || ""
+            }),
+            activity_them_pic_name: Form.createFormField({
+                value: picUrl
             }),
             sign_in_radius: Form.createFormField({
                 value: props.activity.sign_in_radius || ""
