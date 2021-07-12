@@ -1,9 +1,13 @@
 import json
+import os
+import uuid
 from datetime import datetime, timedelta
 
-from flask import request, jsonify
+from flask import request, jsonify, send_file
 from flask_restx import Resource, reqparse
+from six.moves.urllib.parse import quote
 
+from config import BASE_DIR
 from grimm import logger, db
 from grimm.activity import activity, activitybiz
 from grimm.models.activity import Activity, RegisteredActivity, ActivityParticipant, PickupVolunteer, PickupImpaired
@@ -61,6 +65,11 @@ class NewActivity(Resource):
         # activity_info.location_longitude = info["location_longitude"]
         activity_info.sign_in_radius = info["sign_in_radius"]
         activity_info.sign_in_token = info["sign_in_token"]
+        if len(info['activity_them_pic_name']) == 0:
+            logger.warning("Add activity failed, no theme picture.")
+            feedback = {"status": "failure", "message": "请上传活动主题图片"}
+            return jsonify(feedback)
+        activity_info.theme_pic_name = quote(info['activity_them_pic_name'][0]['url'])
         activity_info.start_time = info["start_time"]
         activity_info.end_time = info["end_time"]
         activity_info.content = info["content"]
@@ -87,7 +96,9 @@ class ActivityOperate(Resource):
         if not activity_info:
             logger.warning("%d: no such activity", activity_id)
             return jsonify({"status": "failure", "message": "未知活动ID"})
+        file_name = activity_info.theme_pic_name
         feedback = activitybiz.activity_converter(dbutils.serialize(activity_info))
+        feedback['activity_them_pic_name'] = file_name
         logger.info("%d: get activity successfully", activity_id)
         return jsonify(feedback)
 
@@ -98,7 +109,12 @@ class ActivityOperate(Resource):
             logger.warning("%d: update activity failed", activity_id)
             feedback = {"status": "failure", "message": "无效活动 ID"}
             return jsonify(feedback)
-        logger.info('Will add activity.')
+        if len(new_info['activity_them_pic_name']) == 0:
+            logger.warning("%d: update activity failed, no theme picture.", activity_id)
+            feedback = {"status": "failure", "message": "请上传活动主题图片"}
+            return jsonify(feedback)
+        logger.info('Will update activity.')
+        activity_info.theme_pic_name = new_info['activity_them_pic_name'][0]['url']
         activity_info.approver = new_info["adminId"]
         activity_info.title = new_info["title"]
         activity_info.location = new_info["location"]
@@ -135,6 +151,31 @@ class ActivityOperate(Resource):
         db.session.commit()
         logger.info("%d: delete new activity successfully", activity_id)
         return jsonify({"status": "success"})
+
+
+@activity.route("/activity/themePic", methods=["POST", "GET"])
+class ActivityThemePic(Resource):
+    def get(self):
+        activity_id = request.args.get('activity_id')
+        if activity_id:
+            activity_info = Activity.query.filter(Activity.id == activity_id).first()
+            file_name = activity_info.theme_pic_name
+        else:
+            file_name = request.args.get('activity_them_pic_name')
+        if not file_name:
+            return jsonify({"status": 'failure', "message": "Please input activity id or file name."})
+        image = os.path.join(BASE_DIR, "static/activity_theme_pictures/" + file_name)
+        return send_file(image)
+
+    def post(self):
+        file_storage = request.files.get('activity_them_pic_name')
+        if not file_storage:
+            return jsonify({"status": 0, "message": 'No file found'})
+        pic_id = str(uuid.uuid4()).replace('-', '') + datetime.now().strftime('%Y%m%d%H%M%S')
+        new_file_name = pic_id + '-' + file_storage.filename
+        new_file_path = os.path.join(BASE_DIR, "static/activity_theme_pictures/" + new_file_name)
+        file_storage.save(new_file_path)
+        return jsonify({"status": 1, "fileName": new_file_name})
 
 
 @activity.route("/activityRegistration/<int:activity_id>", methods=["POST", "GET"])

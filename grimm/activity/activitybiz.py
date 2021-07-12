@@ -73,6 +73,7 @@ def activity_converter(activity, openid=0):
         if (activity["activity_fee"] is not None and activity["activity_fee"] > 0)
         else False
     )
+    query["activity_them_pic_name"] = activity['theme_pic_name']
     return query
 
 

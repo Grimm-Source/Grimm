@@ -26,6 +26,7 @@ class Activity(db.Model):
     activity_fee = db.Column(db.Integer, server_default='0')
     sign_in_radius = db.Column(db.Integer)
     sign_in_token = db.Column(db.String(10), nullable=False, comment='Sign in token')
+    theme_pic_name = db.Column(db.String(100), nullable=False, comment='Activity theme picture, save to /static/activity_theme_picture/*')
 
 
 class RegisteredActivity(db.Model):
