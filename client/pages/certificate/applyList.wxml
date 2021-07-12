@@ -17,7 +17,7 @@
             </view>
             <view class="check-area">
               <view class="checked">
-                <mp-checkbox label="{{item.text}}" value="{{item.id}}"></mp-checkbox>
+                <mp-checkbox disabled="{{!item.published}}" label="{{item.text}}" value="{{item.id}}"></mp-checkbox>
               </view>
             </view>
           </view>
@@ -26,6 +26,6 @@
     </scroll-view>
   </view>
   <view class="page-footer">
-    <button class="self-btn" type="primary" disabled="{{submitDisabled}}" size="mini">提交</button>
+    <button class="self-btn" type="primary" disabled="{{submitDisabled}}" size="mini" bindtap="onSubmit">提交</button>
   </view>
 </view>

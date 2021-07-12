@@ -11,7 +11,9 @@
     <view class="form-section">
       <view class="form-label">*证件类型</view>
       <view class="form-input">
-        <input class="weui-input" placeholder="请选择证件类型" data-info-key="id_type" bindinput="bindInputChange" />
+        <picker mode="selector"  data-info-key="id_type" bindchange="bindInputChange" value="{{index}}" range="{{idTypeArr}}">
+         <input class="weui-input" aria-role='textbox' disabled placeholder="请选择证件类型" value="{{idTypeArr[applyData.id_type]}}"/>
+       </picker>
       </view>
     </view>
     <view class="form-section">

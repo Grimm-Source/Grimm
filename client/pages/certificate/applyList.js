@@ -90,6 +90,9 @@ Page({
   onLoad: function (options) {
     getCertificatectivity({},
       (res) => {
+        const activityList = res.activityList.filter((item)=>{
+         return +item.published === 0
+        })
         this.setData({
           participant_openid: res.participant_openid
         })
@@ -170,6 +173,18 @@ Page({
   },
 
   onSubmit: function () {
-
+    const {checkList} = this.data;
+    if(!checkList || checkList.length < 1){
+      wx.showToast({
+        title: '请选择活动',
+        icon: 'error', //error
+        duration: 2000
+      });
+    }else{
+      wx.setStorageSync('cer_acc_list', checkList);
+      wx.navigateTo({
+        url: '/pages/certificate/applyForm',
+      });
+    }
   }
 })
