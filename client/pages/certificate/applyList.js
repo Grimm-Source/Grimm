@@ -90,10 +90,14 @@ Page({
   onLoad: function (options) {
     getCertificatectivity({},
       (res) => {
-        const activityList = res.activityList.filter((item)=>{
-         return +item.published === 0
-        })
+        const activities = res.activities.filter((item)=>{
+          return +item.published === 0
+         }).map(((item)=>{
+          item.start_time = item.start_time.replace('T', ' ');
+          return item;
+        }))
         this.setData({
+          activityList: activities,
           participant_openid: res.participant_openid
         })
       },

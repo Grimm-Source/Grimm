@@ -7,12 +7,12 @@
       <mp-checkbox-group bindchange="onActCheck">
         <block 
           wx:for="{{activityList}}" 
-          wx:key="{{item.index}}"
+          wx:key="id"
         >
           <view class="activity-block" >
             <view class="activity-info">
               <text class="activity-time">{{item.start_time}}</text>
-              <text class="activity-title"> {{item.content}}</text>
+              <text class="activity-title"> {{item.title}}</text>
               <text class="activity-addr">地点：{{item.location}}</text>
             </view>
             <view class="check-area">
