@@ -21,6 +21,7 @@ class ActivityDetail extends React.Component {
         isVolLimited: undefined,
         isDisabledLimited: undefined,
         isFeeNeeded: undefined,
+        displayUpload: '',
     };
 
     componentDidMount() {
@@ -149,6 +150,9 @@ class ActivityDetail extends React.Component {
         // 处理上传按钮每次触发事件
         const handleChange = info => {
             let changedFileList = info.fileList;
+            if (changedFileList.length === 0){
+                this.setState({displayUpload: ''})
+            }
             const curFile = info.file;
             if (curFile.response && curFile.response.status === 1) {
                 message.success('上传成功')
@@ -160,6 +164,7 @@ class ActivityDetail extends React.Component {
             changedFileList = changedFileList.
             map((file: { response: { errno: number; data: any; }; url: any; }) => {
                 if (file.response && file.response.status === 1) {
+                    this.setState({displayUpload: 'none'})
                     file.url = file.response.fileName
                 } else {
                     file.url = 0
@@ -235,10 +240,10 @@ class ActivityDetail extends React.Component {
                         })(<Upload
                             {...uploadImgConfig}
                             listType="picture-card"
-                            onChange={handleChange}
-                        >
+                            style={{display: this.state.displayUpload}}
+                            onChange={handleChange}>
                             <div>
-                                <Icon type="plus" />
+                                <Icon type="plus"/>
                                 <div className="ant-upload-text">上传</div>
                             </div>
                         </Upload>)}
