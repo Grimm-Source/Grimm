@@ -27,7 +27,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: CD(Test env - aliyun)
+    - name: CD(Test)
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.TEST_HOST }}
@@ -39,7 +39,7 @@ jobs:
           echo "Start deploy..."
           cd /opt/backend/Grimm
           git checkout HEAD run_grimm.sh
-          git pull https://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
+          git pull git://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
           source ../venv/bin/activate
           pip install -r requirements.txt
           pid=$(cat logs/grimm.pid)
