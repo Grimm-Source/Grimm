@@ -33,16 +33,18 @@ jobs:
         host: ${{ secrets.TEST_HOST }}
         USERNAME: ${{ secrets.TEST_USERNAME }}
         KEY: ${{ secrets.TEST_SSHKEY }}
-        command_timeout: 10m
+        command_timeout: 20m
         PORT: ${{ secrets.TEST_PORT }}
         script: |
-          cd /home/grimm/app/grimm/backend/Grimm
+          echo "Start deploy..."
+          cd /opt/backend/Grimm
           git checkout HEAD run_grimm.sh
           git pull https://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
           source ../venv/bin/activate
           pip install -r requirements.txt
-          pid=$(cat /home/grimm/app/grimm/backend/Grimm/logs/grimm.pid)
+          pid=$(cat logs/grimm.pid)
           echo "$pid"
           nohup kill -9 $pid 2>/dev/null
           chmod -R 777 run_grimm.sh
           nohup ./run_grimm.sh >> grimm.out 2>&1 &
+          echo "Deploy End!"
