@@ -100,7 +100,8 @@ class ActivityOperate(Resource):
         activity_info.notice = new_info["notice"]
         activity_info.others = new_info["others"]
         activity_info.admin_raiser = new_info["adminId"]
-        ids = ','.join([str(TAG_LIST.index(t)) for t in new_info["tag"].split(',') if t and t in TAG_LIST]) if new_info["tag"] else ''
+        ids = ','.join([str(TAG_LIST.index(t)) for t in new_info["tag"].split(',')
+                        if t and t in TAG_LIST]) if new_info["tag"] else ''
         activity_info.tag_ids = ids
         activity_info.volunteer_capacity = new_info["volunteer_capacity"]
         activity_info.vision_impaired_capacity = new_info["vision_impaired_capacity"]
@@ -162,33 +163,34 @@ class ActivityRegistration(Resource):
         return jsonify({"status": "success"})
 
 
-@activity.route("/activityParticipant", methods=["GET", 'POST'])
+@activity.route("/activityParticipant/<string:participant_openid>", methods=["GET", 'POST'])
 class ActivityParticipant_(Resource):
-    def get(self):
-        participant_openid = request.args.get("participant_openid")
+    def get(self, participant_openid):
+        # participant_openid = request.args.get("participant_openid")
         activity_participant_infos = ActivityParticipant.query.all()
         logger.info("query all activity_participant info successfully")
         feedback = {"status": "success", "participant_openid": participant_openid, "activities": []}
         for activity_participant in activity_participant_infos:
-            if activity_participant["participant_openid"] == participant_openid:
-                activity_id = int(activity_participant["activity_id"])
+            print(activity_participant)
+            if activity_participant.participant_openid == participant_openid:
+                activity_id = activity_participant.activity_id
                 activity_info = Activity.query.filter(Activity.id == activity_id).first()
-                activity = {"id": activity_info["id"], "title": activity_info["title"],
-                            "location": activity_info["location"]}
-                start = activity_info["start_time"]
-                end = activity_info["end_time"]
+                activity = {"id": activity_info.id, "title": activity_info.title,
+                            "location": activity_info.location}
+                start = activity_info.start_time
+                end = activity_info.end_time
                 activity["start_time"] = start.strftime("%Y-%m-%dT%H:%M:%S")
                 activity["end_time"] = end.strftime("%Y-%m-%dT%H:%M:%S")
-                activity["content"] = activity_info["content"]
-                activity["certificated"] = activity_participant["certificated"]
+                activity["content"] = activity_info.content
+                activity["certificated"] = activity_participant.certificated
                 feedback["activities"].append(activity)
                 # email_verify.send("email_resource/confirm-user.html",
                 # "jftt_pt@hotmail.com", "test", "test", "12345678")
         return jsonify(feedback)
 
-    def post(self):
-        info = request.get_json()
-        participant_openid = info.get("participant_openid", None)
+    def post(self, participant_openid):
+        info = json.loads(request.get_data())
+        # participant_openid = info.get("participant_openid", None)
         activity_id = info.get("activity_id", None)
         real_name = info.get("real_name", None)
         id_type = info.get("id_type", None)
@@ -196,9 +198,9 @@ class ActivityParticipant_(Resource):
         email = info.get("email", None)
         paper_certificate = info.get("paper_certificate", None)
         activity_info = Activity.query.filter(Activity.id == activity_id).first()
-        activity_title = activity_info.get("title", None)
-        start = activity_info["start_time"]
-        end = activity_info["end_time"]
+        activity_title = activity_info.title
+        start = activity_info.start_time
+        end = activity_info.end_time
         activity_duration = (end - start).days * 24 + (end - start).seconds // 3600
         feedback = {"status": "success",
                     "participant_openid": participant_openid,
@@ -209,6 +211,7 @@ class ActivityParticipant_(Resource):
                     "idcard": idcard,
                     "email": email,
                     "paper_certificate": paper_certificate}
+        print(feedback)
         ActivityParticipant.query.\
             filter(ActivityParticipant.participant_openid == participant_openid,
                    ActivityParticipant.activity_id == activity_id).\
@@ -218,7 +221,7 @@ class ActivityParticipant_(Resource):
                    ActivityParticipant.participant_openid == participant_openid).first()
         logger.info(activity_participant_info)
 
-        certificated_user_info = db.session.query.filter(User.openid == participant_openid).first()
+        certificated_user_info = User.query.filter(User.openid == participant_openid).first()
         certificated_user_info.real_name = real_name
         certificated_user_info.id_type = id_type
         certificated_user_info.idcard = idcard
@@ -235,7 +238,7 @@ class ActivityParticipant_(Resource):
             feedback["recipient_name"] = recipient_name
             feedback["recipient_address"] = recipient_address
             feedback["recipient_phone"] = recipient_phone
-        if not activity_participant_info.certificated:
+        if activity_participant_info and not activity_participant_info.certificated:
             certificated_info["certificated"] = 1
             certificated_info["certificate_date"] = datetime.now().strftime("%Y-%m-%d")
             activity_participant_info.paper_certificate = paper_certificate
@@ -258,9 +261,9 @@ class ActivityParticipant_(Resource):
             certification_file = certificationgenerate.generate_certification(certification_info)
 
             emailverify.send("email_resource/certificate-letter.html",
-                              email, real_name + "'s certification",
-                              "test", "12345678",
-                              attachment_file=certification_file)
+                             email, real_name + "'s certification",
+                             "test", "12345678",
+                             attachment_file=certification_file)
 
         return jsonify(feedback)
 

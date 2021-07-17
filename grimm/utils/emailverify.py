@@ -117,11 +117,16 @@ def smtp_connection_status():
 def send(email_sample, receiver, subject, plain, replacement, attachment_file=None):
     """send verification email to new user"""
     global SMTP_CONNECTION
-    path = get_pardir(os.path.abspath(__file__))
+    # path = get_pardir(os.path.abspath(__file__))
+    path = "templates/"
     # check global smtp connection status and reconnect if necessary
     if not smtp_connection_status():
         context = ssl.create_default_context()
-        SMTP_CONNECTION = smtplib.SMTP_SSL(smtp_domain, smtp_port, context=context, timeout=3600)
+        print("email: " + smtp_domain, smtp_port)
+        # SMTP_CONNECTION = smtplib.SMTP_SSL(smtp_domain, smtp_port, context=context, timeout=3600)
+        # response = SMTP_CONNECTION.login(sender, passcode)
+        SMTP_CONNECTION = smtplib.SMTP(smtp_domain, smtp_port)
+        SMTP_CONNECTION.starttls(context=context)
         response = SMTP_CONNECTION.login(sender, passcode)
         if response[0] != 235:
             err = UserEmailError('Local smtp service connection failed: %s', response[1].decode('utf8'))

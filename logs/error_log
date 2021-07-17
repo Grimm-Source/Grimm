@@ -1,0 +1,1687 @@
+[2021-06-11 10:17:58 +0800] [24467] [INFO] Starting gunicorn 20.1.0
+[2021-06-11 10:17:58 +0800] [24467] [INFO] Listening at: http://0.0.0.0:5000 (24467)
+[2021-06-11 10:17:58 +0800] [24467] [INFO] Using worker: gevent
+[2021-06-11 10:17:58 +0800] [24469] [INFO] Booting worker with pid: 24469
+[2021-06-11 10:17:58 +0800] [24470] [INFO] Booting worker with pid: 24470
+[2021-06-11 10:17:58 +0800] [24471] [INFO] Booting worker with pid: 24471
+[2021-06-11 10:17:58 +0800] [24472] [INFO] Booting worker with pid: 24472
+2021-06-11 10:18:04,651 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+{'status': 'success', 'participant_openid': 'om68340n3bFxQwj-YXqnWjXgnEFM', 'activity_id': 10, 'activity_title': '世纪公园- 一对一陪伴健步走', 'real_name': '彭涛', 'id_type': '身份证', 'idcard': '123456789012340115', 'email': 'taope@cisco.com', 'paper_certificate': True}
+2021-06-11 10:18:07,373 views.py:222:INFO:<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+2021-06-11 10:18:07,379 views.py:249:INFO:{'openid': 'om68340n3bFxQwj-YXqnWjXgnEFM', 'registration_date': datetime.datetime(2021, 5, 5, 0, 0), 'role': 0, 'name': 'peter', 'real_name': '彭涛', 'id_type': '身份证', 'idcard': '123456789012340115', 'idcard_verified': 0, 'disabled_id': None, 'disabled_id_verified': 0, 'phone': '18606208287', 'phone_verified': 1, 'email': 'taope@cisco.com', 'email_verified': 0, 'contact': None, 'gender': '男', 'birth': datetime.datetime(1973, 10, 23, 0, 0), 'address': '北京市北京市东城区', 'emergent_contact': None, 'emergent_contact_phone': None, 'activities_joined': 1, 'activities_absence': 0, 'remark': '无', 'audit_status': 0, 'push_status': 1, 'recipient_name': '彭涛3', 'recipient_address': '苏州新区名城花园9-206', 'recipient_phone': '18606208287'}
+email: smtp-mail.outlook.com 587
+{'status': 'success', 'participant_openid': 'om68340n3bFxQwj-YXqnWjXgnEFM', 'activity_id': 10, 'activity_title': '世纪公园- 一对一陪伴健步走', 'real_name': '彭涛', 'id_type': '身份证', 'idcard': '123456789012340115', 'email': 'taope@cisco.com', 'paper_certificate': True}
+2021-06-11 10:25:02,325 views.py:222:INFO:<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+2021-06-11 10:25:02,334 views.py:249:INFO:{'openid': 'om68340n3bFxQwj-YXqnWjXgnEFM', 'registration_date': datetime.datetime(2021, 5, 5, 0, 0), 'role': 0, 'name': 'peter', 'real_name': '彭涛', 'id_type': '身份证', 'idcard': '123456789012340115', 'idcard_verified': 0, 'disabled_id': None, 'disabled_id_verified': 0, 'phone': '18606208287', 'phone_verified': 1, 'email': 'taope@cisco.com', 'email_verified': 0, 'contact': None, 'gender': '男', 'birth': datetime.datetime(1973, 10, 23, 0, 0), 'address': '北京市北京市东城区', 'emergent_contact': None, 'emergent_contact_phone': None, 'activities_joined': 1, 'activities_absence': 0, 'remark': '无', 'audit_status': 0, 'push_status': 1, 'recipient_name': '彭涛4', 'recipient_address': '苏州新区名城花园9-206', 'recipient_phone': '18606208287'}
+email: smtp-mail.outlook.com 587
+[2021-06-11 19:33:29 +0800] [24467] [INFO] Handling signal: hup
+[2021-06-11 19:33:29 +0800] [24467] [INFO] Hang up: Master
+[2021-06-11 19:33:29 +0800] [24467] [WARNING] Worker with pid 24469 was terminated due to signal 1
+[2021-06-11 19:33:29 +0800] [24467] [WARNING] Worker with pid 24470 was terminated due to signal 1
+[2021-06-11 19:33:29 +0800] [25553] [INFO] Booting worker with pid: 25553
+[2021-06-11 19:33:29 +0800] [25552] [INFO] Booting worker with pid: 25552
+[2021-06-11 19:33:29 +0800] [24467] [WARNING] Worker with pid 24472 was terminated due to signal 1
+[2021-06-11 19:33:29 +0800] [25554] [INFO] Booting worker with pid: 25554
+[2021-06-11 19:33:29 +0800] [24467] [WARNING] Worker with pid 24471 was terminated due to signal 1
+[2021-06-11 19:33:29 +0800] [25555] [INFO] Booting worker with pid: 25555
+2021-06-17 14:00:15,308 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+{'status': 'success', 'participant_openid': 'om68340n3bFxQwj-YXqnWjXgnEFM', 'activity_id': 10, 'activity_title': '世纪公园- 一对一陪伴健步走', 'real_name': '彭涛', 'id_type': '身份证', 'idcard': '123456789012340115', 'email': 'taope@cisco.com', 'paper_certificate': True}
+2021-06-17 14:00:29,083 views.py:222:INFO:<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+2021-06-17 14:00:29,089 views.py:249:INFO:{'openid': 'om68340n3bFxQwj-YXqnWjXgnEFM', 'registration_date': datetime.datetime(2021, 5, 5, 0, 0), 'role': 0, 'name': 'peter', 'real_name': '彭涛', 'id_type': '身份证', 'idcard': '123456789012340115', 'idcard_verified': 0, 'disabled_id': None, 'disabled_id_verified': 0, 'phone': '18606208287', 'phone_verified': 1, 'email': 'taope@cisco.com', 'email_verified': 0, 'contact': None, 'gender': '男', 'birth': datetime.datetime(1973, 10, 23, 0, 0), 'address': '北京市北京市东城区', 'emergent_contact': None, 'emergent_contact_phone': None, 'activities_joined': 1, 'activities_absence': 0, 'remark': '无', 'audit_status': 0, 'push_status': 1, 'recipient_name': '彭涛5', 'recipient_address': '苏州新区名城花园9-206', 'recipient_phone': '18606208287'}
+email: smtp-mail.outlook.com 587
+2021-06-17 14:19:55,571 views.py:206:INFO:query all user info with role type successfully
+2021-06-17 14:22:00,318 views.py:206:INFO:query all user info with role type successfully
+2021-06-17 14:22:35,687 views.py:206:INFO:query all user info with role type successfully
+2021-06-29 09:50:48,524 manage.py:16:WARNING:Server 404.
+2021-06-29 09:50:48,525 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:50:48,529 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:50:48 +0800] [25554] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:51:42,904 manage.py:16:WARNING:Server 404.
+2021-06-29 09:51:42,905 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:51:42,908 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:51:42 +0800] [25552] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:51:48,240 manage.py:16:WARNING:Server 404.
+2021-06-29 09:51:48,241 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:51:48,241 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:51:48 +0800] [25552] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:51:57,591 manage.py:16:WARNING:Server 404.
+2021-06-29 09:51:57,591 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:51:57,595 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:51:57 +0800] [25555] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:52:05,516 manage.py:16:WARNING:Server 404.
+2021-06-29 09:52:05,516 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:52:05,517 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:52:05 +0800] [25552] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:52:40,188 manage.py:16:WARNING:Server 404.
+2021-06-29 09:52:40,188 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:52:40,189 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:52:40 +0800] [25555] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:53:19,214 manage.py:16:WARNING:Server 404.
+2021-06-29 09:53:19,215 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:53:19,215 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:53:19 +0800] [25555] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:53:33,866 manage.py:16:WARNING:Server 404.
+2021-06-29 09:53:33,867 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:53:33,867 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:53:33 +0800] [25555] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:53:42,507 manage.py:16:WARNING:Server 404.
+2021-06-29 09:53:42,508 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:53:42,509 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:53:42 +0800] [25552] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:54:32,846 manage.py:16:WARNING:Server 404.
+2021-06-29 09:54:32,846 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:54:32,847 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:54:32 +0800] [25552] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:55:26,971 manage.py:16:WARNING:Server 404.
+2021-06-29 09:55:26,972 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:55:26,973 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:55:26 +0800] [25552] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:55:32,623 manage.py:16:WARNING:Server 404.
+2021-06-29 09:55:32,624 app.py:1891:ERROR:Exception on /activityParticipant/ [GET]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:55:32,625 manage.py:21:ERROR:Server 500.
+[2021-06-29 09:55:32 +0800] [25555] [ERROR] Error handling request /activityParticipant/
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1926, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1908, in raise_routing_exception
+    raise request.routing_exception
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/ctx.py", line 350, in match_request
+    result = self.url_adapter.match(return_rule=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/werkzeug/routing.py", line 1945, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 55, in handle
+    self.handle_request(listener_name, req, client, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/ggevent.py", line 127, in handle_request
+    super().handle_request(listener_name, req, sock, addr)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/gunicorn/workers/base_async.py", line 108, in handle_request
+    respiter = self.wsgi(environ, resp.start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_socketio/__init__.py", line 45, in __call__
+    return super(_SocketIOMiddleware, self).__call__(environ,
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/engineio/middleware.py", line 71, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 666, in error_router
+    return original_handler(e)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1881, in handle_exception
+    return self.finalize_request(server_error, from_error_handler=True)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1968, in finalize_request
+    response = self.make_response(rv)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 2097, in make_response
+    raise TypeError(
+TypeError: The view function did not return a valid response. The function either returned None or ended without a return statement.
+2021-06-29 09:55:45,062 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-29 09:56:17,105 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-29 09:57:28,698 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-29 09:59:56,133 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-29 10:01:53,967 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-29 10:01:59,821 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-29 10:02:08,658 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-30 16:28:31,865 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-30 16:29:37,572 activitybiz.py:11:INFO:Convert activity dto.
+2021-06-30 16:29:37,615 activitybiz.py:11:INFO:Convert activity dto.
+2021-06-30 16:29:37,625 views.py:40:INFO:get all activities successfully
+2021-06-30 16:29:37,676 views.py:49:INFO:query all tags info successfully
+2021-06-30 16:29:37,703 views.py:65:INFO:query all carousel info successfully
+2021-06-30 16:29:38,964 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=031nmf100umxXL196m400nUYHk3nmf1u&grant_type=authorization_code
+2021-06-30 16:29:39,590 views.py:300:WARNING:: user not registered
+2021-06-30 16:29:40,287 views.py:56:ERROR:wxapp authorization failed
+2021-06-30 16:29:41,632 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-30 16:29:44,023 views.py:300:WARNING:: user not registered
+2021-06-30 16:29:45,477 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-30 16:29:51,138 views.py:300:WARNING:: user not registered
+{'js_code': '081QP2ll2Iaxj74MN9ll2wBu6y0QP2lw', 'encryptedData': 'c6lMkmggdmmivT/HLvZ0MUNIBNti+OcWvtwEPzqs5wDiS1UCCtOIHXMz6UAWyzhPqgTCWJij5B0BYpCRY1EbDmJnyQmDfu3ioJgMv8T/LQpX554b4O6PCnvU1GvRfN/8cVIX5WaQAikYSmtqhIsUvdQtPCfEv79FtWakgBanq8H+fUql1bKJtiqyHAfJOIe+Xz4m87wtqRKoVw4Q8r243A==', 'iv': 'M7J3ntSAd91al2OCghiHCg=='}
+2021-06-30 16:30:02,880 views.py:370:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=081QP2ll2Iaxj74MN9ll2wBu6y0QP2lw&grant_type=authorization_code
+{'js_code': '031cfq000QvUYL1zpN000KEaqY3cfq0A', 'encryptedData': 'jrgnAr0Zfoit3cmMJ5AXsTt190gQYTiWz+ToN2a+1YowcRHhMp3umEt2HfmHy86PGFTFsjgo5bNTKJqF/XLYlv7LO2fauTi9T4jUQbkyiMMmN+giQb8Gtn/0Ftg2Px28nGaF1sEwZjhifV+VGCryyYor+s7RSlFNArYsqfiLhb3nMpZ6vDfGVS4JaYfjqvEv2Oets6EZl49DVllZV4v8ag==', 'iv': 'rcTJX54zyjEK3b499zndtQ=='}
+2021-06-30 16:30:08,609 views.py:370:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=031cfq000QvUYL1zpN000KEaqY3cfq0A&grant_type=authorization_code
+2021-06-30 16:30:57,743 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-30 16:32:06,176 views.py:300:WARNING:: user not registered
+2021-06-30 16:32:09,639 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-30 16:32:11,241 views.py:300:WARNING:: user not registered
+2021-06-30 16:32:14,873 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-06-30 16:32:16,561 views.py:300:WARNING:: user not registered
+2021-07-15 16:37:25,202 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:37:25,227 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:37:25,546 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:37:25,770 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:37:25,791 views.py:40:INFO:get all activities successfully
+2021-07-15 16:37:57,804 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:37:58,002 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:37:58,274 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:37:58,462 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:37:58,479 views.py:40:INFO:get all activities successfully
+2021-07-15 16:38:02,113 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:38:02,134 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:38:02,151 views.py:40:INFO:get all activities successfully
+2021-07-15 16:38:02,997 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:38:03,653 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:38:30,729 views.py:300:WARNING:: user not registered
+2021-07-15 16:38:31,597 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:38:31,615 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:38:31,628 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:38:31,758 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:38:31,779 views.py:40:INFO:get all activities successfully
+2021-07-15 16:38:33,255 views.py:300:WARNING:: user not registered
+2021-07-15 16:38:41,067 views.py:300:WARNING:: user not registered
+2021-07-15 16:38:41,243 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=091k53100HYT2M1f6t00032HFY1k5312&grant_type=authorization_code
+2021-07-15 16:38:43,121 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 16:38:43,269 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:38:43,288 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:38:43,295 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:38:43,298 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:38:43,301 views.py:40:INFO:get all activities successfully
+2021-07-15 16:38:44,594 views.py:300:WARNING:: user not registered
+2021-07-15 16:38:46,328 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 16:39:27,284 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:39:27,302 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:39:27,317 views.py:40:INFO:get all activities successfully
+2021-07-15 16:39:27,333 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:39:27,351 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:39:27,850 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=001In5Ga1NMRnB04B2Ha1Vp0tf4In5Gf&grant_type=authorization_code
+2021-07-15 16:39:29,673 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 16:39:32,995 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:39:33,011 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:39:33,017 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:39:33,024 views.py:40:INFO:get all activities successfully
+2021-07-15 16:39:33,032 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:39:33,468 views.py:300:WARNING:: user not registered
+2021-07-15 16:39:33,558 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=071zD7ll2SJ4o74j3Wkl2KHH0f3zD7lp&grant_type=authorization_code
+2021-07-15 16:39:34,742 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 16:39:35,708 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 16:40:04,763 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:40:04,778 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:40:04,791 views.py:40:INFO:get all activities successfully
+2021-07-15 16:40:04,792 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:40:04,816 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:40:05,607 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=0213nOFa1JS8oB001UIa16HA7903nOFH&grant_type=authorization_code
+2021-07-15 16:40:06,757 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 16:40:08,140 views.py:300:WARNING:: user not registered
+2021-07-15 16:40:09,437 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 16:41:03,535 app.py:1891:ERROR:Exception on /activityParticipant/om6834wWFZ_yjiMVbcVp2thK-LAQ [POST]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/dell1/peter/grimm_v2/Grimm/grimm/activity/views.py", line 192, in post
+    info = json.loads(request.get_data())
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2021-07-15 16:41:03,793 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 16:41:52,294 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:41:52,310 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:41:52,323 views.py:40:INFO:get all activities successfully
+2021-07-15 16:41:52,384 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:41:52,439 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:41:53,030 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=041TzmGa1LnAnB05Q5Ha1C9kQv0TzmGi&grant_type=authorization_code
+2021-07-15 16:41:54,375 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 16:42:24,205 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:42:24,224 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:42:24,230 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:42:24,238 views.py:40:INFO:get all activities successfully
+2021-07-15 16:42:24,248 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:42:24,928 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=081vv9200vrN1M1cu4100KhRjD4vv92Q&grant_type=authorization_code
+2021-07-15 16:42:26,162 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 16:42:29,756 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:42:29,773 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:42:29,783 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:42:29,787 views.py:40:INFO:get all activities successfully
+2021-07-15 16:42:29,794 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:42:30,448 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=011hFDGa1YhjnB0wuAHa1INFBg4hFDGp&grant_type=authorization_code
+2021-07-15 16:42:31,781 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 16:42:34,752 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:42:34,769 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:42:34,773 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:42:34,783 views.py:40:INFO:get all activities successfully
+2021-07-15 16:42:34,796 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:42:35,531 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=091zaI0w3FYtIW2PSY3w3A9qVa4zaI08&grant_type=authorization_code
+2021-07-15 16:42:36,766 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 16:42:48,526 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:42:48,542 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:42:48,550 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:42:48,554 views.py:40:INFO:get all activities successfully
+2021-07-15 16:42:48,566 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:42:49,306 views.py:300:WARNING:: user not registered
+2021-07-15 16:42:49,353 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=001Uk3100YCT2M1LG3300ZsTxo4Uk31e&grant_type=authorization_code
+2021-07-15 16:42:50,593 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 16:42:50,677 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 16:43:40,318 app.py:1891:ERROR:Exception on /activityParticipant/om6834wWFZ_yjiMVbcVp2thK-LAQ [POST]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/dell1/peter/grimm_v2/Grimm/grimm/activity/views.py", line 192, in post
+    info = json.loads(request.get_data())
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2021-07-15 16:43:41,995 views.py:49:INFO:query all tags info successfully
+2021-07-15 16:43:42,023 views.py:65:INFO:query all carousel info successfully
+2021-07-15 16:43:42,239 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:43:42,332 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 16:43:42,353 views.py:40:INFO:get all activities successfully
+2021-07-15 16:43:42,593 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=021dQQkl2bqlo74REPkl2CxTXw0dQQkl&grant_type=authorization_code
+2021-07-15 16:43:44,159 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 16:44:01,181 views.py:300:WARNING:: user not registered
+2021-07-15 16:44:02,318 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 16:45:14,240 app.py:1891:ERROR:Exception on /activityParticipant/om6834wWFZ_yjiMVbcVp2thK-LAQ [POST]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/dell1/peter/grimm_v2/Grimm/grimm/activity/views.py", line 201, in post
+    activity_title = activity_info.title
+AttributeError: 'NoneType' object has no attribute 'title'
+2021-07-15 16:45:14,474 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+{'status': 'success', 'participant_openid': 'om68340n3bFxQwj-YXqnWjXgnEFM', 'activity_id': 10, 'activity_title': '世纪公园- 一对一陪伴健步走', 'real_name': '彭涛', 'id_type': '身份证', 'idcard': '123456789012340115', 'email': 'taope@cisco.com', 'paper_certificate': True}
+2021-07-15 16:54:50,673 views.py:222:INFO:<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+2021-07-15 16:54:50,680 views.py:249:INFO:{'openid': 'om68340n3bFxQwj-YXqnWjXgnEFM', 'registration_date': datetime.datetime(2021, 5, 5, 0, 0), 'role': 0, 'name': 'peter', 'real_name': '彭涛', 'id_type': '身份证', 'idcard': '123456789012340115', 'idcard_verified': 0, 'disabled_id': None, 'disabled_id_verified': 0, 'phone': '18606208287', 'phone_verified': 1, 'email': 'taope@cisco.com', 'email_verified': 0, 'contact': None, 'gender': '男', 'birth': datetime.datetime(1973, 10, 23, 0, 0), 'address': '北京市北京市东城区', 'emergent_contact': None, 'emergent_contact_phone': None, 'activities_joined': 1, 'activities_absence': 0, 'remark': '无', 'audit_status': 0, 'push_status': 1, 'recipient_name': '彭涛5', 'recipient_address': '苏州新区名城花园9-206', 'recipient_phone': '18606208287'}
+email: smtp-mail.outlook.com 587
+2021-07-15 17:04:06,092 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:04:06,102 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:04:06,110 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:04:06,126 views.py:40:INFO:get all activities successfully
+2021-07-15 17:04:06,128 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:04:07,271 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=071rbqll29nMn74XURml2CLUKm0rbql8&grant_type=authorization_code
+2021-07-15 17:04:08,631 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:05:08,974 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:05:08,992 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:05:09,004 views.py:40:INFO:get all activities successfully
+2021-07-15 17:05:09,007 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:05:09,024 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:05:09,687 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=021jBw000cUq3M1xuf000ydRZN0jBw0z&grant_type=authorization_code
+2021-07-15 17:05:11,034 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:05:20,786 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:05:20,802 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:05:20,808 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:05:20,816 views.py:40:INFO:get all activities successfully
+2021-07-15 17:05:20,821 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:05:21,506 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=011bmYll2zmen74MnQml2WMI6o3bmYll&grant_type=authorization_code
+2021-07-15 17:05:22,731 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:05:33,357 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:05:33,373 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:05:33,381 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:05:33,384 views.py:40:INFO:get all activities successfully
+2021-07-15 17:05:33,399 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:05:34,134 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=051kSyFa1lEooB0yO9Ha1z7o4h0kSyFi&grant_type=authorization_code
+2021-07-15 17:05:35,190 views.py:300:WARNING:: user not registered
+2021-07-15 17:05:35,319 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:05:36,962 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:05:56,169 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:05:56,185 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:05:56,196 views.py:40:INFO:get all activities successfully
+2021-07-15 17:05:56,201 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:05:56,211 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:05:56,967 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=041poYll2j7en74bmDml2CpqUz4poYl6&grant_type=authorization_code
+2021-07-15 17:05:57,303 views.py:300:WARNING:: user not registered
+2021-07-15 17:05:58,130 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:05:58,861 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:06:21,501 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:06:21,513 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:06:21,519 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:06:21,531 views.py:40:INFO:get all activities successfully
+2021-07-15 17:06:21,534 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:06:22,376 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=081u7FGa1zdinB018DIa11yhb61u7FGE&grant_type=authorization_code
+2021-07-15 17:06:23,636 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:06:29,334 views.py:300:WARNING:: user not registered
+2021-07-15 17:06:36,120 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:08:13,270 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:08:13,286 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:08:13,293 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:08:13,300 views.py:40:INFO:get all activities successfully
+2021-07-15 17:08:13,308 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:08:14,056 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=091UkSkl21Kko74X3Jll2xQVB62UkSkG&grant_type=authorization_code
+2021-07-15 17:08:15,252 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:09:45,374 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:09:45,392 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:09:45,405 views.py:40:INFO:get all activities successfully
+2021-07-15 17:09:45,446 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:09:45,447 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:09:45,949 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=061rwLHa1gtcmB0sKPHa1wbEpz3rwLHG&grant_type=authorization_code
+2021-07-15 17:09:47,225 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:09:51,172 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:09:51,188 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:09:51,201 views.py:40:INFO:get all activities successfully
+2021-07-15 17:09:51,207 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:09:51,225 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:09:51,659 views.py:300:WARNING:: user not registered
+2021-07-15 17:09:52,049 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=081bAHll2sAvn74fJSkl20RlOK3bAHl7&grant_type=authorization_code
+2021-07-15 17:09:53,243 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:09:55,906 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:12:06,746 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:12:06,763 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:12:06,776 views.py:40:INFO:get all activities successfully
+2021-07-15 17:12:06,811 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:12:06,831 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:12:07,704 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=0517hzFa1MFooB0pCqFa1KfNYX27hzFn&grant_type=authorization_code
+2021-07-15 17:12:07,830 views.py:300:WARNING:: user not registered
+2021-07-15 17:12:09,161 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:12:09,574 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:12:33,399 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:12:33,416 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:12:33,429 views.py:40:INFO:get all activities successfully
+2021-07-15 17:12:33,471 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:12:33,611 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:12:34,163 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=041PTb0w3QK0JW2ny52w3Qmx644PTb0u&grant_type=authorization_code
+2021-07-15 17:12:34,976 views.py:300:WARNING:: user not registered
+2021-07-15 17:12:35,401 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:12:37,047 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:15:48,901 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:15:48,908 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:15:48,918 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:15:48,925 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:15:48,930 views.py:40:INFO:get all activities successfully
+2021-07-15 17:15:49,898 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=0118vzFa19nooB0zoyGa1VVL0u18vzF2&grant_type=authorization_code
+2021-07-15 17:15:51,230 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:15:51,819 views.py:300:WARNING:: user not registered
+2021-07-15 17:15:55,784 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:17:41,973 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:17:41,988 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:17:41,989 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:17:42,001 views.py:40:INFO:get all activities successfully
+2021-07-15 17:17:42,028 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:17:42,762 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=031SyD100bWj2M10E0300pVNKr1SyD1A&grant_type=authorization_code
+2021-07-15 17:17:43,987 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:17:51,181 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:17:51,199 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:17:51,215 views.py:40:INFO:get all activities successfully
+2021-07-15 17:17:51,268 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:17:51,324 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:17:51,926 views.py:300:WARNING:: user not registered
+2021-07-15 17:17:52,020 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=011mY9ll2RI2o74wVoll2zWMtQ3mY9lr&grant_type=authorization_code
+2021-07-15 17:17:53,170 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:17:53,267 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:18:55,185 app.py:1891:ERROR:Exception on /activityParticipant/om6834wWFZ_yjiMVbcVp2thK-LAQ [POST]
+Traceback (most recent call last):
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/dell1/anaconda3/envs/grimm_v2/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/dell1/peter/grimm_v2/Grimm/grimm/activity/views.py", line 201, in post
+    activity_title = activity_info.title
+AttributeError: 'NoneType' object has no attribute 'title'
+2021-07-15 17:19:01,969 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:22:38,250 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:22:38,267 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:22:38,270 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:22:38,280 views.py:40:INFO:get all activities successfully
+2021-07-15 17:22:38,285 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:22:39,090 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=071X08Ga1fLPnB0aZYGa1eUWw23X08Ga&grant_type=authorization_code
+2021-07-15 17:22:40,518 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:22:41,251 views.py:300:WARNING:: user not registered
+2021-07-15 17:22:42,938 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:23:09,198 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:23:09,219 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:23:09,222 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:23:09,236 views.py:40:INFO:get all activities successfully
+2021-07-15 17:23:09,248 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:23:10,052 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=021mfTkl2Zwjo743TXll2fVN151mfTkN&grant_type=authorization_code
+2021-07-15 17:23:11,365 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:23:13,830 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:23:13,848 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:23:13,849 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:23:13,860 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:23:13,860 views.py:40:INFO:get all activities successfully
+2021-07-15 17:23:15,056 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=031EHx000pTp3M1Hxn300ZrJcO3EHx0d&grant_type=authorization_code
+2021-07-15 17:23:15,482 views.py:300:WARNING:: user not registered
+2021-07-15 17:23:16,250 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:23:17,003 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:24:12,517 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:24:12,532 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:24:12,545 views.py:40:INFO:get all activities successfully
+2021-07-15 17:24:12,612 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:24:12,655 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:24:13,170 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=001R3RFa1Bz6oB0tOyGa1uiB7U1R3RFA&grant_type=authorization_code
+2021-07-15 17:24:14,469 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:24:15,304 views.py:300:WARNING:: user not registered
+2021-07-15 17:24:16,739 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:25:38,466 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:25:38,483 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:25:38,496 views.py:40:INFO:get all activities successfully
+2021-07-15 17:25:38,648 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:25:38,703 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:25:39,421 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=041h9RFa1Lv6oB0QdZHa1eQ8QW2h9RFM&grant_type=authorization_code
+2021-07-15 17:25:40,767 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:26:45,567 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:26:45,583 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:26:45,584 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:26:45,597 views.py:40:INFO:get all activities successfully
+2021-07-15 17:26:45,600 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:26:46,283 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=021yg8Ga1hnPnB00mDHa1RNrsO1yg8G2&grant_type=authorization_code
+2021-07-15 17:26:47,585 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:27:29,131 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:27:29,147 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:27:29,151 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:27:29,160 views.py:40:INFO:get all activities successfully
+2021-07-15 17:27:29,179 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:27:29,892 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=061mpGGa17jhnB0x8ZGa1XpOKr1mpGGf&grant_type=authorization_code
+2021-07-15 17:27:30,637 views.py:300:WARNING:: user not registered
+2021-07-15 17:27:31,041 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:27:32,115 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:27:59,978 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:27:59,995 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:28:00,007 views.py:40:INFO:get all activities successfully
+2021-07-15 17:28:00,135 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:28:00,191 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:28:01,328 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=061GZx0000Ip3M1jfk000LDyiS2GZx04&grant_type=authorization_code
+2021-07-15 17:28:01,812 views.py:300:WARNING:: user not registered
+2021-07-15 17:28:02,629 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:28:03,317 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:28:12,075 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:28:12,091 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:28:12,103 views.py:40:INFO:get all activities successfully
+2021-07-15 17:28:12,114 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:28:12,386 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:28:13,018 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=041ryTkl2Tijo74EYYkl2ctDWV0ryTkF&grant_type=authorization_code
+2021-07-15 17:28:13,555 views.py:300:WARNING:: user not registered
+2021-07-15 17:28:14,202 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:28:15,017 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:28:36,188 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:29:38,839 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:29:38,856 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:29:38,870 views.py:40:INFO:get all activities successfully
+2021-07-15 17:29:38,892 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:29:38,929 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:29:39,492 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=051Xb6100vS35M1TUU200EkiIV2Xb61Y&grant_type=authorization_code
+2021-07-15 17:29:39,727 views.py:300:WARNING:: user not registered
+2021-07-15 17:29:40,789 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:29:40,947 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:29:55,115 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:29:55,131 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:29:55,144 views.py:40:INFO:get all activities successfully
+2021-07-15 17:29:55,369 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:29:55,426 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:29:55,992 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=061qUVZv3DZgJW2RAv0w3wObOq4qUVZb&grant_type=authorization_code
+2021-07-15 17:29:56,409 views.py:300:WARNING:: user not registered
+2021-07-15 17:29:57,286 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:29:58,156 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:30:32,078 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:30:32,096 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:30:32,101 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:30:32,111 views.py:40:INFO:get all activities successfully
+2021-07-15 17:30:32,118 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:30:32,952 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=031icP000ITM4M1F4m000IEPur3icP0T&grant_type=authorization_code
+2021-07-15 17:30:34,240 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:30:47,782 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:30:47,798 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:30:47,800 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:30:47,812 views.py:40:INFO:get all activities successfully
+2021-07-15 17:30:47,819 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:30:48,846 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=021P3u0w3taPJW2MkZZv35durE4P3u0u&grant_type=authorization_code
+2021-07-15 17:30:50,006 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:30:51,344 views.py:300:WARNING:: user not registered
+2021-07-15 17:30:52,728 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:31:24,382 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:31:24,398 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:31:24,411 views.py:40:INFO:get all activities successfully
+2021-07-15 17:31:24,596 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:31:24,642 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:31:26,103 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=011w9h000MRe4M1PgZ100Wn0644w9h0g&grant_type=authorization_code
+2021-07-15 17:31:26,531 views.py:300:WARNING:: user not registered
+2021-07-15 17:31:27,313 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:31:27,951 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:32:00,449 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:32:00,465 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:32:00,479 views.py:40:INFO:get all activities successfully
+2021-07-15 17:32:00,485 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:32:00,513 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:32:01,608 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=041pbL0w3Hi6KW2q0g1w3zH90O0pbL0T&grant_type=authorization_code
+2021-07-15 17:32:02,180 views.py:300:WARNING:: user not registered
+2021-07-15 17:32:02,899 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:32:03,655 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
+2021-07-15 17:32:22,163 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:32:22,173 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:32:22,179 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:32:22,191 views.py:40:INFO:get all activities successfully
+2021-07-15 17:32:22,201 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:32:22,891 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=021MEpGa1MLKpB0YShHa1gzgcd4MEpGb&grant_type=authorization_code
+2021-07-15 17:32:24,194 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:32:38,470 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:32:38,486 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:32:38,490 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:32:38,498 views.py:40:INFO:get all activities successfully
+2021-07-15 17:32:38,508 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:32:39,301 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=051gSall2Uv8p741Ptnl2CsBzF4gSalu&grant_type=authorization_code
+2021-07-15 17:32:40,564 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:32:52,196 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:32:52,213 activitybiz.py:11:INFO:Convert activity dto.
+2021-07-15 17:32:52,227 views.py:40:INFO:get all activities successfully
+2021-07-15 17:32:52,247 views.py:49:INFO:query all tags info successfully
+2021-07-15 17:32:52,278 views.py:65:INFO:query all carousel info successfully
+2021-07-15 17:32:52,927 views.py:23:INFO:user login, wxapp authorization: https://api.weixin.qq.com/sns/jscode2session?appid=wx933eded634abf038&secret=9e25fb830e30b2a36959e795a9db628a&js_code=0015iy000zVv4M1lgA0001XJVf05iy0B&grant_type=authorization_code
+2021-07-15 17:32:53,812 views.py:300:WARNING:: user not registered
+2021-07-15 17:32:54,121 views.py:56:ERROR:wxapp authorization failed
+2021-07-15 17:32:55,278 views.py:171:INFO:query all activity_participant info successfully
+<ActivityParticipant 10, om68340DDXrYTpfKM6SuM6XTm44s>
+<ActivityParticipant 10, om68340n3bFxQwj-YXqnWjXgnEFM>
+<ActivityParticipant 11, om6834wWFZ_yjiMVbcVp2thK-LAQ>
