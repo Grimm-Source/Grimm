@@ -32,3 +32,7 @@ class GrimmConfig(Config):
     SMTP_PORT = config.get('SMTP', 'SMTP_PORT')
     SMTP_SERVER = config.get('SMTP', 'SMTP_SERVER')
     SMTP_PASSWORD = config.get('SMTP', 'SMTP_PASSWORD')
+
+    # for api
+    TENCENT_LOCATION_SERVICE_URL = config.get('API', 'TENCENT_LOCATION_SERVICE_URL')
+    TENCENT_LOCATION_SERVICE_KEY = config.get('API', 'TENCENT_LOCATION_SERVICE_KEY')

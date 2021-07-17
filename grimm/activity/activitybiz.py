@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from grimm import logger, db
-from grimm.models.activity import ActivityParticipant
+from grimm.models.activity import ActivityParticipant, RegisteredActivity
 from grimm.models.admin import User
 from grimm.utils import misctools, constants
 
@@ -14,6 +14,7 @@ def activity_converter(activity, openid=0):
     query["title"] = activity["title"]
     query["location"] = activity["location"]
     query["sign_in_radius"] = activity["sign_in_radius"]
+    query["sign_in_token"] = activity["sign_in_token"]
     query["start_time"] = activity["start_time"].strftime("%Y-%m-%dT%H:%M:%S")
     query["end_time"] = activity["end_time"].strftime("%Y-%m-%dT%H:%M:%S")
     query["duration"] = misctools.calc_duration(activity["start_time"], activity["end_time"])
@@ -34,18 +35,18 @@ def activity_converter(activity, openid=0):
     query["thumbs_up"] = ActivityParticipant.query. \
         filter(ActivityParticipant.activity_id == activity["id"],
                ActivityParticipant.thumbs_up == 1).count()
-    query["registered"] = ActivityParticipant.query. \
-        filter(ActivityParticipant.activity_id == activity["id"]).count() if openid == 0 else \
-        ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity["id"],
-                                         ActivityParticipant.participant_openid == openid).count()
-    query["registered_volunteer"] = db.session.query(ActivityParticipant, User). \
-        filter(ActivityParticipant.activity_id == activity["id"]). \
+    query["registered"] = RegisteredActivity.query. \
+        filter(RegisteredActivity.activity_id == activity["id"]).count() if openid == 0 else \
+        RegisteredActivity.query.filter(RegisteredActivity.activity_id == activity["id"],
+                                        RegisteredActivity.user_openid == openid).count()
+    query["registered_volunteer"] = db.session.query(RegisteredActivity, User). \
+        filter(RegisteredActivity.activity_id == activity["id"]). \
         filter(User.role == 0). \
-        filter(ActivityParticipant.participant_openid == User.openid).count()
-    query["registered_impaired"] = db.session.query(ActivityParticipant, User). \
-        filter(ActivityParticipant.activity_id == activity["id"]). \
+        filter(RegisteredActivity.user_openid == User.openid).count()
+    query["registered_impaired"] = db.session.query(RegisteredActivity, User). \
+        filter(RegisteredActivity.activity_id == activity["id"]). \
         filter(User.role == 1). \
-        filter(ActivityParticipant.participant_openid == User.openid).count()
+        filter(RegisteredActivity.user_openid == User.openid).count()
     query["volunteer_capacity"] = activity["volunteer_capacity"]
     query["is_volunteer_limited"] = (
         True
@@ -72,6 +73,7 @@ def activity_converter(activity, openid=0):
         if (activity["activity_fee"] is not None and activity["activity_fee"] > 0)
         else False
     )
+    query["activity_them_pic_name"] = activity['theme_pic_name']
     return query
 
 
