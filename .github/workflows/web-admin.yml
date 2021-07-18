@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: CD
+      - name: build and deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.TEST_HOST }}
@@ -21,6 +21,7 @@ jobs:
           PORT: ${{ secrets.TEST_PORT }}
           script: |
             cd /opt/frontend/Grimm/web-admin
-            git pull --tags origin frontend_nealchen 
+            git pull --tags origin frontend_nealchen
+            dcoker-compose build 
             docker-compose down
-            docker-compose up -d --build
+            docker-compose up -d
