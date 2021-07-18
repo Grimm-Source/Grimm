@@ -229,16 +229,28 @@ class ActivityParticipantParser(object):
         return parser
 
 
-@activity.route("/activityParticipant/<string:participant_openid>", methods=["GET", 'POST'])
+@activity.route("/activityParticipant", methods=["GET", 'POST'])
 class ActivityParticipant_(Resource):
-    def get(self, participant_openid):
-        # participant_openid = request.args.get("participant_openid")
+    @activity.expect(ActivityParticipantParser.get())
+    def get(self):
+        new_info = ActivityParticipantParser.get().parse_args()
+        participant_openid = new_info.get('participant_openid')
+
         activity_participant_infos = ActivityParticipant.query.all()
         logger.info("query all activity_participant info successfully")
         feedback = {"status": "success", "participant_openid": participant_openid, "activities": []}
         for activity_participant in activity_participant_infos:
-            print(activity_participant)
             if activity_participant.participant_openid == participant_openid:
+                logger.info(dbutils.serialize(activity_participant))
+                feedback.update({
+                    'signup_time': activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    'signup_latitude': str(activity_participant.signup_latitude),
+                    'signup_longtitude': str(activity_participant.signup_longitude),
+                    'signoff_time': activity_participant.signoff_time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    'signoff_latitude': str(activity_participant.signoff_latitude),
+                    'signoff_longtitude': str(activity_participant.signoff_longitude)
+                })
+
                 activity_id = activity_participant.activity_id
                 activity_info = Activity.query.filter(Activity.id == activity_id).first()
                 activity = {"id": activity_info.id, "title": activity_info.title,
@@ -250,13 +262,11 @@ class ActivityParticipant_(Resource):
                 activity["content"] = activity_info.content
                 activity["certificated"] = activity_participant.certificated
                 feedback["activities"].append(activity)
-                # email_verify.send("email_resource/confirm-user.html",
-                # "jftt_pt@hotmail.com", "test", "test", "12345678")
         return jsonify(feedback)
 
-    def post(self, participant_openid):
+    def post(self):
         info = json.loads(request.get_data())
-        # participant_openid = info.get("participant_openid", None)
+        participant_openid = info.get("participant_openid", None)
         activity_id = info.get("activity_id", None)
         real_name = info.get("real_name", None)
         id_type = info.get("id_type", None)
@@ -277,7 +287,7 @@ class ActivityParticipant_(Resource):
                     "idcard": idcard,
                     "email": email,
                     "paper_certificate": paper_certificate}
-        print(feedback)
+        logger.info(feedback)
         ActivityParticipant.query. \
             filter(ActivityParticipant.participant_openid == participant_openid,
                    ActivityParticipant.activity_id == activity_id). \
@@ -306,12 +316,13 @@ class ActivityParticipant_(Resource):
             feedback["recipient_phone"] = recipient_phone
         if activity_participant_info and not activity_participant_info.certificated:
             certificated_info["certificated"] = 1
-            certificated_info["certificate_date"] = datetime.now().strftime("%Y-%m-%d")
+            certificated_info["certificate_date"] = datetime.now()
             activity_participant_info.paper_certificate = paper_certificate
-            activity_participant_info.certificated = 1
-            activity_participant_info.certificate_date = 1
+            activity_participant_info.certificated = certificated_info["certificated"]
+            activity_participant_info.certificate_date = certificated_info["certificate_date"]
 
             # update participant's related user info in user table
+            logger.info(dbutils.serialize(activity_participant_info))
             logger.info(dbutils.serialize(certificated_user_info))
             db.session.commit()
 

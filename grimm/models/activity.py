@@ -57,14 +57,14 @@ class ActivityParticipant(db.Model):
     share = db.Column(db.Integer, server_default='0')
     thumbs_up = db.Column(db.Integer, server_default='0')
     certificated = db.Column(db.Integer)
-    certiticate_date = db.Column(db.DateTime)
+    certificate_date = db.Column(db.DateTime)
     paper_certificate = db.Column(db.Integer)
     signup_time = db.Column(db.DateTime)
-    signup_latitude = db.Column(db.DECIMAL(9,6))
-    signup_longitude = db.Column(db.DECIMAL(9,6))
+    signup_latitude = db.Column(db.DECIMAL(9, 6))
+    signup_longitude = db.Column(db.DECIMAL(9, 6))
     signoff_time = db.Column(db.DateTime)
-    signoff_latitude = db.Column(db.DECIMAL(9,6))
-    signoff_longitude = db.Column(db.DECIMAL(9,6))
+    signoff_latitude = db.Column(db.DECIMAL(9, 6))
+    signoff_longitude = db.Column(db.DECIMAL(9, 6))
 
 
 class PickupImpaired(db.Model):
