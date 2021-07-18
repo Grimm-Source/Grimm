@@ -1,0 +1,25 @@
+name: Buid and Deploy UI
+
+on:
+  push:
+    branches: [ frontend_nealchen ]
+  pull_request:
+    branches: [ frontend_nealchen ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: CD
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.TEST_HOST }}
+          USERNAME: ${{ secrets.TEST_USERNAME }}
+          KEY: ${{ secrets.TEST_SSHKEY }}
+          command_timeout: 20m
+          PORT: ${{ secrets.TEST_PORT }}
+          scprit:|
+            docker-compose down
+            docker-compose up -d --build
+            
