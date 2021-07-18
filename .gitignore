@@ -26,3 +26,4 @@ tags
 cscope*
 # IDE
 .vscode
+**/.idea/

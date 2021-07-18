@@ -1,0 +1,7 @@
+version: "2"
+services:
+  grimm-web-admin:
+    build:
+      context: .
+    ports:
+      - "3000:80"
