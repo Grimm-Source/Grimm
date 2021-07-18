@@ -19,7 +19,7 @@ jobs:
           KEY: ${{ secrets.TEST_SSHKEY }}
           command_timeout: 20m
           PORT: ${{ secrets.TEST_PORT }}
-          scprit:|
+          script: |
+            cd /opt/frontend
             docker-compose down
             docker-compose up -d --build
-            
