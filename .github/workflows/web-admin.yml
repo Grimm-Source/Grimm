@@ -20,7 +20,7 @@ jobs:
           command_timeout: 20m
           PORT: ${{ secrets.TEST_PORT }}
           script: |
-            cd /opt/frontend/Grimm
+            cd /opt/frontend/Grimm/web-admin
             git pull --tags origin frontend_nealchen 
             docker-compose down
             docker-compose up -d --build
