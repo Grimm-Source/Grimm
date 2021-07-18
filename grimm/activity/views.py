@@ -229,28 +229,17 @@ class ActivityParticipantParser(object):
         return parser
 
 
-@activity.route("/activityParticipant", methods=["GET", 'POST'])
+@activity.route("/activityParticipant/<string:participant_openid>", methods=["GET", 'POST'])
 class ActivityParticipant_(Resource):
-    @activity.expect(ActivityParticipantParser.get())
-    def get(self):
-        new_info = ActivityParticipantParser.get().parse_args()
-        participant_openid = new_info.get('participant_openid')
-
+    def get(self, participant_openid):
+        # participant_openid = request.args.get("participant_openid")
         activity_participant_infos = ActivityParticipant.query.all()
         logger.info("query all activity_participant info successfully")
         feedback = {"status": "success", "participant_openid": participant_openid, "activities": []}
         for activity_participant in activity_participant_infos:
+            print(activity_participant)
             if activity_participant.participant_openid == participant_openid:
-                feedback.update({
-                    'signup_time': activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                    'signup_latitude': str(activity_participant.signup_latitude),
-                    'signup_longtitude': str(activity_participant.signup_longitude),
-                    'signoff_time': activity_participant.signoff_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                    'signoff_latitude': str(activity_participant.signoff_latitude),
-                    'signoff_longtitude': str(activity_participant.signoff_longitude)
-                })
-
-                activity_id = int(activity_participant.activity_id)
+                activity_id = activity_participant.activity_id
                 activity_info = Activity.query.filter(Activity.id == activity_id).first()
                 activity = {"id": activity_info.id, "title": activity_info.title,
                             "location": activity_info.location}
@@ -265,9 +254,9 @@ class ActivityParticipant_(Resource):
                 # "jftt_pt@hotmail.com", "test", "test", "12345678")
         return jsonify(feedback)
 
-    def post(self):
-        info = request.get_json()
-        participant_openid = info.get("participant_openid", None)
+    def post(self, participant_openid):
+        info = json.loads(request.get_data())
+        # participant_openid = info.get("participant_openid", None)
         activity_id = info.get("activity_id", None)
         real_name = info.get("real_name", None)
         id_type = info.get("id_type", None)
@@ -275,9 +264,9 @@ class ActivityParticipant_(Resource):
         email = info.get("email", None)
         paper_certificate = info.get("paper_certificate", None)
         activity_info = Activity.query.filter(Activity.id == activity_id).first()
-        activity_title = activity_info.get("title", None)
-        start = activity_info["start_time"]
-        end = activity_info["end_time"]
+        activity_title = activity_info.title
+        start = activity_info.start_time
+        end = activity_info.end_time
         activity_duration = (end - start).days * 24 + (end - start).seconds // 3600
         feedback = {"status": "success",
                     "participant_openid": participant_openid,
@@ -288,6 +277,7 @@ class ActivityParticipant_(Resource):
                     "idcard": idcard,
                     "email": email,
                     "paper_certificate": paper_certificate}
+        print(feedback)
         ActivityParticipant.query. \
             filter(ActivityParticipant.participant_openid == participant_openid,
                    ActivityParticipant.activity_id == activity_id). \
@@ -297,7 +287,7 @@ class ActivityParticipant_(Resource):
                    ActivityParticipant.participant_openid == participant_openid).first()
         logger.info(activity_participant_info)
 
-        certificated_user_info = db.session.query.filter(User.openid == participant_openid).first()
+        certificated_user_info = User.query.filter(User.openid == participant_openid).first()
         certificated_user_info.real_name = real_name
         certificated_user_info.id_type = id_type
         certificated_user_info.idcard = idcard
@@ -314,7 +304,7 @@ class ActivityParticipant_(Resource):
             feedback["recipient_name"] = recipient_name
             feedback["recipient_address"] = recipient_address
             feedback["recipient_phone"] = recipient_phone
-        if not activity_participant_info.certificated:
+        if activity_participant_info and not activity_participant_info.certificated:
             certificated_info["certificated"] = 1
             certificated_info["certificate_date"] = datetime.now().strftime("%Y-%m-%d")
             activity_participant_info.paper_certificate = paper_certificate
