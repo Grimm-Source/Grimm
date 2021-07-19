@@ -50,6 +50,7 @@ class PickupPair(db.Model):
 
 
 class ActivityParticipant(db.Model):
+    """Test"""
     __tablename__ = 'ACTIVITY_PARTICIPANT'
     activity_id = db.Column(db.BigInteger, db.ForeignKey('ACTIVITY.id'), primary_key=True)
     participant_openid = db.Column(db.String(28), db.ForeignKey('USER.openid'), primary_key=True)
