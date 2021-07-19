@@ -49,7 +49,7 @@ create database grimmdb default character set utf8mb4 collate utf8mb4_unicode_ci
 ```
 
 ```bash
-$ set FLASK_APP=manage.py
+$ set FLASK_APP=manage.py   # on centOS, use: export FLASK_APP=manage.py
 $ flask db init  # Just execute it at the first time
 $ flask db migrate -m "Initial migration."
 $ flask db upgrade
@@ -222,3 +222,10 @@ def orm_test():
 if __name__ == '__main__':
     app.run(debug=True)
 ```
+
+
+## Reference
+
+### Binding SSL certificate with nginx
+
+https://cloud.tencent.com/document/product/400/35244

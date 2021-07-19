@@ -35,7 +35,6 @@ import grimm.utils.vrfcode as vrfcode
 from grimm import logger, db, GrimmConfig
 from grimm.exceptions.exceptions import UserEmailError
 from grimm.models.admin import Admin
-from grimm.utils.misctools import get_pardir
 from grimm.utils.constants import DEFAULT_PROTOCOL, EMAIL_REGEX as REGEX
 
 
@@ -122,7 +121,7 @@ def send(email_sample, receiver, subject, plain, replacement, attachment_file=No
     # check global smtp connection status and reconnect if necessary
     if not smtp_connection_status():
         context = ssl.create_default_context()
-        print("email: " + smtp_domain, smtp_port)
+        logger.info("email: " + smtp_domain, smtp_port)
         # SMTP_CONNECTION = smtplib.SMTP_SSL(smtp_domain, smtp_port, context=context, timeout=3600)
         # response = SMTP_CONNECTION.login(sender, passcode)
         SMTP_CONNECTION = smtplib.SMTP(smtp_domain, smtp_port)

@@ -13,6 +13,8 @@
 venv/
 # log files
 log
+logs
+logs/*
 # python cache files
 __pycache__
 # MANIFEST resource files
@@ -38,5 +40,6 @@ dysms_access_key.json
 /server/dbbk
 .idea/*
 .pycharm/*
+grimm-dev.ini
 grimm-prod.ini
 grimm-test.ini
