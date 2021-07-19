@@ -41,6 +41,8 @@ jobs:
           git checkout HEAD run_grimm.sh
           git pull git://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
           source ../venv/bin/activate
+          export FLASK_APP=manage.py
+          export FLASK_ENV=development
           pip install -r requirements.txt
           pid=$(cat logs/grimm.pid)
           echo "$pid"

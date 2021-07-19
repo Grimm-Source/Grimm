@@ -14,7 +14,14 @@ class Config(object):
 
 class GrimmConfig(Config):
     config = configparser.RawConfigParser()
-    config.read(BASE_DIR + '/grimm-dev.ini')  # switch env here if needed
+    env = os.environ.get('FLASK_ENV')
+    print('Env: %s' % env)
+    if env == 'production':
+        config.read(BASE_DIR + '/grimm-prod.ini')
+    elif env == 'testing':
+        config.read(BASE_DIR + '/grimm-test.ini')
+    else:
+        config.read(BASE_DIR + '/grimm-dev.ini')
 
     # for wei xin setting
     WX_APP_ID = config.get('WX', 'WX_APP_ID')
