@@ -50,9 +50,9 @@ create database grimmdb default character set utf8mb4 collate utf8mb4_unicode_ci
 
 ```bash
 $ set FLASK_APP=manage.py   # on centOS, use: export FLASK_APP=manage.py
-$ flask db init  # Just execute it at the first time
-$ flask db migrate -m "Initial migration."
-$ flask db upgrade
+$ flask db init  # Just execute it at the first time to generate migrations folder
+$ flask db migrate -m "Initial migration."  # generate migration script(must check and edit)
+$ flask db upgrade  # upgrade your db according to the scripts in migrations folder
 ```
 
 reference doc:
@@ -61,7 +61,15 @@ reference doc:
 
 [Alembic autogenerate documentation](http://alembic.zzzcomputing.com/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect)
 
-Attentions: the migration script needs to be reviewed and edited.
+Attentions: the migration script needs to be reviewed and edited. and please do not use db.create_all()
+
+If you are the first time to clone the project code, follow below steps to build your table structure:
+
+(1)Create db with above sql
+
+(2)Execute *set FLASK_APP=manage.py*  (on linux, the command is *export FLASK_APP=manage.py*)
+
+(3)Finally, execute *flask db upgrade* to synchronize the table structure.
 
 ### - flask_restx
 

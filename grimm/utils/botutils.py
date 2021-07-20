@@ -20,6 +20,8 @@ def send_error_to_spark(url, method, traceback, err_msg, email=None):
     error_msg = "  \nExecute error message is [ {} ]".format(err_msg)
     traceback_msg = "  \n  \n{}  \n".format(traceback)
     msg = job_msg + method_msg + exec_msg + hostname_msg + ip_msg + error_msg + traceback_msg
+    if len(msg) > 7000:  # spark limit <=7349
+        msg = msg[:4000] + '  \n ... ...  \n' + msg[-3000:]
     send_text_to_spark_room(hi + "```{}```".format(msg), GrimmConfig.GRIMM_EXCEPTION_MSG_ROOM)
 
 

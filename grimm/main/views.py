@@ -3,22 +3,11 @@ from datetime import datetime
 import bcrypt
 from flask import jsonify, request
 from flask_restx import Resource
-from sqlalchemy import inspect
 
-from grimm import logger, db, engine
+from grimm import logger, db
 from grimm.main import main
 from grimm.models.admin import Admin
 from grimm.utils import constants
-
-
-@main.route("/db/init", methods=['GET'])
-class InitDB(Resource):
-    def get(self):
-        """init db, attention: must create db manually and then execute this interface"""
-        if inspect(engine).has_table(Admin.__tablename__):
-            return 'Database table already exists.'
-        db.create_all()
-        return 'Database table created successfully.'
 
 
 @main.route("/addAdmin")
