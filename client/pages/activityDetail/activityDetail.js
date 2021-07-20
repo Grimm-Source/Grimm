@@ -6,11 +6,13 @@ const {
   shareActivity
 } = require('../../utils/requestUtil.js');
 
+const apiUrl = require('../../config.js').apiUrl;
+
 const app = getApp();
 
 Page({
   data: {
-    banner: '/images/banner.jpeg',
+    banner: '',  ///images/banner.jpeg
     title: '',
     isLike: false,
     start_time: '',
@@ -27,6 +29,7 @@ Page({
 
     pickupImpairedModalVisible: false, //弹出 不需要、晚些决定、需要接送 模态框
     needPickup: false, //需要接送
+    themePicName: '',
     impired: {
       name: '',
       idNo: '',
@@ -79,6 +82,7 @@ Page({
         visuallyImpairedTotal: res.vision_impaired_capacity,
         visuallyImpairedCurr: res.registered_impaired,
         needPickup: res.needPickup == 1,
+        banner: apiUrl + '/activity/themePic?activity_them_pic_name=' + res.activity_them_pic_name,
         impired: {
           name: res.name,
           idNo: res.idNo,
