@@ -15,7 +15,6 @@ class Config(object):
 class GrimmConfig(Config):
     config = configparser.RawConfigParser()
     env = os.environ.get('FLASK_ENV')
-    print('Env: %s' % env)
     if env == 'production':
         config.read(BASE_DIR + '/grimm-prod.ini')
     elif env == 'testing':
@@ -43,3 +42,8 @@ class GrimmConfig(Config):
     # for api
     TENCENT_LOCATION_SERVICE_URL = config.get('API', 'TENCENT_LOCATION_SERVICE_URL')
     TENCENT_LOCATION_SERVICE_KEY = config.get('API', 'TENCENT_LOCATION_SERVICE_KEY')
+
+    # for app
+    GRIMM_EXCEPTION_MSG_ROOM = config.get('APP', 'GRIMM_EXCEPTION_MSG_ROOM')
+    GRIMM_BOT_TOKEN = config.get('APP', 'GRIMM_BOT_TOKEN')
+    GRIMM_BOT_MESSAGE_URL = config.get('APP', 'GRIMM_BOT_MESSAGE_URL')

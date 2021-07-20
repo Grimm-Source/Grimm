@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 
 import bcrypt
@@ -46,8 +45,6 @@ class AddAdmin(Resource):
 class TagsDB(Resource):
     def get(self):
         """view function to get all tags info."""
-        env = os.environ.get('FLASK_ENV')  # for test, because my computer is windows
-        logger.info("Current Env: %s" % env)
         tag_list = [{'tag_id': i, 'tag_name': constants.TAG_LIST[i]} for i in range(len(constants.TAG_LIST))]
         logger.info("query all tags info successfully")
         return jsonify(tag_list)
