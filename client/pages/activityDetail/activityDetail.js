@@ -1,10 +1,18 @@
-const { getActivityDetail, toggleInterest, toggleThumbsUp, toggleRegister, shareActivity} = require('../../utils/requestUtil.js');
+const {
+  getActivityDetail,
+  toggleInterest,
+  toggleThumbsUp,
+  toggleRegister,
+  shareActivity
+} = require('../../utils/requestUtil.js');
+
+const apiUrl = require('../../config.js').apiUrl;
 
 const app = getApp();
 
 Page({
   data: {
-    banner: '/images/banner.jpeg',
+    banner: '',  ///images/banner.jpeg
     title: '',
     isLike: false,
     start_time: '',
@@ -18,6 +26,17 @@ Page({
     visuallyImpairedTotal: 0,
     visuallyImpairedCurr: 0,
     isActivityEnd: false,
+
+    pickupImpairedModalVisible: false, //弹出 不需要、晚些决定、需要接送 模态框
+    needPickup: false, //需要接送
+    themePicName: '',
+    impired: {
+      name: '',
+      idNo: '',
+      impairedNo: '',
+      pickupAddr: '',
+      emergencyContact: '',
+    },
   },
   //事件处理函数
   onLoad: function (option) {
@@ -29,10 +48,10 @@ Page({
     this.getActivity();
   },
   onShow: function () {
-   this.getActivity();
+    this.getActivity();
   },
-  onTapLike: function() {
-    if( !app.globalData.isAuthorized){
+  onTapLike: function () {
+    if (!app.globalData.isAuthorized) {
       this.authorize();
       return;
     }
@@ -43,12 +62,12 @@ Page({
       });
     });
   },
-  getActivity: function (){
+  getActivity: function () {
     getActivityDetail(this.data.id, (res) => {
       const startTime = res.start_time.replace("T", " ");
       const endTime = res.end_time.replace("T", " ");
       const isStarted = Date.now() > Date.parse(res.start_time);
-      
+
       this.setData({
         title: res.title,
         isLike: res.thumbs_up === 1,
@@ -62,6 +81,15 @@ Page({
         volunteerCurr: res.registered_volunteer,
         visuallyImpairedTotal: res.vision_impaired_capacity,
         visuallyImpairedCurr: res.registered_impaired,
+        needPickup: res.needPickup == 1,
+        banner: apiUrl + '/activity/themePic?activity_them_pic_name=' + res.activity_them_pic_name,
+        impired: {
+          name: res.name,
+          idNo: res.idNo,
+          impairedNo: res.impairedNo,
+          pickupAddr: res.pickupAddr,
+          emergencyContact: res.emergencyContact,
+        },
         content: `
           ${res.content}
 
@@ -75,22 +103,22 @@ Page({
       //console.log(res);
     });
   },
-  onShareAppMessage:function(){
+  onShareAppMessage: function () {
     shareActivity(this.data.id);
   },
-  onTapRegister: function() {
-    if( !app.globalData.isAuthorized){
+  onTapRegister: function () {
+    if (!app.globalData.isAuthorized) {
       this.authorize('login');
       return;
     }
-    const isRegistered = !this.data.isRegistered;//activity
-    if(app.globalData.isRegistered) { // user registered
+    const isRegistered = !this.data.isRegistered; //activity
+    if (app.globalData.isRegistered) { // user registered
       if (this.checkActivityStarted()) {
         console.log("用户点击已开始活动.");
         return;
       }
-      const isVolunteer =  app.globalData.isVolunteer;
-  
+      const isVolunteer = app.globalData.isVolunteer;
+
       /* check the capacity before register activity request */
       var capacity_allow = true;
       if (isVolunteer) {
@@ -103,7 +131,7 @@ Page({
         }
       }
       if (capacity_allow || this.data.isRegistered) {
-         /* register activity request */
+        /* register activity request */
         toggleRegister(this.data.id, isRegistered, () => {
           if (isVolunteer) {
             this.setData({
@@ -116,19 +144,33 @@ Page({
               visuallyImpairedCurr: this.updateCurrentValue(isRegistered, false)
             });
           }
+          if (isRegistered) {
+            if (app.globalData.isVolunteer) {
+              let url = '../volunteerSignUpSuccess/volunteerSignUpSuccess?activityId=' + this.data.id + '&'
+              url = url + 'title=' + this.data.title + '&'
+              url = url + 'date=' + this.data.date + '&'
+              url = url + 'address=' + this.data.address + '&'
+              wx.navigateTo({
+                url: url
+              });
+            } else {
+              this.setData({
+                pickupImpairedModalVisible: true
+              });
+            }
+          } else {
+            wx.showModal({
+              title: '报名取消',
+              showCancel: false
+            });
+          }
+        },(message)=>{
+          wx.showToast({
+            title: message || '报名异常',
+            icon: 'none',
+            duration: 2000
+          });
         });
-      /* show the register/deregister modal */
-        if(isRegistered) {
-          wx.showModal({
-            title: '报名成功',
-            showCancel: false
-          });
-        } else {
-          wx.showModal({
-            title: '报名取消',
-            showCancel: false
-          });
-        }
       } else { // capacity not allow the register
         wx.showModal({
           title: '报名人数已满',
@@ -141,8 +183,8 @@ Page({
         showCancel: true,
         cancelText: "再想想",
         confirmText: "立即注册",
-        success: function(res){
-          if(res.confirm){
+        success: function (res) {
+          if (res.confirm) {
             wx.navigateTo({
               url: '/pages/login/login',
             });
@@ -151,8 +193,8 @@ Page({
       });
     }
   },
-  onTapInterest: function() {
-    if( !app.globalData.isAuthorized){
+  onTapInterest: function () {
+    if (!app.globalData.isAuthorized) {
       this.authorize();
       return;
     }
@@ -164,14 +206,14 @@ Page({
     });
   },
 
-  authorize: function(redirectPage, params){
+  authorize: function (redirectPage, params) {
     const page = redirectPage || `activityDetail&value=${this.data.id}&key=id`;
     wx.navigateTo({
       url: `/pages/authorize/authorize?redirectPage=${page}`
     });
   },
 
-  checkActivityStarted: function() {
+  checkActivityStarted: function () {
     if (this.data.start_time == '') return false;
 
     const isStarted = Date.now() > Date.parse(this.data.start_time);
@@ -184,11 +226,11 @@ Page({
     }
   },
 
-  updateCurrentValue: function(isRegistered, isVolunteer) {
+  updateCurrentValue: function (isRegistered, isVolunteer) {
     var updatedCurr = 0;
     if (isVolunteer && this.data.volunteerCurr) {
       updatedCurr = this.data.volunteerCurr;
-    } else if (!isVolunteer && this.data.visuallyImpairedCurr){
+    } else if (!isVolunteer && this.data.visuallyImpairedCurr) {
       updatedCurr = this.data.visuallyImpairedCurr;
     }
 
@@ -198,5 +240,69 @@ Page({
       updatedCurr--;
     }
     return updatedCurr;
-  }
+  },
+
+  onTapNotRequired: function () {
+    console.log('Not required pick up.')
+    this.setData({
+      pickupImpairedModalVisible: false
+    });
+  },
+
+  onTapDecideLater: function () {
+    console.log('Will decide later.')
+    this.setData({
+      pickupImpairedModalVisible: false
+    });
+  },
+
+  onTapNeedPickup: function () {
+    console.log('Need pick up (from modal). will redirect to pick up detail page.')
+    this.setData({ pickupImpairedModalVisible: false });
+    let url = '../pickupImpaired/pickup?activityId=' + this.data.id + '&'
+    url = url + 'title=' + this.data.title + '&'
+    url = url + 'date=' + this.data.date + '&'
+    url = url + 'address=' + this.data.address + '&'
+    wx.navigateTo({
+      url: url
+    });
+  },
+
+  onTapINeedPickup: function () {
+    console.log('I need pick up (from activity detail page). will redirect to pick up detail page.')
+    let url = ''
+    if (app.globalData.isVolunteer){
+      url = url + '../pickupVolunteer/pickupVolunteer?activityId=' + this.data.id + '&'
+    }else {
+      url = url + '../pickupImpaired/pickup?activityId=' + this.data.id + '&'
+    }
+    url = url + 'title=' + this.data.title + '&'
+    url = url + 'date=' + this.data.date + '&'
+    url = url + 'address=' + this.data.address + '&'
+    url = url + 'willPickup=1' + '&'
+    wx.navigateTo({
+      url: url
+    });
+  },
+
+  onTapPickupDetail: function () {
+    console.log('Show pick up detail.')
+    let url = ''
+    if (app.globalData.isVolunteer) {
+      url = url + '../pickupVolunteerDetail/pickupVolunteerDetail?activityId=' + this.data.id + '&'
+    }else {
+      url = url + '../pickupImpaired/pickup?activityId=' + this.data.id + '&'
+      url = url + 'name=' + this.data.impired.name + '&'
+      url = url + 'idNo=' + this.data.impired.idNo + '&'
+      url = url + 'impairedNo=' + this.data.impired.impairedNo + '&'
+      url = url + 'pickupAddr=' + this.data.impired.pickupAddr + '&'
+      url = url + 'emergencyContact=' + this.data.impired.emergencyContact + '&'
+    }
+    url = url + 'title=' + this.data.title + '&'
+    url = url + 'date=' + this.data.date + '&'
+    url = url + 'address=' + this.data.address + '&'
+    wx.navigateTo({
+      url: url
+    });
+  },
 })

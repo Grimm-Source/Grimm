@@ -107,7 +107,7 @@ const verifyAccount = user => dispatch => {
         data: user
     }).then((userInfo) => {
         storage.setItem("user", userInfo);
-        dispatch(login(userInfo));  
+        dispatch(login(userInfo));
         dispatch(fetchActivityList());
         dispatch(switchAdminFormType(ADMIN_FORM_TYPE.CREATE));
         message.success('登录成功');
@@ -176,9 +176,9 @@ const postActivity = activity => dispatch => {
         method: "POST",
         data: activity
     }).then(() => {
-        dispatch(setActivity({})); 
+        dispatch(setActivity({}));
         dispatch(fetchActivityList());
-        message.success('活动发布成功');   
+        message.success('活动发布成功');
     }, (errorMessage) => {
         message.error(`活动发布失败，${errorMessage}`);
         dispatch(hideLoading());
@@ -193,9 +193,9 @@ const updateActivity = activity => dispatch => {
         method: "POST",
         data: activity
     }).then(() => {
-        dispatch(setActivity({})); 
+        dispatch(setActivity({}));
         dispatch(fetchActivityList());
-        message.success('活动发布成功');   
+        message.success('活动发布成功');
     }, (errorMessage) => {
         message.error(`活动发布失败，${errorMessage}`);
         dispatch(hideLoading());
@@ -210,7 +210,9 @@ export const getActivity = (id, isCopy) => (dispatch, getState) => {
             "id": null,
             "adminId": 0,
             "title": "世纪公园- 一对一陪伴健步走",
-            "location": "锦绣路1001号 世纪公园",
+            "location": "上海市浦东新区锦绣路1001号 世纪公园",
+            "sign_in_radius": 10,
+            "sign_in_token": "",
             "start_time": null,
             "end_time":null,
             "duration":{
@@ -280,7 +282,7 @@ const fetchActivityStatics = id => dispatch => {
     // return request({
     //     path: `activityStatics?id=${id}`
     // }).then(activity => {
-    //     dispatch(setActivityStatics(activity));    
+    //     dispatch(setActivityStatics(activity));
     // }).finally(() => {
         dispatch(hideLoading());
     // });
@@ -301,7 +303,7 @@ const fetchActivityNameList = id => dispatch => {
     //     return request({
     //         path: `activityNameList`
     //     }).then(namelist => {
-    //         dispatch(setActivityNameList(namelist));    
+    //         dispatch(setActivityNameList(namelist));
     //     }).finally(() => {
     //         dispatch(hideLoading());
     //     });
@@ -309,7 +311,7 @@ const fetchActivityNameList = id => dispatch => {
     // return request({
     //     path: `activityNameList?id=${id}`
     // }).then(namelist => {
-    //     dispatch(setActivityNameList(namelist));    
+    //     dispatch(setActivityNameList(namelist));
     // }).finally(() => {
         dispatch(hideLoading());
     // });
@@ -351,7 +353,7 @@ const postAdmin = admin => dispatch => {
         path: `admin`,
         method: "POST",
         data: admin
-    }).then(() => {    
+    }).then(() => {
         dispatch(getAdminList());
         dispatch(switchAdminPanel(ADMIN_PANEL_TYPE.DETAIL));
         message.success('管理员创建成功');
@@ -394,7 +396,7 @@ const fetchAdmin = id => dispatch => {
     return request({
         path: `admin/${id}`
     }).then(admin => {
-        dispatch(setAdmin(admin));    
+        dispatch(setAdmin(admin));
     }).finally(() => {
         dispatch(hideLoading());
     });
@@ -410,13 +412,13 @@ const fetchAdminList = () => dispatch => {
         path: "admins"
     }).then(admins => {
         dispatch(setAdmins(admins));
-        
+
         if (admins.length > 0) {
             dispatch(setAdmin(admins[0]));
             dispatch(getAdmin(admins[0]["id"]));
             return true;
         }
-        
+
         setAdmin({});
         return false;
     }).finally((needHideLoading) => {

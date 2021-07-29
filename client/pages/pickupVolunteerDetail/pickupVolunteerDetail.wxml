@@ -1,0 +1,66 @@
+<view>
+  <view style="display:flex;align-items:center;justify-content:center;font-size: 15px;"><text>{{title}}</text></view>
+  <view style="display:flex;align-items:center;justify-content:center;"><text style="color:grey">时间：{{date}}</text></view>
+  <view style="display:flex;align-items:center;justify-content:center;"><text style="color:grey">地点：{{address}}</text></view>
+  <view class="line"></view>
+  <view>
+    <view class="addr-area">上海</view>
+    <view class="vertical-line">|</view>
+    <view class='select_box select-area'>
+      <view class='select' catchtap='selectTap'>
+        <text class='select_text' style="text-align: center">{{selectData[index]}}</text>
+        <image class='select_img {{selectShow&&"select_img_rotate"}}' src='../../images/downarrow.png'
+          background-size="contain"></image>
+      </view>
+      <view class='option_box' style='height:{{selectShow?(selectData.length>5?325:selectData.length*50):0}}rpx;'>
+        <text class='option' wx:for='{{selectData}}' wx:key='this' data-index='{{index}}'
+          catchtap='optionTap'>{{item}}</text>
+      </view>
+    </view>
+    <view class="map-area" bindtap="tabMapArea">地图</view>
+  </view>
+  <view style="margin-top: 30px;"></view>
+  <view style="z-index: 20" wx:for="{{pickupList}}" wx:key='this'>
+    <view class="card">
+      <view bindtap="onItemClick">
+        <image style="float: left;" class="card-image" mode="aspectFill" src="{{item.avatarUrl}}" />
+        <text style="float: left;margin-left: 10px;margin-top: 10px;">{{item.name}}</text>
+        <view style="float: left;margin-top: 35px;margin-left: -35px;">{{item.address}}</view>
+        <button class="card-button" data-item="{{item}}" bindtap="clickCardDetail">详情</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 志愿人士点击详情后弹出的modal -->
+  <view class="modal-mask" wx:if="{{cardDetailVisible}}">
+    <view class="modal-content detail-footer" style="height: 80%;">
+      <view class="modal-main-content">
+        <view>
+          <image style="float: left;" class="card-image-modal" mode="aspectFill" src="{{cardInfo.avatarUrl}}" />
+          <text style="float: left;margin-left: 10px;margin-top: 16px;">{{cardInfo.name}}</text>
+          <view style="float: left;margin-top: 35px;margin-left: -35px;">{{cardInfo.address}}</view>
+        </view>
+        <view style="color: grey;margin-top: 50px;font-size: 9px;margin-left: 10px;">
+          <text>\n具体信息会在后台审核配对后推送给您，感谢您的爱心<text style="color:red">♥</text>！</text></view>
+        <view class="line-card"></view>
+        <view style="margin-left: 10px;margin-top: 10px;">修改或确认您的接送需求</view>
+        <view style="height:240px">
+          <checkbox-group bindchange="checkboxChange">
+            <label class="weui-cell weui-check__label" wx:for="{{pickupRequirementItems}}" wx:key="{{item.value}}">
+              <view class="weui-cell__hd">
+                <checkbox value="{{item.value}}" checked="{{item.checked}}" style="transform: scale(0.6,0.6);"/>
+              </view>
+              <view class="weui-cell__bd">{{item.name}}</view>
+            </label>
+          </checkbox-group>
+        </view>
+        <view>
+          <button class="card-modal-detail-button" style="background-color:#113E6E;"
+            bindtap="onTapCardDetailConfirm">确认</button>
+          <button class="card-modal-detail-button" style="background-color:grey; "
+            bindtap="onTapCardDetailCancel">取消</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

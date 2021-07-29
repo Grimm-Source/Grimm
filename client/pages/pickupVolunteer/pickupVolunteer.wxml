@@ -1,0 +1,30 @@
+<view class="pickup-wrapper">
+  <text style="display:flex;align-items:center;justify-content:center;">需要接送的话需要实名验证\n</text>
+  <text style="display:flex;align-items:center;justify-content:center;">请如实填写以下信息\n\n</text>
+  <view class="pickup-form-item">
+    <view class="pickup-form-label">*真实姓名</view>
+    <input name="name" placeholder="请填写真实姓名" value="{{name}}" bindinput="changeName" />
+  </view>
+  <view class="pickup-form-item">
+    <view class="pickup-form-label">*身份证号码（18位）</view>
+    <input name="idNo" placeholder="请填写真实身份证号" value="{{idNo}}" maxlength="18" bindinput="changeIdNo" />
+  </view>
+  <view class="pickup-form-item">
+    <view class="pickup-form-label">*您所在的区域</view>
+    <view style="color: lightgrey">志愿者后台会根据您填写的位置尽量就近安排</view>
+    <input name="pickupAddr" placeholder="请填写接送的起始位置" value="{{pickupAddr}}" bindinput="changePickupAddr" />
+  </view>
+  <view class="pickup-form-item">
+    <view class="pickup-form-label">*您可以提供的志愿者服务</view>
+    <checkbox-group bindchange="checkboxChange" style="margin-left: -5px; margin-right: 15px">
+      <label class="weui-cell weui-check__label" wx:for="{{items}}" wx:key="{{item.value}}">
+        <view class="weui-cell__hd">
+          <checkbox value="{{item.value}}" checked="{{item.checked}}" style="transform: scale(0.6,0.6);" />
+        </view>
+        <view class="weui-cell__bd">{{item.name}}</view>
+      </label>
+    </checkbox-group>
+  </view>
+  <text style="font-size:6px">所有信息会由平台方保密</text>
+  <button type="primary" style="margin-top:5px; font-size: 10px" bindtap="onSubmit">提交</button>
+</view>

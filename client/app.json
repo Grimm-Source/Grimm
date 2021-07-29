@@ -15,6 +15,11 @@
     "pages/personalCenter/personalCenter",
     "pages/certificate/applyList",
     "pages/certificate/applyForm"
+    "pages/sign/sign",
+    "pages/pickupImpaired/pickup",
+    "pages/volunteerSignUpSuccess/volunteerSignUpSuccess",
+    "pages/pickupVolunteer/pickupVolunteer",
+    "pages/pickupVolunteerDetail/pickupVolunteerDetail"
   ],
   "window": {
     "backgroundTextStyle": "light",

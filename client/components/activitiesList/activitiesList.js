@@ -1,6 +1,8 @@
 // components/activitiesList/activitiesList.js
 const { getActivityList, getFilteredActivities} = require('../../utils/requestUtil.js');
 
+const apiUrl = require('../../config.js').apiUrl;
+
 Component({
   /**
    * 组件的属性列表
@@ -31,14 +33,19 @@ Component({
    */
   methods: {
     _setActivities: function (activities) {
-        let formattedActivities = [];
-        for (let index = 0; index < activities.length; index++) {
-          let activity = activities[index];
-          activity.schedule = this.getActivityTimeStr(activity);
-          activity.fee = this.getActivityFee(activity);
-          formattedActivities.push(activity);
+      let formattedActivities = [];
+      for (let index = 0; index < activities.length; index++) {
+        let activity = activities[index];
+        activity.schedule = this.getActivityTimeStr(activity);
+        activity.fee = this.getActivityFee(activity);
+        if (activity.activity_them_pic_name){
+          activity.themeUrl = apiUrl + 'activity/themePic?activity_them_pic_name=' + activity.activity_them_pic_name;
+        }else {
+          activity.themeUrl = '../../images/banner_outer.jpeg';
         }
-        this.setData({activitiesProp: formattedActivities});
+        formattedActivities.push(activity);
+      }
+      this.setData({activitiesProp: formattedActivities});
     },
 
     _getFilteredCategoryParams(category) {

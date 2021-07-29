@@ -1,0 +1,12 @@
+.pickup-wrapper {
+  padding: 0 52rpx;
+}
+
+.pickup-form-item {
+  margin-bottom: 56rpx;
+  font-size: 22rpx;
+}
+
+.pickup-form-label {
+  margin-bottom: 20rpx;
+}
