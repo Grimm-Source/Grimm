@@ -2,9 +2,9 @@ name: Buid and Deploy UI
 
 on:
   push:
-    branches: [ frontend_nealchen ]
+    branches: [ frontend_auto_deploy ]
   pull_request:
-    branches: [ frontend_nealchen ]
+    branches: [ frontend_auto_deploy ]
 
 jobs:
   build-and-deploy:
