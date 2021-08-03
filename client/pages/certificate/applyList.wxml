@@ -23,6 +23,9 @@
           </view>
         </block>
       </mp-checkbox-group>
+     <block wx:if="activityList.length === 0">
+       <view class="empty">暂无数据</view>
+     </block>
     </scroll-view>
   </view>
   <view class="page-footer">

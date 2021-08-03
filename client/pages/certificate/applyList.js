@@ -34,49 +34,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    activityList: [{
-        id: 1,
-        start_time: '2021-06-28',
-        content: '世纪公园新年陪走活动',
-        location: '上海世纪公园'
-      },
-      {
-        id: 2,
-        start_time: '2021-06-28',
-        content: '世纪公园新年陪走活动',
-        location: '上海世纪公园'
-      },
-      {
-        id: 3,
-        start_time: '2021-06-28',
-        content: '世纪公园新年陪走活动',
-        location: '上海世纪公园'
-      },
-      {
-        id: 4,
-        start_time: '2021-06-28',
-        content: '世纪公园新年陪走活动',
-        location: '上海世纪公园'
-      },
-      {
-        id: 5,
-        start_time: '2021-06-28',
-        content: '世纪公园新年陪走活动',
-        location: '上海世纪公园'
-      },
-      {
-        id: 6,
-        start_time: '2021-06-28',
-        content: '世纪公园新年陪走活动',
-        location: '上海世纪公园'
-      },
-      {
-        id: 7,
-        start_time: '2021-06-28',
-        content: '世纪公园新年陪走活动',
-        location: '上海世纪公园'
-      }
-    ],
+    activityList: [],
     checkList: [],
     participant_openid: '',
     isLoading: false,

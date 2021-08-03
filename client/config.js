@@ -4,8 +4,7 @@ const __getUrl = function(){
   switch (version)
   {
     case 'develop':
-      // return 'https://wxapi.rp-i.net/';
-      return 'http://10.140.208.17:5000/';
+      return 'https://wxapi.rp-i.net/';
     case 'trial':
       return 'https://wxapi.rp-i.net/';
     case 'release':

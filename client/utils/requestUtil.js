@@ -213,16 +213,18 @@ const searchActivity = (searchVal, successCallback, failCallback) => {
     })
 }
 const getCertificatectivity = (param, successCallback, failCallback)=>{
+    ///${wx.getStorageSync("openid") || 'om6834wWFZ_yjiMVbcVp2thK-LAQ'}
     return request({
-        url:`activityParticipant/${wx.getStorageSync("openid") || 'om6834wWFZ_yjiMVbcVp2thK-LAQ'}`,
+        url:`activityParticipant`,
         method: 'GET',
         success: successCallback,
         fail: failCallback,
     })
 }
 const submitCertificatectivity = (param, successCallback, failCallback)=>{
+    ///${wx.getStorageSync("openid") || 'om6834wWFZ_yjiMVbcVp2thK-LAQ'}
     return request({
-        url:`activityParticipant/${wx.getStorageSync("openid") || 'om6834wWFZ_yjiMVbcVp2thK-LAQ'}`,
+        url:`activityParticipant`,
         method: 'POST',
         data: param,
         success: successCallback,
@@ -300,7 +302,7 @@ module.exports = {
     getPhoneNumber,
     searchActivity,
     getCertificatectivity,
-    submitCertificatectivity
+    submitCertificatectivity,
     pickUpImpaired,   // 提交视障人士接送信息
     cancelSignUp,     // 取消报名 - 需要做删除接送信息等操作
     pickUpVolunteer,  // 志愿者点击愿意接送后 弹出的表单 提交

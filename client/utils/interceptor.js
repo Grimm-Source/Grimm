@@ -10,7 +10,6 @@ const request = (option, isManualLoading = false) => {
     }
     
     return new Promise((resolve, reject) => {
-        debugger
         let obj = {
             url: `${apiUrl}${option.url}`,
             header: {
