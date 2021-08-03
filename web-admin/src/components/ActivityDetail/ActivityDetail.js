@@ -52,6 +52,7 @@ class ActivityDetail extends React.Component {
         isVolLimited: nextProps.activity.volunteer_capacity > 0,
         isDisabledLimited: nextProps.activity.vision_impaired_capacity > 0,
         isFeeNeeded: nextProps.activity.activity_fee > 0,
+        displayUpload: nextProps.activity.activity_them_pic_name ? false : true,
       });
     }
   }
@@ -61,6 +62,7 @@ class ActivityDetail extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, fieldsValue) => {
+      console.log(fieldsValue);
       if (err) {
         return;
       }
@@ -81,9 +83,20 @@ class ActivityDetail extends React.Component {
         end_time: rangeTimeValue[1].format("YYYY-MM-DD HH:mm:ss"),
       };
       if (values["activity_them_pic_name"].length > 0) {
-        let url = values["activity_them_pic_name"][0]["url"];
-        let picGetUrl = baseUrl + "activity/themePic?activity_them_pic_name=";
-        values["activity_them_pic_name"][0]["url"] = url.replace(picGetUrl, "");
+        console.log(values["activity_them_pic_name"][0]);
+        let url;
+        if (values["activity_them_pic_name"][0].response) {
+          url =
+            baseUrl +
+            "activity/themePic?activity_them_pic_name=" +
+            values["activity_them_pic_name"][0].response.fileName;
+        } else {
+          url = values["activity_them_pic_name"][0].url;
+        }
+        values["activity_them_pic_name"][0] = {
+          url,
+          uid: this.props.activity.id,
+        };
       }
       this.props.publishActivity(values);
       this.props.hideActivityModal();
@@ -169,6 +182,7 @@ class ActivityDetail extends React.Component {
       if (curFile.status === "done") {
         message.success("上传成功");
         this.setState({ displayUpload: false });
+        return curFile.response;
         // file.url = file.response.fileName;
       }
       if (curFile.response && curFile.response.status !== 1) {
