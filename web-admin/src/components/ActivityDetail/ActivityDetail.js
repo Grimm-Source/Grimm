@@ -304,6 +304,7 @@ class ActivityDetail extends React.Component {
             rules: [
               {
                 required: true,
+                message: "请输入签到半径",
               },
             ],
           })(
@@ -321,6 +322,7 @@ class ActivityDetail extends React.Component {
             rules: [
               {
                 required: true,
+                message: "请输入签到口令",
               },
             ],
           })(
