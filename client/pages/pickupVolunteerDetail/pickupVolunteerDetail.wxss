@@ -1,5 +1,33 @@
+.pickup-title{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family: PingFang SC;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 17px;
+  line-height: 24px;
+  color: #000000;
+  top: 32px;
+}
+
+.pickup-title-time{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top: 12px;
+  font-size: 11px;
+}
+
+.pickup-title-address{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 11px;
+}
+
 .line {
-  margin-top: 10px;
+  margin-top: 14px;
   width: 90%;
   height: 2rpx;
   background: #aaa;
@@ -81,13 +109,15 @@
 .vertical-line {
   display: inline;
   float: left;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .select-area {
   float: left;
   display: inline;
   margin-top: 3px;
-  width: 50px;
+  width: 60px;
   z-index: 10;
 }
 
@@ -99,20 +129,36 @@
 
 .card {
   border: 1px solid #ffffff;
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: #ffffff;
-  box-shadow: 2px 2px 4px #cccccc;
+  box-shadow: 0px 4px 20px #cccccc;
   margin: 8px;
   position: relative;
-  height: 70px;
+  height: 84px;
+}
+
+.card .card-detail-div {
+  margin: 16px 0px 18px 0px;
+}
+
+.card .card-detail-div text{
+  height: 25px;
+  line-height:25px;
+  font-size:13px;
+}
+.card .card-detail-div .card-detail-div-view{
+  height: 25px;
+  line-height:25px;
+  font-size:13px;
+  width: 143px;
 }
 
 .card-image {
-  width: 50px;
+  width: 40px;
   background-color: #eeeeee;
-  height: 50px;
+  height: 40px;
   border-radius: 25px;
-  margin-top: 10px;
+  margin: 20px 16px 24px 18px;
 }
 
 .card-image-modal {
@@ -126,12 +172,13 @@
 
 .card-button {
   float: right;
-  height: 20px;
-  line-height: 20px;
-  font-size: 12px;
+  line-height: 32px;
+  font-size: 15px;
   margin-top: 24px;
-  width: 60px;
-  margin-right: 10px;
+  width: 70px;
+  height: 32px;
+  margin-right: 18px;
+  margin-bottom: 28px;
 }
 
 .modal-mask {
@@ -168,4 +215,19 @@
   margin-left: 10px;
   line-height: 25px;
   font-size: 10px;
+}
+
+.pickup-form-item {
+  margin-bottom: 56rpx;
+  font-size: 22rpx;
+}
+.pickup-form-item ul, .pickup-form-item ul li{
+  display: block;
+}
+
+.pickup-form-item-detail {
+  height: 70px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  padding: 14px 0 18px 28px;
 }
