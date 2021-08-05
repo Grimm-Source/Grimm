@@ -154,7 +154,6 @@ Page({
         id_type: this.data.idTypeArr[this.data.applyData.id_type],
       },
       (res) => {
-        debugger
         wx.hideLoading({
           success: () => {
             wx.navigateTo({
@@ -164,17 +163,16 @@ Page({
         })
       },
       (fail) => {
-        debugger
         wx.hideLoading({
           success: (res) => {
             wx.showToast({
-              title: fail || '证书生成失败',
+              title: fail || '证书生成失败, 请稍后再试',
               icon: 'none', //error
               duration: 2000
             });
-            wx.navigateTo({
-              url: '/pages/certificate/applyList',
-            });
+            // wx.navigateTo({
+            //   url: '/pages/certificate/applyList',
+            // });
           },
         })
       }
