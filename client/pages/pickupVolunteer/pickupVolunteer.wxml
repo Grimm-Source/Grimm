@@ -21,8 +21,7 @@
      <li wx:for="{{items}}" wx:key="{{item.value}}">
         <checkbox value="{{item.value}}" checked="{{item.checked}}" style="transform: scale(0.6,0.6);" />{{item.name}}
         <view class="pickup-form-item-detail" wx:if="{{item.checked}}">
-        <!-- <checkbox-group bindchange="checkChildboxChange" style="margin-left: -5px; margin-right: 15px"></checkbox-group> -->
-        <label>
+         <label>
           *请选择能您提供接人的交通方式
         </label>
         <ul>
@@ -35,16 +34,6 @@
      </li>
      </ul>
     </checkbox-group>
-    <!-- <view class="pickup-form-item-detail" wx:if="{{item.checked}}">
-        <checkbox-group bindchange="checkChildboxChange" style="margin-left: -5px; margin-right: 15px"></checkbox-group>
-        <label>
-          *请选择能您提供接人的交通方式
-        </label>
-        <view wx:for="{{item.items}}" wx:key="{{itemChild.value}}" wx:for-item="itemChild">
-          <checkbox value="{{itemChild.value}}" checked="{{itemChild.checked}}" style="transform: scale(0.6,0.6);" />
-          <view class="weui-cell__bd">{{itemChild.name}}</view>
-        </view>
-      </view> -->
   </view> 
 
   <text style="font-size:6px">所有信息会由平台方保密</text>

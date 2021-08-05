@@ -1,9 +1,9 @@
 <view>
-  <view style="display:flex;align-items:center;justify-content:center;font-size: 15px;"><text>{{title}}</text></view>
-  <view style="display:flex;align-items:center;justify-content:center;"><text style="color:grey">时间：{{date}}</text></view>
-  <view style="display:flex;align-items:center;justify-content:center;"><text style="color:grey">地点：{{address}}</text></view>
+  <view class="pickup-title"><text>{{title}}</text></view>
+  <view class="pickup-title-time"><text style="color:grey">时间：{{date}}</text></view>
+  <view class="pickup-title-address"><text style="color:grey">地点：{{address}}</text></view>
   <view class="line"></view>
-  <view>
+  <view style="margin-top:21px;">
     <view class="addr-area">上海</view>
     <view class="vertical-line">|</view>
     <view class='select_box select-area'>
@@ -19,13 +19,15 @@
     </view>
     <view class="map-area" bindtap="tabMapArea">地图</view>
   </view>
-  <view style="margin-top: 30px;"></view>
+  <view style="margin-top: 58px;"></view>
   <view style="z-index: 20" wx:for="{{pickupList}}" wx:key='this'>
     <view class="card">
-      <view bindtap="onItemClick">
-        <image style="float: left;" class="card-image" mode="aspectFill" src="{{item.avatarUrl}}" />
-        <text style="float: left;margin-left: 10px;margin-top: 10px;">{{item.name}}</text>
-        <view style="float: left;margin-top: 35px;margin-left: -35px;">{{item.address}}</view>
+      <view bindtap="onItemClick" style="display: flex;">
+        <image class="card-image" mode="aspectFill" src="{{item.avatarUrl}}" />
+        <div class="card-detail-div">
+          <text>{{item.name}}</text>
+          <view class="card-detail-div-view">{{item.address}}</view>
+        </div>
         <button class="card-button" data-item="{{item}}" bindtap="clickCardDetail">详情</button>
       </view>
     </view>
@@ -43,16 +45,34 @@
         <view style="color: grey;margin-top: 50px;font-size: 9px;margin-left: 10px;">
           <text>\n具体信息会在后台审核配对后推送给您，感谢您的爱心<text style="color:red">♥</text>！</text></view>
         <view class="line-card"></view>
-        <view style="margin-left: 10px;margin-top: 10px;">修改或确认您的接送需求</view>
-        <view style="height:240px">
-          <checkbox-group bindchange="checkboxChange">
+        <view style="margin-left: 19px;margin-top: 18px;margin-bottom: 12px;">修改或确认您的接送需求</view>
+        <view style="height:240px;margin-left: 19px;" class="pickup-form-item">
+          <checkbox-group bindchange="checkboxChange" style="margin-left: -5px; margin-right: 15px">
+          <ul>
+          <li wx:for="{{pickupRequirementItems}}" wx:key="{{item.value}}" wx:for-item="item">
+              <checkbox value="{{item.value}}" checked="{{item.checked}}" style="transform: scale(0.6,0.6);" />{{item.name}}
+              <view class="pickup-form-item-detail" wx:if="{{item.checked}}">
+              <label>
+                *请选择能您提供接人的交通方式
+              </label>
+              <ul>
+              <li wx:for="{{item.items}}" wx:key="{{itemChild.value}}" wx:for-item="itemChild">
+                <checkbox value="{{itemChild.value}}" checked="{{itemChild.checked}}" style="transform: scale(0.6,0.6);margin-left: -7px;" />
+                {{itemChild.name}}
+              </li>
+              </ul>
+            </view>
+          </li>
+          </ul>
+          </checkbox-group>
+          <!-- <checkbox-group bindchange="checkboxChange">
             <label class="weui-cell weui-check__label" wx:for="{{pickupRequirementItems}}" wx:key="{{item.value}}">
               <view class="weui-cell__hd">
                 <checkbox value="{{item.value}}" checked="{{item.checked}}" style="transform: scale(0.6,0.6);"/>
               </view>
               <view class="weui-cell__bd">{{item.name}}</view>
             </label>
-          </checkbox-group>
+          </checkbox-group> -->
         </view>
         <view>
           <button class="card-modal-detail-button" style="background-color:#113E6E;"
