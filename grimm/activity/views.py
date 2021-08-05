@@ -667,12 +667,32 @@ class PickUpImpaired(Resource):
         return jsonify({'status': 'success', 'message': '提交成功'})
 
     def get(self):
-        openid = request.headers.get('Authorization')
+        # openid = request.headers.get('Authorization')
+        # activity_id = request.args.get('activityId')
+        # logger.info('User %s get impaired pickup info map to %s.' % (openid, activity_id))
+        # pickup_list = db.session.query(PickupImpaired). \
+        #     filter(PickupImpaired.activity_id == activity_id).all()
+        # return jsonify([dbutils.serialize(i) for i in pickup_list])
+        volunteer_openid = request.headers.get('Authorization')
         activity_id = request.args.get('activityId')
-        logger.info('User %s get impaired pickup info map to %s.' % (openid, activity_id))
-        pickup_list = db.session.query(PickupImpaired). \
-            filter(PickupImpaired.activity_id == activity_id).all()
-        return jsonify([i.serialize for i in pickup_list])
+        need_pickup_impaired_participants = db.session. \
+            query(PickupImpaired.name, PickupImpaired.pickup_addr, PickupImpaired.pickup_method,
+                  User.avatar_url, User.openid). \
+            filter(PickupImpaired.activity_id == activity_id,
+                   PickupImpaired.openid == User.openid,
+                   PickupImpaired.pickup_volunteer_openid.is_(None)).all()
+        has_been_pickup_impaired_participants = db.session. \
+            query(PickupImpaired.name, PickupImpaired.pickup_addr, PickupImpaired.pickup_method,
+                  User.avatar_url, User.openid). \
+            filter(PickupImpaired.activity_id == activity_id,
+                   PickupImpaired.openid == User.openid,
+                   PickupImpaired.pickup_volunteer_openid == volunteer_openid).all()
+        need_pickup = [{'name': i[0], 'pickup_addr': i[1], 'pickup_method': i[2],
+                        'avatar_url': i[3], 'openid': i[4]} for i in need_pickup_impaired_participants]
+        already_pickup = [{'name': i[0], 'pickup_addr': i[1], 'pickup_method': i[2],
+                           'avatar_url': i[3], 'openid': i[4]} for i in has_been_pickup_impaired_participants]
+        need_pickup.extend(already_pickup)
+        return jsonify(need_pickup)
 
 
 @activity.route("/pickUpVolunteer", methods=["POST"])
@@ -806,3 +826,42 @@ class SignoffActivity(Resource):
 
         logger.info("user_openid %s in activity %d not found", openid, activity_id)
         return jsonify({"status": "failure"})
+
+
+@activity.route("/activityParticipant/pickupDetailInfo", methods=['POST', 'GET'])
+class PickupDetailInfo(Resource):
+    def get(self):
+        volunteer_openid = request.headers.get('Authorization')
+        activity_id = request.args.get('activityId')
+        need_pickup_impaired_participants = db.session. \
+            query(PickupImpaired.name, PickupImpaired.pickup_addr, PickupImpaired.pickup_method,
+                  User.avatar_url, User.openid). \
+            filter(PickupImpaired.activity_id == activity_id,
+                   PickupImpaired.openid == User.openid,
+                   PickupImpaired.pickup_volunteer_openid.is_(None)).all()
+        has_been_pickup_impaired_participants = db.session. \
+            query(PickupImpaired.name, PickupImpaired.pickup_addr, PickupImpaired.pickup_method,
+                  User.avatar_url, User.openid). \
+            filter(PickupImpaired.activity_id == activity_id,
+                   PickupImpaired.openid == User.openid,
+                   PickupImpaired.pickup_volunteer_openid == volunteer_openid).all()
+        need_pickup = [{'name': i[0], 'pickup_addr': i[1], 'pickup_method': i[2],
+                        'avatar_url': i[3], 'openid': i[4]} for i in need_pickup_impaired_participants]
+        already_pickup = [{'name': i[0], 'pickup_addr': i[1], 'pickup_method': i[2],
+                           'avatar_url': i[3], 'openid': i[4]} for i in has_been_pickup_impaired_participants]
+        need_pickup.extend(already_pickup)
+        return jsonify(need_pickup)
+
+    def post(self):
+        volunteer_openid = request.headers.get('Authorization')
+        data = request.get_json()
+        activity_id = data['activityId']
+        impaired_openid = data['impairedOpenid']
+        pickup_method = data['pickupMethod']
+        pickup_info = db.session. \
+            query(PickupImpaired).filter(PickupImpaired.openid == impaired_openid,
+                  PickupImpaired.activity_id == activity_id).first()
+        pickup_info.pickup_method = pickup_method
+        pickup_info.pickup_volunteer_openid = volunteer_openid
+        db.session.commit()
+        return {'status': 'success', 'message': 'Pickup Success'}

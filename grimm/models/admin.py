@@ -42,3 +42,4 @@ class User(db.Model):
     recipient_name = db.Column(db.String(100))
     recipient_address = db.Column(db.String(80))
     recipient_phone = db.Column(db.String(16))
+    avatar_url = db.Column(db.String(300), nullable=False, comment='User avatar url')
