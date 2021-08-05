@@ -62,7 +62,6 @@ class ActivityDetail extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, fieldsValue) => {
-      console.log(fieldsValue);
       if (err) {
         return;
       }
@@ -91,7 +90,7 @@ class ActivityDetail extends React.Component {
             // "activity/themePic?activity_them_pic_name=" +
             values["activity_them_pic_name"][0].response.fileName;
         } else {
-          url = values["activity_them_pic_name"][0].url;
+          url = this.props.activity.activity_them_pic_name;
         }
         values["activity_them_pic_name"][0] = {
           url,
