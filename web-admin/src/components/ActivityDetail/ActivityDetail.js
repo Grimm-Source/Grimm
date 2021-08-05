@@ -83,12 +83,12 @@ class ActivityDetail extends React.Component {
         end_time: rangeTimeValue[1].format("YYYY-MM-DD HH:mm:ss"),
       };
       if (values["activity_them_pic_name"].length > 0) {
-        console.log(values["activity_them_pic_name"][0]);
+        // console.log(values["activity_them_pic_name"][0]);
         let url;
         if (values["activity_them_pic_name"][0].response) {
           url =
-            baseUrl +
-            "activity/themePic?activity_them_pic_name=" +
+            // baseUrl +
+            // "activity/themePic?activity_them_pic_name=" +
             values["activity_them_pic_name"][0].response.fileName;
         } else {
           url = values["activity_them_pic_name"][0].url;
