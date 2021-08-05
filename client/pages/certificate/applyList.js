@@ -4,9 +4,9 @@ const {
 } = require('../../utils/requestUtil.js');
 
 /**
- * 
- * 
- * 
+ *
+ *
+ *
     id                          BIGINT              NOT NULL        AUTO_INCREMENT,
     title                       VARCHAR(60)         NOT NULL        DEFAULT '助盲公益活动',
     start_time                  DATETIME            NOT NULL,
@@ -38,7 +38,8 @@ Page({
     checkList: [],
     participant_openid: '',
     isLoading: false,
-    submitDisabled: false
+    submitDisabled: false,
+    isEmpty: false,
   },
 
 
@@ -49,14 +50,15 @@ Page({
     getCertificatectivity({},
       (res) => {
         const activities = res.activities.filter((item)=>{
-          return +item.published === 0
+          return !item.published || +item.published === 0
          }).map(((item)=>{
           item.start_time = item.start_time.replace('T', ' ');
           return item;
         }))
         this.setData({
-          activityList: activities,
-          participant_openid: res.participant_openid
+          activityList: activities.concat(activities),
+          participant_openid: res.participant_openid,
+          isEmpty: !activities || activities.length === 0
         })
       },
       (fail) => {
@@ -144,6 +146,7 @@ Page({
       });
     }else{
       wx.setStorageSync('cer_acc_list', checkList);
+      wx.setStorageSync('participant_openid', this.data.participant_openid);
       wx.navigateTo({
         url: '/pages/certificate/applyForm',
       });

@@ -146,8 +146,15 @@ Page({
     wx.showLoading({
       title: '证书生成中...',
     })
-    submitCertificatectivity(this.applyData,
+    submitCertificatectivity(
+      {
+        activity_id:  wx.getStorageSync('cer_acc_list'),
+        participant_openid:  wx.getStorageSync('participant_openid'),
+        ...this.data.applyData,
+        id_type: this.data.idTypeArr[this.data.applyData.id_type],
+      },
       (res) => {
+        debugger
         wx.hideLoading({
           success: () => {
             wx.navigateTo({
@@ -157,6 +164,7 @@ Page({
         })
       },
       (fail) => {
+        debugger
         wx.hideLoading({
           success: (res) => {
             wx.showToast({
