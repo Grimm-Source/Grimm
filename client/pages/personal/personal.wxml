@@ -64,5 +64,8 @@
         <view class="personal_info_item disabledID" bindtap="">
             <view class="labelName">添加残疾证</view>
         </view>
+        <view class="personal_info_item certificate_apply" bindtap="onCertificateApply">
+            <view class="labelName">申请志愿者证书</view>
+        </view>
    </view>
 </view>

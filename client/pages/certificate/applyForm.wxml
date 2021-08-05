@@ -1,0 +1,61 @@
+<!--pages/certificate/applyList.wxml-->
+<view class="apply-container">
+  <text class="page-head"> 电子证书将发放到您的邮箱中</text>
+  <view class="scroll-container">
+    <view class="form-section">
+      <view class="form-label">*真实姓名</view>
+      <view class="form-input">
+        <input class="weui-input" placeholder="请填写真实姓名" data-info-key="real_name" bindinput="bindInputChange" />
+      </view>
+    </view>
+    <view class="form-section">
+      <view class="form-label">*证件类型</view>
+      <view class="form-input">
+        <picker mode="selector"  data-info-key="id_type" bindchange="bindInputChange" value="{{index}}" range="{{idTypeArr}}">
+         <input class="weui-input" aria-role='textbox' disabled placeholder="请选择证件类型" value="{{idTypeArr[applyData.id_type]}}"/>
+       </picker>
+      </view>
+    </view>
+    <view class="form-section">
+      <view class="form-label">*证件号码</view>
+      <view class="form-input">
+        <input class="weui-input" data-info-key="idcard" bindinput="bindInputChange" placeholder="请填写您的证件号码" />
+      </view>
+    </view>
+    <view class="form-section">
+      <view class="form-label">*邮箱</view>
+      <view class="form-input">
+        <input class="weui-input"  data-info-key="email" bindinput="bindInputChange" placeholder="请输入有效电子邮箱" />
+      </view>
+    </view>
+    <mp-checkbox class="check-area" label="需要纸质的手写签名和公章" bindchange="onCheck" checked="{{extendChecked}}"></mp-checkbox>
+    <block wx:if='{{extendChecked}}'>
+      <view class="extend-container">
+      
+        <view class="des_text">我们会将盖章后的志愿者证书以顺丰快递的方式寄回给您（运费到付）</view>
+        <view class="des_text">证书会在申请一周后安排同意寄出，请注意查收</view>
+        <view class="form-section">
+          <view class="form-label">*收件人姓名</view>
+          <view class="form-input">
+            <input class="weui-input" data-info-key="recipient_name" bindinput="bindInputChange" placeholder="请填写您的收件人姓名" />
+          </view>
+        </view>
+        <view class="form-section">
+          <view class="form-label">*收件地址</view>
+          <view class="form-input">
+            <input class="weui-input" data-info-key="recipient_address" bindinput="bindInputChange" placeholder="请填写您的收件地址" />
+          </view>
+        </view>
+        <view class="form-section">
+          <view class="form-label">*收件电话</view>
+          <view class="form-input">
+            <input class="weui-input" data-info-key="recipient_phone" bindinput="bindInputChange" placeholder="请填写您的收件电话" />
+          </view>
+        </view>
+    </view>
+  </block>
+  </view>
+  <view class="page-footer">
+    <button type="primary"  class="self-btn" size="mini" bindtap="onSubmit">提交</button>
+  </view>
+</view>

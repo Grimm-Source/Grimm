@@ -36,12 +36,17 @@
     "userConfirmedUseCompilerModuleSwitch": false,
     "userConfirmedBundleSwitch": false,
     "packNpmManually": false,
-    "packNpmRelationList": [],
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./"
+      }
+    ],
     "minifyWXSS": true
   },
   "compileType": "miniprogram",
-  "libVersion": "2.7.7",
-  "appid": "wx933eded634abf038",
+  "libVersion": "2.18.0",
+  "appid": "wx492b3abb825f5072",
   "projectname": "Grimm",
   "debugOptions": {
     "hidedInDevtools": []

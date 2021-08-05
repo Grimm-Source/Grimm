@@ -158,6 +158,17 @@ Page({
       return;
     }
   },
+  onCertificateApply: function(){
+    if(!app.globalData.isAuthorized){
+      wx.navigateTo({
+        url: '/pages/authorize/authorize',
+      });
+    }else{
+      wx.navigateTo({
+        url: '/pages/certificate/applyList',
+      });
+    }
+  },
 
   onRegisterTap: function(e){
     if (e.detail.iv && e.detail.encryptedData) {

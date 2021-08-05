@@ -1,0 +1,34 @@
+<!--pages/certificate/applyList.wxml-->
+<view class="apply-container">
+  <text class="page-head"> 可开具证明的活动</text>
+
+  <view class="scroll-container">
+    <scroll-view>
+      <mp-checkbox-group bindchange="onActCheck">
+        <block 
+          wx:for="{{activityList}}" 
+          wx:key="id"
+        >
+          <view class="activity-block" >
+            <view class="activity-info">
+              <text class="activity-time">{{item.start_time}}</text>
+              <text class="activity-title"> {{item.title}}</text>
+              <text class="activity-addr">地点：{{item.location}}</text>
+            </view>
+            <view class="check-area">
+              <view class="checked">
+                <mp-checkbox disabled="{{!item.published}}" label="{{item.text}}" value="{{item.id}}"></mp-checkbox>
+              </view>
+            </view>
+          </view>
+        </block>
+      </mp-checkbox-group>
+     <block wx:if="activityList.length === 0">
+       <view class="empty">暂无数据</view>
+     </block>
+    </scroll-view>
+  </view>
+  <view class="page-footer">
+    <button class="self-btn" type="primary" disabled="{{submitDisabled}}" size="mini" bindtap="onSubmit">提交</button>
+  </view>
+</view>

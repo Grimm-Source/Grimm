@@ -1,0 +1,14 @@
+/* 
+此文件为开发者工具生成，生成时间: 2021/3/27 下午12:20:18
+使用方法：
+在 applyList.wxss 文件末尾引入样式
+```
+@import "./applyList-wxa-auto-dark.wxss";
+```
+ */
+
+@media (prefers-color-scheme: dark) {
+    .apply-container {
+        background-color: rgb(27, 27, 27);
+    }
+}
