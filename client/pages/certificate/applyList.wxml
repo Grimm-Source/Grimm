@@ -4,12 +4,9 @@
 
   <view class="scroll-container">
     <scroll-view>
-      <mp-checkbox-group bindchange="onActCheck">
-        <block 
-          wx:for="{{activityList}}" 
-          wx:key="id"
-        >
-          <view class="activity-block" >
+      <radio-group bindchange="onActCheck">
+        <block wx:for="{{activityList}}" wx:key="id">
+          <view class="activity-block">
             <view class="activity-info">
               <text class="activity-time">{{item.start_time}}</text>
               <text class="activity-title"> {{item.title}}</text>
@@ -17,15 +14,15 @@
             </view>
             <view class="check-area">
               <view class="checked">
-                <mp-checkbox disabled="{{!item.published}}" label="{{item.text}}" value="{{item.id}}"></mp-checkbox>
+                <radio color="#f03d64" disabled="{{item.published}}" label="{{item.text}}" value="{{item.id}}"></radio>
               </view>
             </view>
           </view>
         </block>
-      </mp-checkbox-group>
-     <block wx:if="activityList.length === 0">
-       <view class="empty">暂无数据</view>
-     </block>
+        <block wx:if="{{isEmpty}}">
+          <view class="empty">暂无数据</view>
+        </block>
+      </radio-group>
     </scroll-view>
   </view>
   <view class="page-footer">
