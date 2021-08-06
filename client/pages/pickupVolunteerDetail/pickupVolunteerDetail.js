@@ -1,5 +1,6 @@
 const {
-  getNeedPickupImpaired,
+  getPickupDetailInfo,
+  setPickupDetailInfo
 } = require('../../utils/requestUtil.js');
 
 const app = getApp();
@@ -13,15 +14,15 @@ Page({
     avatarUrl: '../../images/avatar.jpeg',
     cardDetailVisible: false,
     pickupRequirementItems: [
-      {value: '0', name: '接视障人士参加活动',checked:false,items:[
+      {value: '0', name: '接视障人士参加活动',items:[
         {value: '0_1', name: '私家车'},
-        {value: '0_1', name: '步行地铁'}
+        {value: '0_2', name: '步行地铁'}
       ]},
-      {value: '1', name: '送视障人士回家',checked:false,items:[
+      {value: '1', name: '送视障人士回家',items:[
         {value: '1_0', name: '私家车'},
         {value: '1_1', name: '步行地铁'}
       ]},
-      {value: '2', name: '接送视障人士参加活动',checked:false,items:[
+      {value: '2', name: '接送视障人士参加活动',items:[
         {value: '2_0', name: '私家车'},
         {value: '2_1', name: '步行地铁'}
       ]},
@@ -41,22 +42,37 @@ Page({
   onLoad: function (options) {
     this.setData({
       avatarUrl: app.globalData.userInfo.avatarUrl,
-      activityId: options.activityId == 'undefined' ? '': options.activityId, 
-      title: options.title == 'undefined' ? '': options.title, 
-      date: options.date == 'undefined' ? '': options.date, 
+      activityId: options.activityId == 'undefined' ? '': options.activityId,
+      title: options.title == 'undefined' ? '': options.title,
+      date: options.date == 'undefined' ? '': options.date,
       address: options.address == 'undefined' ? '': options.address,
     })
   },
 
   onShow: function () {
-    getNeedPickupImpaired(this.data.activityId, (res) => {
-      console.log('Get impired pickup info.')
+    console.log("detail page...")
+    getPickupDetailInfo(this.data.activityId, (res) => {
+      console.log('Get impired pickup info.',res);
+      let pickupList=[];
+      if (res && res.length>0){
+        for(let i =0; i< res.length;i++){
+          pickupList.push({
+            'name':res[i]['name'],
+            'address':res[i]['pickup_addr'],
+            'avatarUrl':res[i]['avatar_url']?res[i]['avatar_url']:'../../images/avatar.jpeg',
+            'openid':res[i]['openid'],
+            'pickup_method':res[i]['pickup_method']?res[i]['pickup_method']:[]
+          })
+        }
+      } else {
+        wx.showModal({
+          title: '提示',
+          content: '当前没有视障人士需要帮助',
+          showCancel: false,
+        })
+      }
       this.setData({
-        pickupList: [
-          {'name': '张思锐', 'address': '上海市静安区曹家渡街道', 'avatarUrl': '../../images/avatar.jpeg', 'openid': 'aaaaaa', 'provideService': []},
-          {'name': '李小佛', 'address': '上海市静安区曹家渡街道', 'avatarUrl': '../../images/avatar.jpeg', 'openid': 'bbbbbb', 'provideService': []},
-          {'name': '王飞舞', 'address': '上海市静安区曹家渡街道', 'avatarUrl': '../../images/avatar.jpeg', 'openid': 'cccccc', 'provideService': []}
-        ]
+        pickupList: pickupList
       })
     });
   },
@@ -75,8 +91,8 @@ Page({
             items[i].items[x].checked = true
             break
           }
-        } 
-       } 
+        }
+       }
       for (let j = 0, lenJ = values.length; j < lenJ; ++j) {
         if (items[i].value === values[j]) {
           items[i].checked = true
@@ -86,7 +102,7 @@ Page({
     }
 
     this.setData({
-      items
+      pickupRequirementItems:items
     })
   },
 
@@ -109,6 +125,7 @@ Page({
     console.log('click card detail button')
     var item = event.currentTarget.dataset.item
     this.setData({
+      impairedOpenid:item['openid'],
       cardDetailVisible: true,
       cardInfo: {
         avatarUrl: item.avatarUrl,
@@ -120,12 +137,33 @@ Page({
   },
 
   onTapCardDetailConfirm: function() {
-    wx.showToast({
-      title: '提交成功',
-      icon: 'success', 
-      duration: 2000
+    if (!this.data.provideService || this.data.provideService.length == 0) {
+      wx.showModal({
+        title: '提示',
+        content: '请填写您可以提供的志愿者服务',
+        showCancel: false,
+      })
+      return;
+    }
+    setPickupDetailInfo({
+      "activityId": this.data.activityId,
+      "impairedOpenid": this.data.impairedOpenid,
+      "pickupMethod": this.data.provideService.join(','),
+    }, (res) => {
+      let that = this
+      wx.showToast({
+        title: '提交成功',
+        icon: 'success',
+        duration: 2000
+      });
+      this.setData({ cardDetailVisible: false })
+    }, (err) => {
+      wx.showModal({
+        showCancel: false,
+        title: '提交失败',
+        content: err || "网络失败，请稍候再试"
+      });
     });
-    this.setData({ cardDetailVisible: false })
   },
 
   onTapCardDetailCancel: function() {
@@ -135,7 +173,7 @@ Page({
   tabMapArea: function() {
     wx.showToast({
       title: '暂不支持',
-      icon: 'none', 
+      icon: 'none',
       duration: 2000
     });
   }

@@ -209,19 +209,18 @@
 }
 
 .card-modal-detail-button {
-  width: 130px;
-  float: left;
+  width: 152px;
   height: 25px;
-  margin-left: 10px;
   line-height: 25px;
   font-size: 10px;
 }
 
-.pickup-form-item {
-  margin-bottom: 56rpx;
+.pickup-form-scroll-item {
+  height:360px;
+  margin-left: 19px;
   font-size: 22rpx;
 }
-.pickup-form-item ul, .pickup-form-item ul li{
+.pickup-form-scroll-item ul, .pickup-form-scroll-item ul li{
   display: block;
 }
 
@@ -230,4 +229,5 @@
   background: rgba(0, 0, 0, 0.06);
   border-radius: 4px;
   padding: 14px 0 18px 28px;
+  width: 283px;
 }
