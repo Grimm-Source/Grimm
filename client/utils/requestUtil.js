@@ -278,6 +278,17 @@ const getCurrentUserDetail = (successCallback, failCallback) => {
         method: "GET"
     });
 }
+
+const signUP = (parameters, successCallback, failCallback) => {
+    return request({
+        url: "activityParticipant/signup", 
+        method: "POST",
+        data: parameters,
+        success: successCallback,
+        fail: failCallback
+    });
+}
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -308,4 +319,5 @@ module.exports = {
     pickUpVolunteer,  // 志愿者点击愿意接送后 弹出的表单 提交
     getNeedPickupImpaired,  // 获取志愿者可接送视障人士们
     getCurrentUserDetail, // 获取当前注册用户详细信息
+    signUP,//   签到签退
 }

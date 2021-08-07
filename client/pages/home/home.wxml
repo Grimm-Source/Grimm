@@ -1,5 +1,6 @@
 <view class="home">
   <tipsSwiper class="home-tips-siwper"></tipsSwiper>
+  <activeSignIn></activeSignIn>
   <view class="home-header">
     <view class="home-person" bindtap="showPersonInfo" aria-role="button">
       <image src="{{userInfo.avatarUrl || avatarUrl}}" aria-label="个人中心"></image>

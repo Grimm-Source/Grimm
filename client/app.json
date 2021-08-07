@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/signIn/signIn",
     "pages/profile/profile",
     "pages/authorize/authorize",
     "pages/personal/personal",

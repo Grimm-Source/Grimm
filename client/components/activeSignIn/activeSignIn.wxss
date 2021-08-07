@@ -1,0 +1,42 @@
+/* components/activeSignIn/activeSignIn.wxss */
+.wrap {
+  width: 694rpx;
+  /* height: 208rpx; */
+  padding: 24rpx 34rpx;
+  background: #FFFFFF;
+  border: 8rpx solid #F5C92C;
+  box-sizing: border-box;
+  box-shadow: 0rpx 4rpx 20rpx rgba(170, 170, 170, 0.5);
+  border-radius: 18rpx;
+  color: #000000;
+  margin: 48rpx auto 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: PingFang SC;
+  font-size: 28rpx;
+}
+
+.left {
+  width: 450rpx;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 44rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.right {
+  width: 142rpx;
+  height: 84rpx;
+  background: #113E6E;
+  border-radius: 10rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 30rpx;
+}

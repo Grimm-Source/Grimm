@@ -1,0 +1,9 @@
+<!--components/activeSignIn/activeSignIn.wxml-->
+<view class="wrap" wx:for="{{activities}}" wx:key="id">
+  <view class="left">
+    <view class="title">{{item.title}}</view>
+    <view class="detail">时间：{{item.schedule}}</view>
+    <view class="detail">地点：{{item.location}}</view>
+  </view>
+  <view class="right"bindtap="onTapSignIn"  data-item="{{item}}">签到</view>
+</view>
