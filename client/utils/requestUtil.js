@@ -46,12 +46,13 @@ const register = (obj, successCallback, failCallback) => {
     });
 }
 
-const getRegisterStatus = (code, successCallback, failCallback) => {
+const getRegisterStatus = (obj, successCallback, failCallback) => {
     return request({
-        url: 'jscode2session?js_code=' + code,
+        url: 'jscode2session',
+        data: obj,
         success: successCallback,
         fail: failCallback,
-        method: "GET"
+        method: "POST"
     });
 }
 
