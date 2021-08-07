@@ -145,6 +145,7 @@ Page({
       idcard: this.data.idNo,
       disabledID: this.data.impairedNo,
       email: this.data.email,
+      avatarUrl: app.globalData.userInfo.avatarUrl
     }, (res) => {
       app.globalData.isRegistered = true;
       app.globalData.isVolunteer = this.data.role == 'volunteer' ? true : false;

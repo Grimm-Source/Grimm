@@ -43,7 +43,11 @@ Page({
                     userInfo: app.globalData.userInfo
                   })
                   // 检查是否已注册
-                  getRegisterStatus(token, function(res){
+                  let registerPayload = {
+                    'js_code': token,
+                    'avatar_url': res.userInfo.avatarUrl
+                  }
+                  getRegisterStatus(registerPayload, function(res){
                     if(!res.openid){
                       return;
                     }
