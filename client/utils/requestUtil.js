@@ -262,6 +262,25 @@ const pickUpVolunteer = (obj, successCallback, failCallback) => {
     });
 }
 
+const setPickupDetailInfo = (obj, successCallback, failCallback) => {
+    return request({
+        url: "activityParticipant/pickupDetailInfo",
+        data: obj,
+        success: successCallback,
+        fail: failCallback,
+        method: "POST"
+    });
+}
+
+const getPickupDetailInfo = (activityId, successCallback, failCallback) => {
+    return request({
+        url: 'activityParticipant/pickupDetailInfo?activityId=' + activityId,
+        success: successCallback,
+        fail: failCallback,
+        method: "GET"
+    });
+}
+
 const getNeedPickupImpaired = (activityId, successCallback, failCallback) => {
     return request({
         url: 'pickUpImpaired?activityId=' + activityId,
@@ -307,6 +326,8 @@ module.exports = {
     pickUpImpaired,   // 提交视障人士接送信息
     cancelSignUp,     // 取消报名 - 需要做删除接送信息等操作
     pickUpVolunteer,  // 志愿者点击愿意接送后 弹出的表单 提交
+    setPickupDetailInfo,
+    getPickupDetailInfo,
     getNeedPickupImpaired,  // 获取志愿者可接送视障人士们
     getCurrentUserDetail, // 获取当前注册用户详细信息
 }

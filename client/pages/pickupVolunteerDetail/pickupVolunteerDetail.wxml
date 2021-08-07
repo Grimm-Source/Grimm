@@ -35,7 +35,7 @@
 
   <!-- 志愿人士点击详情后弹出的modal -->
   <view class="modal-mask" wx:if="{{cardDetailVisible}}">
-    <view class="modal-content detail-footer" style="height: 80%;">
+    <view class="modal-content detail-footer" style="height: 90%;">
       <view class="modal-main-content">
         <view>
           <image style="float: left;" class="card-image-modal" mode="aspectFill" src="{{cardInfo.avatarUrl}}" />
@@ -46,7 +46,7 @@
           <text>\n具体信息会在后台审核配对后推送给您，感谢您的爱心<text style="color:red">♥</text>！</text></view>
         <view class="line-card"></view>
         <view style="margin-left: 19px;margin-top: 18px;margin-bottom: 12px;">修改或确认您的接送需求</view>
-        <view style="height:240px;margin-left: 19px;" class="pickup-form-item">
+        <scroll-view class="pickup-form-scroll-item" scroll-y='true'>
           <checkbox-group bindchange="checkboxChange" style="margin-left: -5px; margin-right: 15px">
           <ul>
           <li wx:for="{{pickupRequirementItems}}" wx:key="{{item.value}}" wx:for-item="item">
@@ -65,16 +65,8 @@
           </li>
           </ul>
           </checkbox-group>
-          <!-- <checkbox-group bindchange="checkboxChange">
-            <label class="weui-cell weui-check__label" wx:for="{{pickupRequirementItems}}" wx:key="{{item.value}}">
-              <view class="weui-cell__hd">
-                <checkbox value="{{item.value}}" checked="{{item.checked}}" style="transform: scale(0.6,0.6);"/>
-              </view>
-              <view class="weui-cell__bd">{{item.name}}</view>
-            </label>
-          </checkbox-group> -->
-        </view>
-        <view>
+        </scroll-view>
+        <view style="margin:0px auto 20px;display:flex;">
           <button class="card-modal-detail-button" style="background-color:#113E6E;"
             bindtap="onTapCardDetailConfirm">确认</button>
           <button class="card-modal-detail-button" style="background-color:grey; "
