@@ -439,6 +439,7 @@ class RegisterInfo(Resource):
         user_info.phone_verified = 1
         user_info.email = info["email"]
         user_info.email_verified = 0
+        user_info.avatar_url = info['avatarUrl']
         adminbiz.set_openid_if_user_info_exists(openid, user_info.idcard, user_info.phone, user_info.email,
                                                 user_info.disabled_id if user_info.role == 1 else None)
 

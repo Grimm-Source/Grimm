@@ -10,11 +10,13 @@ from grimm.utils import constants
 from grimm.wxapp import wxapp
 
 
-@wxapp.route("/jscode2session", methods=["GET"])
+@wxapp.route("/jscode2session", methods=["POST"])
 class WXJSCode2Session(Resource):
-    def get(self):
+    def post(self):
         """ view function for validating weixin user openid """
-        js_code = request.args.get("js_code")
+        params = request.get_json()
+        js_code = params['js_code']
+        avatar_url = params['avatar_url']
         if js_code is None:
             return jsonify({"status": "failure"})
         prefix = "https://api.weixin.qq.com/sns/jscode2session?appid="
@@ -47,6 +49,8 @@ class WXJSCode2Session(Resource):
                 elif user_info.audit_status == -1:
                     feedback["auditStatus"] = "rejected"
                 feedback["role"] = "volunteer" if user_info.role == 0 else "impaired"
+                # update avatarUrl when user redirect to mini program home page
+                user_info.avatar_url = avatar_url
             else:
                 feedback["isRegistered"] = False
                 feedback["auditStatus"] = "pending"
