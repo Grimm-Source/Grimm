@@ -4,7 +4,7 @@ import urllib3
 from flask import jsonify, request
 from flask_restx import Resource
 
-from grimm import logger, GrimmConfig
+from grimm import logger, GrimmConfig, db
 from grimm.models.admin import User
 from grimm.utils import constants
 from grimm.wxapp import wxapp
@@ -39,7 +39,8 @@ class WXJSCode2Session(Resource):
             if "session_key" in feedback:
                 del feedback["session_key"]
             # query user in database
-            user_info = User.query.filter(User.openid == openid).first()
+            # user_info = User.query.filter(User.openid == openid).first()
+            user_info = db.session.query(User).filter(User.openid == openid).first()
             if user_info:
                 feedback["isRegistered"] = True
                 if user_info.audit_status == 0:
@@ -51,6 +52,7 @@ class WXJSCode2Session(Resource):
                 feedback["role"] = "volunteer" if user_info.role == 0 else "impaired"
                 # update avatarUrl when user redirect to mini program home page
                 user_info.avatar_url = avatar_url
+                db.session.commit()
             else:
                 feedback["isRegistered"] = False
                 feedback["auditStatus"] = "pending"
