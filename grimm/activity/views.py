@@ -225,17 +225,28 @@ class ActivityParticipantParser(object):
     @staticmethod
     def get():
         parser = reqparse.RequestParser()
-        parser.add_argument('participant_openid', type=str, location='args', help='Open User ID')
+        parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
         return parser
 
+    @staticmethod
+    def post():
+        parser = reqparse.RequestParser()
+        parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
+        parser.add_argument('activity_id', type=int, location='form', help='Activity ID')
+        parser.add_argument('real_name', type=str, location='form', help='Real Name')
+        parser.add_argument('id_type', type=str, location='form', help='ID Type')
+        parser.add_argument('idcard', type=str, location='form', help='ID Card')
+        parser.add_argument('email', type=str, location='form', help='email')
+        parser.add_argument('paper_certificate', type=int, location='form', help='paper_certificate')
+
+        return parser
 
 @activity.route("/activityParticipant", methods=["GET", 'POST'])
 class ActivityParticipant_(Resource):
     @activity.expect(ActivityParticipantParser.get())
     def get(self):
-        # new_info = ActivityParticipantParser.get().parse_args()
-        # participant_openid = new_info.get('participant_openid')
-        participant_openid = request.headers.get('Authorization')
+        info = ActivityParticipantParser.get().parse_args()
+        participant_openid = info.get('Authorization', None)
 
         activity_participant_infos = ActivityParticipant.query.all()
         logger.info("query all activity_participant info successfully")
@@ -264,10 +275,10 @@ class ActivityParticipant_(Resource):
                 feedback["activities"].append(activity)
         return jsonify(feedback)
 
+    @activity.expect(ActivityParticipantParser.post())
     def post(self):
-        info = json.loads(request.get_data())
-        # participant_openid = info.get("participant_openid", None)
-        participant_openid = request.headers.get('Authorization')
+        info = ActivityParticipantParser.post().parse_args()
+        participant_openid = info.get('Authorization', None)
         activity_id = info.get("activity_id", None)
         real_name = info.get("real_name", None)
         id_type = info.get("id_type", None)
@@ -731,7 +742,7 @@ class SignupParser(object):
     def post():
         parser = reqparse.RequestParser()
         parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
-        parser.add_argument('activityId', type=int, location='form', help='Activity ID')
+        parser.add_argument('activity_id', type=int, location='form', help='Activity ID')
         parser.add_argument('signup_time', type=str, location='form', help='sign up time')
         parser.add_argument('signup_latitude', type=float, location='form', help='sign up latitude')
         parser.add_argument('signup_longitude', type=float, location='form', help='sign up longitude')
@@ -751,7 +762,7 @@ class SignupActivity(Resource):
         #         'signup_longitude':121.3
         #         }
         openid = new_info.get("Authorization")
-        activity_id = new_info.get("activityId")
+        activity_id = new_info.get("activity_id")
         logger.info('Loading participant sign up info ...')
 
         activity_participant_info = db.session.query(ActivityParticipant). \
@@ -792,7 +803,7 @@ class SignoffParser(object):
     def post():
         parser = reqparse.RequestParser()
         parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
-        parser.add_argument('activityId', type=int, location='form', help='Activity ID')
+        parser.add_argument('activity_id', type=int, location='form', help='Activity ID')
         parser.add_argument('signoff_time', type=str, location='form', help='sign off time')
         parser.add_argument('signoff_latitude', type=float, location='form', help='sign off latitude')
         parser.add_argument('signoff_longitude', type=float, location='form', help='sign off longitude')
@@ -812,7 +823,7 @@ class SignoffActivity(Resource):
         #         'signoff_longitude':121.3
         #         }
         openid = new_info.get('Authorization')
-        activity_id = new_info.get('activityId')
+        activity_id = new_info.get('activity_id')
         logger.info('Loading participant sign up info ...')
 
         activity_participant_info = db.session.query(ActivityParticipant). \
