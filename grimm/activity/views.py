@@ -243,15 +243,6 @@ class ActivityParticipant_(Resource):
         for activity_participant in activity_participant_infos:
             if activity_participant.participant_openid == participant_openid:
                 logger.info(dbutils.serialize(activity_participant))
-                feedback.update({
-                    'signup_time': activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                    'signup_latitude': str(activity_participant.signup_latitude),
-                    'signup_longtitude': str(activity_participant.signup_longitude),
-                    'signoff_time': activity_participant.signoff_time.strftime("%Y-%m-%dT%H:%M:%S"),
-                    'signoff_latitude': str(activity_participant.signoff_latitude),
-                    'signoff_longtitude': str(activity_participant.signoff_longitude)
-                })
-
                 activity_id = activity_participant.activity_id
                 activity_info = Activity.query.filter(Activity.id == activity_id).first()
                 activity = {"id": activity_info.id, "title": activity_info.title,
@@ -262,6 +253,14 @@ class ActivityParticipant_(Resource):
                 activity["end_time"] = end.strftime("%Y-%m-%dT%H:%M:%S")
                 activity["content"] = activity_info.content
                 activity["certificated"] = activity_participant.certificated
+                if activity_participant.signup_time:
+                    activity["signup_time"] = activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S")
+                    activity["signup_latitude"] = str(activity_participant.signup_latitude)
+                    activity["signup_longtitude"] = str(activity_participant.signup_longitude)
+                    activity["signoff_time"] = activity_participant.signoff_time.strftime("%Y-%m-%dT%H:%M:%S")
+                    activity["signoff_latitude"] = str(activity_participant.signoff_latitude)
+                    activity["signoff_longtitude"] = str(activity_participant.signoff_longitude)
+
                 feedback["activities"].append(activity)
         return jsonify(feedback)
 
