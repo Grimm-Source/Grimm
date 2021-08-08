@@ -233,8 +233,9 @@ class ActivityParticipantParser(object):
 class ActivityParticipant_(Resource):
     @activity.expect(ActivityParticipantParser.get())
     def get(self):
-        new_info = ActivityParticipantParser.get().parse_args()
-        participant_openid = new_info.get('participant_openid')
+        # new_info = ActivityParticipantParser.get().parse_args()
+        # participant_openid = new_info.get('participant_openid')
+        participant_openid = request.headers.get('Authorization')
 
         activity_participant_infos = ActivityParticipant.query.all()
         logger.info("query all activity_participant info successfully")
@@ -266,7 +267,8 @@ class ActivityParticipant_(Resource):
 
     def post(self):
         info = json.loads(request.get_data())
-        participant_openid = info.get("participant_openid", None)
+        # participant_openid = info.get("participant_openid", None)
+        participant_openid = request.headers.get('Authorization')
         activity_id = info.get("activity_id", None)
         real_name = info.get("real_name", None)
         id_type = info.get("id_type", None)
