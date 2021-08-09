@@ -20,8 +20,8 @@ Page({
    * Page initial data
    */
   data: {
-    latitude: 23.129163,
-    longitude: 113.264435
+    // latitude: ,
+    // longitude: 
   },
 
   /**
@@ -40,6 +40,7 @@ Page({
     let that = this
     wx.getLocation({
       type: 'wgs84',
+      isHighAccuracy: true,
       success(res) {
         const latitude = res.latitude
         const longitude = res.longitude
@@ -47,6 +48,10 @@ Page({
         const accuracy = res.accuracy
         console.log("latitude:", res)
         console.log("longitude:", res.longitude, speed, accuracy)
+        // wx.chooseLocation({
+        //   latitude:latitude,
+        //   longitude:longitude
+        // })
         that.setData({
           latitude,
           longitude
@@ -131,8 +136,7 @@ Page({
     console.log("time:", time)
 
     return signUP({
-      openId: "om68340DDXrYTpfKM6SuM6XTm44s",
-      activityId: 14,
+      activityId: Number(this.data.id),
       signup_time: time,
       signup_latitude: this.data.latitude,
       signup_longitude: this.data.longitude,

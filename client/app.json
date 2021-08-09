@@ -21,6 +21,11 @@
     "pages/pickupVolunteer/pickupVolunteer",
     "pages/pickupVolunteerDetail/pickupVolunteerDetail"
   ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于活动签到"
+    }
+  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
@@ -50,5 +55,6 @@
         "text": "个人中心"
       }
     ]
+    
   }
 }
