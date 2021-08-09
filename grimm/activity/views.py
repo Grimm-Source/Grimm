@@ -282,7 +282,6 @@ class ActivityParticipant_(Resource):
     @activity.expect(ActivityParticipantParser.post())
     def post(self):
         info = ActivityParticipantParser.post().parse_args()
-        logger.info(info)
         participant_openid = info.get('Authorization', None)
         activity_id = info.get("activity_id", None)
         real_name = info.get("real_name", None)
