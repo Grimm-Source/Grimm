@@ -360,6 +360,36 @@ class ActivityParticipant_(Resource):
 
         return jsonify(feedback)
 
+    @staticmethod
+    def hook_put(openid, activity_id):
+        activity_participant_info = db.session.query(ActivityParticipant). \
+            filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
+        if activity_participant_info:
+            logger.info("OpenId:%s in activity:%d are already in activity_participant, duplicated insertion!", openid, activity_id)
+            #return jsonify({"status": "success"})
+            return False
+
+        activity_info = db.session.query(Activity). \
+            filter(Activity.id == activity_id).first()
+        if not activity_info:
+            logger.error("Activity %d is not existing!", activity_id)
+            return False
+
+        activity_participant_info = ActivityParticipant()
+        activity_participant_info.activity_id = activity_id
+        activity_participant_info.participant_openid = openid
+        activity_participant_info.interested = 0
+        activity_participant_info.share = 0
+        activity_participant_info.thumbs_up = 0
+        activity_participant_info.certificated = 0
+        activity_participant_info.certiticate_date = 0
+        activity_participant_info.paper_certificate = 0
+        db.session.add(activity_participant_info)
+        db.session.commit()
+        logger.info("OpenId:%s in activity:%d are inserted to activity_participant!", openid, activity_id)
+
+        return True
+
 
 @activity.route("/myActivities", methods=["GET"])
 class GetFavoriteActivities(Resource):
@@ -619,6 +649,11 @@ class RegisteredActivities(Resource):
 
         db.session.add(register_act)
         db.session.commit()
+
+        if not ActivityParticipant_.hook_put(openid, activity_id):
+            logger.error("Activity %d with openid %d insertion failed!", activity_id, openid)
+            return jsonify({"status": "failure"})
+
         return jsonify({"status": "success"})
 
     def delete(self):
