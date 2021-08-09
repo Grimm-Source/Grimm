@@ -238,8 +238,12 @@ class ActivityParticipantParser(object):
         parser.add_argument('idcard', type=str, location='form', help='ID Card')
         parser.add_argument('email', type=str, location='form', help='email')
         parser.add_argument('paper_certificate', type=int, location='form', help='paper_certificate')
+        parser.add_argument('recipient_name', type=str, location='form', help='Recipient Name')
+        parser.add_argument('recipient_address', type=str, location='form', help='Recipient Address')
+        parser.add_argument('recipient_phone', type=str, location='form', help='Recipient Phone')
 
         return parser
+
 
 @activity.route("/activityParticipant", methods=["GET", 'POST'])
 class ActivityParticipant_(Resource):
@@ -278,6 +282,7 @@ class ActivityParticipant_(Resource):
     @activity.expect(ActivityParticipantParser.post())
     def post(self):
         info = ActivityParticipantParser.post().parse_args()
+        logger.info(info)
         participant_openid = info.get('Authorization', None)
         activity_id = info.get("activity_id", None)
         real_name = info.get("real_name", None)
