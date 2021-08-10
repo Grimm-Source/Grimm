@@ -234,14 +234,14 @@ class ActivityParticipantParser(object):
         parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
         # parser.add_argument('activity_id', type=int, location='form', help='Activity ID')
         parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
-        parser.add_argument('real_name', type=str, location='form', help='Real Name')
-        parser.add_argument('id_type', type=str, location='form', help='ID Type')
-        parser.add_argument('idcard', type=str, location='form', help='ID Card')
-        parser.add_argument('email', type=str, location='form', help='email')
-        parser.add_argument('paper_certificate', type=int, location='form', help='paper_certificate')
-        parser.add_argument('recipient_name', type=str, location='form', help='Recipient Name')
-        parser.add_argument('recipient_address', type=str, location='form', help='Recipient Address')
-        parser.add_argument('recipient_phone', type=str, location='form', help='Recipient Phone')
+        parser.add_argument('real_name', type=str, location='json', help='Real Name')
+        parser.add_argument('id_type', type=str, location='json', help='ID Type')
+        parser.add_argument('idcard', type=str, location='json', help='ID Card')
+        parser.add_argument('email', type=str, location='json', help='email')
+        parser.add_argument('paper_certificate', type=int, location='json', help='paper_certificate')
+        parser.add_argument('recipient_name', type=str, location='json', help='Recipient Name')
+        parser.add_argument('recipient_address', type=str, location='json', help='Recipient Address')
+        parser.add_argument('recipient_phone', type=str, location='json', help='Recipient Phone')
 
         return parser
 
