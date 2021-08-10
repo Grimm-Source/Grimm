@@ -232,7 +232,8 @@ class ActivityParticipantParser(object):
     def post():
         parser = reqparse.RequestParser()
         parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
-        parser.add_argument('activity_id', type=int, location='form', help='Activity ID')
+        # parser.add_argument('activity_id', type=int, location='form', help='Activity ID')
+        parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
         parser.add_argument('real_name', type=str, location='form', help='Real Name')
         parser.add_argument('id_type', type=str, location='form', help='ID Type')
         parser.add_argument('idcard', type=str, location='form', help='ID Card')
