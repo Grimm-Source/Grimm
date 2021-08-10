@@ -787,10 +787,10 @@ class SignupParser(object):
     def post():
         parser = reqparse.RequestParser()
         parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
-        parser.add_argument('activity_id', type=int, location='form', help='Activity ID')
-        parser.add_argument('signup_time', type=str, location='form', help='sign up time')
-        parser.add_argument('signup_latitude', type=float, location='form', help='sign up latitude')
-        parser.add_argument('signup_longitude', type=float, location='form', help='sign up longitude')
+        parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
+        parser.add_argument('signup_time', type=str, location='json', help='sign up time')
+        parser.add_argument('signup_latitude', type=float, location='json', help='sign up latitude')
+        parser.add_argument('signup_longitude', type=float, location='json', help='sign up longitude')
         return parser
 
 
@@ -808,7 +808,10 @@ class SignupActivity(Resource):
         #         }
         openid = new_info.get("Authorization")
         activity_id = new_info.get("activity_id")
-        logger.info('Loading participant %s sign up activity %d info ...', openid, activity_id)
+        if not activity_id:
+            logger.info('Loading participant %s sign up activity %d info ...', openid, activity_id)
+        else:
+            logger.error('Loading participant %s sign up activity None detected ...', openid)
 
         activity_participant_info = db.session.query(ActivityParticipant). \
             filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
@@ -849,10 +852,10 @@ class SignoffParser(object):
     def post():
         parser = reqparse.RequestParser()
         parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
-        parser.add_argument('activity_id', type=int, location='form', help='Activity ID')
-        parser.add_argument('signoff_time', type=str, location='form', help='sign off time')
-        parser.add_argument('signoff_latitude', type=float, location='form', help='sign off latitude')
-        parser.add_argument('signoff_longitude', type=float, location='form', help='sign off longitude')
+        parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
+        parser.add_argument('signoff_time', type=str, location='json', help='sign off time')
+        parser.add_argument('signoff_latitude', type=float, location='json', help='sign off latitude')
+        parser.add_argument('signoff_longitude', type=float, location='json', help='sign off longitude')
         return parser
 
 
