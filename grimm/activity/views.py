@@ -272,6 +272,7 @@ class ActivityParticipant_(Resource):
                     activity["signup_time"] = activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S")
                     activity["signup_latitude"] = str(activity_participant.signup_latitude)
                     activity["signup_longtitude"] = str(activity_participant.signup_longitude)
+                if activity_participant.signoff_time:
                     activity["signoff_time"] = activity_participant.signoff_time.strftime("%Y-%m-%dT%H:%M:%S")
                     activity["signoff_latitude"] = str(activity_participant.signoff_latitude)
                     activity["signoff_longtitude"] = str(activity_participant.signoff_longitude)
