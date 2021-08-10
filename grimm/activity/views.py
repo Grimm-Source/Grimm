@@ -283,6 +283,8 @@ class ActivityParticipant_(Resource):
     @activity.expect(ActivityParticipantParser.post())
     def post(self):
         info = ActivityParticipantParser.post().parse_args()
+        logger.info("ActivityParticipantParser")
+        logger.info(info)
         participant_openid = info.get('Authorization', None)
         activity_id = info.get("activity_id", None)
         real_name = info.get("real_name", None)
@@ -351,6 +353,8 @@ class ActivityParticipant_(Resource):
                                   "director": "王臻",
                                   "manager": "刘莉娟",
                                   "contact_code": "1388888888"}
+            logger.info("certification_info")
+            logger.info(certification_info)
 
             certification_file = certificationgenerate.generate_certification(certification_info)
 
