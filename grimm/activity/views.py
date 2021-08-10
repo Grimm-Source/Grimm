@@ -803,7 +803,7 @@ class SignupActivity(Resource):
         #         }
         openid = new_info.get("Authorization")
         activity_id = new_info.get("activity_id")
-        logger.info('Loading participant sign up info ...')
+        logger.info('Loading participant %s sign up activity %d info ...', openid, activity_id)
 
         activity_participant_info = db.session.query(ActivityParticipant). \
             filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
@@ -818,6 +818,7 @@ class SignupActivity(Resource):
         activity_info = db.session.query(Activity). \
             filter(Activity.id == activity_id).first()
         if not activity_info:
+            logger.error('Failed to query activity %d info ...', activity_id)
             return jsonify({"status": "failure"})
 
         activity_participant_info = ActivityParticipant()
