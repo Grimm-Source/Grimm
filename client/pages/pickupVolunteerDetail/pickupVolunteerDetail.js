@@ -156,6 +156,7 @@ Page({
         icon: 'success',
         duration: 2000
       });
+      that.onLoad(that.data);
       this.setData({ cardDetailVisible: false })
     }, (err) => {
       wx.showModal({
