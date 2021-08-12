@@ -13,9 +13,18 @@ Page({
     avatarUrl: '../../images/avatar.jpeg',
     cardDetailVisible: false,
     pickupRequirementItems: [
-      {value: '0', name: '接视障人士参加活动'},
-      {value: '1', name: '送视障人士回家'},
-      {value: '2', name: '接送视障人士参加活动'},
+      {value: '0', name: '接视障人士参加活动',checked:false,items:[
+        {value: '0_1', name: '私家车'},
+        {value: '0_1', name: '步行地铁'}
+      ]},
+      {value: '1', name: '送视障人士回家',checked:false,items:[
+        {value: '1_0', name: '私家车'},
+        {value: '1_1', name: '步行地铁'}
+      ]},
+      {value: '2', name: '接送视障人士参加活动',checked:false,items:[
+        {value: '2_0', name: '私家车'},
+        {value: '2_1', name: '步行地铁'}
+      ]},
     ],
     title: '',
     date: '',
@@ -59,7 +68,15 @@ Page({
     const values = e.detail.value
     for (let i = 0, lenI = items.length; i < lenI; ++i) {
       items[i].checked = false
-
+      for (let x = 0, lenX = items[i].items.length; x < lenX; ++x) {
+        items[i].items[x].checked = false
+        for (let j = 0, lenJ = values.length; j < lenJ; ++j) {
+          if(items[i].items[x].value === values[j]){
+            items[i].items[x].checked = true
+            break
+          }
+        } 
+       } 
       for (let j = 0, lenJ = values.length; j < lenJ; ++j) {
         if (items[i].value === values[j]) {
           items[i].checked = true
