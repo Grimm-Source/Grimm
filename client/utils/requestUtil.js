@@ -221,7 +221,6 @@ const getCertificatectivity = (param, successCallback, failCallback)=>{
     })
 }
 const submitCertificatectivity = (param, successCallback, failCallback)=>{
-    debugger
     return request({
         url:`activityParticipant`,
         method: 'POST',
