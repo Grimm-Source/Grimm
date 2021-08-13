@@ -214,16 +214,14 @@ const searchActivity = (searchVal, successCallback, failCallback) => {
     })
 }
 const getCertificatectivity = (param, successCallback, failCallback)=>{
-    ///${wx.getStorageSync("openid") || 'om6834wWFZ_yjiMVbcVp2thK-LAQ'}
     return request({
-        url:`activityParticipant?participant_openid=om68340n3bFxQwj-YXqnWjXgnEFM`,
+        url:`activityParticipant`,
         method: 'GET',
         success: successCallback,
         fail: failCallback,
     })
 }
 const submitCertificatectivity = (param, successCallback, failCallback)=>{
-    debugger
     return request({
         url:`activityParticipant`,
         method: 'POST',

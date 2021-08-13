@@ -56,7 +56,7 @@ Page({
           return item;
         }))
         this.setData({
-          activityList: activities.concat(activities),
+          activityList: activities,
           participant_openid: res.participant_openid,
           isEmpty: !activities || activities.length === 0
         })
