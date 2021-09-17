@@ -34,8 +34,6 @@ class User(db.Model):
     address = db.Column(db.String(80), server_default='无')
     emergent_contact = db.Column(db.String(8))
     emergent_contact_phone = db.Column(db.String(16))
-    activities_joined = db.Column(db.Integer, server_default='0', nullable=False)
-    activities_absence = db.Column(db.Integer, server_default='0', nullable=False)
     remark = db.Column(db.String(255), server_default='无')
     audit_status = db.Column(db.Integer, server_default='0', nullable=False)
     push_status = db.Column(db.Integer, server_default='0', nullable=False)

@@ -21,32 +21,10 @@ class Activity(db.Model):
     tag_ids = db.Column(db.String(120))
     volunteer_capacity = db.Column(db.Integer, server_default='0')
     vision_impaired_capacity = db.Column(db.Integer, server_default='0')
-    volunteer_job_title = db.Column(db.String(500))
-    volunteer_job_content = db.Column(db.String(100))
     activity_fee = db.Column(db.Integer, server_default='0')
     sign_in_radius = db.Column(db.Integer)
     sign_in_token = db.Column(db.String(10), nullable=False, comment='Sign in token')
     theme_pic_name = db.Column(db.String(300), nullable=False, comment='Activity theme picture, save to /static/activity_theme_picture/*')
-
-
-class RegisteredActivity(db.Model):
-    __tablename__ = 'REGISTERED_ACTIVITY'
-    user_openid = db.Column(db.String(28), db.ForeignKey('USER.openid'), primary_key=True)
-    activity_id = db.Column(db.BigInteger, db.ForeignKey('ACTIVITY.id'), primary_key=True)
-    phone = db.Column(db.String(16), nullable=False)
-    address = db.Column(db.String(80), nullable=False)
-    needpickup = db.Column(db.Integer, nullable=False, server_default='0')
-    topickup = db.Column(db.Integer, nullable=False, server_default='0')
-    accepted = db.Column(db.Integer, nullable=False, server_default='-1')
-
-
-class PickupPair(db.Model):
-    __tablename__ = 'PICKUP_PAIR'
-    activity_id = db.Column(db.BigInteger, db.ForeignKey('ACTIVITY.id'))
-    offer = db.Column(db.String(28), db.ForeignKey('USER.openid'), primary_key=True)
-    need = db.Column(db.String(28), db.ForeignKey('USER.openid'), primary_key=True)
-    time = db.Column(db.DateTime, nullable=False)
-    location = db.Column(db.String(100), nullable=False)
 
 
 class ActivityParticipant(db.Model):
@@ -59,6 +37,7 @@ class ActivityParticipant(db.Model):
     certificated = db.Column(db.Integer)
     certificate_date = db.Column(db.DateTime)
     paper_certificate = db.Column(db.Integer)
+    current_state = db.Column(db.String(10)) # Registered, signed_up, signed_off
     signup_time = db.Column(db.DateTime)
     signup_latitude = db.Column(db.DECIMAL(9, 6))
     signup_longitude = db.Column(db.DECIMAL(9, 6))
