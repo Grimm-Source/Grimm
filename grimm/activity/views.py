@@ -10,7 +10,7 @@ from six.moves.urllib.parse import quote
 from config import BASE_DIR
 from grimm import logger, db
 from grimm.activity import activity, activitybiz
-from grimm.models.activity import Activity, RegisteredActivity, ActivityParticipant, PickupVolunteer, PickupImpaired
+from grimm.models.activity import Activity, ActivityParticipant, PickupVolunteer, PickupImpaired
 from grimm.models.admin import User
 from grimm.utils import dbutils, certificationgenerate, emailverify, areautils
 from grimm.utils.constants import TAG_LIST
@@ -185,11 +185,11 @@ class ActivityRegistration(Resource):
         if not activity_info:
             logger.warning("%d: no such activity", activity_id)
             return jsonify({"status": "failure", "message": "无效活动 ID"})
-        activities_registration = RegisteredActivity.query.filter(RegisteredActivity.activity_id == activity_id).all()
+        activities_registration = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity_id).all()
         users = []
         for item in activities_registration:
             user = {}
-            openid = item.user_openid
+            openid = item.participant_openid
             user_info = User.query.filter(User.openid == openid).first()
             user["openid"] = openid
             user["name"] = user_info.name
@@ -208,16 +208,10 @@ class ActivityRegistration(Resource):
         if not activity_info:
             return jsonify({"status": "failure", "message": "无效活动 ID"})
         openid = request.args.get("openid")
-        accepted = request.args.get("accepted")
-        activities_registration = RegisteredActivity.query. \
-            filter(RegisteredActivity.activity_id == activity_id, RegisteredActivity.user_openid == openid).all()
+        activities_registration = ActivityParticipant.query. \
+            filter(ActivityParticipant.activity_id == activity_id, ActivityParticipant.participant_openid == openid).all()
         if not activities_registration:
             return jsonify({"status": "failure", "message": " 此人未报名"})
-        num_rows_updated = RegisteredActivity.query. \
-            filter(RegisteredActivity.activity_id == activity_id,
-                   RegisteredActivity.user_openid == openid).update({RegisteredActivity.accepted: accepted})
-        logger.info('%s rows updated.' % num_rows_updated)
-        db.session.commit()
         return jsonify({"status": "success"})
 
 
@@ -247,7 +241,7 @@ class ActivityParticipantParser(object):
 
 
 @activity.route("/activityParticipant", methods=["GET", 'POST'])
-class ActivityParticipant_(Resource):
+class ActivityParticipantRegister(Resource):
     @activity.expect(ActivityParticipantParser.get())
     def get(self):
         info = ActivityParticipantParser.get().parse_args()
@@ -261,24 +255,24 @@ class ActivityParticipant_(Resource):
                 logger.info(dbutils.serialize(activity_participant))
                 activity_id = activity_participant.activity_id
                 activity_info = Activity.query.filter(Activity.id == activity_id).first()
-                activity = {"id": activity_info.id, "title": activity_info.title,
-                            "location": activity_info.location}
+                activity_ = {"id": activity_info.id, "title": activity_info.title,
+                             "location": activity_info.location}
                 start = activity_info.start_time
                 end = activity_info.end_time
-                activity["start_time"] = start.strftime("%Y-%m-%dT%H:%M:%S")
-                activity["end_time"] = end.strftime("%Y-%m-%dT%H:%M:%S")
-                activity["content"] = activity_info.content
-                activity["certificated"] = activity_participant.certificated
+                activity_["start_time"] = start.strftime("%Y-%m-%dT%H:%M:%S")
+                activity_["end_time"] = end.strftime("%Y-%m-%dT%H:%M:%S")
+                activity_["content"] = activity_info.content
+                activity_["certificated"] = activity_participant.certificated
                 if activity_participant.signup_time:
-                    activity["signup_time"] = activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S")
-                    activity["signup_latitude"] = str(activity_participant.signup_latitude)
-                    activity["signup_longtitude"] = str(activity_participant.signup_longitude)
+                    activity_["signup_time"] = activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S")
+                    activity_["signup_latitude"] = str(activity_participant.signup_latitude)
+                    activity_["signup_longtitude"] = str(activity_participant.signup_longitude)
                 if activity_participant.signoff_time:
-                    activity["signoff_time"] = activity_participant.signoff_time.strftime("%Y-%m-%dT%H:%M:%S")
-                    activity["signoff_latitude"] = str(activity_participant.signoff_latitude)
-                    activity["signoff_longtitude"] = str(activity_participant.signoff_longitude)
+                    activity_["signoff_time"] = activity_participant.signoff_time.strftime("%Y-%m-%dT%H:%M:%S")
+                    activity_["signoff_latitude"] = str(activity_participant.signoff_latitude)
+                    activity_["signoff_longtitude"] = str(activity_participant.signoff_longitude)
 
-                feedback["activities"].append(activity)
+                feedback["activities"].append(activity_)
         return jsonify(feedback)
 
     @activity.expect(ActivityParticipantParser.post())
@@ -372,7 +366,6 @@ class ActivityParticipant_(Resource):
             filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
         if activity_participant_info:
             logger.info("OpenId:%s in activity:%d are already in activity_participant, duplicated insertion!", openid, activity_id)
-            #return jsonify({"status": "success"})
             return False
 
         activity_info = db.session.query(Activity). \
@@ -392,7 +385,7 @@ class ActivityParticipant_(Resource):
         activity_participant_info.paper_certificate = 0
         db.session.add(activity_participant_info)
         db.session.commit()
-        logger.info("OpenId:%s in activity:%d are inserted to activity_participant!", openid, activity_id)
+        logger.info("OpenId:%s in activity:%s are inserted to activity_participant!", openid, activity_id)
 
         return True
 
@@ -410,8 +403,8 @@ class GetFavoriteActivities(Resource):
             filter(ActivityParticipant.interested == 1). \
             filter(ActivityParticipant.activity_id == Activity.id).all()
         registered_activities_info = db.session.query(Activity.id, Activity.end_time). \
-            filter(RegisteredActivity.user_openid == openid). \
-            filter(RegisteredActivity.activity_id == Activity.id).all()
+            filter(ActivityParticipant.participant_openid == openid). \
+            filter(ActivityParticipant.activity_id == Activity.id).all()
         favorite_activities_info = [{'activity.id': i.id, 'activity.end_time': i.end_time}
                                     for i in favorite_activities_info] if favorite_activities_info else []
         registered_activities_info = [{'activity.id': j.id, 'activity.end_time': j.end_time}
@@ -603,60 +596,18 @@ class RegisteredActivities(Resource):
         activity_id = info["activityId"]
         logger.info('User %s register activity %s.' % (openid, activity_id))
 
-        exist_info = RegisteredActivity.query. \
-            filter(RegisteredActivity.user_openid == openid,
-                   RegisteredActivity.activity_id == activity_id).first()
+        exist_info = ActivityParticipant.query. \
+            filter(ActivityParticipant.participant_openid == openid,
+                   ActivityParticipant.activity_id == activity_id).first()
         if exist_info:
             logger.info('Repeat registration.')
             return jsonify({"status": "failure", "message": "重复报名"})
 
-        register_act = RegisteredActivity()
-        if "needPickUp" in info.keys():
-            register_act.needpickup = int(info["needPickUp"])
-        if "toPickUp" in info.keys():
-            register_act.topickup = int(info["toPickUp"])
-        if "phone" in info.keys():
-            register_act.phone = info["phone"]
-        else:
-            try:
-                user_info = User.query.filter(User.openid == openid).first()
-                register_act.phone = user_info.phone
-            except:
-                return jsonify({"status": "failure", "message": "未能获取用户信息"})
-        if "address" in info.keys():
-            register_act.address = info["address"]
-        else:
-            try:
-                user_info = User.query.filter(User.openid == openid).first()
-                register_act.address = user_info.address
-            except:
-                return jsonify({"status": "failure", "message": "未能获取用户信息"})
-        register_act.user_openid = openid
-        # activity_id from network is str
-        register_act.activity_id = int(activity_id)
-        register_act.accepted = -1
+        user_info = User.query.filter(User.openid == openid).first()
+        if not user_info:
+            return jsonify({"status": "failure", "message": "未能获取用户信息"})
 
-        # Auto approve, not auto reject -- Hangzhou Backend
-        try:
-            activity_info = RegisteredActivity.query.filter(RegisteredActivity.activity_id == int(activity_id)).all()
-            volunteer = db.session.query(ActivityParticipant.activity_id, User.openid). \
-                filter(ActivityParticipant.activity_id == activity_id). \
-                filter(ActivityParticipant.participant_openid == User.openid). \
-                filter(User.role == 0).all()
-            logger.error("%s: volunteer", volunteer)
-            if activity_info:
-                logger.error("%s: activeinfo", activity_info[0])
-                if len(volunteer) < activity_info[0]["volunteer_capacity"]:
-                    register_act.accepted = 1
-            else:
-                register_act.accepted = -1
-        except:
-            logger.error("%s: activeinfo no return. Skip to auto approve, insert register still", )
-
-        db.session.add(register_act)
-        db.session.commit()
-
-        if not ActivityParticipant_.hook_put(openid, activity_id):
+        if not ActivityParticipantRegister.hook_put(openid, activity_id):
             logger.error("Activity %d with openid %d insertion failed!", activity_id, openid)
             return jsonify({"status": "failure"})
 
@@ -681,15 +632,7 @@ class RegisteredActivities(Resource):
             if pickup_impaired:
                 db.session.delete(pickup_impaired)
                 db.session.commit()
-
-        delete_info = db.session.query(RegisteredActivity). \
-            filter(RegisteredActivity.user_openid == openid,
-                   RegisteredActivity.activity_id == activity_id).first()
-        if delete_info:
-            db.session.delete(delete_info)
-            db.session.commit()
-            return jsonify({"status": "取消活动成功！"})
-        return jsonify({"status": "取消活动失败！"})
+        return jsonify({"status": "取消活动成功！"})
 
 
 @activity.route("/pickUpImpaired", methods=["POST", "GET"])
@@ -698,9 +641,6 @@ class PickUpImpaired(Resource):
         openid = request.headers.get('Authorization')
         data = request.get_json()
         activity_id = data['activityId']
-        RegisteredActivity.query. \
-            filter(RegisteredActivity.user_openid == openid,
-                   RegisteredActivity.activity_id == activity_id).update({RegisteredActivity.needpickup: 1})
         pickup_info = db.session.query(PickupImpaired). \
             filter(PickupImpaired.openid == openid, PickupImpaired.activity_id == activity_id).first()
         if pickup_info:
@@ -758,9 +698,6 @@ class PickUpVolunteer(Resource):
         openid = request.headers.get('Authorization')
         data = request.get_json()
         activity_id = data['activityId']
-        RegisteredActivity.query. \
-            filter(RegisteredActivity.user_openid == openid,
-                   RegisteredActivity.activity_id == activity_id).update({RegisteredActivity.topickup: 1})
         pickup_info = db.session.query(PickupVolunteer). \
             filter(PickupVolunteer.openid == openid, PickupVolunteer.activity_id == activity_id).first()
         if pickup_info:
@@ -921,7 +858,7 @@ class PickupDetailInfo(Resource):
         pickup_method = data['pickupMethod']
         pickup_info = db.session. \
             query(PickupImpaired).filter(PickupImpaired.openid == impaired_openid,
-                  PickupImpaired.activity_id == activity_id).first()
+                                         PickupImpaired.activity_id == activity_id).first()
         pickup_info.pickup_method = pickup_method
         pickup_info.pickup_volunteer_openid = volunteer_openid
         db.session.commit()

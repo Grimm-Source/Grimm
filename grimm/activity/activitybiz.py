@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from grimm import logger, db
-from grimm.models.activity import ActivityParticipant, RegisteredActivity
+from grimm.models.activity import ActivityParticipant
 from grimm.models.admin import User
 from grimm.utils import misctools, constants
 
@@ -35,18 +35,18 @@ def activity_converter(activity, openid=0):
     query["thumbs_up"] = ActivityParticipant.query. \
         filter(ActivityParticipant.activity_id == activity["id"],
                ActivityParticipant.thumbs_up == 1).count()
-    query["registered"] = RegisteredActivity.query. \
-        filter(RegisteredActivity.activity_id == activity["id"]).count() if openid == 0 else \
-        RegisteredActivity.query.filter(RegisteredActivity.activity_id == activity["id"],
-                                        RegisteredActivity.user_openid == openid).count()
-    query["registered_volunteer"] = db.session.query(RegisteredActivity, User). \
-        filter(RegisteredActivity.activity_id == activity["id"]). \
+    query["registered"] = ActivityParticipant.query. \
+        filter(ActivityParticipant.activity_id == activity["id"]).count() if openid == 0 else \
+        ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity["id"],
+                                         ActivityParticipant.participant_openid == openid).count()
+    query["registered_volunteer"] = db.session.query(ActivityParticipant, User). \
+        filter(ActivityParticipant.activity_id == activity["id"]). \
         filter(User.role == 0). \
-        filter(RegisteredActivity.user_openid == User.openid).count()
-    query["registered_impaired"] = db.session.query(RegisteredActivity, User). \
-        filter(RegisteredActivity.activity_id == activity["id"]). \
+        filter(ActivityParticipant.participant_openid == User.openid).count()
+    query["registered_impaired"] = db.session.query(ActivityParticipant, User). \
+        filter(ActivityParticipant.activity_id == activity["id"]). \
         filter(User.role == 1). \
-        filter(RegisteredActivity.user_openid == User.openid).count()
+        filter(ActivityParticipant.participant_openid == User.openid).count()
     query["volunteer_capacity"] = activity["volunteer_capacity"]
     query["is_volunteer_limited"] = (
         True

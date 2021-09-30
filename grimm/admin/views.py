@@ -9,7 +9,8 @@ import urllib3
 from flask import request, jsonify
 from flask_restx import Resource
 
-from grimm import logger, db, engine, GrimmConfig, socketio
+from grimm import logger, db, engine, GrimmConfig
+# from grimm import socketio
 from grimm.admin import admin, adminbiz
 from grimm.admin.admindto import AdminDto
 from grimm.models.admin import Admin, User
@@ -140,6 +141,7 @@ class NewAdmin(Resource):
                     {"status": "failure", "message": "发送验证邮箱失败"}
                 )
         except Exception as err:
+            logger.error(getattr(err, 'message', repr(err)))
             logger.info(traceback.format_exc())
             logger.warning(
                 "%d, %s: send confirm email failed",
@@ -188,7 +190,6 @@ class Users(Resource):
                     "phone": user_info.phone,
                     "registrationDate": str(user_info.registration_date),
                     "activitiesJoined": user_info.activities_joined,
-                    "activitiesAbsence": user_info.activities_absence,
                     "joindHours": 4 * user_info.activities_joined}
             if user_info.role == 1:
                 info["disabledID"] = user_info.disabled_id
@@ -318,7 +319,6 @@ class ProfileOperate(Resource):
             "email": user_info["email"],
             "registrationDate": str(user_info["registration_date"]),
             "activitiesJoined": user_info["activities_joined"],
-            "activitiesAbsence": user_info["activities_absence"],
             "joindHours": 4 * user_info["activities_joined"]
         }
         logger.info("%s: user login successfully", user_info["openid"])
@@ -450,7 +450,7 @@ class RegisterInfo(Resource):
         else:
             user_info.audit_status = 1
 
-        socketio.emit("new-users", [user_info])
+        # socketio.emit("new-users", [user_info])
         user_info.push_status = 1
         db.session.commit()
         logger.info("%s: complete user registration success", openid)
