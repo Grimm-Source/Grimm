@@ -226,7 +226,6 @@ class ActivityParticipantParser(object):
     def post():
         parser = reqparse.RequestParser()
         parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
-        # parser.add_argument('activity_id', type=int, location='form', help='Activity ID')
         parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
         parser.add_argument('real_name', type=str, location='json', help='Real Name')
         parser.add_argument('id_type', type=str, location='json', help='ID Type')
@@ -263,6 +262,7 @@ class ActivityParticipantRegister(Resource):
                 activity_["end_time"] = end.strftime("%Y-%m-%dT%H:%M:%S")
                 activity_["content"] = activity_info.content
                 activity_["certificated"] = activity_participant.certificated
+                activity_["current_state"] = activity_participant.current_state
                 if activity_participant.signup_time:
                     activity_["signup_time"] = activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S")
                     activity_["signup_latitude"] = str(activity_participant.signup_latitude)
@@ -360,34 +360,6 @@ class ActivityParticipantRegister(Resource):
 
         return jsonify(feedback)
 
-    @staticmethod
-    def hook_put(openid, activity_id):
-        activity_participant_info = db.session.query(ActivityParticipant). \
-            filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
-        if activity_participant_info:
-            logger.info("OpenId:%s in activity:%d are already in activity_participant, duplicated insertion!", openid, activity_id)
-            return False
-
-        activity_info = db.session.query(Activity). \
-            filter(Activity.id == activity_id).first()
-        if not activity_info:
-            logger.error("Activity %d is not existing!", activity_id)
-            return False
-
-        activity_participant_info = ActivityParticipant()
-        activity_participant_info.activity_id = activity_id
-        activity_participant_info.participant_openid = openid
-        activity_participant_info.interested = 0
-        activity_participant_info.share = 0
-        activity_participant_info.thumbs_up = 0
-        activity_participant_info.certificated = 0
-        activity_participant_info.certiticate_date = 0
-        activity_participant_info.paper_certificate = 0
-        db.session.add(activity_participant_info)
-        db.session.commit()
-        logger.info("OpenId:%s in activity:%s are inserted to activity_participant!", openid, activity_id)
-
-        return True
 
 
 @activity.route("/myActivities", methods=["GET"])
@@ -587,13 +559,23 @@ class ShareActivity(Resource):
         return jsonify({"status": "success"})
 
 
+class RegisterActivitiesParser(object):
+    @staticmethod
+    def common():
+        parser = reqparse.RequestParser()
+        parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
+        parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
+        return parser
+
 @activity.route("/registeredActivities", methods=["POST", 'DELETE'])
-class RegisteredActivities(Resource):
+class RegisterActivities(Resource):
+    @activity.expect(RegisterActivitiesParser().common())
     def post(self):
         # register an activity
-        openid = request.headers.get("Authorization")
-        info = request.get_json()
-        activity_id = info["activityId"]
+        info = RegisterActivitiesParser.common().parse_args()
+        openid = info.get("Authorization")
+        activity_id = info.get("activity_id")
+
         logger.info('User %s register activity %s.' % (openid, activity_id))
 
         exist_info = ActivityParticipant.query. \
@@ -607,17 +589,56 @@ class RegisteredActivities(Resource):
         if not user_info:
             return jsonify({"status": "failure", "message": "未能获取用户信息"})
 
-        if not ActivityParticipantRegister.hook_put(openid, activity_id):
+        if not self.update_activity_participant_db(openid, activity_id):
             logger.error("Activity %d with openid %d insertion failed!", activity_id, openid)
             return jsonify({"status": "failure"})
 
         return jsonify({"status": "success"})
 
+    def update_activity_participant_db(self, openid, activity_id):
+        activity_participant_info = db.session.query(ActivityParticipant). \
+            filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
+        if activity_participant_info:
+            logger.info("OpenId:%s in activity:%d are already in activity_participant, duplicated insertion!", openid, activity_id)
+            return False
+
+        activity_info = db.session.query(Activity). \
+            filter(Activity.id == activity_id).first()
+        if not activity_info:
+            logger.error("Activity %d is not existing!", activity_id)
+            return False
+
+        activity_participant_info = ActivityParticipant()
+        activity_participant_info.activity_id = activity_id
+        activity_participant_info.participant_openid = openid
+        activity_participant_info.interested = 0
+        activity_participant_info.share = 0
+        activity_participant_info.thumbs_up = 0
+        activity_participant_info.current_state = "Registered"
+        activity_participant_info.certificated = 0
+        activity_participant_info.certiticate_date = 0
+        activity_participant_info.paper_certificate = 0
+        db.session.add(activity_participant_info)
+        db.session.commit()
+        logger.info("OpenId:%s in activity:%s are inserted to activity_participant!", openid, activity_id)
+
+        return True
+
+    @activity.expect(RegisterActivitiesParser().common())
     def delete(self):
         """ cancel specific registered activity """
-        openid = request.headers.get("Authorization")
-        activity_id = request.args.get("activityId")
+        info = RegisterActivitiesParser.common().parse_args()
+        openid = info.get("Authorization")
+        activity_id = info.get("activity_id")
+
         logger.info('Delete openid - %s, activity id - %s' % (openid, activity_id))
+        activity_participant_info = db.session.query(ActivityParticipant). \
+            filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
+        if activity_participant_info:
+            db.session.delete(activity_participant_info)
+            db.session.commit()
+            logger.info("Deleted OpenId:%s with activity:%d in activity_participant!", openid, activity_id)
+
         user_info = User.query.filter(User.openid == openid).first()
 
         if user_info.role == 0:
@@ -756,6 +777,7 @@ class SignupActivity(Resource):
             activity_participant_info.signup_time = new_info.get("signup_time")
             activity_participant_info.signup_latitude = new_info.get("signup_latitude")
             activity_participant_info.signup_longitude = new_info.get("signup_longitude")
+            activity_participant_info.current_state = "signed_up"
             db.session.commit()
             logger.info("%s in %d: update activity_participant successfully", openid, activity_id)
             return jsonify({"status": "success"})
@@ -778,6 +800,7 @@ class SignupActivity(Resource):
         activity_participant_info.signup_time = new_info.get("signup_time")
         activity_participant_info.signup_latitude = new_info.get("signup_latitude")
         activity_participant_info.signup_longitude = new_info.get("signup_longitude")
+        activity_participant_info.current_state = "signed_up"
         db.session.add(activity_participant_info)
         db.session.commit()
 
@@ -818,6 +841,7 @@ class SignoffActivity(Resource):
             activity_participant_info.signoff_time = new_info.get("signoff_time")
             activity_participant_info.signoff_latitude = new_info.get("signoff_latitude")
             activity_participant_info.signoff_longitude = new_info.get("signoff_longitude")
+            activity_participant_info.current_state = "signed_off"
             db.session.commit()
             logger.info("%s in %d: update activity successfully", openid, activity_id)
             return jsonify({"status": "success"})
