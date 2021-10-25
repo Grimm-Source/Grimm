@@ -3,7 +3,7 @@ from grimm import db
 
 
 class Activity(db.Model):
-    __tablename__ = 'ACTIVITY'
+    __tablename__ = 'activity'
     id = db.Column(db.BigInteger, primary_key=True, nullable=False, autoincrement=True, comment='活动表主键ID，用于索引,系统内部可见，数据库自动从1开始自增')
     title = db.Column(db.String(60), nullable=False, comment='活动标题,发布活动时输入')
     start_time = db.Column(db.DateTime, nullable=False, comment='活动开始时间,发布活动时输入')
@@ -14,10 +14,10 @@ class Activity(db.Model):
     content = db.Column(db.String(4000), nullable=False, comment='活动内容,发布活动时输入')
     notice = db.Column(db.String(4000), comment='活动注意事项，发布活动时输入，可选')
     others = db.Column(db.String(120), nullable=False, server_default='无', comment='活动其他相关内容，发布活动时输入')
-    admin_raiser = db.Column(db.Integer, db.ForeignKey('ADMIN.id'), comment='活动创建者，如果是管理员创建则使用该域，创建活动项时系统自动设置')
-    user_raiser = db.Column(db.String(28), db.ForeignKey('USER.openid'), comment='活动创建者，如果是视障人士/志愿者用户则使用该域，创建活动项时系统自动设置')
-    approver = db.Column(db.Integer, db.ForeignKey('ADMIN.id'), comment='活动审批者,管理员审批活动时更新')
-    assignee = db.Column(db.String(28), db.ForeignKey('USER.openid'), comment='活动领队/负责人,待定')
+    admin_raiser = db.Column(db.Integer, db.ForeignKey('admin.id'), comment='活动创建者，如果是管理员创建则使用该域，创建活动项时系统自动设置')
+    user_raiser = db.Column(db.String(28), db.ForeignKey('user.openid'), comment='活动创建者，如果是视障人士/志愿者用户则使用该域，创建活动项时系统自动设置')
+    approver = db.Column(db.Integer, db.ForeignKey('admin.id'), comment='活动审批者,管理员审批活动时更新')
+    assignee = db.Column(db.String(28), db.ForeignKey('user.openid'), comment='活动领队/负责人,待定')
     published = db.Column(db.Integer, nullable=False, server_default='0', comment='活动审核发布标志位, 0=未审核，1=已审核,管理员审核活动时更新')
     tag_ids = db.Column(db.String(120), comment='活动分类标签,管理员审核活动时更新')
     volunteer_capacity = db.Column(db.Integer, server_default='0', comment='所需志愿者人数')
@@ -31,9 +31,9 @@ class Activity(db.Model):
 
 
 class ActivityParticipant(db.Model):
-    __tablename__ = 'ACTIVITY_PARTICIPANT'
-    activity_id = db.Column(db.BigInteger, db.ForeignKey('ACTIVITY.id'), primary_key=True, comment='引用活动ID，关联活动表，进入详情页中的数据库表')
-    participant_openid = db.Column(db.String(28), db.ForeignKey('USER.openid'), primary_key=True, comment='参加活动的志愿者或者视障人士ID')
+    __tablename__ = 'activity_participant'
+    activity_id = db.Column(db.BigInteger, db.ForeignKey('activity.id'), primary_key=True, comment='引用活动ID，关联活动表，进入详情页中的数据库表')
+    participant_openid = db.Column(db.String(28), db.ForeignKey('user.openid'), primary_key=True, comment='参加活动的志愿者或者视障人士ID')
     interested = db.Column(db.Integer, server_default='0', comment='是否喜欢，将活动标志为喜欢')
     share = db.Column(db.Integer, server_default='0', comment='分享的次数，一个活动可能会有多次的分享')
     thumbs_up = db.Column(db.Integer, server_default='0', comment='是否点赞，默认值为0')
@@ -50,7 +50,7 @@ class ActivityParticipant(db.Model):
 
 
 class PickupImpaired(db.Model):
-    __tablename__ = 'PICKUP_IMPAIRED'
+    __tablename__ = 'pickup_impaired'
     openid = db.Column(db.String(64), primary_key=True, comment='用户ID')
     activity_id = db.Column(db.Integer, primary_key=True, comment='活动ID')
     name = db.Column(db.String(32), comment='真实姓名')
@@ -65,7 +65,7 @@ class PickupImpaired(db.Model):
 
 
 class PickupVolunteer(db.Model):
-    __tablename__ = 'PICKUP_VOLUNTEER'
+    __tablename__ = 'pickup_volunteer'
     openid = db.Column(db.String(64), primary_key=True, comment='用户ID')
     activity_id = db.Column(db.Integer, primary_key=True, comment='活动ID')
     name = db.Column(db.String(32), comment='真实姓名')

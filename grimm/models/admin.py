@@ -3,7 +3,7 @@ from sqlalchemy import func
 
 
 class Admin(db.Model):
-    __tablename__ = 'ADMIN'
+    __tablename__ = 'admin'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     registration_date = db.Column(db.DateTime, default=func.now(), nullable=False, comment='管理员账户创建日期,创建新管理员时自动生成')
     password = db.Column(db.String(60), server_default='0', nullable=False, comment='管理员账户密码哈希串,创建管理员输入密码或管理员更新密码时自动生成')
@@ -13,7 +13,7 @@ class Admin(db.Model):
 
 
 class User(db.Model):
-    __tablename__ = 'USER'
+    __tablename__ = 'user'
     openid = db.Column(db.String(28), primary_key=True, nullable=False, comment='用户表主键值，用于索引，字串由微信生成，对于同一小程序，不同微信用户的openid不相同')
     registration_date = db.Column(db.DateTime, nullable=False, comment='用户账户申请日期,新用户申请账户时生成')
     role = db.Column(db.Integer, nullable=False, server_default='0', comment='用户类型, 0=志愿者, 1=视障人士,新用户申请账户时设定')
