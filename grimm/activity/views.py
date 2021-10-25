@@ -240,7 +240,7 @@ class ActivityParticipantParser(object):
 
 
 @activity.route("/activityParticipant", methods=["GET", 'POST'])
-class ActivityParticipantRegister(Resource):
+class ActivityParticipant(Resource):
     @activity.expect(ActivityParticipantParser.get())
     def get(self):
         info = ActivityParticipantParser.get().parse_args()
@@ -559,7 +559,7 @@ class ShareActivity(Resource):
         return jsonify({"status": "success"})
 
 
-class RegisterActivitiesParser(object):
+class UserRegisterActivitiesParser(object):
     @staticmethod
     def common():
         parser = reqparse.RequestParser()
@@ -567,12 +567,12 @@ class RegisterActivitiesParser(object):
         parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
         return parser
 
-@activity.route("/registeredActivities", methods=["POST", 'DELETE'])
-class RegisterActivities(Resource):
-    @activity.expect(RegisterActivitiesParser().common())
+@activity.route("/activityParticipant/registerActivity", methods=["POST", 'DELETE'])
+class UserRegisterActivities(Resource):
+    @activity.expect(UserRegisterActivitiesParser().common())
     def post(self):
         # register an activity
-        info = RegisterActivitiesParser.common().parse_args()
+        info = UserRegisterActivitiesParser.common().parse_args()
         openid = info.get("Authorization")
         activity_id = info.get("activity_id")
 
@@ -624,10 +624,10 @@ class RegisterActivities(Resource):
 
         return True
 
-    @activity.expect(RegisterActivitiesParser().common())
+    @activity.expect(UserRegisterActivitiesParser().common())
     def delete(self):
         """ cancel specific registered activity """
-        info = RegisterActivitiesParser.common().parse_args()
+        info = UserRegisterActivitiesParser.common().parse_args()
         openid = info.get("Authorization")
         activity_id = info.get("activity_id")
 
