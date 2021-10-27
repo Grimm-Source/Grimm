@@ -1,6 +1,5 @@
 #!/bin/bash
 basedir=$(dirname $0)
-app_home=$(cd $basedir && pwd -L) || exit 1
 
 [[ -d ${basedir}/logs ]] || {
     mkdir -p ${basedir}/logs
