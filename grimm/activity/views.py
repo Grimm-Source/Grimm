@@ -240,7 +240,7 @@ class ActivityParticipantParser(object):
 
 
 @activity.route("/activityParticipant", methods=["GET", 'POST'])
-class ActivityParticipant(Resource):
+class ActivityParticipantRoot(Resource):
     @activity.expect(ActivityParticipantParser.get())
     def get(self):
         info = ActivityParticipantParser.get().parse_args()
