@@ -113,10 +113,10 @@ def upgrade():
     sa.Column('sign_in_radius', sa.Integer(), nullable=True, comment='签到半径，单位公里'),
     sa.Column('sign_in_token', sa.String(length=10), nullable=False, comment='签到口令'),
     sa.Column('theme_pic_name', sa.String(length=300), nullable=False, comment='活动主题图片, 保存路径为/static/activity_theme_picture/*'),
-    sa.ForeignKeyConstraint(['admin_raiser'], ['ADMIN.id'], ),
-    sa.ForeignKeyConstraint(['approver'], ['ADMIN.id'], ),
-    sa.ForeignKeyConstraint(['assignee'], ['USER.openid'], ),
-    sa.ForeignKeyConstraint(['user_raiser'], ['USER.openid'], ),
+    sa.ForeignKeyConstraint(['admin_raiser'], ['admin.id'], ),
+    sa.ForeignKeyConstraint(['approver'], ['admin.id'], ),
+    sa.ForeignKeyConstraint(['assignee'], ['user.openid'], ),
+    sa.ForeignKeyConstraint(['user_raiser'], ['user.openid'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('activity_participant',
@@ -135,8 +135,8 @@ def upgrade():
     sa.Column('signoff_time', sa.DateTime(), nullable=True, comment='签退时间'),
     sa.Column('signoff_latitude', sa.DECIMAL(precision=9, scale=6), nullable=True, comment='签退经纬度-纬度'),
     sa.Column('signoff_longitude', sa.DECIMAL(precision=9, scale=6), nullable=True, comment='签退经纬度-经度'),
-    sa.ForeignKeyConstraint(['activity_id'], ['ACTIVITY.id'], ),
-    sa.ForeignKeyConstraint(['participant_openid'], ['USER.openid'], ),
+    sa.ForeignKeyConstraint(['activity_id'], ['activity.id'], ),
+    sa.ForeignKeyConstraint(['participant_openid'], ['user.openid'], ),
     sa.PrimaryKeyConstraint('activity_id', 'participant_openid')
     )
     # ### end Alembic commands ###
