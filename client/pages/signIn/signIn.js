@@ -136,7 +136,7 @@ Page({
     console.log("time:", time)
 
     return signUP({
-      activityId: Number(this.data.id),
+      activity_id: Number(this.data.id),
       signup_time: time,
       signup_latitude: this.data.latitude,
       signup_longitude: this.data.longitude,

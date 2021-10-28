@@ -15,6 +15,7 @@ Component({
    */
   data: {
     activities: [],
+    
 
   },
 
@@ -22,7 +23,8 @@ Component({
     show: function () {
       console.log("1111getCertificatectivity:")
       getCertificatectivity((res) => {
-        console.log("getCertificatectivity:", res.activities)
+        console.log("getCertificatectivity:", res)
+
         this._setActivities(res.activities);
 
       })
