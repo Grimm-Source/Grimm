@@ -263,6 +263,7 @@ class ActivityParticipantRoot(Resource):
                 activity_["content"] = activity_info.content
                 activity_["certificated"] = activity_participant.certificated
                 activity_["current_state"] = activity_participant.current_state
+                activity_["sign_method"] = activity_participant.sign_method
                 if activity_participant.signup_time:
                     activity_["signup_time"] = activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S")
                     activity_["signup_latitude"] = str(activity_participant.signup_latitude)
@@ -420,16 +421,30 @@ class GetFavoriteActivities(Resource):
         return jsonify(queries)
 
 
+class GetActivityParser(object):
+    @staticmethod
+    def get():
+        parser = reqparse.RequestParser()
+        parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
+        parser.add_argument('activity_id', type=int, location='args', help='Activity ID')
+        return parser
+
 @activity.route("/activity_detail", methods=["GET"])
 class GetActivity(Resource):
+    @activity.expect(GetActivityParser().get())
     def get(self):
-        """ get activity detail with activityId """
-        openid = request.headers.get("Authorization")
-        activity_id = int(request.args.get("activityId"))
+        """ get activity detail with activity_id """
+        info = GetActivityParser.get().parse_args()
+        openid = info.get("Authorization")
+        activity_id = info.get("activity_id")
+
+        logger.info("GetActivity: activity_id: %d, openid:%s", activity_id, openid)
+
         activity_info = Activity.query.filter(Activity.id == activity_id).first()
         if not activity_info:
             logger.warning("%d: no such activity", activity_id)
             return jsonify({"status": "failure", "message": "未知活动ID"})
+
         feedback = activitybiz.activity_converter(dbutils.serialize(activity_info), openid)
         feedback["status"] = "success"
 
@@ -467,7 +482,7 @@ class MarkActivity(Resource):
     def post(self):
         """ mark activity as Interest """
         openid = request.headers.get("Authorization")
-        activity_id = request.args.get("activityId")
+        activity_id = request.args.get("activity_id")
         interest = request.args.get("interest")
         feedback = {"status": "success"}
         activity_participant_info = db.session.query(ActivityParticipant). \
@@ -497,7 +512,7 @@ class ThumbsUpActivity(Resource):
     def post(self):
         """mark activity as thumbs_up"""
         openid = request.headers.get("Authorization")
-        activity_id = request.args.get("activityId")
+        activity_id = request.args.get("activity_id")
         thumbs_up = request.args.get("thumbs_up")
         feedback = {"status": "success"}
         activity_participant_info = db.session.query(ActivityParticipant). \
@@ -527,7 +542,7 @@ class ShareActivity(Resource):
     def post(self):
         """ share activity """
         openid = request.headers.get("Authorization")
-        activity_id = request.args.get("activityId")
+        activity_id = request.args.get("activity_id")
         participant = db.session.query(ActivityParticipant). \
             filter(ActivityParticipant.activity_id == activity_id,
                    ActivityParticipant.participant_openid == openid).all()
@@ -573,8 +588,8 @@ class UserRegisterActivities(Resource):
     def post(self):
         # register an activity
         info = UserRegisterActivitiesParser.common().parse_args()
-        openid = info.get("Authorization")
-        activity_id = info.get("activity_id")
+        openid = info.get('Authorization')
+        activity_id = info.get('activity_id')
 
         logger.info('User %s register activity %s.' % (openid, activity_id))
 
@@ -615,6 +630,7 @@ class UserRegisterActivities(Resource):
         activity_participant_info.share = 0
         activity_participant_info.thumbs_up = 0
         activity_participant_info.current_state = "Registered"
+        activity_participant_info.sign_method = "gps"
         activity_participant_info.certificated = 0
         activity_participant_info.certiticate_date = 0
         activity_participant_info.paper_certificate = 0
@@ -628,8 +644,8 @@ class UserRegisterActivities(Resource):
     def delete(self):
         """ cancel specific registered activity """
         info = UserRegisterActivitiesParser.common().parse_args()
-        openid = info.get("Authorization")
-        activity_id = info.get("activity_id")
+        openid = info.get('Authorization')
+        activity_id = info.get('activity_id')
 
         logger.info('Delete openid - %s, activity id - %s' % (openid, activity_id))
         activity_participant_info = db.session.query(ActivityParticipant). \
@@ -661,7 +677,7 @@ class PickUpImpaired(Resource):
     def post(self):
         openid = request.headers.get('Authorization')
         data = request.get_json()
-        activity_id = data['activityId']
+        activity_id = data['activity_id']
         pickup_info = db.session.query(PickupImpaired). \
             filter(PickupImpaired.openid == openid, PickupImpaired.activity_id == activity_id).first()
         if pickup_info:
@@ -686,13 +702,13 @@ class PickUpImpaired(Resource):
 
     def get(self):
         # openid = request.headers.get('Authorization')
-        # activity_id = request.args.get('activityId')
+        # activity_id = request.args.get('activity_id')
         # logger.info('User %s get impaired pickup info map to %s.' % (openid, activity_id))
         # pickup_list = db.session.query(PickupImpaired). \
         #     filter(PickupImpaired.activity_id == activity_id).all()
         # return jsonify([dbutils.serialize(i) for i in pickup_list])
         volunteer_openid = request.headers.get('Authorization')
-        activity_id = request.args.get('activityId')
+        activity_id = request.args.get('activity_id')
         need_pickup_impaired_participants = db.session. \
             query(PickupImpaired.name, PickupImpaired.pickup_addr, PickupImpaired.pickup_method,
                   User.avatar_url, User.openid). \
@@ -718,7 +734,7 @@ class PickUpVolunteer(Resource):
     def post(self):
         openid = request.headers.get('Authorization')
         data = request.get_json()
-        activity_id = data['activityId']
+        activity_id = data['activity_id']
         pickup_info = db.session.query(PickupVolunteer). \
             filter(PickupVolunteer.openid == openid, PickupVolunteer.activity_id == activity_id).first()
         if pickup_info:
@@ -746,6 +762,7 @@ class SignupParser(object):
         parser = reqparse.RequestParser()
         parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
         parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
+        parser.add_argument('sign_method', type=str, location='json', help='sign methods:token/gps')
         parser.add_argument('signup_time', type=str, location='json', help='sign up time')
         parser.add_argument('signup_latitude', type=float, location='json', help='sign up latitude')
         parser.add_argument('signup_longitude', type=float, location='json', help='sign up longitude')
@@ -759,7 +776,7 @@ class SignupActivity(Resource):
         """Sign up an activity"""
         new_info = SignupParser.post().parse_args()
         # new_info = {'Authorization': 'om68340DDXrYTpfKM6SuM6XTm44s',
-        #         'activityId':10,
+        #         'activity_id':10,
         #         'signup_time':'2021-02-10 14:25:09',
         #         'signup_latitude':31.2,
         #         'signup_longitude':121.3
@@ -777,6 +794,7 @@ class SignupActivity(Resource):
             activity_participant_info.signup_time = new_info.get("signup_time")
             activity_participant_info.signup_latitude = new_info.get("signup_latitude")
             activity_participant_info.signup_longitude = new_info.get("signup_longitude")
+            activity_participant_info.sign_method = new_info.get("sign_method")
             activity_participant_info.current_state = "signed_up"
             db.session.commit()
             logger.info("%s in %d: update activity_participant successfully", openid, activity_id)
@@ -800,6 +818,7 @@ class SignupActivity(Resource):
         activity_participant_info.signup_time = new_info.get("signup_time")
         activity_participant_info.signup_latitude = new_info.get("signup_latitude")
         activity_participant_info.signup_longitude = new_info.get("signup_longitude")
+        activity_participant_info.sign_method = new_info.get("sign_method")
         activity_participant_info.current_state = "signed_up"
         db.session.add(activity_participant_info)
         db.session.commit()
@@ -813,6 +832,7 @@ class SignoffParser(object):
         parser = reqparse.RequestParser()
         parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
         parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
+        parser.add_argument('sign_method', type=str, location='json', help='sign methods:token/gps')
         parser.add_argument('signoff_time', type=str, location='json', help='sign off time')
         parser.add_argument('signoff_latitude', type=float, location='json', help='sign off latitude')
         parser.add_argument('signoff_longitude', type=float, location='json', help='sign off longitude')
@@ -826,7 +846,7 @@ class SignoffActivity(Resource):
         """Sign off an activity"""
         new_info = SignoffParser.post().parse_args()
         # new_info = {'Authorization': 'om68340DDXrYTpfKM6SuM6XTm44s',
-        #         'activityId':10,
+        #         'activity_id':10,
         #         'signoff_time':'2021-02-10 14:25:09',
         #         'signoff_latitude':31.2,
         #         'signoff_longitude':121.3
@@ -841,6 +861,7 @@ class SignoffActivity(Resource):
             activity_participant_info.signoff_time = new_info.get("signoff_time")
             activity_participant_info.signoff_latitude = new_info.get("signoff_latitude")
             activity_participant_info.signoff_longitude = new_info.get("signoff_longitude")
+            activity_participant_info.sign_method = new_info.get("sign_method")
             activity_participant_info.current_state = "signed_off"
             db.session.commit()
             logger.info("%s in %d: update activity successfully", openid, activity_id)
@@ -854,7 +875,7 @@ class SignoffActivity(Resource):
 class PickupDetailInfo(Resource):
     def get(self):
         volunteer_openid = request.headers.get('Authorization')
-        activity_id = request.args.get('activityId')
+        activity_id = request.args.get('activity_id')
         need_pickup_impaired_participants = db.session. \
             query(PickupImpaired.name, PickupImpaired.pickup_addr, PickupImpaired.pickup_method,
                   User.avatar_url, User.openid). \
@@ -877,7 +898,7 @@ class PickupDetailInfo(Resource):
     def post(self):
         volunteer_openid = request.headers.get('Authorization')
         data = request.get_json()
-        activity_id = data['activityId']
+        activity_id = data['activity_id']
         impaired_openid = data['impairedOpenid']
         pickup_method = data['pickupMethod']
         pickup_info = db.session. \

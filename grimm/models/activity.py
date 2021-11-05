@@ -41,6 +41,7 @@ class ActivityParticipant(db.Model):
     certificate_date = db.Column(db.DateTime, comment='获得证书的日期')
     paper_certificate = db.Column(db.Integer, comment='是否需要纸质证书，0=不需要，1=需要')
     current_state = db.Column(db.String(10), comment='状态：Registered, signed_up, signed_off')
+    sign_method = db.Column(db.String(10), comment='签到方式：token, gps=default')
     signup_time = db.Column(db.DateTime, comment='签到时间')
     signup_latitude = db.Column(db.DECIMAL(9, 6), comment='签到经纬度-纬度')
     signup_longitude = db.Column(db.DECIMAL(9, 6), comment='签到经纬度-经度')
