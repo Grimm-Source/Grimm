@@ -5,5 +5,6 @@
     <view class="detail">时间：{{item.schedule}}</view>
     <view class="detail">地点：{{item.location}}</view>
   </view>
-  <view class="right"bindtap="onTapSignIn"  data-item="{{item}}">签到</view>
+  <view class="right" bindtap="onTapSignIn" data-item="{{item}}" wx:if="{{item.current_state=='signed_off'}}">签退</view>
+  <view class="right" bindtap="onTapSignIn" data-item="{{item}}" wx:else>签到</view>
 </view>

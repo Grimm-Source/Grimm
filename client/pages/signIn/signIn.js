@@ -2,6 +2,7 @@
 const {
   getActivityDetail,
   signUP,
+  signOff
 } = require('../../utils/requestUtil.js');
 const formatTimeline = date => {
   const year = date.getFullYear()
@@ -29,7 +30,8 @@ Page({
    */
   onLoad: function (option) {
     this.setData({
-      id: option.id || 3
+      id: option.id || 4
+      // id: option.id || 'om6834wZ1F35GaThbf8ZitBnzhUc'
     });
   },
 
@@ -68,40 +70,6 @@ Page({
     this.getActivity();
   },
 
-  /**
-   * Lifecycle function--Called when page hide
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * Lifecycle function--Called when page unload
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * Page event handler function--Called when user drop down
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * Called when page reach bottom
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * Called when user click on the top right corner to share
-   */
-  onShareAppMessage: function () {
-
-  },
   getActivity: function () {
     getActivityDetail(this.data.id, (res) => {
       const startTime = new Date(res.start_time).getTime()
@@ -116,6 +84,7 @@ Page({
         isRegistered: res.registered === 1,
         isInterested: res.interested === 1,
         address: res.location,
+        current_state:res.current_state
 
       })
       //console.log(res);
@@ -144,11 +113,38 @@ Page({
       wx.showToast({
         title: '签到成功',
         icon: 'success',
-        duration: 300
+        duration: 1500,
+        success:wx.switchTab({
+          url: '../personal/personal',
+        })
       });
-      // wx.switchTab({
-      //   url: '../personal/personal',
-      // });
+    }, (err) => {
+      wx.showModal({
+        showCancel: false,
+        title: '更新失败',
+        content: err || "网络失败，请稍候再试"
+      });
+    })
+  },
+  signOff: function () {
+   
+    let time = formatTimeline(new Date())
+    console.log("time:", time)
+
+    signOff({
+      activity_id: Number(this.data.id),
+      signup_time: time,
+      signup_latitude: this.data.latitude,
+      signup_longitude: this.data.longitude,
+    }, (res) => {
+      wx.showToast({
+        title: '签退成功',
+        icon: 'success',
+        duration: 1500,
+        success:wx.switchTab({
+          url: '../personal/personal',
+        })
+      });
     }, (err) => {
       wx.showModal({
         showCancel: false,

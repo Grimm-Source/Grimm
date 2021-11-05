@@ -67,13 +67,14 @@ Page({
       const startTime = res.start_time.replace("T", " ");
       const endTime = res.end_time.replace("T", " ");
       const isStarted = Date.now() > Date.parse(res.start_time);
+      const isEnd = Date.now() > Date.parse(res.endTime);
 
       this.setData({
         title: res.title,
         isLike: res.thumbs_up === 1,
         isRegistered: res.registered === 1,
         isInterested: res.interested === 1,
-        isActivityEnd: isStarted,
+        isActivityEnd: isEnd,
         start_time: res.start_time,
         date: `${startTime.substr(0, 16)} 至 ${endTime.substr(0,16)}`,
         address: res.location,

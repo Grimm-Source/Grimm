@@ -213,16 +213,10 @@ const searchActivity = (searchVal, successCallback, failCallback) => {
         fail: failCallback,
     })
 }
-<<<<<<< HEAD
 const getCertificatectivity = (successCallback, failCallback)=>{
     ///${wx.getStorageSync("openid") || 'om68340DDXrYTpfKM6SuM6XTm44s'}
     return request({
         url:`activityParticipant?participant_openid=${wx.getStorageSync("openid") || 'om68340DDXrYTpfKM6SuM6XTm44s'}`,
-=======
-const getCertificatectivity = (param, successCallback, failCallback)=>{
-    return request({
-        url:`activityParticipant`,
->>>>>>> 3d06a605bdea401c4d9c198869f41b7f48ef21d6
         method: 'GET',
         success: successCallback,
         fail: failCallback,
@@ -313,6 +307,15 @@ const signUP = (parameters, successCallback, failCallback) => {
         fail: failCallback
     });
 }
+const signOff = (parameters, successCallback, failCallback) => {
+    return request({
+        url: "activityParticipant/signoff", 
+        method: "POST",
+        data: parameters,
+        success: successCallback,
+        fail: failCallback
+    });
+}
 
 module.exports = {
     getProfile,
@@ -347,4 +350,5 @@ module.exports = {
     getNeedPickupImpaired,  // 获取志愿者可接送视障人士们
     getCurrentUserDetail, // 获取当前注册用户详细信息
     signUP,//   签到签退
+    signOff
 }

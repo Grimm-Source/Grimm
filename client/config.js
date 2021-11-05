@@ -4,12 +4,14 @@ const __getUrl = function(){
   switch (version)
   {
     case 'develop':
+      // return 'http://10.74.126.120:5000/';
       return 'https://wxapi.rp-i.net/';
     case 'trial':
       return 'https://wxapi.rp-i.net/';
     case 'release':
       return 'https://wxapi.rp-i.net/';
     default:
+      // return 'http://10.74.126.120:5000/';
       return 'https://wxapi.rp-i.net/';
   }
 }

@@ -7,7 +7,8 @@
     </map>
     <view class="detail">地点：{{address}}</view>
     <view class="detail">开始倒计时： {{lastMinutes}}分钟 </view>
-    <view class="sign_btn" type="primary" size="mini" bindtap="signUp">签到</view>
+    <view wx:if="{{current_state==''}}" class="sign_btn" type="primary" size="mini" bindtap="signUp">签到</view>
+    <view wx:else class="sign_btn" type="primary" size="mini" bindtap="signOff">签退</view>
   </view>
   <view class="ask_wrap">
     <view class="line"></view>

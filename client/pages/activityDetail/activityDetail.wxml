@@ -60,7 +60,8 @@
         <!-- <map id="modalMap" markers="{{markers}}" style="width:100%;height:35vh;margin-top:50rpx;"
           longitude="{{poi.longitude}}" latitude="{{poi.latitude}}" scale='16' show-location>
         </map> -->
-        <image aria-hidden="true" mode="aspectFill" style="width:100%;height:35vh;margin-top:50rpx;" src="{{banner}}"></image>
+        <image aria-hidden="true" mode="aspectFill" style="width:100%;height:35vh;margin-top:50rpx;" src="{{banner}}">
+        </image>
         <text style="font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:bold">
           \n此次活动位于{{address}}\n是否需要支援接送？\n
         </text>
