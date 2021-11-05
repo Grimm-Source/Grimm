@@ -14,6 +14,7 @@ from grimm.utils import constants
 class AddAdmin(Resource):
     @main.doc(params={"email": "input email", 'password': 'input password'})
     def get(self):
+        """ You can add an admin user by this api for project init """
         email = request.args.get('email') or 'no.reply@rp-i.org'
         password = request.args.get('password') or 'Cisco123456.'
         admin_info = Admin()
