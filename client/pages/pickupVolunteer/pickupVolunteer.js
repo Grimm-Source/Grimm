@@ -131,7 +131,7 @@ Page({
         duration: 2000,
         mask: true,
         success: function () {
-          let url = '../pickupVolunteerDetail/pickupVolunteerDetail?activityId=' + that.data.activityId + '&'
+          let url = '../pickupVolunteerDetail/pickupVolunteerDetail?activity_id=' + that.data.activityId + '&'
           url = url + 'title=' + that.data.title + '&'
           url = url + 'date=' + that.data.date + '&'
           url = url + 'address=' + that.data.address + '&'

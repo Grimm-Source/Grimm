@@ -146,7 +146,7 @@ const getCarousel = (successCallback, failCallback) => {
 
 const getActivityDetail = (activityId, successCallback, failCallback) => {
     return request({
-        url: `activity_detail?activityId=${activityId}`,
+        url: `activity_detail?activity_id=${activityId}`,
         success: successCallback,
         fail: failCallback,
         method: "GET"
@@ -155,7 +155,7 @@ const getActivityDetail = (activityId, successCallback, failCallback) => {
 
 const toggleInterest = (activityId, isInterest, successCallback, failCallback) => {
     return request({
-        url: `activity_detail/interest?activityId=${activityId}&interest=${isInterest ? 1 : 0}`,
+        url: `activity_detail/interest?activity_id=${activityId}&interest=${isInterest ? 1 : 0}`,
         success: successCallback,
         fail: failCallback,
         method: "POST"
@@ -164,7 +164,7 @@ const toggleInterest = (activityId, isInterest, successCallback, failCallback) =
 
 const toggleThumbsUp = (activityId, isThumbsUp, successCallback, failCallback) => {
     return request({
-        url: `activity_detail/thumbs_up?activityId=${activityId}&thumbs_up=${isThumbsUp ? 1 : 0}`,
+        url: `activity_detail/thumbs_up?activity_id=${activityId}&thumbs_up=${isThumbsUp ? 1 : 0}`,
         success: successCallback,
         fail: failCallback,
         method: "POST"
@@ -181,7 +181,7 @@ const toggleRegister = (activityId, isSignUp, successCallback, failCallback) => 
 
 const shareActivity = (activityId) => {
     return request({
-        url: `activity_detail/share?activityId=${activityId}`,
+        url: `activity_detail/share?activity_id=${activityId}`,
         method: "POST"
     });
 }
@@ -273,7 +273,7 @@ const setPickupDetailInfo = (obj, successCallback, failCallback) => {
 
 const getPickupDetailInfo = (activityId, successCallback, failCallback) => {
     return request({
-        url: 'activityParticipant/pickupDetailInfo?activityId=' + activityId,
+        url: 'activityParticipant/pickupDetailInfo?activity_id=' + activityId,
         success: successCallback,
         fail: failCallback,
         method: "GET"
@@ -282,7 +282,7 @@ const getPickupDetailInfo = (activityId, successCallback, failCallback) => {
 
 const getNeedPickupImpaired = (activityId, successCallback, failCallback) => {
     return request({
-        url: 'pickUpImpaired?activityId=' + activityId,
+        url: 'pickUpImpaired?activity_id=' + activityId,
         success: successCallback,
         fail: failCallback,
         method: "GET"

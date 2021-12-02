@@ -41,7 +41,7 @@ Page({
   //事件处理函数
   onLoad: function (option) {
     this.setData({
-      id: option.id
+      id: option.activity_id
     });
   },
   onPullDownRefresh: function () {
@@ -147,7 +147,7 @@ Page({
           }
           if (isRegistered) {
             if (app.globalData.isVolunteer) {
-              let url = '../volunteerSignUpSuccess/volunteerSignUpSuccess?activityId=' + this.data.id + '&'
+              let url = '../volunteerSignUpSuccess/volunteerSignUpSuccess?activity_id=' + this.data.id + '&'
               url = url + 'title=' + this.data.title + '&'
               url = url + 'date=' + this.data.date + '&'
               url = url + 'address=' + this.data.address + '&'
@@ -260,7 +260,7 @@ Page({
   onTapNeedPickup: function () {
     console.log('Need pick up (from modal). will redirect to pick up detail page.')
     this.setData({ pickupImpairedModalVisible: false });
-    let url = '../pickupImpaired/pickup?activityId=' + this.data.id + '&'
+    let url = '../pickupImpaired/pickup?activity_id=' + this.data.id + '&'
     url = url + 'title=' + this.data.title + '&'
     url = url + 'date=' + this.data.date + '&'
     url = url + 'address=' + this.data.address + '&'
@@ -273,9 +273,9 @@ Page({
     console.log('I need pick up (from activity detail page). will redirect to pick up detail page.')
     let url = ''
     if (app.globalData.isVolunteer){
-      url = url + '../pickupVolunteer/pickupVolunteer?activityId=' + this.data.id + '&'
+      url = url + '../pickupVolunteer/pickupVolunteer?activity_id=' + this.data.id + '&'
     }else {
-      url = url + '../pickupImpaired/pickup?activityId=' + this.data.id + '&'
+      url = url + '../pickupImpaired/pickup?activity_id=' + this.data.id + '&'
     }
     url = url + 'title=' + this.data.title + '&'
     url = url + 'date=' + this.data.date + '&'
@@ -290,9 +290,9 @@ Page({
     console.log('Show pick up detail.')
     let url = ''
     if (app.globalData.isVolunteer) {
-      url = url + '../pickupVolunteerDetail/pickupVolunteerDetail?activityId=' + this.data.id + '&'
+      url = url + '../pickupVolunteerDetail/pickupVolunteerDetail?activity_id=' + this.data.id + '&'
     }else {
-      url = url + '../pickupImpaired/pickup?activityId=' + this.data.id + '&'
+      url = url + '../pickupImpaired/pickup?activity_id=' + this.data.id + '&'
       url = url + 'name=' + this.data.impired.name + '&'
       url = url + 'idNo=' + this.data.impired.idNo + '&'
       url = url + 'impairedNo=' + this.data.impired.impairedNo + '&'

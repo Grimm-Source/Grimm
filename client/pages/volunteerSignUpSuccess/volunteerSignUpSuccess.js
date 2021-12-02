@@ -15,7 +15,7 @@ Page({
   },
 
   onTapWillingPickup: function () {
-    let url = '../pickupVolunteer/pickupVolunteer?activityId=' + this.data.activityId + '&'
+    let url = '../pickupVolunteer/pickupVolunteer?activity_id=' + this.data.activityId + '&'
     url = url + 'title=' + this.data.title + '&'
     url = url + 'date=' + this.data.date + '&'
     url = url + 'address=' + this.data.address + '&'

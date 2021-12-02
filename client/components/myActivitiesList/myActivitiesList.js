@@ -123,7 +123,7 @@ Component({
         return;
       }
       wx.navigateTo({
-          url: '/pages/activityDetail/activityDetail?id='+ activityId,
+          url: '/pages/activityDetail/activityDetail?activity_id='+ activityId,
       })
     },
 

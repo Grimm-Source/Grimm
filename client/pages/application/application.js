@@ -78,7 +78,7 @@ Page({
 
     postRegisteredActivityList([obj],()=>{
       wx.navigateTo({
-          url: '/pages/activityDetail/activityDetail?activityId='+ this.data.activityId
+          url: '/pages/activityDetail/activityDetail?activity_id='+ this.data.activityId
       })
     },(message)=>{
       wx.showToast({

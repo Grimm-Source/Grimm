@@ -51,10 +51,10 @@ Page({
   },
   onTapActivity: function(event){
     let item = event.currentTarget.dataset && event.currentTarget.dataset.item,
-    activityId = this.data.type === type.ALL? item.id : item.activityId;
+    activityId = this.data.type === type.ALL? item.id : item.activity_id;
     console.log(111)
     wx.navigateTo({
-        url: '/pages/activityDetail/activityDetail?activityId='+ activityId,
+        url: '/pages/activityDetail/activityDetail?activity_id='+ activityId,
     })
   }
 })

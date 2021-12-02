@@ -10,12 +10,12 @@
     <view wx:if="{{current_state==''}}" class="sign_btn" type="primary" size="mini" bindtap="signUp">签到</view>
     <view wx:else class="sign_btn" type="primary" size="mini" bindtap="signOff">签退</view>
   </view>
-  <view class="ask_wrap">
+  <view class="ask_wrap" wx:if="{{current_state==''}}" >
     <view class="line"></view>
     <view class="ask">向管理员询问口令签到</view>
     <view class="line"></view>
   </view>
-  <view class="input_wrap">
+  <view class="input_wrap" wx:if="{{current_state==''}}" >
     <input class="weui-input" maxlength="30" placeholder="输入口令" />
     <view class="button">确定</view>
   

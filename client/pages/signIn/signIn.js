@@ -90,7 +90,7 @@ Page({
       //console.log(res);
     });
   },
-  signUp: function () {
+  signUp: function (token) {
     // let that = this
     wx.getUserInfo({
       success: function (res) {
@@ -109,6 +109,7 @@ Page({
       signup_time: time,
       signup_latitude: this.data.latitude,
       signup_longitude: this.data.longitude,
+      sign_in_token:token
     }, (res) => {
       wx.showToast({
         title: '签到成功',
