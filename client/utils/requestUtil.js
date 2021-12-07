@@ -103,7 +103,7 @@ const getRegisteredActivityList = (idList, successCallback, failCallback) => {
 
 const postRegisteredActivityList = (obj, successCallback, failCallback) => {
     return request({
-        url: 'registeredActivities',
+        url: 'activityParticipant/registerActivity',
         success: successCallback,
         fail: failCallback,
         method: "POST",
