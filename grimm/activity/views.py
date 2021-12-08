@@ -448,6 +448,22 @@ class GetActivity(Resource):
         feedback = activitybiz.activity_converter(dbutils.serialize(activity_info), openid)
         feedback["status"] = "success"
 
+
+        # Add activity participant details to user's query about his/her activity detail
+        activity_participant_info = ActivityParticipant.query.filter(Activity.id == activity_id).first()
+        if activity_participant_info:
+            feedback["certificated"] = activity_participant.certificated
+            feedback["current_state"] = activity_participant.current_state
+            feedback["sign_method"] = activity_participant.sign_method
+            if activity_participant.signup_time:
+                feedback["signup_time"] = activity_participant.signup_time.strftime("%Y-%m-%dT%H:%M:%S")
+                feedback["signup_latitude"] = str(activity_participant.signup_latitude)
+                feedback["signup_longtitude"] = str(activity_participant.signup_longitude)
+            if activity_participant.signoff_time:
+                feedback["signoff_time"] = activity_participant.signoff_time.strftime("%Y-%m-%dT%H:%M:%S")
+                feedback["signoff_latitude"] = str(activity_participant.signoff_latitude)
+                feedback["signoff_longtitude"] = str(activity_participant.signoff_longitude)
+
         user_info = User.query.filter(User.openid == openid).first()
         if not user_info:
             return jsonify({"status": "failure", "message": "请先注册"})
