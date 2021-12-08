@@ -450,8 +450,8 @@ class GetActivity(Resource):
 
 
         # Add activity participant details to user's query about his/her activity detail
-        activity_participant_info = ActivityParticipant.query.filter(Activity.id == activity_id).first()
-        if activity_participant_info:
+        activity_participant = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity_id).first()
+        if activity_participant:
             feedback["certificated"] = activity_participant.certificated
             feedback["current_state"] = activity_participant.current_state
             feedback["sign_method"] = activity_participant.sign_method
