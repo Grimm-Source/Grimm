@@ -465,11 +465,8 @@ class GetActivity(Resource):
                 feedback["signoff_longtitude"] = str(activity_participant.signoff_longitude)
             logger.info("%d: added activity participant dump successfully", activity_id)
         else:
-            activity_participant = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity_id).all()
-            feedback["dump_participant"] = dbutils.serialize(activity_participant)
-            logger.info("%d: dump all added activity participant dump successfully", activity_id)
+            logger.info("%d: failed to added activity participant dump", activity_id)
 
-        feedback["dump_participant"] = dbutils.serialize(activity_participant)
 
         user_info = User.query.filter(User.openid == openid).first()
         if not user_info:
