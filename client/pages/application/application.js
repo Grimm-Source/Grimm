@@ -4,17 +4,17 @@ const {userInfoMessage} = require('../../utils/messageHelper.js');
 Page({
   data: {
     apply: {},
-    activityId: null,
+    activity_id: null,
     role: null,
     message: userInfoMessage
   },
   //事件处理函数
   onLoad: function (option) {
-    if(!option.activityId){
+    if(!option.activity_id){
       return;
     }
     this.setData({
-        activityId: option.activityId
+        activity_id: option.activity_id
     });
     this.getContactInfo();
   }, 
@@ -65,7 +65,7 @@ Page({
       return;
     }
     let obj = {
-        activityId: + this.data.activityId,
+        activity_id: + this.data.activity_id,
         ...this.data.apply
     };
     if(this.data.role === "视障人士"){
@@ -78,7 +78,7 @@ Page({
 
     postRegisteredActivityList([obj],()=>{
       wx.navigateTo({
-          url: '/pages/activityDetail/activityDetail?activity_id='+ this.data.activityId
+          url: '/pages/activityDetail/activityDetail?activity_id='+ this.data.activity_id
       })
     },(message)=>{
       wx.showToast({

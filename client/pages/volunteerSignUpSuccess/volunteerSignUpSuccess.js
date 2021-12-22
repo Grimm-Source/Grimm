@@ -1,13 +1,13 @@
 Page({
   data: {
-    activityId: '',
+    activity_id: '',
     title: '',
     date: '',
     address: '',
   },
   onLoad: function (option) {
     this.setData({
-      activityId: option.activityId,
+      activity_id: option.activity_id,
       title: option.title,
       date: option.date,
       address: option.address,
@@ -15,7 +15,7 @@ Page({
   },
 
   onTapWillingPickup: function () {
-    let url = '../pickupVolunteer/pickupVolunteer?activity_id=' + this.data.activityId + '&'
+    let url = '../pickupVolunteer/pickupVolunteer?activity_id=' + this.data.activity_id + '&'
     url = url + 'title=' + this.data.title + '&'
     url = url + 'date=' + this.data.date + '&'
     url = url + 'address=' + this.data.address + '&'

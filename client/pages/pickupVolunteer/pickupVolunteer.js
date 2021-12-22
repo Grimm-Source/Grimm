@@ -5,7 +5,7 @@ const {
 
 Page({
   data: {
-    activityId: '',
+    activity_id: '',
     name: '',
     idNo: '',
     pickupAddr: '',
@@ -31,7 +31,7 @@ Page({
 
   onLoad: function (options) {
     this.setData({
-      activityId: options.activityId,
+      activity_id: options.activity_id,
       title: options.title == 'undefined' ? '': options.title, 
       date: options.date == 'undefined' ? '': options.date, 
       address: options.address == 'undefined' ? '': options.address,
@@ -122,7 +122,7 @@ Page({
       idNo: this.data.idNo,
       pickupAddr: this.data.pickupAddr,
       provideService: this.data.provideService.join(','),
-      activityId: this.data.activityId,
+      activity_id: this.data.activity_id,
     }, (res) => {
       let that = this
       wx.showToast({
@@ -131,7 +131,7 @@ Page({
         duration: 2000,
         mask: true,
         success: function () {
-          let url = '../pickupVolunteerDetail/pickupVolunteerDetail?activity_id=' + that.data.activityId + '&'
+          let url = '../pickupVolunteerDetail/pickupVolunteerDetail?activity_id=' + that.data.activity_id + '&'
           url = url + 'title=' + that.data.title + '&'
           url = url + 'date=' + that.data.date + '&'
           url = url + 'address=' + that.data.address + '&'

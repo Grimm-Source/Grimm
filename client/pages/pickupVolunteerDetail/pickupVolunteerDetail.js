@@ -30,7 +30,7 @@ Page({
     title: '',
     date: '',
     address: '',
-    activityId: '',
+    activity_id: '',
     cardInfo: {
       avatarUrl: '',
       name: '',
@@ -42,7 +42,7 @@ Page({
   onLoad: function (options) {
     this.setData({
       avatarUrl: app.globalData.userInfo.avatarUrl,
-      activityId: options.activityId == 'undefined' ? '': options.activityId,
+      activity_id: options.activity_id == 'undefined' ? '': options.activity_id,
       title: options.title == 'undefined' ? '': options.title,
       date: options.date == 'undefined' ? '': options.date,
       address: options.address == 'undefined' ? '': options.address,
@@ -51,7 +51,7 @@ Page({
 
   onShow: function () {
     console.log("detail page...")
-    getPickupDetailInfo(this.data.activityId, (res) => {
+    getPickupDetailInfo(this.data.activity_id, (res) => {
       console.log('Get impired pickup info.',res);
       let pickupList=[];
       if (res && res.length>0){
@@ -146,7 +146,7 @@ Page({
       return;
     }
     setPickupDetailInfo({
-      "activityId": this.data.activityId,
+      "activity_id": this.data.activity_id,
       "impairedOpenid": this.data.impairedOpenid,
       "pickupMethod": this.data.provideService.join(','),
     }, (res) => {

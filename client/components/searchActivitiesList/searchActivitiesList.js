@@ -35,9 +35,9 @@ Component({
   methods: {
     onTapActivity: function(e){
       let item = e.currentTarget.dataset && e.currentTarget.dataset.item,
-      activityId = item.id;
+      activity_id = item.id;
       wx.navigateTo({
-          url: '/pages/activityDetail/activityDetail?activity_id='+ activityId,
+          url: '/pages/activityDetail/activityDetail?activity_id='+ activity_id,
       })
     }
   }

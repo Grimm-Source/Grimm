@@ -64,12 +64,12 @@ Component({
     },
     onTapSignIn: function (event) {
       let item = event.currentTarget.dataset && event.currentTarget.dataset.item,
-        activityId = item.id;
-      if (activityId == null) {
+        activity_id = item.id;
+      if (activity_id == null) {
         return;
       }
       wx.navigateTo({
-        url: '/pages/signIn/signIn?id=' + activityId,
+        url: '/pages/signIn/signIn?id=' + activity_id,
       })
     },
   }

@@ -45,7 +45,7 @@ const request = (option, isManualLoading = false) => {
                 wx.hideLoading();
             }
         }
-        if(option.method === "POST"){
+        if(option.method === "POST"||option.method === "DELETE"){
             obj["data"] = option.data;
         }
         

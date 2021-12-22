@@ -75,12 +75,12 @@ Component({
 
     onTapActivity: function (event) {
       let item = event.currentTarget.dataset && event.currentTarget.dataset.item,
-      activityId = item.id;
-      if(activityId ==  null){
+      activity_id = item.id;
+      if(activity_id ==  null){
         return;
       }
       wx.navigateTo({
-        url: '/pages/activityDetail/activityDetail?activity_id=' + activityId,
+        url: '/pages/activityDetail/activityDetail?activity_id=' + activity_id,
       })
     },
 

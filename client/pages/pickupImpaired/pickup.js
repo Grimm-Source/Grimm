@@ -12,12 +12,12 @@ Page({
     impairedNo: '', //残疾证号
     pickupAddr: '', //接送的起始位置
     emergencyContact: '', //紧急联系人电话
-    activityId: '', //活动id
+    activity_id: '', //活动id
   },
 
   onLoad: function (options) {
     this.setData({
-      activityId: options.activityId,
+      activity_id: options.activity_id,
       title: options.title == 'undefined' ? '': options.title, 
       date: options.date == 'undefined' ? '': options.date, 
       address: options.address == 'undefined' ? '': options.address,
@@ -130,7 +130,7 @@ Page({
       impairedNo: this.data.impairedNo,
       pickupAddr: this.data.pickupAddr,
       emergencyContact: this.data.emergencyContact,
-      activityId: this.data.activityId,
+      activity_id: this.data.activity_id,
     }, (res) => {
       wx.showToast({
         title: '提交成功',

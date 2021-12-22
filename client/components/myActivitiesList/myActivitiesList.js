@@ -118,12 +118,12 @@ Component({
     },
     
     onTapActivity: function (event) {
-      let activityId = event.currentTarget.id;
-      if(activityId ==  null){
+      let activity_id = event.currentTarget.id;
+      if(activity_id ==  null){
         return;
       }
       wx.navigateTo({
-          url: '/pages/activityDetail/activityDetail?activity_id='+ activityId,
+          url: '/pages/activityDetail/activityDetail?activity_id='+ activity_id,
       })
     },
 

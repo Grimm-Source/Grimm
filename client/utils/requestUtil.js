@@ -83,9 +83,9 @@ const getFilteredActivities = (filteredParams, successCallback, failCallback) =>
     });
 }
 
-const getActivity = (activityId, successCallback, failCallback) => {
+const getActivity = (activity_id, successCallback, failCallback) => {
     return request({
-        url: 'activity/' + activityId,
+        url: 'activity/' + activity_id,
         success: successCallback,
         fail: failCallback,
         method: "GET"
@@ -94,7 +94,7 @@ const getActivity = (activityId, successCallback, failCallback) => {
 
 const getRegisteredActivityList = (idList, successCallback, failCallback) => {
     return request({
-        url: arrToUrl("registeredActivities", idList, "activityId"),
+        url: arrToUrl("registeredActivities", idList, "activity_id"),
         success: successCallback,
         fail: failCallback,
         method: "GET"
@@ -111,11 +111,13 @@ const postRegisteredActivityList = (obj, successCallback, failCallback) => {
     });
 }
 
-const removeRegisteredActivityList = (idList, successCallback, failCallback) => {
+const removeRegisteredActivityList = (id, successCallback, failCallback) => {
+    console.log("removeRegisteredActivityList idList:",id)
     return request({
-        url: arrToUrl("registeredActivities", idList, "activityId"),
+        url: "activityParticipant/registerActivity",
         success: successCallback,
         fail: failCallback,
+        data:{activity_id:id},
         method: "DELETE"
     });
 }
@@ -144,44 +146,44 @@ const getCarousel = (successCallback, failCallback) => {
     });
 }
 
-const getActivityDetail = (activityId, successCallback, failCallback) => {
+const getActivityDetail = (activity_id, successCallback, failCallback) => {
     return request({
-        url: `activity_detail?activity_id=${activityId}`,
+        url: `activity_detail?activity_id=${activity_id}`,
         success: successCallback,
         fail: failCallback,
         method: "GET"
     });
 }
 
-const toggleInterest = (activityId, isInterest, successCallback, failCallback) => {
+const toggleInterest = (activity_id, isInterest, successCallback, failCallback) => {
     return request({
-        url: `activity_detail/interest?activity_id=${activityId}&interest=${isInterest ? 1 : 0}`,
+        url: `activity_detail/interest?activity_id=${activity_id}&interest=${isInterest ? 1 : 0}`,
         success: successCallback,
         fail: failCallback,
         method: "POST"
     });
 }
 
-const toggleThumbsUp = (activityId, isThumbsUp, successCallback, failCallback) => {
+const toggleThumbsUp = (activity_id, isThumbsUp, successCallback, failCallback) => {
     return request({
-        url: `activity_detail/thumbs_up?activity_id=${activityId}&thumbs_up=${isThumbsUp ? 1 : 0}`,
+        url: `activity_detail/thumbs_up?activity_id=${activity_id}&thumbs_up=${isThumbsUp ? 1 : 0}`,
         success: successCallback,
         fail: failCallback,
         method: "POST"
     });
 }
 
-const toggleRegister = (activityId, isSignUp, successCallback, failCallback) => {
+const toggleRegister = (activity_id, isSignUp, successCallback, failCallback) => {
     if(isSignUp){
-        return postRegisteredActivityList({activityId}, successCallback, failCallback);
+        return postRegisteredActivityList({activity_id}, successCallback, failCallback);
 
     }
-    return removeRegisteredActivityList([activityId], successCallback, failCallback);
+    return removeRegisteredActivityList(activity_id, successCallback, failCallback);
 }
 
-const shareActivity = (activityId) => {
+const shareActivity = (activity_id) => {
     return request({
-        url: `activity_detail/share?activity_id=${activityId}`,
+        url: `activity_detail/share?activity_id=${activity_id}`,
         method: "POST"
     });
 }
@@ -271,18 +273,18 @@ const setPickupDetailInfo = (obj, successCallback, failCallback) => {
     });
 }
 
-const getPickupDetailInfo = (activityId, successCallback, failCallback) => {
+const getPickupDetailInfo = (activity_id, successCallback, failCallback) => {
     return request({
-        url: 'activityParticipant/pickupDetailInfo?activity_id=' + activityId,
+        url: 'activityParticipant/pickupDetailInfo?activity_id=' + activity_id,
         success: successCallback,
         fail: failCallback,
         method: "GET"
     });
 }
 
-const getNeedPickupImpaired = (activityId, successCallback, failCallback) => {
+const getNeedPickupImpaired = (activity_id, successCallback, failCallback) => {
     return request({
-        url: 'pickUpImpaired?activity_id=' + activityId,
+        url: 'pickUpImpaired?activity_id=' + activity_id,
         success: successCallback,
         fail: failCallback,
         method: "GET"

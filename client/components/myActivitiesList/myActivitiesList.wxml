@@ -1,6 +1,6 @@
 <!--components/myActivities/myActivitiesList.wxml-->
 <scroll-view class="myActivities-list" scroll-y="true">
-  <block wx:for="{{myActivities}}" wx:key="activityId">
+  <block wx:for="{{myActivities}}" wx:key="activity_id">
     <view class="myActivity-item" bindtap="onTapActivity" id="{{item.id}}">
       <image class="myActivity-preview" src="{{item.imgSrc}}"></image>
       <view class="myActivity-info">
