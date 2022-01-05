@@ -36,14 +36,15 @@ Page({
       date: options.date == 'undefined' ? '': options.date, 
       address: options.address == 'undefined' ? '': options.address,
     })
-    if (options.willPickup === "1") {
+    // if (options.willPickup === "1") {
       getCurrentUserDetail((res) => {
         this.setData({
           name: res.name, //接送人员真实姓名, 默认填充当前授权用户名字
           idNo: res.id_type == '身份证' ? res.idcard: '', //默认填充当前授权用户身份证号
+          pickupAddr: res.address?res.address:''
         })
       });
-    }
+    // }
   },
 
   changeName: function(e) { this.setData({ name: e.detail.value }) },
