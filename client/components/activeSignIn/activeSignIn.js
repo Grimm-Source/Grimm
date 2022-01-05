@@ -21,9 +21,9 @@ Component({
 
   pageLifetimes: {
     show: function () {
-      console.log("1111getCertificatectivity:")
+      // console.log("1111getCertificatectivity:")
       getCertificatectivity((res) => {
-        console.log("getCertificatectivity:", res)
+        // console.log("getCertificatectivity:", res)
 
         this._setActivities(res.activities);
 

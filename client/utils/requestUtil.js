@@ -1,4 +1,6 @@
-const { request } = require('interceptor.js');
+const {
+    request
+} = require('interceptor.js');
 
 const getProfile = (successCallback, failCallback) => {
     return request({
@@ -112,12 +114,14 @@ const postRegisteredActivityList = (obj, successCallback, failCallback) => {
 }
 
 const removeRegisteredActivityList = (id, successCallback, failCallback) => {
-    console.log("removeRegisteredActivityList idList:",id)
+    console.log("removeRegisteredActivityList idList:", id)
     return request({
         url: "activityParticipant/registerActivity",
         success: successCallback,
         fail: failCallback,
-        data:{activity_id:id},
+        data: {
+            activity_id: id
+        },
         method: "DELETE"
     });
 }
@@ -174,8 +178,10 @@ const toggleThumbsUp = (activity_id, isThumbsUp, successCallback, failCallback) 
 }
 
 const toggleRegister = (activity_id, isSignUp, successCallback, failCallback) => {
-    if(isSignUp){
-        return postRegisteredActivityList({activity_id}, successCallback, failCallback);
+    if (isSignUp) {
+        return postRegisteredActivityList({
+            activity_id
+        }, successCallback, failCallback);
 
     }
     return removeRegisteredActivityList(activity_id, successCallback, failCallback);
@@ -198,13 +204,13 @@ const getMyActivities = (type, successCallback, failCallback) => {
 }
 
 const getPhoneNumber = (obj, successCallback, failCallback) => {
-  return request({
-    url: 'getPhoneNumber',
-    data: obj,
-    success: successCallback,
-    fail: failCallback,
-    method: "POST"
-  });
+    return request({
+        url: 'getPhoneNumber',
+        data: obj,
+        success: successCallback,
+        fail: failCallback,
+        method: "POST"
+    });
 }
 
 const searchActivity = (searchVal, successCallback, failCallback) => {
@@ -215,18 +221,18 @@ const searchActivity = (searchVal, successCallback, failCallback) => {
         fail: failCallback,
     })
 }
-const getCertificatectivity = (successCallback, failCallback)=>{
+const getCertificatectivity = (successCallback, failCallback) => {
     ///${wx.getStorageSync("openid") || 'om68340DDXrYTpfKM6SuM6XTm44s'}
     return request({
-        url:`activityParticipant?participant_openid=${wx.getStorageSync("openid") || 'om68340DDXrYTpfKM6SuM6XTm44s'}`,
+        url: `activityParticipant?participant_openid=${wx.getStorageSync("openid") || 'om68340DDXrYTpfKM6SuM6XTm44s'}`,
         method: 'GET',
         success: successCallback,
         fail: failCallback,
     })
 }
-const submitCertificatectivity = (param, successCallback, failCallback)=>{
+const submitCertificatectivity = (param, successCallback, failCallback) => {
     return request({
-        url:`activityParticipant`,
+        url: `activityParticipant`,
         method: 'POST',
         data: param,
         success: successCallback,
@@ -302,16 +308,16 @@ const getCurrentUserDetail = (successCallback, failCallback) => {
 
 const signUP = (parameters, successCallback, failCallback) => {
     return request({
-        url: "activityParticipant/signup", 
+        url: "activityParticipant/signup",
         method: "POST",
         data: parameters,
         success: successCallback,
         fail: failCallback
-    });
+    }, true);
 }
 const signOff = (parameters, successCallback, failCallback) => {
     return request({
-        url: "activityParticipant/signoff", 
+        url: "activityParticipant/signoff",
         method: "POST",
         data: parameters,
         success: successCallback,
@@ -344,13 +350,13 @@ module.exports = {
     searchActivity,
     getCertificatectivity,
     submitCertificatectivity,
-    pickUpImpaired,   // 提交视障人士接送信息
-    cancelSignUp,     // 取消报名 - 需要做删除接送信息等操作
-    pickUpVolunteer,  // 志愿者点击愿意接送后 弹出的表单 提交
+    pickUpImpaired, // 提交视障人士接送信息
+    cancelSignUp, // 取消报名 - 需要做删除接送信息等操作
+    pickUpVolunteer, // 志愿者点击愿意接送后 弹出的表单 提交
     setPickupDetailInfo,
     getPickupDetailInfo,
-    getNeedPickupImpaired,  // 获取志愿者可接送视障人士们
+    getNeedPickupImpaired, // 获取志愿者可接送视障人士们
     getCurrentUserDetail, // 获取当前注册用户详细信息
-    signUP,//   签到签退
+    signUP, //   签到签退
     signOff
 }

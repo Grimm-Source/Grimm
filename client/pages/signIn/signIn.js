@@ -48,8 +48,8 @@ Page({
         const longitude = res.longitude
         const speed = res.speed
         const accuracy = res.accuracy
-        console.log("latitude:", res)
-        console.log("longitude:", res.longitude, speed, accuracy)
+        // console.log("latitude:", res)
+        // console.log("longitude:", res.longitude, speed, accuracy)
         // wx.chooseLocation({
         //   latitude:latitude,
         //   longitude:longitude
@@ -75,7 +75,7 @@ Page({
       const startTime = new Date(res.start_time).getTime()
       const nowTime = new Date().getTime()
       const lastMinutes = Math.floor((startTime - nowTime) / (1000 * 60))
-      console.log(startTime, nowTime, lastMinutes)
+      // console.log(startTime, nowTime, lastMinutes)
 
       this.setData({
         title: res.title,
@@ -84,7 +84,7 @@ Page({
         isRegistered: res.registered === 1,
         isInterested: res.interested === 1,
         address: res.location,
-        current_state:res.current_state
+        current_state: res.current_state
 
       })
       //console.log(res);
@@ -92,33 +92,36 @@ Page({
   },
   signUp: function (token) {
     // let that = this
-    wx.getUserInfo({
-      success: function (res) {
-        console.log("getUserInfo:", res)
-        // var pc = new WXBizDataCrypt(appId, sessionKey)
-        // var data = pc.decryptData(encryptedData , iv)
-        // console.log("data:",data)
+    // wx.getUserInfo({
+    //   success: function (res) {
+    //     console.log("getUserInfo:", res)
+    //     // var pc = new WXBizDataCrypt(appId, sessionKey)
+    //     // var data = pc.decryptData(encryptedData , iv)
+    //     // console.log("data:",data)
 
-      }
-    })
+    //   }
+    // })
     let time = formatTimeline(new Date())
-    console.log("time:", time)
+    // console.log("time:", time)
 
     return signUP({
       activity_id: Number(this.data.id),
       signup_time: time,
       signup_latitude: this.data.latitude,
       signup_longitude: this.data.longitude,
-      sign_in_token:token
+      sign_in_token: token
     }, (res) => {
-      wx.showToast({
-        title: '签到成功',
-        icon: 'success',
-        duration: 1500,
-        success:wx.switchTab({
-          url: '../personal/personal',
-        })
-      });
+      // console.log("res------", res)
+      if (res.status === "success") {
+        wx.showToast({
+          title: '签到成功',
+          icon: 'success',
+          duration: 2500,
+          success: wx.switchTab({
+            url: '../home/home',
+          })
+        });
+      }
     }, (err) => {
       wx.showModal({
         showCancel: false,
@@ -128,9 +131,9 @@ Page({
     })
   },
   signOff: function () {
-   
+
     let time = formatTimeline(new Date())
-    console.log("time:", time)
+    // console.log("time:", time)
 
     signOff({
       activity_id: Number(this.data.id),
@@ -141,8 +144,8 @@ Page({
       wx.showToast({
         title: '签退成功',
         icon: 'success',
-        duration: 1500,
-        success:wx.switchTab({
+        duration: 4500,
+        success: wx.switchTab({
           url: '../personal/personal',
         })
       });
