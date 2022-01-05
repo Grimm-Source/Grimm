@@ -1,5 +1,5 @@
 .pickup-wrapper {
-  padding: 0 52rpx;
+  padding: 0 52rpx 25rpx;
 }
 
 .pickup-form-item {
