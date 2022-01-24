@@ -602,6 +602,7 @@ class UserRegisterActivitiesParser(object):
         parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
         return parser
 
+
 @activity.route("/activityParticipant/registerActivity", methods=["POST", 'DELETE'])
 class UserRegisterActivities(Resource):
     @activity.expect(UserRegisterActivitiesParser().common())
@@ -675,20 +676,7 @@ class UserRegisterActivities(Resource):
             db.session.commit()
             logger.info("Deleted OpenId:%s with activity:%d in activity_participant!", openid, activity_id)
 
-        user_info = User.query.filter(User.openid == openid).first()
-
-        if user_info.role == 0:
-            pickup_volunteer = db.session.query(PickupVolunteer). \
-                filter(PickupVolunteer.openid == openid, PickupVolunteer.activity_id == activity_id).first()
-            if pickup_volunteer:
-                db.session.delete(pickup_volunteer)
-                db.session.commit()
-        else:
-            pickup_impaired = db.session.query(PickupImpaired). \
-                filter(PickupImpaired.openid == openid, PickupImpaired.activity_id == activity_id).first()
-            if pickup_impaired:
-                db.session.delete(pickup_impaired)
-                db.session.commit()
+        activitybiz.user_cancel_activity(openid, activity_id)
         return jsonify({"status": "取消活动成功！"})
 
 
@@ -916,15 +904,22 @@ class PickupDetailInfo(Resource):
         return jsonify(need_pickup)
 
     def post(self):
-        volunteer_openid = request.headers.get('Authorization')
+        new_volunteer_openid = request.headers.get('Authorization')
         data = request.get_json()
         activity_id = data['activity_id']
         impaired_openid = data['impairedOpenid']
-        pickup_method = data['pickupMethod']
-        pickup_info = db.session. \
-            query(PickupImpaired).filter(PickupImpaired.openid == impaired_openid,
-                                         PickupImpaired.activity_id == activity_id).first()
-        pickup_info.pickup_method = pickup_method
-        pickup_info.pickup_volunteer_openid = volunteer_openid
-        db.session.commit()
+        new_pickup_method = data['pickupMethod']
+        pickup_info = db.session.query(PickupImpaired).\
+            filter(PickupImpaired.openid == impaired_openid,
+                   PickupImpaired.activity_id == activity_id).first()
+        old_pickup_method = pickup_info.pickup_method
+        old_pickup_volunteer = pickup_info.pickup_volunteer_openid
+        if old_pickup_method != new_pickup_method or old_pickup_volunteer != new_volunteer_openid:
+            # pickup info changed
+            pickup_info.pickup_method = new_pickup_method
+            pickup_info.pickup_volunteer_openid = new_volunteer_openid
+            activitybiz.volunteer_pickup_impaired(new_volunteer_openid, impaired_openid, new_pickup_method)
+            if not new_pickup_method:
+                pickup_info.pickup_volunteer_openid = ''
+            db.session.commit()
         return {'status': 'success', 'message': 'Pickup Success'}

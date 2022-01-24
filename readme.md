@@ -237,3 +237,8 @@ if __name__ == '__main__':
 ### Binding SSL certificate with nginx
 
 https://cloud.tencent.com/document/product/400/35244
+
+### Tencent SMS doc
+
+https://cloud.tencent.com/document/product/382/43196
+

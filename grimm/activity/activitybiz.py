@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 
 from grimm import logger, db
-from grimm.models.activity import ActivityParticipant
+from grimm.models.activity import ActivityParticipant, PickupImpaired, Activity, PickupVolunteer
 from grimm.models.admin import User
-from grimm.utils import misctools, constants
+from grimm.utils import misctools, constants, smstools
 
 
 def activity_converter(activity, openid=0):
@@ -161,3 +161,83 @@ def should_append_by_recents(activity):
     if filter_end < start or filter_start > end:
         return False
     return True
+
+
+def user_cancel_activity(openid, activity_id):
+    """ Volunteer cancel participation from wechat-end, should notice impaired or volunteer asap."""
+    user_info = User.query.filter(User.openid == openid).first()
+    activity_info = Activity.query.filter(Activity.id == activity_id).first()
+    logger.info('User %s cancel activity %s, should remove the '
+                'binding and give some notifications.' % (user_info.name, activity_info.title))
+    if user_info.role == 0:
+        logger.info('volunteer %s cancel activity %s.' % (user_info.name, activity_info.title))
+        pick_info = db.session.query(PickupVolunteer).\
+            filter(PickupVolunteer.openid == openid,
+                   PickupVolunteer.activity_id == activity_id).first()
+        if pick_info:
+            logger.info('Query pickup list for volunteer %s' % user_info.name)
+            pick_list = PickupImpaired.query. \
+                filter(PickupImpaired.pickup_volunteer_openid == openid,
+                       PickupImpaired.activity_id == activity_id).all()
+            if pick_list:
+                for pick in pick_list:
+                    impaired_openid = pick.openid
+                    pick_impaired = db.session.query(PickupImpaired). \
+                        filter(PickupImpaired.activity_id == activity_id,
+                               PickupImpaired.openid == impaired_openid).first()
+                    logger.info('Clear pickup info and notice impaired %s' % pick_impaired.name)
+                    pick_impaired.pick_method = ''
+                    pick_impaired.pickup_volunteer_openid = ''
+                    db.session.commit()
+                    kwargs = {
+                        'impaired_name': pick_impaired.name,
+                        'volunteer_name': pick_info.name,
+                        'volunteer_phone': user_info.phone
+                    }
+                    impaired_user_info = User.query.filter(User.openid == impaired_openid).first()
+                    phone_number_list = [impaired_user_info.phone]
+                    template_id = constants.TEMPLATE_CODES['VOLUNTEER_CANCEL']
+                    smstools.send_short_message(phone_number_list, template_id, **kwargs)
+                logger.info('all impaired notice over.')
+            db.session.delete(pick_info)
+            db.session.commit()
+    else:
+        logger.info('Impaired %s cancel activity %s.' % (user_info.name, activity_info.title))
+        pickup_impaired = db.session.query(PickupImpaired). \
+            filter(PickupImpaired.openid == openid,
+                   PickupImpaired.activity_id == activity_id).first()
+        if pickup_impaired:
+            logger.info('Have volunteer pickup current impaired? if yes, need notice volunteer.')
+            if pickup_impaired.pickup_volunteer_openid and pickup_impaired.pickup_method:
+                volunteer_user_info = User.query.filter(User.openid == pickup_impaired.pickup_volunteer_openid).first()
+                logger.info("Current impaired volunteer is %s" % volunteer_user_info.name)
+                kwargs = {
+                    'impaired_name': pickup_impaired.name,
+                    'volunteer_name': volunteer_user_info.name,
+                    'impaired_phone': user_info.phone
+                }
+                phone_number_list = [volunteer_user_info.phone]
+                template_id = constants.TEMPLATE_CODES['IMPAIRED_CANCEL']
+                smstools.send_short_message(phone_number_list, template_id, **kwargs)
+            db.session.delete(pickup_impaired)
+            db.session.commit()
+    logger.info('Volunteer or impaired %s cancel activity success.' % user_info.name)
+
+
+def volunteer_pickup_impaired(volunteer_openid, impaired_openid, pickup_method):
+    """ volunteer choose pickup impaired and detail pickup method """
+    logger.info('Volunteer choose pickup method. need to notice impaired.')
+    volunteer_user_info = User.query.filter(User.openid == volunteer_openid).first()
+    impaired_user_info = User.query.filter(User.openid == impaired_openid).first()
+    kwargs = {'impaired_name': impaired_user_info.name,
+              'volunteer_name': volunteer_user_info.name,
+              'volunteer_phone': volunteer_user_info.phone}
+    phone_number_list = [impaired_user_info.phone]
+    if pickup_method:
+        logger.info('Volunteer %s will pickup %s' % (volunteer_user_info.name, impaired_user_info.name))
+        template_id = constants.TEMPLATE_CODES['VOLUNTEER_PICKUP']
+        smstools.send_short_message(phone_number_list, template_id, **kwargs)
+    else:
+        logger.info('Volunteer %s not pickup %s' % (volunteer_user_info.name, impaired_user_info.name))
+        template_id = constants.TEMPLATE_CODES['VOLUNTEER_CANCEL_PICKUP']
+        smstools.send_short_message(phone_number_list, template_id, **kwargs)

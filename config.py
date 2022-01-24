@@ -32,6 +32,9 @@ class GrimmConfig(Config):
     # for sms setting
     SMS_ACCESS_KEY_ID = config.get('SMS', 'SMS_ACCESS_KEY_ID')
     SMS_ACCESS_KEY_SECRET = config.get('SMS', 'SMS_ACCESS_KEY_SECRET')
+    TENCENT_SECRET_ID = config.get('SMS', 'TENCENT_SECRET_ID')
+    TENCENT_SECRET_KEY = config.get('SMS', 'TENCENT_SECRET_KEY')
+    TENCENT_SDK_APP_ID = config.get('SMS', 'TENCENT_SDK_APP_ID')
 
     # for smtp setting
     SMTP_ADDRESS = config.get('SMTP', 'SMTP_ADDRESS')
@@ -42,6 +45,8 @@ class GrimmConfig(Config):
     # for api
     TENCENT_LOCATION_SERVICE_URL = config.get('API', 'TENCENT_LOCATION_SERVICE_URL')
     TENCENT_LOCATION_SERVICE_KEY = config.get('API', 'TENCENT_LOCATION_SERVICE_KEY')
+    WECHAT_TOKEN_GET_URL = config.get('API', 'WECHAT_TOKEN_GET_URL')
+    WECHAT_MESSAGE_SUBSCRIBE_URL = config.get('API', 'WECHAT_MESSAGE_SUBSCRIBE_URL')
 
     # for app
     GRIMM_EXCEPTION_MSG_ROOM = config.get('APP', 'GRIMM_EXCEPTION_MSG_ROOM')

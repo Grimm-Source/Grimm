@@ -55,12 +55,17 @@ SESSION_LOG = None
 # send sms configuration
 VRF_SIGNATURE = '视障人士志愿者平台验证'
 COM_SIGNATURE = '华晓信息'
+TENCENT_SMS_SIGNATURE = '上海闵行区仁品服务中心'
 TEMPLATE_CODES = {
     'AUTHENTICATE_ID': 'SMS_134125051',
     'CONFIRM_LOGIN': 'SMS_134125050',
     'REGISTER_USER': 'SMS_134125048',
     'NOTIFY_APPROVED': 'SMS_176405562',
-    'NOTIFY_REJECTED': 'SMS_176405555'
+    'NOTIFY_REJECTED': 'SMS_176405555',
+    'VOLUNTEER_PICKUP': 1283488,
+    'VOLUNTEER_CANCEL_PICKUP': 1283739,
+    'IMPAIRED_CANCEL_ACTIVITY': 1283508,  # impaired cancel activity
+    'VOLUNTEER_CANCEL_ACTIVITY': 1283583  # volunteer cancel activity
     }
 
 # misc consts
@@ -84,3 +89,12 @@ CAROUSEL_LIST = [
 
 # Tag information
 TAG_LIST = ['运动', '学习', '分享', '文娱', '保健', '其它']
+
+PICKUP_METHOD = {
+    '0_1': '私家车',
+    '0_2': '步行地铁',
+    '1_0': '私家车',
+    '1_1': '步行地铁',
+    '2_0': '私家车',
+    '2_1': '步行地铁'
+}
