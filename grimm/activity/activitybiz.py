@@ -196,7 +196,7 @@ def user_cancel_activity(openid, activity_id):
                     }
                     impaired_user_info = User.query.filter(User.openid == impaired_openid).first()
                     phone_number_list = [impaired_user_info.phone]
-                    template_id = constants.TEMPLATE_CODES['VOLUNTEER_CANCEL']
+                    template_id = constants.TEMPLATE_CODES['VOLUNTEER_CANCEL_ACTIVITY']
                     smstools.send_short_message(phone_number_list, template_id, **kwargs)
                 logger.info('all impaired notice over.')
             db.session.delete(pick_info)
@@ -217,7 +217,7 @@ def user_cancel_activity(openid, activity_id):
                     'impaired_phone': user_info.phone
                 }
                 phone_number_list = [volunteer_user_info.phone]
-                template_id = constants.TEMPLATE_CODES['IMPAIRED_CANCEL']
+                template_id = constants.TEMPLATE_CODES['IMPAIRED_CANCEL_ACTIVITY']
                 smstools.send_short_message(phone_number_list, template_id, **kwargs)
             db.session.delete(pickup_impaired)
             db.session.commit()
