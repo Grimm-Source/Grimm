@@ -19,7 +19,7 @@ def send_short_message(phone_number_list, template_id, **kwargs):
     client_profile.signMethod = "TC3-HMAC-SHA256"
     client_profile.language = "en-US"
     client_profile.httpProfile = http_profile
-    client = sms_client.SmsClient(cred, "ap-shanghai", client_profile)
+    client = sms_client.SmsClient(cred, "ap-guangzhou", client_profile)
     req = models.SendSmsRequest()
     req.SmsSdkAppId = GrimmConfig.TENCENT_SDK_APP_ID
     req.SignName = constants.TENCENT_SMS_SIGNATURE
