@@ -120,7 +120,7 @@ Page({
       })
       return;
     }
-    var idReg = /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/;
+    var idReg = /^[1-9]\d{5}(?:18|19|20)\d{2}(?:0[1-9]|10|11|12)(?:0[1-9]|[1-2]\d|30|31)\d{3}[\dXx]$/;
     var passportReg = /^([a-zA-z]|[0-9]){5,17}$/;
     if (!idReg.test(this.data.userInfo.idcard) && !passportReg.test(this.data.userInfo.idcard)) {
       wx.showModal({
@@ -130,10 +130,19 @@ Page({
       })
       return;
     }
+    var emailReg = /^[A-Za-z0-9]+([-_.][A-Za-z0-9]+)*@([A-Za-z0-9]+[-.])+[A-Za-zd]{2,5}$/;
     if (!this.data.userInfo.email) {
       wx.showModal({
         title: '提示',
         content: '请输入邮箱',
+        showCancel: false,
+      })
+      return;
+    }
+    if (this.data.userInfo.email && !emailReg.test(this.data.userInfo.email)) {
+      wx.showModal({
+        title: '提示',
+        content: '请填写正确的邮箱地址',
         showCancel: false,
       })
       return;
