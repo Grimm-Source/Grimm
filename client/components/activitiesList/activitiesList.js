@@ -79,6 +79,25 @@ Component({
       if(activity_id ==  null){
         return;
       }
+      // Fix wiki bug: Register/View activities (4. Pop up wrong warning...)
+      let activityStartTime = event.currentTarget.dataset.item['start_time']
+      let activityEndTime = event.currentTarget.dataset.item['end_time']
+      let currentTime = new Date()
+      if (currentTime > new Date(activityEndTime)){
+        wx.showModal({
+          showCancel: false,
+          title: '活动已结束',
+          content: "您想操作的活动已结束，请选择还未开始的活动，谢谢!"
+        })
+        return
+      }else if(currentTime >= new Date(activityStartTime) && currentTime <= new Date(activityEndTime)){
+        wx.showModal({
+          showCancel: false,
+          title: '活动已开始',
+          content: "您想操作的活动已开始，请选择还未开始的活动，谢谢!"
+        })
+        return
+      }
       wx.navigateTo({
         url: '/pages/activityDetail/activityDetail?activity_id=' + activity_id,
       })
