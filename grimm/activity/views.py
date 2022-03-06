@@ -537,12 +537,10 @@ class ThumbsUpActivity(Resource):
         feedback = {"status": "success"}
         activity_participant_info = db.session.query(ActivityParticipant). \
             filter(ActivityParticipant.activity_id == activity_id,
-                   ActivityParticipant.participant_openid == openid).all()
+                   ActivityParticipant.participant_openid == openid).first()
         if activity_participant_info:
-            ActivityParticipant.query. \
-                filter(ActivityParticipant.activity_id == activity_id,
-                       ActivityParticipant.participant_openid == openid). \
-                update({ActivityParticipant.thumbs_up: thumbs_up})
+            activity_participant_info.thumbs_up = thumbs_up
+            db.session.commit()
             return jsonify(feedback)
         else:
             activity_participant_info = ActivityParticipant()
