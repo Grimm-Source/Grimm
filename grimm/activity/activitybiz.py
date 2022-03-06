@@ -36,15 +36,19 @@ def activity_converter(activity, openid=0):
         filter(ActivityParticipant.activity_id == activity["id"],
                ActivityParticipant.thumbs_up == 1).count()
     query["registered"] = ActivityParticipant.query. \
-        filter(ActivityParticipant.activity_id == activity["id"]).count() if openid == 0 else \
+        filter(ActivityParticipant.activity_id == activity["id"],
+               ActivityParticipant.current_state == 'Registered').count() if openid == 0 else \
         ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity["id"],
-                                         ActivityParticipant.participant_openid == openid).count()
+                                         ActivityParticipant.participant_openid == openid,
+                                         ActivityParticipant.current_state == 'Registered').count()
     query["registered_volunteer"] = db.session.query(ActivityParticipant, User). \
-        filter(ActivityParticipant.activity_id == activity["id"]). \
+        filter(ActivityParticipant.activity_id == activity["id"],
+               ActivityParticipant.current_state == 'Registered'). \
         filter(User.role == 0). \
         filter(ActivityParticipant.participant_openid == User.openid).count()
     query["registered_impaired"] = db.session.query(ActivityParticipant, User). \
-        filter(ActivityParticipant.activity_id == activity["id"]). \
+        filter(ActivityParticipant.activity_id == activity["id"],
+               ActivityParticipant.current_state == 'Registered'). \
         filter(User.role == 1). \
         filter(ActivityParticipant.participant_openid == User.openid).count()
     query["volunteer_capacity"] = activity["volunteer_capacity"]

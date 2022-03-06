@@ -362,7 +362,6 @@ class ActivityParticipantRoot(Resource):
         return jsonify(feedback)
 
 
-
 @activity.route("/myActivities", methods=["GET"])
 class GetFavoriteActivities(Resource):
     def get(self):
@@ -429,6 +428,7 @@ class GetActivityParser(object):
         parser.add_argument('activity_id', type=int, location='args', help='Activity ID')
         return parser
 
+
 @activity.route("/activity_detail", methods=["GET"])
 class GetActivity(Resource):
     @activity.expect(GetActivityParser().get())
@@ -448,7 +448,6 @@ class GetActivity(Resource):
         feedback = activitybiz.activity_converter(dbutils.serialize(activity_info), openid)
         feedback["status"] = "success"
 
-
         # Add activity participant details to user's query about his/her activity detail
         activity_participant = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity_id).first()
         if activity_participant:
@@ -466,7 +465,6 @@ class GetActivity(Resource):
             logger.info("%d: added activity participant dump successfully", activity_id)
         else:
             logger.info("%d: failed to added activity participant dump", activity_id)
-
 
         user_info = User.query.filter(User.openid == openid).first()
         if not user_info:
@@ -507,12 +505,14 @@ class MarkActivity(Resource):
         feedback = {"status": "success"}
         activity_participant_info = db.session.query(ActivityParticipant). \
             filter(ActivityParticipant.activity_id == activity_id,
-                   ActivityParticipant.participant_openid == openid).all()
+                   ActivityParticipant.participant_openid == openid).first()
         if activity_participant_info:
-            ActivityParticipant.query. \
-                filter(ActivityParticipant.activity_id == activity_id,
-                       ActivityParticipant.participant_openid == openid). \
-                update({ActivityParticipant.interested: interest})
+            activity_participant_info.interested = interest
+            # ActivityParticipant.query. \
+            #     filter(ActivityParticipant.activity_id == activity_id,
+            #            ActivityParticipant.participant_openid == openid). \
+            #     update({ActivityParticipant.interested: interest})
+            db.session.commit()
             return jsonify(feedback)
         else:
             activity_participant_info = ActivityParticipant()
@@ -587,10 +587,8 @@ class ShareActivity(Resource):
 
         share_count = int(participant.share)
         share_count += 1
-        ActivityParticipant.query. \
-            filter(ActivityParticipant.activity_id == activity_id,
-                   ActivityParticipant.participant_openid == openid). \
-            update({ActivityParticipant.share: share_count})
+        participant.share = share_count
+        db.session.commit()
         return jsonify({"status": "success"})
 
 
