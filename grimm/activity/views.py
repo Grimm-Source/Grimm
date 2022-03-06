@@ -666,9 +666,11 @@ class UserRegisterActivities(Resource):
 
         logger.info('Delete openid - %s, activity id - %s' % (openid, activity_id))
         activity_participant_info = db.session.query(ActivityParticipant). \
-            filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
+            filter(ActivityParticipant.participant_openid == openid,
+                   ActivityParticipant.activity_id == activity_id,
+                   ActivityParticipant.current_state == 'Registered').first()
         if activity_participant_info:
-            db.session.delete(activity_participant_info)
+            activity_participant_info.current_state = None
             db.session.commit()
             logger.info("Deleted OpenId:%s with activity:%d in activity_participant!", openid, activity_id)
 
