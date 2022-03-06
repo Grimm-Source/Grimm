@@ -18,8 +18,8 @@ Page({
   onLoad: function (options) {
     this.setData({
       activity_id: options.activity_id,
-      title: options.title == 'undefined' ? '': options.title, 
-      date: options.date == 'undefined' ? '': options.date, 
+      title: options.title == 'undefined' ? '': options.title,
+      date: options.date == 'undefined' ? '': options.date,
       address: options.address == 'undefined' ? '': options.address,
     })
     if (options.willPickup === "1") {
@@ -31,10 +31,17 @@ Page({
         })
       });
     }else {
+      getCurrentUserDetail((res) => {
+        this.setData({
+          name: res.name, //接送人员真实姓名, 默认填充当前授权用户名字
+          idNo: res.id_type == '身份证' ? res.idcard: '', //默认填充当前授权用户身份证号
+          impairedNo: res.disabled_id, //默认填充当前授权用户残疾证号
+        })
+      });
       this.setData({
-        name: options.name == 'undefined' ? '': options.name, //接送人员真实姓名
-        idNo: options.idNo == 'undefined' ? '': options.idNo, //身份证号
-        impairedNo: options.impairedNo == 'undefined' ? '': options.impairedNo, //残疾证号
+        //name: options.name == 'undefined' ? '': options.name, //接送人员真实姓名
+        //idNo: options.idNo == 'undefined' ? '': options.idNo, //身份证号
+        //impairedNo: options.impairedNo == 'undefined' ? '': options.impairedNo, //残疾证号
         pickupAddr: options.pickupAddr == 'undefined' ? '': options.pickupAddr,//接送的起始位置
         emergencyContact: options.emergencyContact == 'undefined' ? '': options.emergencyContact, //紧急联系人电话
       })
@@ -68,6 +75,7 @@ Page({
   },
 
   onSubmit: function () {
+
     if (!this.data.name) {
       wx.showModal({
         title: '提示',
