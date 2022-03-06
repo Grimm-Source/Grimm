@@ -23,9 +23,13 @@ def activity_converter(activity, openid=0):
     query["others"] = activity["others"]
     query["tag"] = ','.join([constants.TAG_LIST[int(tid)] for tid in activity["tag_ids"].split(',') if tid or int(tid) in range(6)]) \
         if activity["tag_ids"] else ''
-    query["share"] = ActivityParticipant.query. \
-        filter(ActivityParticipant.activity_id == activity["id"],
-               ActivityParticipant.share == 1).count()
+    if openid == 0:
+        participant = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity["id"]).all()
+        query["share"] = sum([int(part.share) for part in participant])
+    else:
+        participant = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity["id"],
+                                                       ActivityParticipant.participant_openid == openid).first()
+        query["share"] = int(participant.share)
     query["interested"] = ActivityParticipant.query. \
         filter(ActivityParticipant.activity_id == activity["id"],
                ActivityParticipant.interested == 1).count() if openid == 0 \
