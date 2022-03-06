@@ -612,52 +612,50 @@ class UserRegisterActivities(Resource):
 
         logger.info('User %s register activity %s.' % (openid, activity_id))
 
-        exist_info = ActivityParticipant.query. \
+        exist_registered_info = ActivityParticipant.query. \
             filter(ActivityParticipant.participant_openid == openid,
-                   ActivityParticipant.activity_id == activity_id).first()
-        if exist_info:
+                   ActivityParticipant.activity_id == activity_id,
+                   ActivityParticipant.current_state == 'Registered').first()
+        if exist_registered_info:
             logger.info('Repeat registration.')
             return jsonify({"status": "failure", "message": "重复报名"})
 
         user_info = User.query.filter(User.openid == openid).first()
         if not user_info:
-            return jsonify({"status": "failure", "message": "未能获取用户信息"})
+            return jsonify({"status": "failure", "message": "未能获取用户信息, 请先注册"})
 
-        if not self.update_activity_participant_db(openid, activity_id):
-            logger.error("Activity %d with openid %d insertion failed!", activity_id, openid)
-            return jsonify({"status": "failure"})
-
-        return jsonify({"status": "success"})
-
-    def update_activity_participant_db(self, openid, activity_id):
-        activity_participant_info = db.session.query(ActivityParticipant). \
-            filter(ActivityParticipant.participant_openid == openid, ActivityParticipant.activity_id == activity_id).first()
-        if activity_participant_info:
-            logger.info("OpenId:%s in activity:%d are already in activity_participant, duplicated insertion!", openid, activity_id)
-            return False
-
-        activity_info = db.session.query(Activity). \
-            filter(Activity.id == activity_id).first()
+        activity_info = db.session.query(Activity).filter(Activity.id == activity_id).first()
         if not activity_info:
             logger.error("Activity %d is not existing!", activity_id)
-            return False
+            return jsonify({"status": "failure", "message": "活动不存在"})
 
-        activity_participant_info = ActivityParticipant()
-        activity_participant_info.activity_id = activity_id
-        activity_participant_info.participant_openid = openid
-        activity_participant_info.interested = 0
-        activity_participant_info.share = 0
-        activity_participant_info.thumbs_up = 0
-        activity_participant_info.current_state = "Registered"
-        activity_participant_info.sign_method = "gps"
-        activity_participant_info.certificated = 0
-        activity_participant_info.certiticate_date = 0
-        activity_participant_info.paper_certificate = 0
-        db.session.add(activity_participant_info)
-        db.session.commit()
-        logger.info("OpenId:%s in activity:%s are inserted to activity_participant!", openid, activity_id)
-
-        return True
+        exist_participant_info = db.session.query(ActivityParticipant). \
+            filter(ActivityParticipant.participant_openid == openid,
+                   ActivityParticipant.activity_id == activity_id).first()
+        if not exist_participant_info:
+            activity_participant_info = ActivityParticipant()
+            activity_participant_info.activity_id = activity_id
+            activity_participant_info.participant_openid = openid
+            activity_participant_info.interested = 0
+            activity_participant_info.share = 0
+            activity_participant_info.thumbs_up = 0
+            activity_participant_info.current_state = "Registered"
+            activity_participant_info.sign_method = "gps"
+            activity_participant_info.certificated = 0
+            activity_participant_info.certiticate_date = 0
+            activity_participant_info.paper_certificate = 0
+            db.session.add(activity_participant_info)
+            db.session.commit()
+            logger.info("OpenId:%s in activity:%s are inserted to activity_participant!", openid, activity_id)
+        else:
+            exist_participant_info.current_state = "Registered"
+            exist_participant_info.sign_method = "gps"
+            exist_participant_info.certificated = 0
+            exist_participant_info.certiticate_date = 0
+            exist_participant_info.paper_certificate = 0
+            logger.info("OpenId:%s in activity:%s are updated to activity_participant!", openid, activity_id)
+            db.session.commit()
+        return jsonify({"status": "success"})
 
     @activity.expect(UserRegisterActivitiesParser().common())
     def delete(self):
