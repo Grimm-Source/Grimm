@@ -153,11 +153,13 @@ Page({
       wx.showToast({
         title: '已更新',
         icon: 'success',
-        duration: 300
+        duration: 3000
       });
-      wx.switchTab({
-        url: '../personal/personal',
-      });
+      setTimeout(() => {
+        wx.switchTab({
+          url: '../personal/personal',
+        });
+      }, 1000);
     },(err)=>{
       wx.showModal({
         showCancel: false,
