@@ -25,11 +25,11 @@ def activity_converter(activity, openid=0):
         if activity["tag_ids"] else ''
     if openid == 0:
         participant = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity["id"]).all()
-        query["share"] = sum([int(part.share) for part in participant])
+        query["share"] = sum([int(part.share) for part in participant if part.share])
     else:
         participant = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity["id"],
                                                        ActivityParticipant.participant_openid == openid).first()
-        query["share"] = int(participant.share)
+        query["share"] = int(participant.share) if participant.share else 0
     query["interested"] = ActivityParticipant.query. \
         filter(ActivityParticipant.activity_id == activity["id"],
                ActivityParticipant.interested == 1).count() if openid == 0 \
