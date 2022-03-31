@@ -375,7 +375,8 @@ class GetFavoriteActivities(Resource):
             filter(ActivityParticipant.interested == 1). \
             filter(ActivityParticipant.activity_id == Activity.id).all()
         registered_activities_info = db.session.query(Activity.id, Activity.end_time). \
-            filter(ActivityParticipant.participant_openid == openid). \
+            filter(ActivityParticipant.participant_openid == openid).\
+            filter(ActivityParticipant.current_state == 'Registered'). \
             filter(ActivityParticipant.activity_id == Activity.id).all()
         favorite_activities_info = [{'activity.id': i.id, 'activity.end_time': i.end_time}
                                     for i in favorite_activities_info] if favorite_activities_info else []
