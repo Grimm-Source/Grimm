@@ -41,7 +41,7 @@ jobs:
           git checkout HEAD run_grimm.sh
 
           echo "Pull code from backend_v2 branch"
-          git pull git://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
+          git pull https://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
           source ../venv/bin/activate
           export FLASK_APP=manage.py
 
