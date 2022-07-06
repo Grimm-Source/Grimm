@@ -1,5 +1,8 @@
 // components/activitiesList/activitiesList.js
-const { getActivityList, getFilteredActivities} = require('../../utils/requestUtil.js');
+const {
+  getActivityList,
+  getFilteredActivities
+} = require('../../utils/requestUtil.js');
 
 const apiUrl = require('../../config.js').apiUrl;
 
@@ -10,18 +13,17 @@ Component({
   properties: {
     activitiesProp: {
       type: Array,
-      value:[],
+      value: [],
     }
   },
 
   /**
    * 组件的初始数据
    */
-  data: {
-  },
+  data: {},
 
   pageLifetimes: {
-    show: function() {
+    show: function () {
       getActivityList((res) => {
         this._setActivities(res);
       })
@@ -38,14 +40,16 @@ Component({
         let activity = activities[index];
         activity.schedule = this.getActivityTimeStr(activity);
         activity.fee = this.getActivityFee(activity);
-        if (activity.activity_them_pic_name){
+        if (activity.activity_them_pic_name) {
           activity.themeUrl = apiUrl + 'activity/themePic?activity_them_pic_name=' + activity.activity_them_pic_name;
-        }else {
+        } else {
           activity.themeUrl = '../../images/banner_outer.jpeg';
         }
         formattedActivities.push(activity);
       }
-      this.setData({activitiesProp: formattedActivities});
+      this.setData({
+        activitiesProp: formattedActivities
+      });
     },
 
     _getFilteredCategoryParams(category) {
@@ -75,22 +79,22 @@ Component({
 
     onTapActivity: function (event) {
       let item = event.currentTarget.dataset && event.currentTarget.dataset.item,
-      activity_id = item.id;
-      if(activity_id ==  null){
+        activity_id = item.id;
+      if (activity_id == null) {
         return;
       }
       // Fix wiki bug: Register/View activities (4. Pop up wrong warning...)
       let activityStartTime = event.currentTarget.dataset.item['start_time']
       let activityEndTime = event.currentTarget.dataset.item['end_time']
       let currentTime = new Date()
-      if (currentTime > new Date(activityEndTime)){
+      if (currentTime > new Date(activityEndTime)) {
         wx.showModal({
           showCancel: false,
           title: '活动已结束',
           content: "您想操作的活动已结束，请选择还未开始的活动，谢谢!"
         })
         return
-      }else if(currentTime >= new Date(activityStartTime) && currentTime <= new Date(activityEndTime)){
+      } else if (currentTime >= new Date(activityStartTime) && currentTime <= new Date(activityEndTime)) {
         wx.showModal({
           showCancel: false,
           title: '活动已开始',
@@ -103,7 +107,7 @@ Component({
       })
     },
 
-    onFilterParamChange: function(event) {
+    onFilterParamChange: function (event) {
       console.log(event);
       let categoryParam = this._getFilteredCategoryParams(event.detail.category);
       let timeParam = this._getFilteredTimeParams(event.detail.time);
@@ -127,11 +131,11 @@ Component({
       }
     },
 
-    onPulling: function() {
+    onPulling: function () {
 
     },
 
-    getActivityTimeStr: function(activity) {
+    getActivityTimeStr: function (activity) {
       let startTime = activity.start_time.replace('T', ' ').replace(/-/g, ".");
       let endTime = activity.end_time.replace('T', ' ').replace(/-/g, ".");
       let timeStr = "";
@@ -143,14 +147,15 @@ Component({
       return timeStr;
     },
 
-    getActivityFee: function(activity) {
+    getActivityFee: function (activity) {
       let fee = "";
-      if(activity.is_fee_needed){
+      if (activity.is_fee_needed) {
         fee = "¥" + activity.activity_fee;
-      } else{
+      } else {
         fee = "免费";
       }
       return fee;
-    }
+    },
+   
   }
 })

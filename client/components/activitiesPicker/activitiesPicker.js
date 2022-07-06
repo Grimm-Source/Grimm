@@ -30,6 +30,10 @@ Component({
       getActivityTypes((res) => {
         this.setData({ categories: [{ tag_id: -1, tag_name: "全部" }].concat(res) })
       });
+      this.setData({
+        activeCategory: -1,
+        activeTime: "all",
+      });
 
     },
   },

@@ -24,8 +24,9 @@ Component({
       // console.log("1111getCertificatectivity:")
       getCertificatectivity((res) => {
         // console.log("getCertificatectivity:", res)
-
-        this._setActivities(res.activities);
+        let newActivtys = this._filterPostActivity(res.activities)
+        console.log("newActivtys", newActivtys)
+        this._setActivities(newActivtys);
 
       })
     }
@@ -72,5 +73,14 @@ Component({
         url: '/pages/signIn/signIn?id=' + activity_id,
       })
     },
+    _filterPostActivity: function (activityArr) {
+      let newActivityArr = activityArr.filter(activity => {
+        let nowTime = new Date().getTime()
+        let endTime = new Date(activity?.end_time).getTime()
+        return endTime > nowTime
+      })
+      console.log(newActivityArr)
+      return newActivityArr
+    }
   }
 })
