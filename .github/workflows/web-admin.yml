@@ -21,7 +21,7 @@ jobs:
           PORT: ${{ secrets.TEST_PORT }}
           script: |
             cd /opt/frontend/Grimm/web-admin
-            git pull --tags git://github.com/Grimm-Source/Grimm.git frontend_auto_deploy
+            git pull https://github.com/Grimm-Source/Grimm.git --tags frontend_auto_deploy
             docker-compose build 
             docker-compose down
             docker-compose up -d
