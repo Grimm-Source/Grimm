@@ -55,10 +55,10 @@ class Home extends React.Component {
             </Menu>
         )
     }
-  
+
     render() {
         return (
-            
+
             <div className="home" >
                 <Header/>
                 {this.getNavContent()}
@@ -77,6 +77,13 @@ class Home extends React.Component {
                 <Login/>
                 <Activity/>
                 <Drawer/>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                    上海闵行区古美仁品社区为残服务中心©版权所有&emsp;<a target="_blank" style={{color: "black"}} href="https://beian.miit.gov.cn/">沪ICP备15045950号-1</a>
+                </div>
                 {this.props.loading? <Spin size="large" />: null}
             </div>
         );
@@ -96,4 +103,3 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Home))
-  
