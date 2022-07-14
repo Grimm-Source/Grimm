@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import AdminForm from '../../components/AdminForm/AdminForm';
 
 import './Login.less';
+import Footer from "../../components/Footer";
 
 class Login extends React.Component {
 
@@ -24,9 +25,10 @@ class Login extends React.Component {
         maskClosable={false}
         cancelButtonProps={{ disabled: true }}
         okButtonProps={{ disabled: true}}
+        footer={<Footer color={'blank'} />}
       >
-      <AdminForm />
-      <Button type="link" className="admin-forget-button" onClick={this.handleForgotPassword}>{"忘记密码?"}</Button>
+        <AdminForm />
+        <Button type="link" className="admin-forget-button" onClick={this.handleForgotPassword}>{"忘记密码?"}</Button>
       </Modal>
     );
   }

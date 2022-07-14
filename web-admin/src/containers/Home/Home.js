@@ -19,6 +19,7 @@ import { createBrowserHistory } from 'history';
 
 
 import './Home.less';
+import Footer from "../../components/Footer";
 
 
 const history = createBrowserHistory();
@@ -77,14 +78,7 @@ class Home extends React.Component {
                 <Login/>
                 <Activity/>
                 <Drawer/>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white'
-                }}>
-                    上海闵行区古美仁品社区为残服务中心©版权所有&emsp;<a target="_blank" style={{color: "white"}} href="https://beian.miit.gov.cn/">沪ICP备15045950号-1</a>
-                </div>
+                <Footer />
 
                 {this.props.loading? <Spin size="large" />: null}
             </div>
