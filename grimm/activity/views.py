@@ -469,7 +469,9 @@ class GetActivity(Resource):
 
         user_info = User.query.filter(User.openid == openid).first()
         if not user_info:
-            return jsonify({"status": "failure", "message": "请先注册"})
+            feedback["status"] = "success"
+            feedback["message"] = "未注册"
+            return jsonify(feedback)
         if user_info.role == 0:  # 志愿者
             pickup_volunteer = db.session.query(PickupVolunteer). \
                 filter(PickupVolunteer.openid == openid, PickupVolunteer.activity_id == activity_id).first()
