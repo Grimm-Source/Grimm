@@ -77,7 +77,8 @@ Page({
     getProfile((res)=>{
       this.setData({
         progress_attendMinutes: res.joindHours * 60 + '分钟',
-        progress_attendTimes: res.activitiesJoined + '次活动'
+        progress_attendTimes: res.activitiesJoined + '次活动',
+        ['userInfo.nickName']:res.name
       })
     });
   },

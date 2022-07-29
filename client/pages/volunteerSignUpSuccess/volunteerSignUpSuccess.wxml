@@ -23,6 +23,6 @@
   <view style="margin-top:30px;margin-left:-20px">
     <button class="footer-button" style="background-color:#F03D64;" bindtap="onTapWillingPickup">愿意</button>
     <button class="footer-button" type="primary" style="margin-top:10rpx" bindtap="onTapConsiderPickup">我再想想</button>
-    <button class="footer-button" style="background-color:black; margin-top:10rpx" bindtap="onTapUnwillingPickup">不愿意</button>
+    <!-- <button class="footer-button" style="background-color:black; margin-top:10rpx" bindtap="onTapUnwillingPickup">不愿意</button> -->
   </view>
 </view>

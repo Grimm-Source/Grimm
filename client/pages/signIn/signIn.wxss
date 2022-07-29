@@ -68,7 +68,7 @@
 
 .ask {
   margin: 0 16rpx;
-  font-size: 30rpx;
+  font-size: 36rpx;
   color: #000
 }
 

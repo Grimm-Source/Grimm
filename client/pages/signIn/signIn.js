@@ -21,8 +21,7 @@ Page({
    * Page initial data
    */
   data: {
-    // latitude: ,
-    // longitude: 
+    isShowCoedSignIn:false
   },
 
   /**
@@ -48,12 +47,7 @@ Page({
         const longitude = res.longitude
         const speed = res.speed
         const accuracy = res.accuracy
-        // console.log("latitude:", res)
-        // console.log("longitude:", res.longitude, speed, accuracy)
-        // wx.chooseLocation({
-        //   latitude:latitude,
-        //   longitude:longitude
-        // })
+      
         that.setData({
           latitude,
           longitude
@@ -91,19 +85,8 @@ Page({
     });
   },
   signUp: function (token) {
-    // let that = this
-    // wx.getUserInfo({
-    //   success: function (res) {
-    //     console.log("getUserInfo:", res)
-    //     // var pc = new WXBizDataCrypt(appId, sessionKey)
-    //     // var data = pc.decryptData(encryptedData , iv)
-    //     // console.log("data:",data)
-
-    //   }
-    // })
     let time = formatTimeline(new Date())
     // console.log("time:", time)
-
     return signUP({
       activity_id: Number(this.data.id),
       signup_time: time,
@@ -131,10 +114,8 @@ Page({
     })
   },
   signOff: function () {
-
     let time = formatTimeline(new Date())
     // console.log("time:", time)
-
     signOff({
       activity_id: Number(this.data.id),
       signup_time: time,
@@ -155,6 +136,11 @@ Page({
         title: '更新失败',
         content: err || "网络失败，请稍候再试"
       });
+    })
+  },
+  showCoedSignIn:function(){
+    this.setData({
+      isShowCoedSignIn:!this.data.isShowCoedSignIn
     })
   }
 })
