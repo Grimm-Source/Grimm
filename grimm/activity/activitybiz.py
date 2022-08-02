@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+from sqlalchemy import func
+
 from grimm import logger, db
 from grimm.models.activity import ActivityParticipant, PickupImpaired, Activity, PickupVolunteer
 from grimm.models.admin import User
@@ -41,13 +43,16 @@ def activity_converter(activity, openid=0):
                                               ActivityParticipant.interested == 1).count()
     query["thumbs_up"] = ActivityParticipant.query. \
         filter(ActivityParticipant.activity_id == activity["id"],
-               ActivityParticipant.thumbs_up == 1).count()
+               ActivityParticipant.thumbs_up == 1).count() if openid == 0 \
+        else ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity["id"],
+                                              ActivityParticipant.participant_openid == openid,
+                                              ActivityParticipant.thumbs_up == 1).count()
     query["registered"] = ActivityParticipant.query. \
         filter(ActivityParticipant.activity_id == activity["id"],
-               ActivityParticipant.current_state == 'Registered').count() if openid == 0 else \
+               ActivityParticipant.current_state != None).count() if openid == 0 else \
         ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity["id"],
                                          ActivityParticipant.participant_openid == openid,
-                                         ActivityParticipant.current_state == 'Registered').count()
+                                         ActivityParticipant.current_state != None).count()
     query["registered_volunteer"] = db.session.query(ActivityParticipant, User). \
         filter(ActivityParticipant.activity_id == activity["id"],
                ActivityParticipant.current_state == 'Registered'). \
