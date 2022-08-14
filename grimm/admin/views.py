@@ -1,4 +1,5 @@
 import json
+import math
 import traceback
 
 import pandas as pd
@@ -13,6 +14,7 @@ from grimm import logger, db, engine, GrimmConfig
 # from grimm import socketio
 from grimm.admin import admin, adminbiz
 from grimm.admin.admindto import AdminDto
+from grimm.models.activity import ActivityParticipant, Activity
 from grimm.models.admin import Admin, User
 from grimm.utils import constants, smsverify, emailverify, dbutils, decrypt
 
@@ -321,7 +323,51 @@ class ProfileOperate(Resource):
             "activitiesJoined": user_info["activities_joined"],
             "joindHours": 4 * user_info["activities_joined"]
         }
-        logger.info("%s: user login successfully", user_info["openid"])
+
+        # calculate activity join count when sign off
+        joined_participants = db.session.query(ActivityParticipant.signup_time,
+                                               ActivityParticipant.signoff_time,
+                                               Activity.start_time,
+                                               Activity.end_time) \
+            .filter(ActivityParticipant.participant_openid == openid,
+                    ActivityParticipant.current_state == "signed_off",
+                    ActivityParticipant.activity_id == Activity.id).all()
+        effective_join_count = 0
+        effective_join_seconds = 0
+        for part in joined_participants:
+            sign_up_time = part[0]
+            sign_off_time = part[1]
+            activity_start_time = part[2]
+            activity_end_time = part[3]
+
+            if not sign_up_time or not sign_off_time:
+                continue
+
+            if sign_off_time <= activity_start_time or sign_up_time >= activity_end_time:
+                # invalid activity joined
+                effective_join_count = effective_join_count + 0
+                effective_join_hours = effective_join_seconds + 0
+            else:
+                effective_join_count = effective_join_count + 1
+                if sign_off_time >= activity_end_time:
+                    effective_end_time = activity_end_time
+                else:
+                    effective_end_time = sign_off_time
+                if sign_up_time >= activity_start_time:
+                    effective_start_time = sign_up_time
+                else:
+                    effective_start_time = activity_start_time
+                effective_seconds = (effective_end_time - effective_start_time).total_seconds()
+                effective_join_seconds = effective_join_seconds + effective_seconds
+        if effective_join_count > 0:
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            user_info.activities_joined = int(effective_join_count)
+            db.session.commit()
+            feedback['activitiesJoined'] = effective_join_count
+        if effective_join_seconds > 0:
+            feedback['joindHours'] = math.ceil(effective_join_seconds / 3600)
+
+        logger.info(f"{openid}: user login successfully")
         return jsonify(feedback)
 
     def post(self):
