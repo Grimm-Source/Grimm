@@ -118,9 +118,9 @@ Page({
     // console.log("time:", time)
     signOff({
       activity_id: Number(this.data.id),
-      signup_time: time,
-      signup_latitude: this.data.latitude,
-      signup_longitude: this.data.longitude,
+      signoff_time: time,
+      signoff_latitude: this.data.latitude,
+      signoff_longitude: this.data.longitude,
     }, (res) => {
       wx.showToast({
         title: '签退成功',
