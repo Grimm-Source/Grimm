@@ -450,7 +450,9 @@ class GetActivity(Resource):
         feedback["status"] = "success"
 
         # Add activity participant details to user's query about his/her activity detail
-        activity_participant = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity_id).first()
+        activity_participant = ActivityParticipant.query\
+            .filter(ActivityParticipant.activity_id == activity_id,
+                    ActivityParticipant.participant_openid == openid).first()
         if activity_participant:
             feedback["certificated"] = activity_participant.certificated
             feedback["current_state"] = activity_participant.current_state
