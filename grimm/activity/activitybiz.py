@@ -55,12 +55,12 @@ def activity_converter(activity, openid=0):
                                          ActivityParticipant.current_state != None).count()
     query["registered_volunteer"] = db.session.query(ActivityParticipant, User). \
         filter(ActivityParticipant.activity_id == activity["id"],
-               ActivityParticipant.current_state == 'Registered'). \
+               ActivityParticipant.current_state.in_(('Registered', 'signed_up', 'signed_off'))). \
         filter(User.role == 0). \
         filter(ActivityParticipant.participant_openid == User.openid).count()
     query["registered_impaired"] = db.session.query(ActivityParticipant, User). \
         filter(ActivityParticipant.activity_id == activity["id"],
-               ActivityParticipant.current_state == 'Registered'). \
+               ActivityParticipant.current_state.in_(('Registered', 'signed_up', 'signed_off'))). \
         filter(User.role == 1). \
         filter(ActivityParticipant.participant_openid == User.openid).count()
     query["volunteer_capacity"] = activity["volunteer_capacity"]
