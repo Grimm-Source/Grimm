@@ -194,11 +194,28 @@ class ActivityRegistration(Resource):
             user["openid"] = openid
             user["name"] = user_info.name
             user["role"] = user_info.role
-            user["phone"] = item.phone
-            user["address"] = item.address
-            user["accepted"] = item.accepted
-            user["needpickup"] = item.needpickup
-            user["topickup"] = item.topickup
+            user["phone"] = user_info.phone
+            user["address"] = user_info.address
+
+            user["needpickup"] = 0
+            user["topickup"] = 0
+
+            role = user_info.role
+            if role == 0:   # volunteer
+                pickup_volunteer = PickupVolunteer.query\
+                    .filter(PickupVolunteer.openid == openid,
+                            PickupVolunteer.activity_id == activity_id).first()
+                if pickup_volunteer:
+                    user["topickup"] = 1
+            else:  # impaired
+                pickup_impaired = PickupImpaired.query\
+                    .filter(PickupImpaired.openid == openid,
+                            PickupImpaired.activity_id == activity_id).first()
+                if pickup_impaired:
+                    user["needpickup"] = 1
+            # user["accepted"] = item.accepted
+            # user["needpickup"] = item.needpickup
+            # user["topickup"] = item.topickup
             users.append(user)
         feedback = {'status': 'success', 'users': users}
         return jsonify(feedback)
@@ -209,7 +226,8 @@ class ActivityRegistration(Resource):
             return jsonify({"status": "failure", "message": "无效活动 ID"})
         openid = request.args.get("openid")
         activities_registration = ActivityParticipant.query. \
-            filter(ActivityParticipant.activity_id == activity_id, ActivityParticipant.participant_openid == openid).all()
+            filter(ActivityParticipant.activity_id == activity_id,
+                   ActivityParticipant.participant_openid == openid).all()
         if not activities_registration:
             return jsonify({"status": "failure", "message": " 此人未报名"})
         return jsonify({"status": "success"})
