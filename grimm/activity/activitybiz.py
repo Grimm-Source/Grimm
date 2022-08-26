@@ -47,6 +47,7 @@ def activity_converter(activity, openid=0):
         else ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity["id"],
                                               ActivityParticipant.participant_openid == openid,
                                               ActivityParticipant.thumbs_up == 1).count()
+
     query["registered"] = ActivityParticipant.query. \
         filter(ActivityParticipant.activity_id == activity["id"],
                ActivityParticipant.current_state != None).count() if openid == 0 else \
