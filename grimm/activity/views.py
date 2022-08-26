@@ -450,6 +450,7 @@ class GetActivity(Resource):
         feedback["status"] = "success"
 
         # Add activity participant details to user's query about his/her activity detail
+        # Query participant details
         activity_participant = ActivityParticipant.query\
             .filter(ActivityParticipant.activity_id == activity_id,
                     ActivityParticipant.participant_openid == openid).first()
