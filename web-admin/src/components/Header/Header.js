@@ -34,7 +34,7 @@ class Header extends React.Component {
 
         return (
             <PageHeader
-                  title="助盲管理"
+                  title="仁品公益助盲管理"
                   className="header"
                   subTitle="Grimm Administration System"
                   tags={<Tag color="red">Beta</Tag>}
