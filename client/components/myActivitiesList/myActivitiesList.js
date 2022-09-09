@@ -1,6 +1,8 @@
 // components/myActivities/myActivitiesList.js
 const { getMyActivities } = require('../../utils/requestUtil.js');
 
+const apiUrl = require('../../config.js').apiUrl;
+
 const myActivitiesType = {
   MYALL: 0,
   REGISTERED: 1,
@@ -78,7 +80,8 @@ Component({
         }
         
         // set default preview img
-        activity.imgSrc = "../../images/banner_icon.jpeg";
+        // activity.imgSrc = "../../images/banner_icon.jpeg";
+        activity.imgSrc = apiUrl + '/activity/themePic?activity_them_pic_name=' + activity.activity_them_pic_name
 
         formattedActivities.push(activity);
       }
