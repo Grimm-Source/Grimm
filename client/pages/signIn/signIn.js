@@ -127,7 +127,7 @@ Page({
         icon: 'success',
         duration: 4500,
         success: wx.switchTab({
-          url: '../personal/personal',
+          url: '/pages/home/home',
         })
       });
     }, (err) => {

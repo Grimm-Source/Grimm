@@ -36,7 +36,7 @@ Page({
           wx.getUserInfo({
             success: function (res) {
               app.globalData.userInfo = res.userInfo;
-              console.log(res.userInfo);
+              // console.log("wx.getUserInfo:",res.userInfo);
             }
           })
         }

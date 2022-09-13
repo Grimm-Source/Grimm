@@ -79,7 +79,7 @@ Component({
         let endTime = new Date(activity?.end_time).getTime()
         return endTime > nowTime
       })
-      console.log(newActivityArr)
+      // console.log(newActivityArr)
       return newActivityArr
     }
   }
