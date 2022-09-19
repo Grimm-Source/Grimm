@@ -65,7 +65,9 @@ class NewActivity(Resource):
         # activity_info.location_longitude = info["location_longitude"]
         activity_info.sign_in_radius = info["sign_in_radius"]
         activity_info.sign_in_token = info["sign_in_token"]
-        if len(info['activity_them_pic_name']) == 0:
+        if len(info['activity_them_pic_name']) == 0 \
+                or 'url' not in info['activity_them_pic_name'][0] \
+                or not info['activity_them_pic_name'][0]['url']:
             logger.warning("Add activity failed, no theme picture.")
             feedback = {"status": "failure", "message": "请上传活动主题图片"}
             return jsonify(feedback)
@@ -146,11 +148,14 @@ class ActivityOperate(Resource):
         return jsonify({"status": "success"})
 
     def delete(self, activity_id):
+        participants = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity_id).first()
+        if participants:
+            return jsonify({"status": "failure", "message": "已有用户操作过该活动，不能删除！"})
         activity_info = Activity.query.filter(Activity.id == activity_id).first()
         db.session.delete(activity_info)
         db.session.commit()
         logger.info("%d: delete new activity successfully", activity_id)
-        return jsonify({"status": "success"})
+        return jsonify({"status": "success", "message": "活动删除成功！"})
 
 
 @activity.route("/activity/themePic", methods=["POST", "GET"])
