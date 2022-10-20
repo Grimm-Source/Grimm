@@ -13,19 +13,45 @@ Page({
     pickupList: [],
     avatarUrl: '../../images/avatar.jpeg',
     cardDetailVisible: false,
-    pickupRequirementItems: [
-      {value: '0', name: '接视障人士参加活动',items:[
-        {value: '0_1', name: '私家车'},
-        {value: '0_2', name: '步行地铁'}
-      ]},
-      {value: '1', name: '送视障人士回家',items:[
-        {value: '1_0', name: '私家车'},
-        {value: '1_1', name: '步行地铁'}
-      ]},
-      {value: '2', name: '接送视障人士参加活动',items:[
-        {value: '2_0', name: '私家车'},
-        {value: '2_1', name: '步行地铁'}
-      ]},
+    pickupRequirementItems: [{
+        value: '0',
+        name: '接视障人士参加活动',
+        items: [{
+            value: '0_1',
+            name: '私家车'
+          },
+          {
+            value: '0_2',
+            name: '步行地铁'
+          }
+        ]
+      },
+      {
+        value: '1',
+        name: '送视障人士回家',
+        items: [{
+            value: '1_0',
+            name: '私家车'
+          },
+          {
+            value: '1_1',
+            name: '步行地铁'
+          }
+        ]
+      },
+      {
+        value: '2',
+        name: '接送视障人士参加活动',
+        items: [{
+            value: '2_0',
+            name: '私家车'
+          },
+          {
+            value: '2_1',
+            name: '步行地铁'
+          }
+        ]
+      },
     ],
     title: '',
     date: '',
@@ -36,32 +62,34 @@ Page({
       name: '',
       address: '',
       provideService: '',
-    }
+    },
+    itemChecked: false
+
   },
 
   onLoad: function (options) {
     this.setData({
       avatarUrl: app.globalData.userInfo.avatarUrl,
-      activity_id: options.activity_id == 'undefined' ? '': options.activity_id,
-      title: options.title == 'undefined' ? '': options.title,
-      date: options.date == 'undefined' ? '': options.date,
-      address: options.address == 'undefined' ? '': options.address,
+      activity_id: options.activity_id == 'undefined' ? '' : options.activity_id,
+      title: options.title == 'undefined' ? '' : options.title,
+      date: options.date == 'undefined' ? '' : options.date,
+      address: options.address == 'undefined' ? '' : options.address,
     })
   },
 
   onShow: function () {
     console.log("detail page...")
     getPickupDetailInfo(this.data.activity_id, (res) => {
-      console.log('Get impired pickup info.',res);
-      let pickupList=[];
-      if (res && res.length>0){
-        for(let i =0; i< res.length;i++){
+      console.log('Get impired pickup info.', res);
+      let pickupList = [];
+      if (res && res.length > 0) {
+        for (let i = 0; i < res.length; i++) {
           pickupList.push({
-            'name':res[i]['name'],
-            'address':res[i]['pickup_addr'],
-            'avatarUrl':res[i]['avatar_url']?res[i]['avatar_url']:'../../images/avatar.jpeg',
-            'openid':res[i]['openid'],
-            'pickup_method':res[i]['pickup_method']?res[i]['pickup_method']:[]
+            'name': res[i]['name'],
+            'address': res[i]['pickup_addr'],
+            'avatarUrl': res[i]['avatar_url'] ? res[i]['avatar_url'] : '../../images/avatar.jpeg',
+            'openid': res[i]['openid'],
+            'pickup_method': res[i]['pickup_method'] ? res[i]['pickup_method'] : []
           })
         }
       } else {
@@ -79,30 +107,41 @@ Page({
 
   checkboxChange(e) {
     console.log('checkbox发生change事件，携带value值为：', e.detail.value)
-    this.setData({ provideService: e.detail.value })
+    this.setData({
+      provideService: e.detail.value
+    })
     const items = this.data.pickupRequirementItems
     const values = e.detail.value
+    this.setData({
+      itemChecked: false
+    })
     for (let i = 0, lenI = items.length; i < lenI; ++i) {
       items[i].checked = false
       for (let x = 0, lenX = items[i].items.length; x < lenX; ++x) {
         items[i].items[x].checked = false
         for (let j = 0, lenJ = values.length; j < lenJ; ++j) {
-          if(items[i].items[x].value === values[j]){
+          if (items[i].items[x].value === values[j]) {
             items[i].items[x].checked = true
+            this.setData({
+              itemChecked: true
+            })
             break
           }
         }
-       }
+      }
       for (let j = 0, lenJ = values.length; j < lenJ; ++j) {
         if (items[i].value === values[j]) {
           items[i].checked = true
+          this.setData({
+            itemChecked: true
+          })
           break
         }
       }
     }
 
     this.setData({
-      pickupRequirementItems:items
+      pickupRequirementItems: items
     })
   },
 
@@ -121,11 +160,11 @@ Page({
     });
   },
 
-  clickCardDetail: function(event) {
+  clickCardDetail: function (event) {
     console.log('click card detail button')
     var item = event.currentTarget.dataset.item
     this.setData({
-      impairedOpenid:item['openid'],
+      impairedOpenid: item['openid'],
       cardDetailVisible: true,
       cardInfo: {
         avatarUrl: item.avatarUrl,
@@ -136,8 +175,8 @@ Page({
     })
   },
 
-  onTapCardDetailConfirm: function() {
-    if (!this.data.provideService || this.data.provideService.length == 0) {
+  onTapCardDetailConfirm: function () {
+    if (!this.data.itemChecked || !this.data.provideService || this.data.provideService.length == 0) {
       wx.showModal({
         title: '提示',
         content: '请填写您可以提供的志愿者服务',
@@ -157,7 +196,9 @@ Page({
         duration: 2000
       });
       that.onLoad(that.data);
-      this.setData({ cardDetailVisible: false })
+      this.setData({
+        cardDetailVisible: false
+      })
     }, (err) => {
       wx.showModal({
         showCancel: false,
@@ -167,11 +208,13 @@ Page({
     });
   },
 
-  onTapCardDetailCancel: function() {
-    this.setData({ cardDetailVisible: false })
+  onTapCardDetailCancel: function () {
+    this.setData({
+      cardDetailVisible: false
+    })
   },
 
-  tabMapArea: function() {
+  tabMapArea: function () {
     wx.showToast({
       title: '暂不支持',
       icon: 'none',
