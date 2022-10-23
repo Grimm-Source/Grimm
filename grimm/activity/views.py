@@ -938,6 +938,8 @@ class PickupDetailInfo(Resource):
                    PickupImpaired.activity_id == activity_id).first()
         old_pickup_method = pickup_info.pickup_method
         old_pickup_volunteer = pickup_info.pickup_volunteer_openid
+        if old_pickup_method == new_pickup_method == "":
+            return {'status': 'success', 'message': '用户未操作'}
         if old_pickup_method != new_pickup_method or old_pickup_volunteer != new_volunteer_openid:
             # pickup info changed
             pickup_info.pickup_method = new_pickup_method
