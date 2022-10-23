@@ -163,6 +163,49 @@ Page({
   clickCardDetail: function (event) {
     console.log('click card detail button')
     var item = event.currentTarget.dataset.item
+    debugger
+    var pickDetail = [
+      {value: '0', name: '接视障人士参加活动', checked: false, items:[
+        {value: '0_1', name: '私家车', checked: false},
+        {value: '0_2', name: '步行地铁', checked: false}
+      ]},
+      {value: '1', name: '送视障人士回家', checked: false, items:[
+        {value: '1_0', name: '私家车', checked: false},
+        {value: '1_1', name: '步行地铁', checked: false}
+      ]},
+      {value: '2', name: '接送视障人士参加活动', checked: false, items:[
+        {value: '2_0', name: '私家车', checked: false},
+        {value: '2_1', name: '步行地铁', checked: false}
+      ]},
+    ]
+    let method = item.pickup_method.split(",")
+    if (method.indexOf("0") > -1){
+      pickDetail[0]['checked'] = true
+      if (method.indexOf("0_1") > -1){
+        pickDetail[0]['items'][0]['checked'] = true
+      }
+      if (method.indexOf("0_2") > -1){
+        pickDetail[0]['items'][1]['checked'] = true
+      }
+    }
+    if (method.indexOf("1") > -1){
+      pickDetail[1]['checked'] = true
+      if (method.indexOf("1_0") > -1){
+        pickDetail[1]['items'][0]['checked'] = true
+      }
+      if (method.indexOf("1_1") > -1){
+        pickDetail[1]['items'][1]['checked'] = true
+      }
+    }
+    if (method.indexOf("2") > -1){
+      pickDetail[2]['checked'] = true
+      if (method.indexOf("2_0") > -1){
+        pickDetail[2]['items'][0]['checked'] = true
+      }
+      if (method.indexOf("2_1") > -1){
+        pickDetail[2]['items'][1]['checked'] = true
+      }
+    }
     this.setData({
       impairedOpenid: item['openid'],
       cardDetailVisible: true,
@@ -171,7 +214,8 @@ Page({
         name: item.name,
         address: item.address,
         pickupItemDetail: '',
-      }
+      },
+      pickupRequirementItems: pickDetail
     })
   },
 
