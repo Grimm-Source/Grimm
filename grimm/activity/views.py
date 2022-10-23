@@ -944,6 +944,6 @@ class PickupDetailInfo(Resource):
             pickup_info.pickup_volunteer_openid = new_volunteer_openid
             activitybiz.volunteer_pickup_impaired(new_volunteer_openid, impaired_openid, new_pickup_method)
             if not new_pickup_method:
-                pickup_info.pickup_volunteer_openid = ''
+                pickup_info.pickup_volunteer_openid = None
             db.session.commit()
         return {'status': 'success', 'message': 'Pickup Success'}

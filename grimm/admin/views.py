@@ -454,6 +454,18 @@ class RegisterInfo(Resource):
         if user_info:
             logger.error("%s: user is registered already", openid)
             return jsonify({"status": "failure", "message": "用户已注册，请登录"})
+        if 'email' in info:
+            user_info = User.query.filter(User.email == info["email"]).first()
+            if user_info:
+                return jsonify({"status": "failure", "message": "邮件已注册"})
+        if 'idcard' in info:
+            user_info = User.query.filter(User.idcard == info['idcard']).first()
+            if user_info:
+                return jsonify({"status": "failure", "message": "该身份证已注册"})
+        if 'phone' in info:
+            user_info = User.query.filter(User.phone == info["phone"]).first()
+            if user_info:
+                return jsonify({"status": "failure", "message": "该手机号已注册"})
 
         if not user_info:
             user_info = User()
