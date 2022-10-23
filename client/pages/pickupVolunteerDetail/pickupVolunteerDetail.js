@@ -79,7 +79,23 @@ Page({
 
   checkboxChange(e) {
     console.log('checkbox发生change事件，携带value值为：', e.detail.value)
-    this.setData({ provideService: e.detail.value })
+    let selItems = e.detail.value
+    for (let x=0;x<this.data.pickupRequirementItems.length;x++){
+      let selTopValue = this.data.pickupRequirementItems[x]['value']
+      let selExtItems = this.data.pickupRequirementItems[x]['items']
+      let extItemsKeys = []
+      for (let xx=0;xx<selExtItems.length;xx++){
+        extItemsKeys.push(selExtItems[xx]['value'])
+      }
+      if (selItems.indexOf(selTopValue) == -1){
+        for (let jj=0;jj<extItemsKeys.length;jj++){
+          if (selItems.indexOf(extItemsKeys[jj]) > -1){
+            selItems.splice(selItems.indexOf(extItemsKeys[jj]), 1);
+          }
+        }
+      }
+    }
+    this.setData({ provideService: selItems })
     const items = this.data.pickupRequirementItems
     const values = e.detail.value
     for (let i = 0, lenI = items.length; i < lenI; ++i) {
@@ -192,6 +208,34 @@ Page({
     //   })
     //   return;
     // }
+    if (this.data.provideService && this.data.provideService.length>0){
+      let selItems = this.data.provideService
+      for (let x=0;x<this.data.pickupRequirementItems.length;x++){
+        let selTopValue = this.data.pickupRequirementItems[x]['value']
+        let selExtItems = this.data.pickupRequirementItems[x]['items']
+        let extItemsKeys = []
+        for (let xx=0;xx<selExtItems.length;xx++){
+          extItemsKeys.push(selExtItems[xx]['value'])
+        }
+        if (selItems.indexOf(selTopValue) > -1){
+          let selectSubItem = false
+          for (let jj=0;jj<extItemsKeys.length;jj++){
+            if (selItems.indexOf(extItemsKeys[jj]) > -1){
+              selectSubItem = true
+              break
+            }
+          }
+          if (!selectSubItem){
+            wx.showModal({
+              title: '提示',
+              content: '存在子选项未填写，请检查',
+              showCancel: false,
+            })
+            return;
+          }
+        }
+      }
+    }
     let provideService = this.data.provideService === undefined ? "":this.data.provideService.join(',')
     setPickupDetailInfo({
       "activity_id": this.data.activity_id,
