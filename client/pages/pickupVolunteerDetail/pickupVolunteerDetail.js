@@ -138,7 +138,7 @@ Page({
         {value: '2_1', name: '步行地铁', checked: false}
       ]},
     ]
-    if (item.pickup_method){
+    if (item.pickup_method && item.pickup_method.length > 0){
       let method = item.pickup_method.split(",")
       if (method.indexOf("0") > -1){
         pickDetail[0]['checked'] = true
@@ -167,6 +167,7 @@ Page({
           pickDetail[2]['items'][1]['checked'] = true
         }
       }
+      this.setData({ provideService: method })
     }
     this.setData({
       impairedOpenid:item['openid'],
@@ -182,26 +183,28 @@ Page({
   },
 
   onTapCardDetailConfirm: function() {
-    if (!this.data.provideService || this.data.provideService.length == 0) {
-      wx.showModal({
-        title: '提示',
-        content: '请填写您可以提供的志愿者服务',
-        showCancel: false,
-      })
-      return;
-    }
+    // 注释下面逻辑，允许志愿者取消勾选
+    // if (!this.data.provideService || this.data.provideService.length == 0) {
+    //   wx.showModal({
+    //     title: '提示',
+    //     content: '请填写您可以提供的志愿者服务',
+    //     showCancel: false,
+    //   })
+    //   return;
+    // }
+    let provideService = this.data.provideService === undefined ? "":this.data.provideService.join(',')
     setPickupDetailInfo({
       "activity_id": this.data.activity_id,
       "impairedOpenid": this.data.impairedOpenid,
-      "pickupMethod": this.data.provideService.join(','),
+      "pickupMethod": provideService,
     }, (res) => {
-      let that = this
       wx.showToast({
         title: '提交成功',
         icon: 'success',
         duration: 2000
       });
-      that.onLoad(that.data);
+      this.onShow()
+      // that.onLoad(that.data);
       this.setData({ cardDetailVisible: false })
     }, (err) => {
       wx.showModal({
