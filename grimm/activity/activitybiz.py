@@ -203,7 +203,7 @@ def user_cancel_activity(openid, activity_id):
                         filter(PickupImpaired.activity_id == activity_id,
                                PickupImpaired.openid == impaired_openid).first()
                     logger.info('Clear pickup info and notice impaired %s' % pick_impaired.name)
-                    pick_impaired.pick_method = None
+                    pick_impaired.pickup_method = None
                     pick_impaired.pickup_volunteer_openid = None
                     db.session.commit()
                     kwargs = {
