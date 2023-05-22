@@ -5,8 +5,8 @@
     <block wx:for="{{activitiesProp}}" wx:key="id">
       <view class="activity-item" id="{{item.adminId}}" bindtap="onTapActivity"  data-item="{{item}}" >
         <view class="activity-detail">
-          <image class="activity-image" src="{{item.themeUrl}}" aria-role="row" aria-label="点击进入活动详情"></image>
-          <text class="activity-title text-xl" aria-label="标题 {{item.title}}">{{item.title}}</text>
+          <image class="activity-image" src="{{item.themeUrl}}"></image>
+          <text class="activity-title text-xl" aria-label="活动：{{item.title}}，点击进入活动详情">{{item.title}}</text>
         </view>
         <view class="activity-time-location">
           <text class="activity-time text-xl">时间: {{item.schedule}}</text>
