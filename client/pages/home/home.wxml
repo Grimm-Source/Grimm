@@ -5,7 +5,7 @@
     <view class="home-person" bindtap="showPersonInfo" aria-role="button">
       <image src="{{userInfo.avatarUrl || avatarUrl}}" aria-label="个人中心"></image>
     </view>
-    <view class="searchbox-container" aria-role="button" aria-label="关键词搜索">
+    <view class="searchbox-container" bindtap="onTapSearch" aria-label="关键词搜索" aria-role="button">
       <searchBox class="activities-searchbox"></searchBox>
     </view>
     <view class="home-scan" bindtap="scanCode" aria-role="button">

@@ -15,10 +15,11 @@
   color: rgba(0, 0, 0, 0.3);
 }
 
-.searchbar input {
+.searchbar text {
   font-size: 26rpx;
   position: absolute;
   left: 330rpx;
+  color: #000000;
 }
 
 /* .active{

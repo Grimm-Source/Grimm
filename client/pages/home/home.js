@@ -112,5 +112,11 @@ Page({
         console.log(res);
       }
     })
+  },
+
+  onTapSearch: function () {
+    wx.navigateTo({
+      url: '/pages/search/search',
+    });
   }
 })
