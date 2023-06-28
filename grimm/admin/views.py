@@ -481,7 +481,13 @@ class RegisterInfo(Resource):
             user_info.disabled_id = info['disabledID']
             user_info.disabled_id_verified = 0
 
-        user_info.birth = info["birthdate"] if "birthdate" in info.keys() else datetime.now().strftime("%Y-%m-%d")
+        # legacy logic, may not right
+        user_info.birth = datetime.now().strftime("%Y-%m-%d")
+        try:
+            user_info.birth = datetime.strptime(info.get("birthdate"), "%Y-%m-%d")
+        except:
+            pass
+
         # user_info['remark'] = info['comment']
         user_info.gender = info["gender"]
         # user_info['idcard'] = info['idcard']
