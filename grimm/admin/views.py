@@ -5,18 +5,23 @@ import traceback
 import pandas as pd
 from datetime import datetime
 
+import base64
 import bcrypt
 import urllib3
 from flask import request, jsonify
 from flask_restx import Resource
+from sqlalchemy.dialects.mysql import insert
+
 
 from grimm import logger, db, engine, GrimmConfig
 # from grimm import socketio
 from grimm.admin import admin, adminbiz
 from grimm.admin.admindto import AdminDto
 from grimm.models.activity import ActivityParticipant, Activity
-from grimm.models.admin import Admin, User
+from grimm.models.admin import Admin, User, UserDocument
 from grimm.utils import constants, smsverify, emailverify, dbutils, decrypt
+
+
 
 
 @admin.route('/login', methods=['POST'])
@@ -585,3 +590,46 @@ class AuthorizeUser(Resource):
         openid = request.headers.get('Authorization')
         user_info = User.query.filter(User.openid == openid).first()
         return jsonify(dbutils.serialize(user_info))
+
+
+@admin.route("/user_identity", methods=['GET', 'POST'])
+class UserIdentity(Resource):
+
+    def verify_picture(self, picture_data, side):
+        if not picture_data:
+            return f'Picture for {side} side is empty\n'
+        try:
+            return '' if len(base64.b64decode(picture_data)) < 1e+6 else f'Picture for {side} side is too large\n'
+        except Exception as e:
+            return f'Invalid for {side} side picture format\n {e}'
+
+    def get(self):
+        openid = request.headers.get('Authorization')
+        documents = UserDocument.query.filter(UserDocument.openid == openid).first()
+        return jsonify({
+            "obverse_side": documents.id_document_obverse_side.decode('utf-8'),
+            "reverse_side": documents.id_document_reverse_side.decode('utf-8')
+        })
+
+    def post(self):
+        openid = request.headers.get('Authorization')
+        req_body = request.get_json()
+        if not req_body:
+            return 'No content detected', 400
+        obverse_side = req_body.get('obverse_side')
+        reverse_side = req_body.get('reverse_side')
+        verify_result = self.verify_picture(obverse_side, "正面") + self.verify_picture(reverse_side, "背面")
+        if verify_result:
+            return verify_result, 400
+        insert_stmt = insert(UserDocument).values(
+            openid=openid,
+            id_document_obverse_side=bytes(obverse_side, encoding='utf8'),
+            id_document_reverse_side=bytes(reverse_side, encoding='utf8'),
+        )
+        upsert_stmt = insert_stmt.on_duplicate_key_update(
+            id_document_obverse_side=insert_stmt.inserted.id_document_obverse_side,
+            id_document_reverse_side=insert_stmt.inserted.id_document_reverse_side,
+        )
+        db.session.execute(upsert_stmt)
+        db.session.commit()
+        return 'success'

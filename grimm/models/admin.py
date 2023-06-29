@@ -42,3 +42,11 @@ class User(db.Model):
     recipient_address = db.Column(db.String(80), comment='证书收件人地址,用户申请账户时输入，可更新')
     recipient_phone = db.Column(db.String(16), comment='证书收件人电话,用户申请账户时输入，可更新')
     avatar_url = db.Column(db.String(300), nullable=False, comment='用户微信头像地址链接')
+
+
+class UserDocument(db.Model):
+    # 储存用户认证信息所需照片，如身份证正反面照片
+    __tablename__ = 'user_identity_documents'
+    openid = db.Column(db.String(64), primary_key=True, comment='用户ID')
+    id_document_reverse_side = db.Column(db.BLOB(), comment='用户身份证人像面（背面）')
+    id_document_obverse_side = db.Column(db.BLOB(), comment='用户身份证国徽面（正面）')
