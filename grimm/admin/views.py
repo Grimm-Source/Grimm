@@ -9,11 +9,11 @@ import base64
 import bcrypt
 import urllib3
 from flask import request, jsonify
-from flask_restx import Resource
+from flask_restx import Resource, fields
 from sqlalchemy.dialects.mysql import insert
 
 
-from grimm import logger, db, engine, GrimmConfig
+from grimm import logger, db, engine, GrimmConfig, api
 # from grimm import socketio
 from grimm.admin import admin, adminbiz
 from grimm.admin.admindto import AdminDto
@@ -595,6 +595,22 @@ class AuthorizeUser(Resource):
 @admin.route("/user_identity", methods=['GET', 'POST'])
 class UserIdentity(Resource):
 
+    UserIdentityResponseModel = api.model('UserIdentityResponse', {
+            'status': fields.String,
+            'reverse_side': fields.String(required=True, description="使用base64编码的身份证背面照片二进制数据"),
+            'obverse_side': fields.String(required=True, description="使用base64编码的身份证正面照片二进制数据"),
+    })
+
+    UserIdentityRequestModel = api.model('UserIdentityRequest', {
+            'reverse_side': fields.String(required=True, description="使用base64编码的身份证背面照片二进制数据"),
+            'obverse_side': fields.String(required=True, description="使用base64编码的身份证正面照片二进制数据"),
+    })
+
+    ErrorResponseModel = api.model('ErrorResponse', {
+        'status': fields.String,
+        'error': fields.String,
+    })
+
     def verify_picture(self, picture_data, side):
         if not picture_data:
             return f'Picture for {side} side is empty\n'
@@ -603,24 +619,41 @@ class UserIdentity(Resource):
         except Exception as e:
             return f'Invalid for {side} side picture format\n {e}'
 
+    @api.response(200, 'Success', UserIdentityResponseModel)
+    @api.response(404, 'User identity document not found', ErrorResponseModel)
     def get(self):
         openid = request.headers.get('Authorization')
         documents = UserDocument.query.filter(UserDocument.openid == openid).first()
+        if documents:
+            return jsonify({
+                "status": "success",
+                "obverse_side": documents.id_document_obverse_side.decode('utf-8'),
+                "reverse_side": documents.id_document_reverse_side.decode('utf-8')
+            })
         return jsonify({
-            "obverse_side": documents.id_document_obverse_side.decode('utf-8'),
-            "reverse_side": documents.id_document_reverse_side.decode('utf-8')
-        })
+            'status': 'failure',
+            'error': 'User identity document not found'
+        }), 404
 
+    @api.doc('上传身份证正反面照片', body=UserIdentityRequestModel)
+    @api.response(200, 'Success')
+    @api.response(400, 'Invalid request body', ErrorResponseModel)
     def post(self):
         openid = request.headers.get('Authorization')
         req_body = request.get_json()
         if not req_body:
-            return 'No content detected', 400
+            return jsonify({
+                'status': 'failure',
+                'error': 'No content detected'
+            }), 400
         obverse_side = req_body.get('obverse_side')
         reverse_side = req_body.get('reverse_side')
         verify_result = self.verify_picture(obverse_side, "正面") + self.verify_picture(reverse_side, "背面")
         if verify_result:
-            return verify_result, 400
+            return jsonify({
+                'status': 'failure',
+                'error': verify_result
+            }), 400
         insert_stmt = insert(UserDocument).values(
             openid=openid,
             id_document_obverse_side=bytes(obverse_side, encoding='utf8'),
@@ -632,4 +665,6 @@ class UserIdentity(Resource):
         )
         db.session.execute(upsert_stmt)
         db.session.commit()
-        return 'success'
+        return jsonify({
+            'status': 'success'
+        }), 200
