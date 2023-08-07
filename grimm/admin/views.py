@@ -3,14 +3,16 @@ import math
 import traceback
 
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 
-import base64
+import os
 import bcrypt
 import urllib3
-from flask import request, jsonify
-from flask_restx import Resource, fields
+import uuid
+from flask import request, jsonify, send_file, current_app as app
+from flask_restx import Resource, fields, reqparse
 from sqlalchemy.dialects.mysql import insert
+from werkzeug.datastructures import FileStorage
 
 
 from grimm import logger, db, engine, GrimmConfig, api
@@ -18,10 +20,18 @@ from grimm import logger, db, engine, GrimmConfig, api
 from grimm.admin import admin, adminbiz
 from grimm.admin.admindto import AdminDto
 from grimm.models.activity import ActivityParticipant, Activity
-from grimm.models.admin import Admin, User, UserDocument
+from grimm.models.admin import Admin, User, UserDocument, PreSignedUrl
 from grimm.utils import constants, smsverify, emailverify, dbutils, decrypt
 
 
+user_identity_image_get_parser = reqparse.RequestParser()
+user_identity_image_get_parser.add_argument('side', type=str, required=True, location="args")
+user_identity_image_get_parser.add_argument('token', type=str, required=True, location="args")
+
+
+user_identity_post_parser = reqparse.RequestParser()
+user_identity_post_parser.add_argument('obverse_side', type=FileStorage, required=True, location="files")
+user_identity_post_parser.add_argument('reverse_side', type=FileStorage, required=True, location="files")
 
 
 @admin.route('/login', methods=['POST'])
@@ -103,8 +113,8 @@ class ManageAdmin(Resource):
         logger.warning("try to delete root user!")
         feedback = {"status": "failure", "message": "不能删除root用户"}
         return jsonify(feedback)
-    
-    
+
+
 @admin.route("/admin", methods=['POST'])
 class NewAdmin(Resource):
     def post(self):
@@ -137,7 +147,8 @@ class NewAdmin(Resource):
         # send confirm email
         try:
             emailverify.drop_token(admin_info.email)
-            email_token = emailverify.EmailVerifyToken(admin_info.email, expiry=constants.EMAIL_VRF_EXPIRY)  # 2hrs expiry
+            email_token = emailverify.EmailVerifyToken(admin_info.email,
+                                                       expiry=constants.EMAIL_VRF_EXPIRY)  # 2hrs expiry
             if not email_token.send_email():
                 logger.warning(
                     "%d, %s: send confirm email failed",
@@ -594,16 +605,14 @@ class AuthorizeUser(Resource):
 
 @admin.route("/user_identity", methods=['GET', 'POST'])
 class UserIdentity(Resource):
-
     UserIdentityResponseModel = api.model('UserIdentityResponse', {
-            'status': fields.String,
-            'reverse_side': fields.String(required=True, description="使用base64编码的身份证背面照片二进制数据"),
-            'obverse_side': fields.String(required=True, description="使用base64编码的身份证正面照片二进制数据"),
+        'status': fields.String,
+        'token': fields.String(required=True, description="所请求的照片的签名后链接"),
     })
 
-    UserIdentityRequestModel = api.model('UserIdentityRequest', {
-            'reverse_side': fields.String(required=True, description="使用base64编码的身份证背面照片二进制数据"),
-            'obverse_side': fields.String(required=True, description="使用base64编码的身份证正面照片二进制数据"),
+    UserIdentityPostModel = api.model('UserIdentityPost', {
+        "reverse_side": fields.String(required=True, description="身份证反面照片"),
+        "obverse_side": fields.String(required=True, description="身份证正面照片"),
     })
 
     ErrorResponseModel = api.model('ErrorResponse', {
@@ -611,60 +620,148 @@ class UserIdentity(Resource):
         'error': fields.String,
     })
 
-    def verify_picture(self, picture_data, side):
+    def verify_picture(self, picture_data: FileStorage, side):
         if not picture_data:
-            return f'Picture for {side} side is empty\n'
-        try:
-            return '' if len(base64.b64decode(picture_data)) < 1e+6 else f'Picture for {side} side is too large\n'
-        except Exception as e:
-            return f'Invalid for {side} side picture format\n {e}'
+            return f'未找到{side}照片\n'
+        return '' if picture_data.content_length < 1e+6 else f'{side}照片文件内容过大\n'
 
     @api.response(200, 'Success', UserIdentityResponseModel)
     @api.response(404, 'User identity document not found', ErrorResponseModel)
+    @api.response(401, 'Unauthorized', ErrorResponseModel)
+    @api.response(500, 'InternalError', ErrorResponseModel)
     def get(self):
         openid = request.headers.get('Authorization')
-        documents = UserDocument.query.filter(UserDocument.openid == openid).first()
-        if documents:
+        request_user = openid
+        req_body = request.get_json()
+        if req_body:
+            target_user_id = req_body.get("user-id")
+            if target_user_id:
+                if target_user_id == openid:
+                    pass
+                else:
+                    admin_user = Admin.query.filter(Admin.id == openid).first()
+                    if admin_user:
+                        openid = target_user_id
+                    else:
+                        return jsonify({
+                            "status": "failure",
+                            "error": "该用户无法读取其他用户的信息"
+                        }), 401
+        document = UserDocument.query.filter(UserDocument.openid == openid).first()
+        if not document:
+            return jsonify({
+                'status': 'failure',
+                'error': '用户信息未找到'
+            }), 404
+        transaction_id = uuid.uuid4()
+        pre_signed_token = uuid.uuid4()
+        pre_signed_url_info = PreSignedUrl()
+        pre_signed_url_info.token = pre_signed_token
+        pre_signed_url_info.openid = request_user
+        pre_signed_url_info.expire_at = (datetime.now() + timedelta(minutes=3)).isoformat()
+        pre_signed_url_info.target_openid = openid
+
+        try:
+            db.session.add(pre_signed_url_info)
+            db.session.commit()
+        except Exception as e:
+            logger.error("transaction id: %s. failed to commit to database: %s", transaction_id, e)
+            return jsonify({
+                "status": "failure",
+                "error": f"发生未知服务器错误: {e}",
+                "transaction_id": transaction_id
+            }), 500
+        else:
             return jsonify({
                 "status": "success",
-                "obverse_side": documents.id_document_obverse_side.decode('utf-8'),
-                "reverse_side": documents.id_document_reverse_side.decode('utf-8')
+                "token": pre_signed_token
             })
-        return jsonify({
-            'status': 'failure',
-            'error': 'User identity document not found'
-        }), 404
 
-    @api.doc('上传身份证正反面照片', body=UserIdentityRequestModel)
+    @api.doc('上传身份证正反面照片', body=UserIdentityPostModel)
     @api.response(200, 'Success')
     @api.response(400, 'Invalid request body', ErrorResponseModel)
+    @api.expect(user_identity_post_parser)
     def post(self):
+        args = user_identity_post_parser.parse_args()
         openid = request.headers.get('Authorization')
-        req_body = request.get_json()
+        req_body = request.files
         if not req_body:
-            return jsonify({
+            return {
                 'status': 'failure',
-                'error': 'No content detected'
-            }), 400
-        obverse_side = req_body.get('obverse_side')
-        reverse_side = req_body.get('reverse_side')
+                'error': '未发现上传的文件'
+            }, 400
+
+        obverse_side = args.get('obverse_side')
+        reverse_side = args.get('reverse_side')
         verify_result = self.verify_picture(obverse_side, "正面") + self.verify_picture(reverse_side, "背面")
         if verify_result:
-            return jsonify({
+            return {
                 'status': 'failure',
                 'error': verify_result
-            }), 400
+            }, 400
+        obverse_side_file = os.path.relpath(
+            os.path.join(
+                app.root_path, "..", GrimmConfig.GRIMM_USER_DOCUMENT_UPLOAD_PATH,
+                f'{openid}_obverse_side.jpg'), app.root_path)
+        reverse_side_file = os.path.relpath(
+            os.path.join(
+                app.root_path, "..", GrimmConfig.GRIMM_USER_DOCUMENT_UPLOAD_PATH,
+                f'{openid}_reverse_side.jpg'), app.root_path)
+        obverse_side.save(os.path.join(app.root_path, obverse_side_file))
+        reverse_side.save(os.path.join(app.root_path, reverse_side_file))
         insert_stmt = insert(UserDocument).values(
             openid=openid,
-            id_document_obverse_side=bytes(obverse_side, encoding='utf8'),
-            id_document_reverse_side=bytes(reverse_side, encoding='utf8'),
+            id_document_obverse_side_path=obverse_side_file,
+            id_document_reverse_side_path=reverse_side_file,
         )
         upsert_stmt = insert_stmt.on_duplicate_key_update(
-            id_document_obverse_side=insert_stmt.inserted.id_document_obverse_side,
-            id_document_reverse_side=insert_stmt.inserted.id_document_reverse_side,
+            id_document_obverse_side_path=insert_stmt.inserted.id_document_obverse_side_path,
+            id_document_reverse_side_path=insert_stmt.inserted.id_document_reverse_side_path,
         )
         db.session.execute(upsert_stmt)
         db.session.commit()
-        return jsonify({
+        return {
             'status': 'success'
-        }), 200
+        }, 200
+
+
+@admin.route("/user_identity/<string:openid>", methods=['GET'])
+class UserIdentityImage(Resource):
+
+    @api.expect(user_identity_image_get_parser)
+    def get(self, openid):
+        args = user_identity_image_get_parser.parse_args()
+        side = args.get('side')
+        token = args.get('token')
+        record = PreSignedUrl.query.filter(PreSignedUrl.token == token).first()
+        openid = request.headers.get('Authorization')
+
+        if not record or record.openid != openid:
+            return {
+                "status": "failure",
+                "error": "非法口令"
+            }, 404
+
+        if datetime.now() > record.expire_at:
+            return {
+                "status": "failure",
+                "error": "口令已过期"
+            }, 404
+
+        granted_openid = record.openid
+        if granted_openid != openid:
+            return {
+                "status": "failure",
+                "error": "非法口令"
+            }, 404
+        user_doc: UserDocument = UserDocument.query.filter(UserDocument.openid == record.target_openid).first()
+        if not user_doc:
+            return {
+                "status": "failure",
+                "error": "用户身份证信息未找到"
+            }, 404
+
+        if side == 'obverse_side':
+            return send_file(os.path.join(app.root_path, user_doc.id_document_obverse_side_path), mimetype='image/jpeg')
+        elif side == 'reverse_side':
+            return send_file(os.path.join(app.root_path, user_doc.id_document_reverse_side_path), mimetype='image/jpeg')

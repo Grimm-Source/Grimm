@@ -31,6 +31,7 @@ from grimm.utils import botutils
 def create_app():
     app = Flask(__name__)
     app.config.from_object(GrimmConfig)
+
     compress.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
@@ -42,6 +43,7 @@ def create_app():
     api.add_namespace(admin)
     api.add_namespace(activity)
     api.add_namespace(wxapp)
+    os.makedirs(os.path.dirname(GrimmConfig.GRIMM_USER_DOCUMENT_UPLOAD_PATH), exist_ok=True)
 
     return app
 
