@@ -25,6 +25,21 @@ $ pip install -r requirements.txt
 ```
 
 
+## Setup dev backend server
+
+```bash
+# execute in root path of this project
+# (same path where this file is)
+
+# please tag the Docker image as 'grimm:dev'
+# this name will be used in start_dev_server.sh
+$ docker build -f setup_dev/Dockerfile -t grimm:dev setup_dev/
+
+# default publish port is 5000, can be changed in this file
+$ setup_dev/start_dev_server.sh
+```
+
+
 ## Changelog
 
 Detailed changes for each release are documented in the [release notes](https://github.com/Grimm-Source/Grimm/releases).
