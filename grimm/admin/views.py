@@ -123,7 +123,7 @@ class NewAdmin(Resource):
         admin_info.password = bcrypt_password
         db.session.add(admin_info)
 
-        # get admin_info.id
+        # to get admin_info.id set by DB automatically
         db.session.flush()
         admin_info.name = info.get('name') or f"管理员{admin_info.id}"
 

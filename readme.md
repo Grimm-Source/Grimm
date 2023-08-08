@@ -36,7 +36,7 @@ $ pip install -r requirements.txt
 $ docker build -f setup_dev/Dockerfile -t grimm:dev setup_dev/
 
 # default publish port is 5000, can be changed in this file
-$ setup_dev/start_dev_server.sh
+$ bash setup_dev/start_dev_server.sh
 ```
 
 
