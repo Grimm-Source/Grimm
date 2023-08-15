@@ -2,7 +2,6 @@ import json
 import math
 import traceback
 
-import pandas as pd
 from datetime import datetime
 
 import bcrypt
@@ -111,22 +110,23 @@ class NewAdmin(Resource):
             return jsonify({"status": "failure", "message": "已注册邮箱"})
 
         # add new row if current admin is new
-        sql = "select max(id) max_admin_id from admin"
-        max_admin_id = pd.read_sql_query(sql, engine)['max_admin_id'].iloc[0]
         admin_info = Admin()
-        admin_info.id = max_admin_id + 1  # new admin id
         admin_info.registration_date = datetime.now().strftime("%Y-%m-%d")
         admin_info.email = info["email"]
-        admin_info.name = (f"管理员{max_admin_id + 1}" if "name" not in info or info["name"] is None else info["name"])
 
         # update pass code
         if not adminbiz.check_password_policy(info["password"]):
-            logger.warning("%d, %s: not strong policy password", admin_info.id, admin_info.name)
+            logger.warning("%s: not strong policy password", admin_info.name)
             return jsonify({"status": "failure", "message": "密码不合规范"})
         salt = bcrypt.gensalt(constants.DEFAULT_PASSWORD_SALT)
         bcrypt_password = bcrypt.hashpw(info["password"].encode('utf-8'), salt)
         admin_info.password = bcrypt_password
         db.session.add(admin_info)
+
+        # to get admin_info.id set by DB automatically
+        db.session.flush()
+        admin_info.name = info.get('name') or f"管理员{admin_info.id}"
+
         db.session.commit()
 
         # send confirm email
