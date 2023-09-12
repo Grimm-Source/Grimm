@@ -42,3 +42,20 @@ class User(db.Model):
     recipient_address = db.Column(db.String(80), comment='证书收件人地址,用户申请账户时输入，可更新')
     recipient_phone = db.Column(db.String(16), comment='证书收件人电话,用户申请账户时输入，可更新')
     avatar_url = db.Column(db.String(300), nullable=False, comment='用户微信头像地址链接')
+
+
+class PreSignedUrl(db.Model):
+    __tablename__ = 'pre_signed_urls'
+    token = db.Column(db.String(64), primary_key=True, nullable=False, comment='预生成的令牌')
+    openid = db.Column(db.String(64), comment='令牌授权的用户ID')
+    expire_at = db.Column(db.DateTime, comment='令牌失效的时间')
+    target_openid = db.Column(db.String(64), comment='令牌对应的授权该用户可以查看的用户的ID')
+
+
+
+class UserDocument(db.Model):
+    # 储存用户认证信息所需照片，如身份证正反面照片
+    __tablename__ = 'user_identity_documents'
+    openid = db.Column(db.String(64), primary_key=True, nullable=False, comment='用户ID')
+    id_document_reverse_side_path = db.Column(db.String(255), comment='用户身份证人像面路径（背面）')
+    id_document_obverse_side_path = db.Column(db.String(255), comment='用户身份证国徽面路径（正面）')

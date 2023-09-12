@@ -52,3 +52,4 @@ class GrimmConfig(Config):
     GRIMM_EXCEPTION_MSG_ROOM = config.get('APP', 'GRIMM_EXCEPTION_MSG_ROOM')
     GRIMM_BOT_TOKEN = config.get('APP', 'GRIMM_BOT_TOKEN')
     GRIMM_BOT_MESSAGE_URL = config.get('APP', 'GRIMM_BOT_MESSAGE_URL')
+    GRIMM_USER_DOCUMENT_UPLOAD_PATH = config.get('APP', 'GRIMM_USER_DOCUMENT_UPLOAD_PATH', fallback="./user-documents/")
