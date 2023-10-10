@@ -24,7 +24,9 @@ import json
 import werkzeug
 import socket
 import datetime
+import bcrypt
 
+from grimm.utils import constants
 
 # get parent directory
 def get_pardir(_dir):
@@ -119,3 +121,7 @@ def calc_duration(start, end):
             seconds = (delta.seconds % 3600) % 60
             return {'day': days, 'hour': hours, 'min': minites, 'sec': seconds}
     return {}
+
+def generate_password_hash(password):
+    salt = bcrypt.gensalt(constants.DEFAULT_PASSWORD_SALT)
+    return bcrypt.hashpw(password.encode('utf-8'), salt)
