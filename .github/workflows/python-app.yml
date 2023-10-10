@@ -1,0 +1,64 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+# http://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html
+# https://github.com/marketplace/actions/ssh-remote-commands
+
+name: Python application
+
+on:
+  push:
+    branches: [ backend_v2 ]
+  pull_request:
+    branches: [ backend_v2 ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6.8
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: CD(Test)
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.TEST_HOST }}
+        USERNAME: ${{ secrets.TEST_USERNAME }}
+        KEY: ${{ secrets.TEST_SSHKEY }}
+        command_timeout: 20m
+        PORT: ${{ secrets.TEST_PORT }}
+        script: |
+          echo "Start deploy..."
+          cd /opt/backend/Grimm
+          git checkout HEAD run_grimm.sh
+
+          echo "Pull code from backend_v2 branch"
+          git pull https://github.com/Grimm-Source/Grimm.git backend_v2 backend_v2:backend_v2
+          source ../venv/bin/activate
+          export FLASK_APP=manage.py
+
+          echo "Set current app environment"
+          export FLASK_ENV=testing
+
+          echo "Upgrade db with migration scripts"
+          flask db upgrade
+
+          echo "Install new module from requirements.txt"
+          pip install -r requirements.txt
+
+          pid=$(cat logs/grimm.pid)
+          echo "Kill old app by process id: $pid"
+          nohup kill -9 $pid 2>/dev/null
+          chmod -R 777 run_grimm.sh
+
+          echo "Run grimm app"
+          nohup ./run_grimm.sh >> grimm.out 2>&1 &
+          echo "Deploy End!"
