@@ -17,6 +17,7 @@ sys.path.append(
 assert os.environ.get('FLASK_ENV') not in ['production', 'testing']
 
 from grimm import create_app, db
+from grimm.utils import misctools
 from grimm.models.admin import Admin, User
 from grimm.models.activity import Activity, ActivityParticipant
 from grimm.models.activity import PickupImpaired, PickupVolunteer
@@ -29,7 +30,7 @@ def create_tables():
 def create_admin(name='default_admin'):
     admin = Admin(
             name = name,
-            password = name,
+            password = misctools.generate_password_hash(name),
             email = f'{name}@exmaple.com',
             email_verified = 1
     )
