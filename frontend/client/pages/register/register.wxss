@@ -1,0 +1,131 @@
+.register-wrapper{
+  padding: 0 52rpx;
+}
+
+.register-header{
+  display: flex;
+  height: 300rpx;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 34rpx;
+}
+
+.register-header image{
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 30rpx;
+  background: #d8d8d8;
+  border-radius: 50%;
+}
+
+.register-form{
+  
+}
+
+.register-form-item{
+  margin-bottom: 56rpx;
+  font-size: 22rpx;
+}
+
+.register-form-label{
+  margin-bottom: 20rpx;
+}
+
+.register-form-item input{
+  height: 80rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid #f1f1f1;
+  border-radius: 8rpx;
+  box-sizing: border-box;
+}
+
+.register-form-item input[disabled]{
+  color: #a8a8a8;
+}
+
+.register-form-group{
+  display: flex;
+}
+
+.register-form-footer{
+  margin-top: 100rpx;
+}
+
+.register-form-footer button{
+  height: 84rpx;
+  margin-bottom: 20rpx;
+}
+
+picker{
+  position: relative;
+}
+
+picker:after{
+  content: "";
+  position: absolute;
+  top: 38rpx;
+  right: 20rpx;
+  width: 0;
+  height: 0;
+  border: 10rpx solid transparent;
+  border-top-color: #000;
+}
+
+.mask{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #000;
+    z-index: 9000;
+    opacity: 0.5;
+}
+ 
+.modal {
+    width: 80%;
+    height: 147px;
+    z-index: 9999;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius:5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.impaired {
+  position: fixed;
+  top: 180px;
+  left: 0;
+  right: 0;
+}
+
+.volunteer {
+  position: fixed;
+  top: 360px;
+  left: 0;
+  right: 0;
+}
+
+.impaired image{
+  width: 70px;
+  height: 24px;
+  margin-top: 50px;
+}
+
+.volunteer image {
+  width: 55px;
+  height: 57px;
+  margin-top: 38px;
+}
+
+.text{
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  width: 180px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}

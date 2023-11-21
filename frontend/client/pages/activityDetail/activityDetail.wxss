@@ -1,0 +1,117 @@
+.detail-wrapper{
+  padding: 40rpx 36rpx;
+  font-size: 28rpx;
+}
+
+.detail-banner{
+  width: 100%;
+  height: 350rpx;
+}
+
+.detail-title{
+  font-size: 38rpx;
+}
+
+.detail-action-wrapper{
+  padding: 20rpx 0;
+}
+
+.detail-action{
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  margin-right: 40rpx;
+  background: transparent;
+  color: #000;
+  font-size: 26rpx;
+}
+
+.detail-icon{
+  width: 30rpx;
+  height: 30rpx;
+  margin-right: 10rpx;
+}
+
+.detail-block{
+  padding: 20rpx 0;
+  font-size: 26rpx;
+  border-bottom: 1rpx solid #d8d8d8;
+}
+
+.detail-progress-wrapper{
+  padding: 20rpx 40rpx;
+  background: #f1f1f1;
+  font-size: 26rpx;
+  border-radius: 20rpx;
+}
+
+.detail-progress{
+  display: flex;
+  justify-content: space-between;
+  font-size: 22rpx;
+}
+
+.detail-progress progress{
+  width: 450rpx;
+}
+
+.detail-content-wrapper{
+  padding-bottom: 160rpx;
+}
+
+.detail-footer{
+  position: fixed;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 140rpx;
+  left: 0;
+  bottom: 0;
+  padding: 0 36rpx;
+  background: #fff;
+  box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.detail-footer button{
+  flex: 1;
+  height: 72rpx;
+  margin-left: 26rpx;
+  font-size: 28rpx;
+  line-height: 72rpx;
+}
+
+.detail-footer button:first-child{
+  margin-left: 0;
+}
+
+.detail-footer .activity-end {
+  background-color: #D8D8D8;
+}
+
+.modal-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  background-color: #fff;
+  border-radius: 10rpx;
+}
+
+.modal-main-content {
+  flex: 1;
+  height: 100%;
+  overflow-y: hidden;
+}

@@ -1,0 +1,40 @@
+{
+  "pages": [
+    "pages/certificate/applyList",
+    "pages/home/home",
+    "pages/profile/profile",
+    "pages/authorize/authorize",
+    "pages/register/register",
+    "pages/personal/personal"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black"
+  },
+  "sitemapLocation": "sitemap.json",
+  "networkTimeout": {
+    "request": 10000
+  },
+  "tabBar": {
+    "color": "#a4d2ba",
+    "selectedColor": "#07c160",
+    "borderStyle": "black",
+    "backgroundColor": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home_selected.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/personal/personal",
+        "iconPath": "images/self.png",
+        "selectedIconPath": "images/self_selected.png",
+        "text": "个人中心"
+      }
+    ]
+  }
+}

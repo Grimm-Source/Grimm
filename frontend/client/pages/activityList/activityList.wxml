@@ -1,0 +1,22 @@
+<wxs module="dateFormatter" src="../../utils/dateFormatter.wxs"></wxs>
+<view class="activity-page">
+<view  wx:if="{{type === 'ALL'}}" class="activity-container activity-list-all" >
+  <view class="activity activity-all" bindtap="onTapActivity" data-item="{{item}}" wx:for="{{activityListUi}}" wx:key="item.id">
+    <view class="subtitle line">{{dateFormatter.timeToFullDate(item.startTimeStamp)}} | {{item.location}}</view>
+    <view class="title line">{{item.title}}</view>
+  </view>
+  <view class="activity activity-all empty"  wx:if="{{!activityListUi || activityListUi.length === 0}}">
+    暂时没有可以参与的活动。
+  </view>
+</view>
+
+<view class="activity-container activity-list-registered" wx:if="{{type === 'REGISTERED'}}" >
+  <view class="activity activity-registered" bindtap="onTapActivity" data-item="{{item}}" wx:for="{{activityListUi}}" wx:key="item.id">
+    <view class="subtitle line">{{dateFormatter.timeToFullDate(item.startTimeStamp)}} | {{item.location}}</view>
+    <view class="title line">{{item.title}}</view>
+  </view>
+  <view class="activity activity-registered empty"  wx:if="{{!activityListUi || activityListUi.length === 0}}">
+    您尚未报名任何活动。
+  </view>
+</view>
+</view>

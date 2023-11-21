@@ -1,0 +1,38 @@
+<!--components/activitiesList/activitiesList.wxml-->
+<view>
+  <activitiesPicker class="activities-picker" categories="{{activityCategories}}" bind:filterChange="onFilterParamChange"></activitiesPicker>
+  <scroll-view class="activities-list" scroll-y="true" bindrefreshpulling="onPulling">
+    <block wx:for="{{activitiesProp}}" wx:key="id">
+      <view class="activity-item" id="{{item.adminId}}" bindtap="onTapActivity"  data-item="{{item}}" >
+        <view class="activity-detail">
+          <image class="activity-image" src="{{item.themeUrl}}"></image>
+          <text class="activity-title text-xl" aria-label="活动：{{item.title}}，点击进入活动详情">{{item.title}}</text>
+        </view>
+        <view class="activity-time-location">
+          <text class="activity-time text-xl">时间: {{item.schedule}}</text>
+          <text class="activity-location text-xl">地点: {{item.location}}</text>
+          <text class="activity-location text-xl">活动收费: {{item.fee}}</text>
+        </view>
+        <view class="activity-action">
+          <view class="activity-people">
+            <text class="text-ss">{{item.registered}}人参加</text>
+            <text aria-hidden="true"> | </text>
+            <text>{{item.interested}}人感兴趣</text>
+          </view>
+          <view class="activity-button">
+            <image src="{{item.thumbs_up ? '/images/heart_selected.png' : '/images/heart.png'}}" aria-role="button" aria-label="{{item.thumbs_up}}人点赞"></image>
+            <text aria-hidden="true">{{item.thumbs_up}}</text>
+            <image src="/images/share.png" aria-role="button" aria-label="{{item.share}}人分享"></image>
+            <text aria-hidden="true" class="action-text">{{item.share}}</text>
+          </view>
+        </view>
+
+      </view>
+    </block>
+    <view class="noneActivity" wx:if="{{activitiesProp&&activitiesProp.length === 0}}">
+        <span>没有找到相关活动</span>
+    </view>
+  </scroll-view>
+</view>
+
+

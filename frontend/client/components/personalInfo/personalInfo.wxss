@@ -1,0 +1,183 @@
+/* components/personalInfo.wxss */
+
+.personal_container{
+    height: 100%;
+}
+.personal_container .personal_header{
+    padding: 28px 24px 30px;
+    background-color: #F1F1F1;
+} 
+
+.personal_card{
+    width: 100%;
+    background-color: #FFFFFF;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -ms-border-radius: 6px;
+    -o-border-radius: 6px;
+    overflow: hidden;
+}
+
+.personal_card.defaultCard{
+    height: 154px;
+}
+
+.personal_card.authorizedCard{
+    height: 205px;
+}
+
+.personal_card.registerdCard{
+    height: 249px;
+}
+
+.prompt_message{
+    width: 100%;
+    height: 40px;
+    margin-top: 36px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.authorizeBtn {
+    width: 191px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 13px;
+    margin-top: 18px;
+}
+
+.prompt_message text{
+    display: block;
+}
+
+.user_profile{
+    display: flex;
+    padding: 17px 12px 0 27px;
+    justify-content: space-between;
+    line-height: 22px;
+}
+
+.user_profile .user_nav_left{
+    display: flex;
+}
+
+.user_profile .user_nav_left .avatar{
+    width: 42px;
+    height: 42px;
+}
+
+.user_profile .user_nav_left .avatar image{
+    width: 100%;
+    height: 100%;
+    border-radius: 42px;
+    -webkit-border-radius: 42px;
+    -moz-border-radius: 42px;
+    -ms-border-radius: 42px;
+    -o-border-radius: 42px;
+}
+
+.user_profile .user_nav_left .username_info{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.username_info .username{
+    font-size: 17px;
+}
+
+.username_info .location{
+    font-size: 13px;
+    color: #747474;
+}
+
+.user_profile .user_nav_right .user_eidt{
+    color: #00A9D3;
+    font-size: 13px;
+}
+
+.registerBtn{
+    width: 191px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 13px;
+    margin-top: 23px;
+}
+
+.personal_card .footer_message{
+    margin: 20px 20px 0 27px;
+    border-top: 1px solid #979797;
+    padding: 10px 0;
+    text-align: center;
+    color: #757575;
+    font-size: 11px;
+}
+
+.personal_card .footer_message .volunteer_link{
+    color: #00A9D3;
+}
+
+/* personal_info_part */
+
+.personal_info_list{
+    padding: 30px 26px;
+    font-size: 13px;
+}
+
+.personal_info_item{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    align-items: center;
+}
+
+.personal_info_item image{
+    width: 12px;
+    height: 12px;
+}
+
+.personal_info_item.myActivity, .personal_info_item.disabledID{
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.personal_info_item.disabledID{
+    margin-top: 26px;
+}
+
+
+.activity_record{
+    display: flex;
+    justify-content: space-around;
+}
+
+.progress_box{
+    position: relative;
+    width: 110px;
+    height: 110px;  
+    display: flex;  
+    align-items: center;
+    justify-content: center;
+  }
+  .progress_bg{
+    position: absolute;
+    width:110px;
+    height: 110px; 
+  }
+  .progress_canvas{ 
+    width:110px;
+    height: 110px; 
+  } 
+  .progress_text{ 
+    position: absolute; 
+    display: flex;  
+    align-items: center;
+    justify-content: center
+  }
+  .progress_info{   
+    font-size: 24rpx;
+    padding-left: 16rpx;
+    letter-spacing: 2rpx
+  } 

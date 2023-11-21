@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "activitiesPicker": "/components/activitiesPicker/activitiesPicker"
+  }
+}

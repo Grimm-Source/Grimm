@@ -1,0 +1,36 @@
+/**app.wxss**/
+@import 'style/weui.wxss';
+@import 'style/common.wxss';
+@import './miniprogram_npm/weui-miniprogram/weui-wxss/dist/style/weui.wxss';
+page{
+  width: 100%;
+  height: 100%;
+  font-size: var(--sm-font);
+  color: var(--font-color);
+}
+
+button,
+button[type=default]{
+  background: #f03d64;
+  color: #fff;
+}
+
+.button-hover,
+.button-hover[type=default]{
+  background: #f95e80;
+  color: #fff;
+}
+
+button[type=primary]{
+  background: #113e6e;
+  color: #fff;
+}
+
+.button-hover[type=primary]{
+  background: #195696;
+  color: #fff;
+}
+
+button::after{
+  border: 0;
+}

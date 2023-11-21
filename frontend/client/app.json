@@ -1,0 +1,60 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/signIn/signIn",
+    "pages/profile/profile",
+    "pages/authorize/authorize",
+    "pages/personal/personal",
+    "pages/activityList/activityList",
+    "pages/activityDetail/activityDetail",
+    "pages/tips/tips",
+    "pages/myActivity/myActivity",
+    "pages/login/login",
+    "pages/register/register",
+    "pages/search/search",
+    "pages/personalProfile/personalProfile",
+    "pages/personalCenter/personalCenter",
+    "pages/certificate/applyList",
+    "pages/certificate/applyForm",
+    "pages/pickupImpaired/pickup",
+    "pages/volunteerSignUpSuccess/volunteerSignUpSuccess",
+    "pages/pickupVolunteer/pickupVolunteer",
+    "pages/pickupVolunteerDetail/pickupVolunteerDetail"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于活动签到"
+    }
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black"
+  },
+  "sitemapLocation": "sitemap.json",
+  "networkTimeout": {
+    "request": 10000
+  },
+  "tabBar": {
+    "color": "#bfbfbf",
+    "selectedColor": "#113E6F",
+    "borderStyle": "black",
+    "backgroundColor": "#FFF",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "iconPath": "images/home_default.png",
+        "selectedIconPath": "images/home_select.png",
+        "text": "活动"
+      },
+      {
+        "pagePath": "pages/personal/personal",
+        "iconPath": "images/user_default.png",
+        "selectedIconPath": "images/user_select.png",
+        "text": "个人中心"
+      }
+    ]
+    
+  }
+}

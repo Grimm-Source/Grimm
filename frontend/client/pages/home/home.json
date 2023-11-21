@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "tipsSwiper": "/components/tipsSwiper/tipsSwiper",
+    "searchBox": "/components/searchBox/searchBox",
+    "activeSignIn": "/components/activeSignIn/activeSignIn",
+    "activitiesList": "/components/activitiesList/activitiesList"
+  },
+  "navigationBarTitleText": "爱心牵手"
+}

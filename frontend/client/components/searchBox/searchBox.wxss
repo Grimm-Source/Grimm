@@ -1,0 +1,29 @@
+/* components/searchBox/searchBox.wxss */
+
+.searchbar {
+  width: calc(100% - 32rpx);
+  height: 28px;
+  display: flex;
+  align-items: center;
+  border-radius: 64rpx;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.searchbar icon {
+  left: 298rpx;
+  position: absolute;
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.searchbar text {
+  font-size: 26rpx;
+  position: absolute;
+  left: 330rpx;
+  color: #000000;
+}
+
+/* .active{
+    color:#405F80;
+    border-bottom: 5rpx solid #405F80;
+    transform: scale(1.2);
+} */

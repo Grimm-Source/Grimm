@@ -1,0 +1,4 @@
+<!--pages/personalCenter/personalCenter.wxml-->
+<view>
+  <personalInfo></personalInfo>
+</view>

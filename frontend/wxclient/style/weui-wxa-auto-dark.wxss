@@ -1,0 +1,348 @@
+/* 
+此文件为开发者工具生成，生成时间: 2021/3/27 下午12:20:18
+使用方法：
+在 weui.wxss 文件末尾引入样式
+```
+@import "./weui-wxa-auto-dark.wxss";
+```
+ */
+
+@media (prefers-color-scheme: dark) {
+    .weui-cells {
+        background-color: rgb(17, 17, 17);
+    }
+
+    .weui-cells:before {
+        border-top: rgb(0, 0, 0);
+    }
+
+    .weui-cells:after, .weui-cells:before {
+        color: rgb(45, 45, 45);
+    }
+
+    .weui-cells:after {
+        border-bottom: rgb(0, 0, 0);
+    }
+
+    .weui-cells__title {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-cells__tips {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-cell:before {
+        border-top: rgb(0, 0, 0);
+        color: rgb(45, 45, 45);
+    }
+
+    .weui-cell_active {
+        background-color: rgb(31, 31, 31);
+    }
+
+    .weui-cell__ft {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-cell_access {
+        color: rgb(0, 0, 0);
+    }
+
+    .weui-cell__ft_in-access:after {
+        border-color: rgb(57, 57, 61);
+    }
+
+    .weui-cell_link {
+        color: rgb(125, 145, 187);
+    }
+
+    .weui-cell_link:active {
+        background-color: rgb(31, 31, 31);
+    }
+
+    .weui-check__label:active {
+        background-color: rgb(31, 31, 31);
+    }
+
+    .weui-toptips {
+        color: rgb(17, 17, 17);
+    }
+
+    .weui-toptips_warn {
+        background-color: rgb(221, 58, 57);
+    }
+
+    .weui-textarea-counter {
+        color: rgb(76, 76, 76);
+    }
+
+    .weui-cell_warn, .weui-textarea-counter_warn {
+        color: rgb(221, 58, 57);
+    }
+
+    .weui-form-preview {
+        background-color: rgb(17, 17, 17);
+    }
+
+    .weui-form-preview:before {
+        border-top: rgb(0, 0, 0);
+    }
+
+    .weui-form-preview:after, .weui-form-preview:before {
+        color: rgb(45, 45, 45);
+    }
+
+    .weui-form-preview:after {
+        border-bottom: rgb(0, 0, 0);
+    }
+
+    .weui-form-preview__hd:after {
+        border-bottom: rgb(0, 0, 0);
+        color: rgb(45, 45, 45);
+    }
+
+    .weui-form-preview__bd {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-form-preview__ft:after {
+        border-top: rgb(0, 0, 0);
+        color: rgb(48, 48, 48);
+    }
+
+    .weui-form-preview__label {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-form-preview__btn {
+        color: rgb(0, 101, 0);
+    }
+
+    .weui-form-preview__btn:after {
+        border-left: rgb(0, 0, 0);
+        color: rgb(48, 48, 48);
+    }
+
+    .weui-form-preview__btn_active {
+        background-color: rgb(29, 29, 29);
+    }
+
+    .weui-form-preview__btn_default {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-form-preview__btn_primary {
+        color: rgb(0, 119, 0);
+    }
+
+    .weui-select {
+        border-right: rgb(0, 0, 0);
+    }
+
+    .weui-select:before {
+        border-color: rgb(57, 57, 61);
+    }
+
+    .weui-vcode-btn {
+        border-left: rgb(0, 0, 0);
+        color: rgb(0, 101, 0);
+    }
+
+    .weui-vcode-btn:active {
+        color: rgb(36, 122, 24);
+    }
+
+    .weui-uploader__info {
+        color: rgb(76, 76, 76);
+    }
+
+    .weui-uploader__file_status:before {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .weui-uploader__file-content {
+        color: rgb(17, 17, 17);
+    }
+
+    .weui-uploader__input-box {
+        border: rgb(0, 0, 0);
+    }
+
+    .weui-uploader__input-box:after, .weui-uploader__input-box:before {
+        background-color: rgb(45, 45, 45);
+    }
+
+    .weui-uploader__input-box:active {
+        border-color: rgb(99, 99, 99);
+    }
+
+    .weui-uploader__input-box:active:after,
+    .weui-uploader__input-box:active:before {
+        background-color: rgb(99, 99, 99);
+    }
+
+    .weui-msg__link {
+        color: rgb(125, 145, 187);
+    }
+
+    .weui-msg__desc {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-msg__extra-area {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-agree__text {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-agree__link {
+        color: rgb(125, 145, 187);
+    }
+
+    .weui-agree__checkbox-icon {
+        border: rgb(0, 0, 0);
+        background-color: rgb(17, 17, 17);
+    }
+
+    .weui-footer {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-footer__link {
+        color: rgb(125, 145, 187);
+    }
+
+    .weui-footer__link:before {
+        border-left: rgb(0, 0, 0);
+        color: rgb(59, 59, 59);
+    }
+
+    .weui-grids {
+        border-top: rgb(0, 0, 0);
+        border-left: rgb(0, 0, 0);
+    }
+
+    .weui-grid {
+        border-right: rgb(0, 0, 0);
+        border-bottom: rgb(0, 0, 0);
+    }
+
+    .weui-grid_active {
+        background-color: rgb(31, 31, 31);
+    }
+
+    .weui-grid__label {
+        color: rgb(255, 255, 255);
+    }
+
+    @keyframes a {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(1turn);
+            transform: rotate(1turn);
+        }
+    }
+
+    .weui-badge {
+        background-color: rgb(221, 58, 57);
+        color: rgb(17, 17, 17);
+    }
+
+    .weui-loadmore_line {
+        border-top: rgb(0, 0, 0);
+    }
+
+    .weui-loadmore__tips_in-line {
+        background-color: rgb(17, 17, 17);
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-loadmore__tips_in-dot:before {
+        background-color: rgb(36, 36, 36);
+    }
+
+    .weui-panel {
+        background-color: rgb(17, 17, 17);
+    }
+
+    .weui-panel:before {
+        border-top: rgb(0, 0, 0);
+    }
+
+    .weui-panel:after, .weui-panel:before {
+        color: rgb(36, 36, 36);
+    }
+
+    .weui-panel:after {
+        border-bottom: rgb(0, 0, 0);
+    }
+
+    .weui-panel__hd {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-panel__hd:after {
+        border-bottom: rgb(0, 0, 0);
+        color: rgb(36, 36, 36);
+    }
+
+    .weui-media-box:before {
+        border-top: rgb(0, 0, 0);
+        color: rgb(36, 36, 36);
+    }
+
+    .weui-media-box__desc {
+        color: rgb(99, 99, 99);
+    }
+
+    .weui-media-box__info {
+        color: rgb(53, 53, 53);
+    }
+
+    .weui-media-box__info__meta_extra {
+        border-left: rgb(0, 0, 0);
+    }
+
+    .weui-navbar {
+        border-bottom: rgb(0, 0, 0);
+    }
+
+    .weui-navbar__item.weui-bar__item_on {
+        color: rgb(0, 122, 0);
+    }
+
+    .weui-navbar__slider {
+        background-color: rgb(0, 122, 0);
+    }
+
+    .weui-search-bar {
+        background-color: rgb(28, 28, 32);
+        border-top: rgb(0, 0, 0);
+        border-bottom: rgb(0, 0, 0);
+    }
+
+    .weui-icon-search {
+        font-size: rgb(0, 0, 0);
+    }
+
+    .weui-search-bar__form {
+        background: rgb(17, 17, 17);
+        border: rgb(0, 0, 0);
+    }
+
+    .weui-search-bar__label {
+        color: rgb(97, 97, 97);
+        background: rgb(17, 17, 17);
+    }
+
+    .weui-search-bar__cancel-btn {
+        color: rgb(0, 112, 0);
+    }
+}

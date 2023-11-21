@@ -1,0 +1,77 @@
+.drawer{
+    background: #00000036;
+    width: 100%;
+    height: 100%;
+    right: 0;
+    z-index: 100;
+    position: absolute;
+    top: 0;
+
+    .content{
+        float: right;
+        background: #fff;
+        width: 30%;
+        height: 100%;
+        box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.21);
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding: 15px;
+
+        .notice-title{
+            align-self: flex-start;
+            font-size: 20px;
+            color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+
+            img{
+                margin-left: 2px;
+            }
+        }
+
+        .content-block{
+            border-radius: 15px;
+            padding: 10px;
+            margin: 10px;
+            width: 90%;
+            color: rgba(0, 0, 0, 0.45);         
+            
+            .title{
+                font-size: 20px;
+                margin: 10px 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+
+                .left{
+                    display: flex;
+                    align-items: center;
+
+                    img{
+                        margin: 5px;
+                    }
+                }
+
+                .remove-all{
+                    font-size: 12px;
+                    color: #40a9ff;
+                    cursor: pointer;
+                }  
+            }
+
+            .list.ant-list-item-meta-title{
+                color: rgba(0, 0, 0, 0.45);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+

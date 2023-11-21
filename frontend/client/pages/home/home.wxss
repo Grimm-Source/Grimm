@@ -1,0 +1,42 @@
+.home {
+  background: var(--background-color);
+  color: var(--light-color);
+  overflow-x: hidden;
+}
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 16px;
+}
+
+.home-person,
+home-scan {
+  display: inline-block;
+}
+
+.home-person image,
+.home-scan image{
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+}
+
+.activities-searchbox {
+  width: calc(100% - 32rpx);
+  height: 28px;
+  margin-left: 16px;
+  display: inline-block;
+  align-items: center;
+}
+
+.searchbox-container{
+  width: calc(100% - 32rpx);
+  height: 28px;
+}
+
+
+
+
+
+

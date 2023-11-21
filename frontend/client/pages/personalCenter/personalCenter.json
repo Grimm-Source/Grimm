@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "personalInfo": "/components/personalInfo/personalInfo"
+  }
+}

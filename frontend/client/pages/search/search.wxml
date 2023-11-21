@@ -1,0 +1,20 @@
+<!--pages/search/search.wxml-->
+<view class="searchPage">
+    <view class="searchBox">
+        <icon aria-hidden="true" type='search' size="24rpx"></icon>
+        <view class="inputBox">
+            <!-- <view class="hot-word-input {{selelctedVal !== '' ? '' : 'hide'}}">
+                <span>{{selelctedVal}}</span>
+                <icon type='clear' size="20rpx" bindtap="cancelSelect"></icon>
+            </view> -->
+            <input type="text" bindinput="searchActivities" bindconfirm="endsearchActivities" confirm-type='search' value='{{searchValue}}' placeholder='{{placeHolder}}' focus="{{focus}}"/>
+        </view>  
+    </view>
+    <!-- <view class="hotWords">
+        <block wx:for="{{wordList}}" wx:key="index">
+            <view class="searchItem {{item.value}} {{selelctedVal == item.value ? 'selected' : ''}}" data-search="{{item.value}}" bindtap="selectSearchWord">{{item.value}}</view>
+        </block>
+    </view> -->
+    <searchActivitiesList class="searchActivitiesList" searchedActivities="{{searchedActivities}}"></searchActivitiesList>
+</view>
+ 

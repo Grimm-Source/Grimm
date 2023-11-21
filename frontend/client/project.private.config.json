@@ -1,0 +1,6 @@
+{
+  "projectname": "client",
+  "setting": {
+    "compileHotReLoad": true
+  }
+}

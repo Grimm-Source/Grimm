@@ -1,0 +1,74 @@
+<view class="detail-wrapper">
+  <image aria-hidden="true" mode="aspectFill" class="detail-banner" src="{{banner}}"></image>
+  <text class="detail-title text-xl">{{title}}</text>
+  <view class="detail-action-wrapper">
+    <button class="detail-action" bindtap="onTapLike">
+      <image class="detail-icon" src="{{isLike ? '/images/heart_selected.png' : '/images/heart.png'}}"></image>赞
+    </button>
+    <button class="detail-action" open-type="share">
+      <image class="detail-icon" src="/images/share.png"></image>分享
+    </button>
+  </view>
+  <view class="detail-progress-wrapper">
+    <view>报名情况</view>
+    <view class="detail-progress">
+      <progress border-radius="3" backgroundColor="#113e6e" activeColor="#4ff2be"
+        percent="{{volunteerCurr/volunteerTotal*100}}" />{{volunteerCurr}}/{{volunteerTotal}}志愿者
+    </view>
+    <view class="detail-progress">
+      <progress border-radius="3" backgroundColor="#113e6e" activeColor="#4ff2be"
+        percent="{{visuallyImpairedCurr/visuallyImpairedTotal*100}}" />{{visuallyImpairedCurr}}/{{visuallyImpairedTotal}}视障人士
+    </view>
+  </view>
+  <view class="detail-block text">
+    <view>时间: {{date}}</view>
+    <view>地点: {{address}}</view>
+  </view>
+  <view class="detail-content-wrapper text">
+    <text>{{content}}</text>
+  </view>
+  <view wx:if="{{isActivityEnd}}" class="detail-footer">
+    <button class="activity-end">活动结束</button>
+  </view>
+  <view wx:elif="{{isRegistered}}" class="detail-footer">
+    <button wx:if="{{needPickup}}" style="background-color:#F03D64;" bindtap="onTapPickupDetail">
+      <text>接送详情</text>
+    </button>
+    <button wx:else type="primary" bindtap="onTapINeedPickup">
+      <text>我要接送</text>
+    </button>
+    <button style="background-color: black" bindtap="onTapRegister">
+      <text wx:if="{{isRegistered}}">取消报名</text>
+      <text wx:else>我要报名</text>
+    </button>
+  </view>
+  <view wx:else class="detail-footer">
+    <button bindtap="onTapInterest">
+      <text wx:if="{{isInterested}}">不感兴趣</text>
+      <text wx:else>感兴趣</text>
+    </button>
+    <button type="primary" bindtap="onTapRegister">
+      <text wx:if="{{isRegistered}}">取消报名</text>
+      <text wx:else>我要报名</text>
+    </button>
+  </view>
+
+  <!-- 视障人士点击我要报名后弹出的modal -->
+  <view class="modal-mask" wx:if="{{pickupImpairedModalVisible}}" bindtap="clickMask">
+    <view class="modal-content detail-footer" style="height: 80%;margin-left:39rpx;margin-bottom:90rpx">
+      <view class="modal-main-content">
+        <!-- <map id="modalMap" markers="{{markers}}" style="width:100%;height:35vh;margin-top:50rpx;"
+          longitude="{{poi.longitude}}" latitude="{{poi.latitude}}" scale='16' show-location>
+        </map> -->
+        <image aria-hidden="true" mode="aspectFill" style="width:100%;height:35vh;margin-top:50rpx;" src="{{banner}}">
+        </image>
+        <text style="font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:bold">
+          \n此次活动位于{{address}}\n是否需要支援接送？\n
+        </text>
+        <button style="background-color:#113E6E; width:210px;" bindtap="onTapNotRequired">不需要</button>
+        <button style="background-color:black; width:210px;margin-top:10rpx;" bindtap="onTapDecideLater">晚些决定</button>
+        <button style="background-color:#F03D64; width:210px;margin-top:10rpx;" bindtap="onTapNeedPickup">需要接送</button>
+      </view>
+    </view>
+  </view>
+</view>

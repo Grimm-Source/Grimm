@@ -1,0 +1,71 @@
+<!--pages/personal2/personal2.wxml-->
+<view class="personal_container">
+    <view class="personal_header">
+        <view class="personal_card {{!isAuthorized ? 'defaultCard' : (!isRegistered ? 'authorizedCard' : 'registerdCard')}}">
+            <block wx:if='{{!isAuthorized}}'>
+                <view class="prompt_message">
+                    <text>爱心牵手 需要您授权同意</text>
+                    <text>我们将获取您的微信公开信息</text>
+                </view>
+                <button class="authorizeBtn btn-primary" lang='zh_CN' bindtap="onAuthorizeTap">
+                    点击授权
+                </button>
+            </block>
+            <block wx:else>
+                <view class="user_profile">
+                    <view class="user_nav_left">
+                        <view class="avatar">
+                            <image src="{{userInfo.avatarUrl || avatarUrl}}" aria-label="{{isVolunteer ? '志愿者账号' : '视障人士账号'}}"/>
+                        </view>
+                        <view class="username_info" wx:if='{{userInfo}}'>
+                            <span class="username">{{userInfo.nickName}}</span> 
+                            <span class="location">{{userInfo.province}} {{userInfo.city}}</span>
+                        </view>
+                    </view>
+                    <view class="user_nav_right">
+                        <view class="user_eidt" bindtap="onEditTap" aria-role="button">
+                            编辑
+                        </view>
+                    </view>
+                </view>
+                <button wx:if='{{!isRegistered}}' class="registerBtn btn-primary" open-type="getPhoneNumber" bindgetphonenumber="onRegisterTap">
+                    注册解锁更多活动
+                </button>
+                <view wx:else class="activity_record">
+                    <view class='progress_box attendMinutes'>
+                        <canvas class="progress_bg" canvas-id="canvasProgressbg1">  </canvas> 
+                        <canvas class="progress_canvas" canvas-id="canvasProgress1">  </canvas> 
+                        <view class="progress_text">
+                            <text class='progress_info'>{{progress_attendMinutes}}</text>
+                        </view>     
+                    </view>
+                    <view class='progress_box attendTimes'>
+                        <canvas class="progress_bg" canvas-id="canvasProgressbg2">  </canvas> 
+                        <canvas class="progress_canvas" canvas-id="canvasProgress2">  </canvas> 
+                        <view class="progress_text">
+                            <text class='progress_info'>{{progress_attendTimes}}</text>
+                        </view>     
+                    </view>
+                </view>
+                <view class="footer_message">
+                    <view>活动结束后，志愿者可以登陆志愿者网</view>
+                    <view><span class="volunteer_link" bindtap="goVolunteerSite">sh.chinavolunteer.cn</span> 申请证书哦！</view>
+                </view>
+            </block>
+        </view>
+    </view>
+   <view class="personal_info_list">
+       <block wx:for='{{personalInfoList}}' wx:key='index'>
+            <view class="{{'personal_info_item '+ item.class}}" bindtap="{{item.action}}">
+                <view class="labelName">{{item.label}}</view>
+                <image src="../../images/right_arrow.png" aria-hidden="true"/>
+            </view>
+        </block>
+        <view class="personal_info_item disabledID" bindtap="">
+            <view class="labelName">添加残疾证</view>
+        </view>
+        <view class="personal_info_item certificate_apply" bindtap="onCertificateApply">
+            <view class="labelName">申请志愿者证书</view>
+        </view>
+   </view>
+</view>

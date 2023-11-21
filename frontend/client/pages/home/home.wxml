@@ -1,0 +1,17 @@
+<view class="home">
+  <tipsSwiper class="home-tips-siwper"></tipsSwiper>
+  <activeSignIn></activeSignIn>
+  <view class="home-header">
+    <view class="home-person" bindtap="showPersonInfo" aria-role="button">
+      <image src="{{userInfo.avatarUrl || avatarUrl}}" aria-label="个人中心"></image>
+    </view>
+    <view class="searchbox-container" bindtap="onTapSearch" aria-label="关键词搜索" aria-role="button">
+      <searchBox class="activities-searchbox"></searchBox>
+    </view>
+    <view class="home-scan" bindtap="scanCode" aria-role="button">
+      <image src="../../images/scan.png" aria-label="扫一扫，功能未开发完毕"></image>
+    </view>
+  </view>
+  <activitiesList class="filtered-activities-list"></activitiesList>
+  <!-- <button bindtap="toggleTabbar">{{showTabbarText}}底部个人中心</button> -->
+</view>

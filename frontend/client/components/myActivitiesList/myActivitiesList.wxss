@@ -1,0 +1,82 @@
+/* components/myActivities/myActivitiesList.wxss */
+
+.myActivities-list {
+  margin-top: 6px;
+  width: 100%;
+}
+.myActivity-item {
+  display: flex;
+  flex-direction: row;
+  margin: 14px;
+  padding: 20px;
+
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.myActivity-preview {
+  display: flex;
+  width: 76px;
+  height: 76px;
+  background-color: #EDEDED;
+  border-radius: 3px;
+  float: left;
+}
+
+.myActivity-info {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 0;
+  margin-left: 27px;
+  top: 0;
+  height: 100%;
+  width: calc(100% - 100px);
+}
+
+.myActivity-state {
+  display: inline;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+
+  font-size: 10px;
+  line-height: 20px;
+  text-align: center;
+  
+  background-color: #EDEDED;
+  border-color: rgba(0, 0, 0, 0);
+  border-radius: 3px;
+  color: white;
+}
+
+.myActivity-state.closed {
+  background-color: lightgray;
+}
+
+.myActivity-title {
+  font-size: 22px;
+  line-height: 25px;
+  margin-bottom: 10px;
+}
+
+.myActivity-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.myActivity-time,
+.myActivity-location {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.myActivity-title,
+.myActivity-time,
+.myActivity-location {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

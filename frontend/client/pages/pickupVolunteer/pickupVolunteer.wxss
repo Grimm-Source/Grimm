@@ -1,0 +1,22 @@
+.pickup-wrapper {
+  padding: 0 52rpx 25rpx;
+}
+
+.pickup-form-item {
+  margin-bottom: 56rpx;
+  font-size: 22rpx;
+}
+.pickup-form-item ul, .pickup-form-item ul li{
+  display: block;
+}
+
+.pickup-form-label {
+  margin-bottom: 20rpx;
+}
+
+.pickup-form-item-detail {
+  height: 70px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  padding: 14px 0 18px 28px;
+}

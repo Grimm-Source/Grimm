@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "searchActivitiesList": "/components/searchActivitiesList/searchActivitiesList"
+  },
+  "navigationBarTitleText": "爱心牵手"
+}

@@ -1,0 +1,12 @@
+<!--components/activeSignIn/activeSignIn.wxml-->
+<view wx:for="{{activities}}" wx:key="id">
+  <view  class="wrap" wx:if="{{item.current_state=='signed_up'||item.current_state=='Registered'}}">
+    <view class="left">
+      <view class="title">{{item.title}}</view>
+      <view class="detail">时间：{{item.schedule}}</view>
+      <view class="detail">地点：{{item.location}}</view>
+    </view>
+    <view class="right" bindtap="onTapSignIn" data-item="{{item}}" wx:if="{{item.current_state=='signed_up'}}">签退</view>
+    <view class="right" bindtap="onTapSignIn" data-item="{{item}}" wx:if="{{item.current_state=='Registered'}}">签到</view>
+  </view>
+</view>

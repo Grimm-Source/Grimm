@@ -1,0 +1,27 @@
+/* components/myActivitiesPicker/myActivitiesPicker.wxss */
+.myActivitiesCategories {
+  margin: 0 14px;
+}
+
+.myActivitiesCategoryPicker {
+  margin-top: 19px;
+  background-color: #fff;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.myActivitiesTab {
+  display: inline-block;
+  margin: 14px 15px;
+
+  font-family: PingFang SC;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.myActivitiesTab.selected {
+  color: #00C276;
+}
+

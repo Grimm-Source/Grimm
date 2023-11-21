@@ -1,0 +1,7 @@
+<!--pages/myActivity/myActivity.wxml-->
+<slot></slot>
+
+<view class="myActivities">
+  <myActivitiesPicker class="myActivitiesPicker" selectedIdx="{{selectedIdx}}" bind:myActivitiesSelectedIdx="handleMyActivitiesPickerEvent"></myActivitiesPicker>
+  <myActivitiesList class="myActivitiesList" selectedIdx="{{selectedIdx}}"></myActivitiesList>
+</view>

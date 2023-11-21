@@ -1,0 +1,30 @@
+<!--components/activitiesPicker/activitiesPicker.wxml-->
+
+<view class="category text-lg">
+  <view class="category-all" aria-role="tablist" aria-labelledby="可选择活动类型">类型</view>
+  <scroll-view scroll-x="true" class="category-picker">
+      <block wx:for="{{categories}}" wx:key="id">
+          <view id="{{item.tag_id}}" aria-role="tab" aria-selected="{{ activeCategory == item.tag_id }}" class="category-type {{activeCategory == item.tag_id ? 'selected' : ''}}" bindtap="tapCategory">
+              {{item.tag_name}}
+          </view>
+      </block>
+  </scroll-view>
+</view>
+
+<view class="time text-lg">
+  <view class="time-all" aria-label="tablist" aria-label="可选择活动时间">时间</view>
+  <scroll-view scroll-x="true" class="time-picker">
+      <block wx:for="{{activityTimes}}" wx:key="id">
+          <view id="{{item.time_id}}" aria-role="tab" aria-selected="{{ activeTime == item.time_id }}" class="time-selector {{activeTime == item.time_id ?'selected':''}}" bindtap="tapTime">
+              {{item.description}}
+          </view>
+      </block>
+      <!-- <view class="time-selector">
+        <picker id="interval" mode="date" value="{{date}}" start="2010-01-01" bindchange="tapTime">
+        <view class="picker">选择日期</view>
+        </picker>
+      </view> -->
+  </scroll-view>
+</view>
+
+

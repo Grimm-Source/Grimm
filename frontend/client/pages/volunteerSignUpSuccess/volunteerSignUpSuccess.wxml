@@ -1,0 +1,28 @@
+<!-- 志愿人士点击我要报名后跳转到该页面 -->
+<view style="background-color: #f1f1f1;height:100%;width:100%;padding: 30rpx;">
+  <view style="background-color: white;border-radius: 9px;margin:0px 40px 0px 15px;height:170px">
+    <text
+      style="font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-top:30rpx">\n报名成功！</text>
+    <text style="font-size:15px;" decode="{{true}}">
+      &emsp;# {{title}} #
+    </text>
+    <text style="font-size:10px;" decode="{{true}}">
+      &emsp;时间：{{date}} \n
+      &emsp;地点：{{address}}
+    </text>
+  </view>
+  <view>
+    <text class="eyes-pic"></text>
+    <text style="font-size: 8px;display:flex;align-items:center;justify-content:center;margin-top:-20px">
+      \n 
+      视障人士由于视力问题出行不便，请问您是否愿意帮助接送视障人士？\n
+      如果愿意的话，需要填写一些认证信息，系统会尽量就近安排。\n
+      （接送方式包括，私家车接送，地铁站接送）
+    </text>
+  </view>
+  <view style="margin-top:30px;margin-left:-20px">
+    <button class="footer-button" style="background-color:#F03D64;" bindtap="onTapWillingPickup">愿意</button>
+    <button class="footer-button" type="primary" style="margin-top:10rpx" bindtap="onTapConsiderPickup">我再想想</button>
+    <!-- <button class="footer-button" style="background-color:black; margin-top:10rpx" bindtap="onTapUnwillingPickup">不愿意</button> -->
+  </view>
+</view>
