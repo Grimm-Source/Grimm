@@ -1,6 +1,24 @@
 from sqlalchemy import func
+from sqlalchemy.orm import relationship
+
 from grimm import db
 
+class Project(db.Model):
+    __tablename__ = 'project'
+    id = db.Column(db.BigInteger, primary_key=True, nullable=False, autoincrement=True)
+    name = db.Column(db.String(60), nullable=False, unique=True, comment='项目名')
+
+class Duty(db.Model):
+    __tablename__ = 'duty'
+    id = db.Column(db.BigInteger, primary_key=True, nullable=False, autoincrement=True)
+    name = db.Column(db.String(60), nullable=False, unique=True, comment='活动中担任的职责')
+    seq = db.Column(db.Integer, nullable=False, unique=True, comment='导出汇总表时的列顺序，小的数字靠左')
+
+class Gift(db.Model):
+    __tablename__ = 'gift'
+    id = db.Column(db.BigInteger, primary_key=True, nullable=False, autoincrement=True)
+    name = db.Column(db.String(60), nullable=False, unique=True)
+    seq = db.Column(db.Integer, nullable=False, unique=True, comment='导出汇总表时的列顺序，小的数字靠左')
 
 class Activity(db.Model):
     __tablename__ = 'activity'
@@ -17,18 +35,40 @@ class Activity(db.Model):
     admin_raiser = db.Column(db.Integer, db.ForeignKey('admin.id'), comment='活动创建者，如果是管理员创建则使用该域，创建活动项时系统自动设置')
     user_raiser = db.Column(db.String(28), db.ForeignKey('user.openid'), comment='活动创建者，如果是视障人士/志愿者用户则使用该域，创建活动项时系统自动设置')
     approver = db.Column(db.Integer, db.ForeignKey('admin.id'), comment='活动审批者,管理员审批活动时更新')
-    assignee = db.Column(db.String(28), db.ForeignKey('user.openid'), comment='活动领队/负责人,待定')
+    # assignee = db.Column(db.String(28), db.ForeignKey('user.openid'), comment='活动领队/负责人,待定')
     published = db.Column(db.Integer, nullable=False, server_default='0', comment='活动审核发布标志位, 0=未审核，1=已审核,管理员审核活动时更新')
     tag_ids = db.Column(db.String(120), comment='活动分类标签,管理员审核活动时更新')
     volunteer_capacity = db.Column(db.Integer, server_default='0', comment='所需志愿者人数')
     vision_impaired_capacity = db.Column(db.Integer, server_default='0', comment='活动可容纳最大视障者人数')
     volunteer_job_title = db.Column(db.String(500), comment='对应发布新活动时表单上的岗位名称')
+    # TODO Duty?
     volunteer_job_content = db.Column(db.String(100), comment='对应发布新活动时表单上的岗位人数')
     activity_fee = db.Column(db.Integer, server_default='0', comment='活动费用')
     sign_in_radius = db.Column(db.Integer, comment='签到半径，单位公里')
     sign_in_token = db.Column(db.String(10), nullable=False, comment='签到口令')
     theme_pic_name = db.Column(db.String(300), nullable=False, comment='活动主题图片, 保存路径为/static/activity_theme_picture/*')
+    project_seq = db.Column(db.Integer, comment='对应项目的活动场次')
+    project_id = db.Column(db.BigInteger, db.ForeignKey('project.id'))
+    remark = db.Column(db.String(500), comment='备注')
 
+    project = relationship('Project', backref='activities')
+
+    @property
+    def volunteers(self):
+        return [info.user for info in self.participate_infos if info.user.is_volunteer()]
+
+    @property
+    def impaireds(self):
+        return [info.user for info in self.participate_infos if info.user.is_impaired()]
+
+    @property
+    def children_count(self):
+        return len([x for x in self.participate_infos \
+                if x.is_child == True])
+
+    @property
+    def start_date(self):
+        return self.start_time.strftime('%Y-%m-%d')
 
 class ActivityParticipant(db.Model):
     __tablename__ = 'activity_participant'
@@ -48,7 +88,13 @@ class ActivityParticipant(db.Model):
     signoff_time = db.Column(db.DateTime, comment='签退时间')
     signoff_latitude = db.Column(db.DECIMAL(9, 6), comment='签退经纬度-纬度')
     signoff_longitude = db.Column(db.DECIMAL(9, 6), comment='签退经纬度-经度')
+    duty_id = db.Column(db.BigInteger, db.ForeignKey('duty.id'))
+    is_child = db.Column(db.Boolean, server_default='0', comment='报名人是否是孩子')
+    gifts = db.Column(db.JSON, comment='领取物品种类和数量')
 
+    duty = relationship('Duty')
+    user = relationship('User', backref='participate_infos')
+    activity = relationship('Activity', backref='participate_infos')
 
 class PickupImpaired(db.Model):
     __tablename__ = 'pickup_impaired'

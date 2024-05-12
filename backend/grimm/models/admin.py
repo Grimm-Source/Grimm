@@ -35,7 +35,7 @@ class User(db.Model):
     emergent_contact = db.Column(db.String(8), comment='视障人士紧急联系人姓名,视障人士申请账户时输入，可更新')
     emergent_contact_phone = db.Column(db.String(16), comment='视障人士紧急联系人联系电话,视障人士申请账户时输入，可更新')
     activities_joined = db.Column(db.Integer, server_default='0', nullable=False, comment='微信端显示活动参加次数，以及根据次数计算参加时长,待定')
-    remark = db.Column(db.String(255), server_default='无', comment='用户备注,用户申请账户时输入')
+    remark = db.Column(db.String(255), server_default='', comment='用户备注,用户申请账户时输入')
     audit_status = db.Column(db.Integer, server_default='0', nullable=False, comment='用户注册申请的审核状态,0=进行中, 1=已通过, -1=被拒绝,2=导入数据,管理员审核注册用户时更新')
     push_status = db.Column(db.Integer, server_default='0', nullable=False, comment='???')
     recipient_name = db.Column(db.String(100), comment='证书收件人姓名,用户申请证书时输入，可更新')
@@ -44,6 +44,12 @@ class User(db.Model):
     avatar_url = db.Column(db.String(300), nullable=False, comment='用户微信头像地址链接')
     idcard_obverse_path = db.Column(db.String(255), comment='用户身份证国徽面路径（正面）')
     idcard_reverse_path = db.Column(db.String(255), comment='用户身份证人像面路径（背面）')
+
+    def is_volunteer(self):
+        return self.role == 0
+
+    def is_impaired(self):
+        return self.role == 1
 
 class PreSignedUrl(db.Model):
     __tablename__ = 'pre_signed_urls'
