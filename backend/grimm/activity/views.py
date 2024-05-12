@@ -60,7 +60,7 @@ class NewActivity(Resource):
             activity_info.location_latitude = lat_lng['lat']
             activity_info.location_longitude = lat_lng['lng']
         else:
-            jsonify({"status": "failure"})
+            return jsonify({"status": "failure"})
         # activity_info.location_latitude = info["location_latitude"]
         # activity_info.location_longitude = info["location_longitude"]
         activity_info.sign_in_radius = info["sign_in_radius"]
@@ -164,12 +164,15 @@ class ActivityThemePic(Resource):
         activity_id = request.args.get('activity_id')
         if activity_id:
             activity_info = Activity.query.filter(Activity.id == activity_id).first()
+            if activity_info is None:
+                return jsonify({'status': 'failure', 'message': 'Activity not exists.'})
+
             file_name = activity_info.theme_pic_name
         else:
             file_name = request.args.get('activity_them_pic_name')
         if not file_name:
-            return jsonify({"status": 'failure', "message": "Please input activity id or file name."})
-        image = os.path.join(BASE_DIR, "static/activity_theme_pictures/" + file_name)
+            return jsonify({'status': 'failure', 'message': 'Please input activity id or file name.'})
+        image = os.path.join(BASE_DIR, 'static/activity_theme_pictures/' + file_name)
         return send_file(image)
 
     def post(self):
@@ -949,3 +952,68 @@ class PickupDetailInfo(Resource):
                 pickup_info.pickup_volunteer_openid = None
             db.session.commit()
         return {'status': 'success', 'message': 'Pickup Success'}
+
+class ExportSignParser(object):
+    @staticmethod
+    def get():
+        parser = reqparse.RequestParser()
+        parser.add_argument('activity_id', type=int)
+
+        return parser
+
+@activity.route("/activity/export/sign", methods=['GET'])
+class ExportSign(Resource):
+    @activity.expect(ExportSignParser.get())
+    def get(self):
+        info = ExportSignParser.get().parse_args()
+        activity_id = info.get('activity_id')
+
+        activity = db.session.query(Activity).filter_by(id=activity_id).first()
+
+        xls = activitybiz.form_sign(activity)
+
+        filename = f'{activity.title}({activity.start_date})签到签收表.xlsx'
+        return send_file(xls,
+                as_attachment=True,
+                attachment_filename=filename,
+                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+class ExportSummaryParser(object):
+    @staticmethod
+    def get():
+        parser = reqparse.RequestParser()
+        parser.add_argument('start_date', type=lambda x: datetime.strptime(x,'%Y-%m-%d'))
+        parser.add_argument('end_date', type=lambda x: datetime.strptime(x,'%Y-%m-%d'))
+
+        return parser
+
+@activity.route("/activity/export/duty_summary", methods=['GET'])
+class ExportDutySummary(Resource):
+    @activity.expect(ExportSummaryParser.get())
+    def get(self):
+        return gen_summary_form(activitybiz.form_duty_summary,
+                '活动职责汇总')
+
+@activity.route("/activity/export/info_summary", methods=['GET'])
+class ExportInfoSummary(Resource):
+    @activity.expect(ExportSummaryParser.get())
+    def get(self):
+        return gen_summary_form(activitybiz.form_info_summary,
+                '活动汇总信息')
+
+def gen_summary_form(generate_func, subject):
+    info = ExportSummaryParser.get().parse_args()
+    start_date = info.get('start_date')
+    end_date = info.get('end_date')
+    activities = db.session.query(Activity).filter(Activity.start_time >= start_date, Activity.start_time <= end_date + timedelta(days=1)).all()
+
+    # for a in activities:
+    #     print([i.gifts for i in a.participate_infos], file=sys.stderr)
+    xls = generate_func(activities)
+
+    filename = f'{start_date.strftime("%Y-%m-%d")} ~ {end_date.strftime("%Y-%m-%d")}{subject}.xlsx'
+
+    return send_file(xls,
+            as_attachment=True,
+            attachment_filename=filename,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

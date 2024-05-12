@@ -1,8 +1,14 @@
+from io import BytesIO
 from datetime import datetime, timedelta
+
+from openpyxl import Workbook
+from openpyxl.styles import Font, Border, Side
+from openpyxl.styles import Alignment, PatternFill
 
 from sqlalchemy import func
 
 from grimm import logger, db
+from grimm.models.activity import Duty, Gift
 from grimm.models.activity import ActivityParticipant, PickupImpaired, Activity, PickupVolunteer
 from grimm.models.admin import User
 from grimm.utils import misctools, constants, smstools
@@ -258,3 +264,192 @@ def volunteer_pickup_impaired(volunteer_openid, impaired_openid, pickup_method):
         logger.info('Volunteer %s not pickup %s' % (volunteer_user_info.name, impaired_user_info.name))
         template_id = constants.TEMPLATE_CODES['VOLUNTEER_CANCEL_PICKUP']
         smstools.send_short_message(phone_number_list, template_id, **kwargs)
+
+light_grey = PatternFill(start_color="DBDBDB", end_color="DBDBDB", fill_type = "solid")
+dark_grey = PatternFill(start_color="9C9C9C", end_color="9C9C9C", fill_type = "solid")
+yellow = PatternFill(start_color="FFF200", end_color="FFF200", fill_type = "solid")
+center_aligned = Alignment(horizontal='center', vertical='center')
+thin_border = Border(left=Side(style='thin'),
+                     right=Side(style='thin'),
+                     top=Side(style='thin'),
+                     bottom=Side(style='thin'))
+
+def bold_with_size(size):
+    return Font(bold=True, size=size)
+
+bold_12 = bold_with_size(12)
+bold_11 = bold_with_size(11)
+
+def form_sign(activity):
+    def _write_sheet(ws, users):
+        ws.merge_cells('A1:H1')
+        ws['A1'].fill = dark_grey
+        ws['A1'].font = bold_with_size(20)
+        ws['A1'].alignment = center_aligned
+        ws['A1'].value = f'{ws.title} 签到/签收表'
+        for cell in ws['A1':'H1'][0]:
+            cell.border = thin_border
+
+        project_name = activity.project.name
+        if activity.project_seq:
+            project_name += f' 第({activity.project_seq})期'
+        ws.append(['', f'项目名称：{project_name}'])
+        ws.merge_cells('B2:H2')
+
+        ws.append(['',
+            f'活动日期：{activity.start_date}'])
+        ws.merge_cells('B3:H3')
+
+        ws.append(['', f'活动主题：{activity.title}'])
+        ws.merge_cells('B4:H4')
+
+        ws.append(['序号', '姓名', '电话', '签名', '身份证', '衣服领取', '物品领取', '备注'])
+
+        ws.column_dimensions['A'].width = 5
+        ws.column_dimensions['B'].width = 10
+        for col in 'CDEFGH':
+            ws.column_dimensions[col].width = 20
+
+        for row in ws['A2':'H5']:
+            for cell in row:
+                cell.font = bold_11
+                cell.border = thin_border
+
+        for cell in ws['A5':'H5'][0]:
+            cell.fill = light_grey
+
+        for idx, volunteer in enumerate(users):
+            ws.append([
+                idx+1,
+                volunteer.name,
+                volunteer.phone,
+                '',  # column for manual input of signature
+                volunteer.idcard,
+                '', '', # columns for manual input of receiving items
+                # TODO should be ActivityParticipant.remark?
+                volunteer.remark])
+
+        user_total = len(users)
+        summary_row_idx = 36
+        if user_total > 30:
+            summary_row_idx = user_total + 6
+
+        ws[f'A{summary_row_idx}'].value = '总计'
+        ws[f'B{summary_row_idx}'].value = f'活动人数：  {user_total}  参加人数：    未参加人数：'
+        ws.merge_cells(f'B{summary_row_idx}:H{summary_row_idx}')
+        ws[f'A{summary_row_idx}'].font = bold_11
+        ws[f'B{summary_row_idx}'].font = bold_with_size(14)
+        ws[f'B{summary_row_idx}'].alignment = center_aligned
+        for cell in ws[f'A{summary_row_idx}':f'H{summary_row_idx}'][0]:
+            cell.border = thin_border
+
+    wb = Workbook()
+    ws1 = wb.create_sheet(title='志愿')
+    ws2 = wb.create_sheet(title='视障')
+
+    _write_sheet(ws1, activity.volunteers)
+    _write_sheet(ws2, activity.impaireds)
+
+    # created two new sheet, so remove the first default sheet
+    # which should be empty
+    wb.remove(wb[wb.sheetnames[0]])
+
+    wb.save('test.xlsx')
+
+    stream = BytesIO()
+    wb.save(stream)
+    stream.seek(0)
+
+    return stream
+
+def join_with_chinese_comma(str_list):
+    return '、'.join(str_list)
+
+def form_duty_summary(activities):
+    all_duties = db.session.query(Duty).all()
+    all_duties.sort(key=lambda x: x.seq)
+    duty_names = [x.name for x in all_duties]
+
+    wb = Workbook()
+    ws = wb.active
+    title_row = ['活动序号', '日期']
+    title_row.extend(duty_names)
+    ws.append(title_row)
+
+    ws.column_dimensions['A'].width = 20
+    ws.column_dimensions['B'].width = 25
+    for col in 'CDEFGH':
+        ws.column_dimensions[col].width = 50
+
+    for cell in ws['A1':'H1'][0]:
+        cell.fill = light_grey
+        cell.font = bold_12
+        cell.border = thin_border
+
+    for idx, activity in enumerate(activities):
+        one = [idx+1, activity.start_date]
+        for name in duty_names:
+            one.append(join_with_chinese_comma([info.user.name for info \
+                in activity.participate_infos if info.duty.name == name]))
+        ws.append(one)
+
+    stream = BytesIO()
+    wb.save(stream)
+    stream.seek(0)
+
+    return stream
+
+def form_info_summary(activities):
+    all_gifts = db.session.query(Gift).all()
+    all_gifts.sort(key=lambda x: x.seq)
+    gift_names = [x.name for x in all_gifts]
+
+    wb = Workbook()
+    ws = wb.active
+    ws.merge_cells('A1:L1')
+    ws['A1'].font = bold_with_size(20)
+    ws['A1'].alignment = center_aligned
+    ws['A1'].value = '活动汇总信息'
+    ws['A1'].border = thin_border
+
+    title_row = ['活动序号', '日期', '地点', '孩子数', '志愿者人数', '视障者人数', '总人数']
+    for name in gift_names:
+        title_row.append(f'{name}发件数')
+    title_row.append('备注')
+    ws.append(title_row)
+    for cell in ws['A2':'L2'][0]:
+        cell.fill = yellow
+        cell.font = bold_12
+        cell.border = thin_border
+
+    for idx, activity in enumerate(activities):
+        one = [idx+1, activity.start_date, activity.location,
+                activity.children_count, len(activity.volunteers),
+                len(activity.impaireds),
+                len(activity.volunteers) + len(activity.impaireds),
+            ]
+
+        gift_count = {}
+        for info in activity.participate_infos:
+            if info.gifts:
+                for _id in info.gifts:
+                    gift_count.setdefault(_id, 0)
+                    gift_count[_id] += info.gifts[_id]
+
+        for g in all_gifts:
+            one.append(gift_count.get(str(g.id), 0))
+
+        one.append(activity.remark)
+        ws.append(one)
+
+    ws.column_dimensions['A'].width = 5
+    for col in 'BDEFGHIJK':
+        ws.column_dimensions[col].width = 10
+    for col in 'CL':
+        ws.column_dimensions[col].width = 20
+
+    stream = BytesIO()
+    wb.save(stream)
+    stream.seek(0)
+
+    return stream
