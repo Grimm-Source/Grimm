@@ -19,6 +19,7 @@ assert os.environ.get('FLASK_ENV') not in ['production', 'testing']
 from grimm import create_app, db
 from grimm.utils import misctools
 from grimm.models.admin import Admin, User
+from grimm.models.activity import Project, Duty, Gift
 from grimm.models.activity import Activity, ActivityParticipant
 from grimm.models.activity import PickupImpaired, PickupVolunteer
 
@@ -112,7 +113,7 @@ def create_user():
 
     return volunteer_openid, impaired_openid
 
-def create_activity(admin_id, volunteer_openid):
+def create_activity(admin_id, volunteer_openid, project_id):
     activity_title = 'default_activity'
     activity = Activity(
             title = activity_title,
@@ -126,7 +127,7 @@ def create_activity(admin_id, volunteer_openid):
             others = f'{activity_title}_others',
             admin_raiser = admin_id,
             approver = admin_id,
-            assignee = volunteer_openid,
+            # assignee = volunteer_openid,
             published = 1,
             tag_ids = 'tag1',
             volunteer_capacity = 1,
@@ -135,7 +136,8 @@ def create_activity(admin_id, volunteer_openid):
             volunteer_job_content = f'{activity_title}_volunteer_job_content',
             sign_in_radius = 1,
             sign_in_token = 'sgn_in_tkn',
-            theme_pic_name = f'{activity_title}_theme_pic_name'
+            theme_pic_name = f'{activity_title}_theme_pic_name',
+            project_id = project_id
     )
 
     with app.app_context():
@@ -198,10 +200,38 @@ def create_pick(activity_id, volunteer_openid, impaired_openid):
         db.session.add(pickup_volunteer)
         db.session.commit()
 
+def create_project():
+    with app.app_context():
+        project = Project(name='activity_project_1')
+        db.session.add(project)
+        db.session.flush()
+        project_id = project.id
+        db.session.commit()
+
+    return project_id
+
+def create_duty():
+    with app.app_context():
+        for idx, name in enumerate(('志愿者领队', '视障者领队',
+                '主持', '推文写作', '公众号编辑', '拍照')):
+            db.session.add(Duty(name=name, seq=idx))
+
+        db.session.commit()
+
+def create_gift():
+    with app.app_context():
+        for idx, name in enumerate(('衣服', '帽子', '臂包', '腰包')):
+            db.session.add(Gift(name=name, seq=idx))
+
+        db.session.commit()
+
 def init_all():
     admin_id = create_admin()
     volunteer_openid, impaired_openid = create_user()
-    activity_id = create_activity(admin_id, volunteer_openid)
+    project_id = create_project()
+    create_duty()
+    create_gift()
+    activity_id = create_activity(admin_id, volunteer_openid, project_id)
 
     create_activityparticipant(activity_id,
             volunteer_openid, impaired_openid)
