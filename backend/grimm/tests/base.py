@@ -180,7 +180,7 @@ class ActivityCase(AdminCase, UserCase):
             db.session.add(ActivityParticipant(user=self.default_volunteer,
                 activity=activity, duty_id=1, gifts={1:1}))
             db.session.add(ActivityParticipant(user=user, activity=activity,
-                duty_id=2, gifts={2:2}))
+                gifts={2:2}))
 
             db.session.commit()
 

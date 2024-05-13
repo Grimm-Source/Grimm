@@ -390,7 +390,7 @@ def form_duty_summary(activities):
         one = [idx+1, activity.start_date]
         for name in duty_names:
             one.append(join_with_chinese_comma([info.user.name for info \
-                in activity.participate_infos if info.duty.name == name]))
+                in activity.participate_infos if info.duty_name == name]))
         ws.append(one)
 
     stream = BytesIO()

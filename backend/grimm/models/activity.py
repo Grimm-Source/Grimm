@@ -96,6 +96,10 @@ class ActivityParticipant(db.Model):
     user = relationship('User', backref='participate_infos')
     activity = relationship('Activity', backref='participate_infos')
 
+    @property
+    def duty_name(self):
+        return self.duty.name if self.duty else ''
+
 class PickupImpaired(db.Model):
     __tablename__ = 'pickup_impaired'
     openid = db.Column(db.String(64), primary_key=True, comment='用户ID')
