@@ -48,3 +48,4 @@ urllib3==1.26.16
 Werkzeug==1.0.1
 zipp==3.6.0
 mysqlclient==2.0.3
+openpyxl==3.1.2
