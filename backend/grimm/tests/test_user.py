@@ -134,7 +134,6 @@ class TestUserProfile(UserCase):
         # Check the non-existent user info in the database is not created
         with self.app.app_context():
             user_info = db.session.query(User).filter(User.openid == 'nonexistentopenid').first()
-            print(user_info)
             self.assertIsNone(user_info)
 
 class TestUserPhoneNumber(UserCase):
@@ -337,9 +336,32 @@ class TestUserIDCard(UserCase):
         mock_save.return_value = None
 
         openid = self.default_volunteer_attrs['openid']
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            user_info.idcard_obverse_path = None
+            user_info.idcard_reverse_path = None
+            db.session.add(user_info)
+            db.session.commit()
+
         response = self.client.post(f'{self.image_url}/{openid}',
                        data={
                            'obverse': (io.BytesIO(b"dummy data"), 'obverse.jpg'),
+                       },
+                       headers={'Authorization': openid})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['status'], 'success')
+        obverse_side_file = os.path.realpath(
+            os.path.join(GrimmConfig.GRIMM_USER_DOCUMENT_UPLOAD_PATH,
+                f'{openid}_obverse_side.jpg'))
+        mock_save.assert_any_call(obverse_side_file)
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            self.assertIsNotNone(user_info.idcard_obverse_path)
+            self.assertIsNone(user_info.idcard_reverse_path)
+
+        response = self.client.post(f'{self.image_url}/{openid}',
+                       data={
                            'reverse': (io.BytesIO(b"dummy data"), 'obverse.jpg')
                        },
                        headers={'Authorization': openid})
@@ -347,20 +369,31 @@ class TestUserIDCard(UserCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json['status'], 'success')
 
-        obverse_side_file = os.path.realpath(
-            os.path.join(GrimmConfig.GRIMM_USER_DOCUMENT_UPLOAD_PATH,
-                f'{openid}_obverse_side.jpg'))
         reverse_side_file = os.path.realpath(
             os.path.join(GrimmConfig.GRIMM_USER_DOCUMENT_UPLOAD_PATH,
                 f'{openid}_reverse_side.jpg'))
-        mock_save.assert_any_call(obverse_side_file)
         mock_save.assert_any_call(reverse_side_file)
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            self.assertIsNotNone(user_info.idcard_obverse_path)
+            self.assertIsNotNone(user_info.idcard_reverse_path)
 
     def test_post_no_files(self):
         openid = self.default_volunteer_attrs['openid']
         with self.client as client:
             response = client.post(f'{self.image_url}/{openid}', data={},
                                    headers={'Authorization': openid})
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_wrong_filename(self):
+        openid = self.default_volunteer_attrs['openid']
+        with self.client as client:
+            response = self.client.post(f'{self.image_url}/{openid}',
+                           data={
+                               'not_reverse': (io.BytesIO(b"dummy data"), 'obverse.jpg')
+                           },
+                           headers={'Authorization': openid})
 
         self.assertEqual(response.status_code, 400)
 

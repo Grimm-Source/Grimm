@@ -685,8 +685,8 @@ class UserIdentity(Resource):
             }
 
 user_identity_post_parser = reqparse.RequestParser()
-user_identity_post_parser.add_argument('obverse', type=FileStorage, required=True, location="files")
-user_identity_post_parser.add_argument('reverse', type=FileStorage, required=True, location="files")
+user_identity_post_parser.add_argument('obverse', type=FileStorage, required=False, location="files")
+user_identity_post_parser.add_argument('reverse', type=FileStorage, required=False, location="files")
 
 @admin.route("/user_idcard/image/<string:target_openid>", methods=['POST'])
 class UploadUserIdentity(Resource):
@@ -700,10 +700,8 @@ class UploadUserIdentity(Resource):
         'error': fields.String,
     })
 
-    def verify_picture(self, picture_data: FileStorage, side):
-        if not picture_data:
-            return f'未找到{side}照片\n'
-        return '' if picture_data.content_length < 1e+6 else f'{side}照片文件内容过大\n'
+    def verify_picture(self, picture_data: FileStorage):
+        return picture_data.content_length < 1e+6
 
     @api.doc('上传身份证正反面照片', body=UserIdentityPostModel)
     @api.response(200, 'Success')
@@ -715,13 +713,22 @@ class UploadUserIdentity(Resource):
         openid = target_openid
 
         files = user_identity_post_parser.parse_args()
-        obverse_side = files.get('obverse')
-        reverse_side = files.get('reverse')
-        verify_result = self.verify_picture(obverse_side, "正面") + self.verify_picture(reverse_side, "背面")
-        if verify_result:
+        pic = files.get('obverse')
+        side = 'obverse'
+        if pic is None:
+            pic = files.get('reverse')
+            if pic is None:
+                return {
+                    'status': 'failure',
+                    'error': '未找到照片'
+                }, 400
+
+            side = 'reverse'
+
+        if not self.verify_picture(pic):
             return {
                 'status': 'failure',
-                'error': verify_result
+                'error': '照片文件内容过大'
             }, 400
 
         user = User.query.filter(User.openid == openid).first()
@@ -731,13 +738,10 @@ class UploadUserIdentity(Resource):
                 'error': '用户信息未找到'
             }, 404
 
-        obverse_side_file = f'{openid}_obverse_side.jpg'
-        reverse_side_file = f'{openid}_reverse_side.jpg'
-        obverse_side.save(user_idcard_realpath(obverse_side_file))
-        reverse_side.save(user_idcard_realpath(reverse_side_file))
+        filename = f'{openid}_{side}_side.jpg'
+        pic.save(user_idcard_realpath(filename))
+        setattr(user, f'idcard_{side}_path', filename)
 
-        user.idcard_obverse_path = obverse_side_file
-        user.idcard_reverse_path = reverse_side_file
         db.session.add(user)
         db.session.commit()
         return {
