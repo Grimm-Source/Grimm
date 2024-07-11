@@ -343,6 +343,9 @@ class TestUserIDCard(UserCase):
             db.session.add(user_info)
             db.session.commit()
 
+            psu = PreSignedUrl.query.filter(PreSignedUrl.openid == openid).first()
+            self.assertIsNone(psu)
+
         response = self.client.post(f'{self.image_url}/{openid}',
                        data={
                            'obverse': (io.BytesIO(b"dummy data"), 'obverse.jpg'),
@@ -359,6 +362,9 @@ class TestUserIDCard(UserCase):
             user_info = db.session.query(User).filter(User.openid == openid).first()
             self.assertIsNotNone(user_info.idcard_obverse_path)
             self.assertIsNone(user_info.idcard_reverse_path)
+
+            psu = PreSignedUrl.query.filter(PreSignedUrl.openid == openid).first()
+            self.assertEqual(psu.target_openid, openid)
 
         response = self.client.post(f'{self.image_url}/{openid}',
                        data={

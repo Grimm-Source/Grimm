@@ -742,10 +742,19 @@ class UploadUserIdentity(Resource):
         pic.save(user_idcard_realpath(filename))
         setattr(user, f'idcard_{side}_path', filename)
 
+        params = pre_sign_user_identity_image(side, openid, openid)
+        psu = PreSignedUrl(**params)
+
         db.session.add(user)
+        db.session.add(psu)
         db.session.commit()
+
+        ret = {}
+        ret[side] = '/user_idcard/image/{}?token={}&side={}'.format(openid, params['token'], side)
+
         return {
-            'status': 'success'
+            'status': 'success',
+            'urls': ret
         }, 200
 
 user_identity_image_get_parser = reqparse.RequestParser()
