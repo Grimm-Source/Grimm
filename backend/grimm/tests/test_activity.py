@@ -23,9 +23,12 @@ class TestGetActivities(ActivityCase):
     def test_get_all_activities(self) : #, mock_query, mock_serialize):
         response = self.client.get('/activities')
         self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response.json, list)
+        data = response.json
+        self.assertIsInstance(data, list)
         # initialized 2 activities in setUp
-        self.assertEqual(2, len(response.json))
+        self.assertEqual(2, len(data))
+        self.assertGreater(data[0]['start_time'],
+            data[1]['start_time'])
 
     def test_get_activities_by_keyword(self):
         response = self.client.get('/activities?keyword={}'.format(

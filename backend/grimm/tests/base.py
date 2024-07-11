@@ -2,7 +2,7 @@ import os
 import sys
 import unittest
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 os.environ['FLASK_ENV'] = 'dev'
 
 from grimm import create_app, db
@@ -107,7 +107,7 @@ class ActivityCase(AdminCase, UserCase):
             'volunteer_job_title': 'activity_job_title_1',
             'volunteer_job_content': 'activity_job_content_1',
             'sign_in_token': 's_token_1',
-            'start_time': datetime.now(),
+            'start_time': datetime.now() + timedelta(seconds=1),
             'end_time': datetime.now(),
             'activity_fee': 0,
             'admin_raiser': 1,

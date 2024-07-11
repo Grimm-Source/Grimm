@@ -102,42 +102,38 @@ def activity_converter(activity, openid=0):
 
 def sort_by_time(activities_info, filter_time):
     if filter_time == "all":
-        return reversed(
-            [
+        res_info = [
                 activity
                 for activity in activities_info
                 if datetime.today() - timedelta(days=365) < activity["end_time"]
             ]
-        )
     elif filter_time == "latest":
-        return reversed(
-            [
+        res_info = [
                 activity
                 for activity in activities_info
                 if datetime.today() < activity["end_time"]
             ]
-        )
     elif filter_time == "weekends":
         res_info = [
             activity
             for activity in activities_info
             if should_append_by_weekends(activity)
         ]
-        return sorted(res_info, key=lambda activity: activity["start_time"])
     elif filter_time == "recents":
         res_info = [
             activity
             for activity in activities_info
             if should_append_by_recents(activity)
         ]
-        return sorted(res_info, key=lambda activity: activity["start_time"])
     else:
         res_info = [
             activity
             for activity in activities_info
             if should_append_by_time_span(activity, filter_time)
         ]
-        return sorted(res_info, key=lambda activity: activity["start_time"])
+
+    return sorted(res_info, reverse=True,
+            key=lambda activity: activity["start_time"])
 
 
 def should_append_by_time_span(activity, filter_time):
