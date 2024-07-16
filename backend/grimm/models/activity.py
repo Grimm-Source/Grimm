@@ -9,7 +9,7 @@ class Project(db.Model):
     name = db.Column(db.String(60), nullable=False, unique=True, comment='项目名')
 
     def to_json(self):
-        return {'name': self.name}
+        return {'id': self.id, 'name': self.name}
 
 class Duty(db.Model):
     __tablename__ = 'duty'
@@ -18,7 +18,7 @@ class Duty(db.Model):
     seq = db.Column(db.Integer, nullable=False, unique=True, comment='导出汇总表时的列顺序，小的数字靠左')
 
     def to_json(self):
-        return {'name': self.name}
+        return {'id': self.id, 'name': self.name}
 
 class Gift(db.Model):
     __tablename__ = 'gift'
@@ -27,7 +27,7 @@ class Gift(db.Model):
     seq = db.Column(db.Integer, nullable=False, unique=True, comment='导出汇总表时的列顺序，小的数字靠左')
 
     def to_json(self):
-        return {'name': self.name}
+        return {'id': self.id, 'name': self.name}
 
 class Activity(db.Model):
     __tablename__ = 'activity'
