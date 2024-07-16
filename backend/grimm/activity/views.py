@@ -11,6 +11,7 @@ from config import BASE_DIR
 from grimm import logger, db
 from grimm.activity import activity, activitybiz
 from grimm.models.activity import Activity, ActivityParticipant, PickupVolunteer, PickupImpaired
+from grimm.models.activity import Project, Duty, Gift
 from grimm.models.admin import User
 from grimm.utils import dbutils, certificationgenerate, emailverify, areautils
 from grimm.utils.constants import TAG_LIST
@@ -1017,3 +1018,30 @@ def gen_summary_form(generate_func, subject):
             as_attachment=True,
             attachment_filename=filename,
             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+@activity.route("/activity/projects", methods=['GET'])
+class GetProjects(Resource):
+    def get(self):
+        projects = db.session.query(Project).all()
+        return jsonify({
+            'status': 'success',
+            'data': [x.to_json() for x in projects]
+        })
+
+@activity.route("/activity/duties", methods=['GET'])
+class GetDuties(Resource):
+    def get(self):
+        duties = db.session.query(Duty).all()
+        return jsonify({
+            'status': 'success',
+            'data': [x.to_json() for x in duties]
+        })
+
+@activity.route("/activity/gifts", methods=['GET'])
+class GetGifts(Resource):
+    def get(self):
+        gifts = db.session.query(Gift).all()
+        return jsonify({
+            'status': 'success',
+            'data': [x.to_json() for x in gifts]
+        })

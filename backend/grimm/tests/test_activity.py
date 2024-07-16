@@ -361,3 +361,35 @@ class TestExportInfoSummary(ActivityCase):
         self.assertEqual(ws['B3'].value, today)
         self.assertEqual(ws['E4'].value, 1)
 
+# GET "/activity/projects"
+class TestGetProjects(ActivityCase):
+    def test_get_all(self):
+        headers = {}
+        response = self.client.get(f'/activity/projects', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json
+        self.assertEqual(data['status'], 'success')
+        self.assertEqual(len(data['data']), 2)
+        self.assertEqual(data['data'][0]['name'], 'project_1')
+
+# GET "/activity/duties"
+class TestGetDuties(ActivityCase):
+    def test_get_all(self):
+        headers = {}
+        response = self.client.get(f'/activity/duties', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json
+        self.assertEqual(data['status'], 'success')
+        self.assertEqual(len(data['data']), 6)
+        self.assertEqual(set([x['name'] for x in data['data']]), set(('志愿者领队', '视障者领队', '主持', '推文写作', '公众号编辑', '拍照')))
+
+# GET "/activity/gifts"
+class TestGetGifts(ActivityCase):
+    def test_get_all(self):
+        headers = {}
+        response = self.client.get(f'/activity/gifts', headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json
+        self.assertEqual(data['status'], 'success')
+        self.assertEqual(len(data['data']), 4)
+        self.assertEqual(set([x['name'] for x in data['data']]), set(('衣服', '帽子', '臂包', '腰包')))

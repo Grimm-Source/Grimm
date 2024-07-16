@@ -8,17 +8,26 @@ class Project(db.Model):
     id = db.Column(db.BigInteger, primary_key=True, nullable=False, autoincrement=True)
     name = db.Column(db.String(60), nullable=False, unique=True, comment='项目名')
 
+    def to_json(self):
+        return {'name': self.name}
+
 class Duty(db.Model):
     __tablename__ = 'duty'
     id = db.Column(db.BigInteger, primary_key=True, nullable=False, autoincrement=True)
     name = db.Column(db.String(60), nullable=False, unique=True, comment='活动中担任的职责')
     seq = db.Column(db.Integer, nullable=False, unique=True, comment='导出汇总表时的列顺序，小的数字靠左')
 
+    def to_json(self):
+        return {'name': self.name}
+
 class Gift(db.Model):
     __tablename__ = 'gift'
     id = db.Column(db.BigInteger, primary_key=True, nullable=False, autoincrement=True)
     name = db.Column(db.String(60), nullable=False, unique=True)
     seq = db.Column(db.Integer, nullable=False, unique=True, comment='导出汇总表时的列顺序，小的数字靠左')
+
+    def to_json(self):
+        return {'name': self.name}
 
 class Activity(db.Model):
     __tablename__ = 'activity'
