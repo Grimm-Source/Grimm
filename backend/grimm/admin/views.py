@@ -791,10 +791,11 @@ class UserIdentityImage(Resource):
             }, 404
 
         user = User.query.filter(User.openid == target_openid).first()
-        if not user or not user.idcard_obverse_path or not user.idcard_reverse_path:
+        file_path = getattr(user, f'idcard_{side}_path')
+        if not user or not file_path:
             return {
                 "status": "failure",
                 "error": "用户身份证信息未找到"
             }, 404
 
-        return send_file(user_idcard_realpath(getattr(user, f'idcard_{side}_path')), mimetype='image/jpeg')
+        return send_file(user_idcard_realpath(file_path), mimetype='image/jpeg')
