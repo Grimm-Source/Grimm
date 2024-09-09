@@ -617,6 +617,11 @@ def user_idcard_realpath(filename):
             os.path.join(GrimmConfig.GRIMM_USER_DOCUMENT_UPLOAD_PATH,
             filename))
 
+def user_disabled_id_realpath(filename):
+    return os.path.realpath(
+            os.path.join(GrimmConfig.GRIMM_DISABLED_ID_UPLOAD_PATH,
+            filename))
+
 def pre_sign_user_identity_image(side, requester, target):
     expire_in_minutes = 3
     return {
@@ -628,20 +633,46 @@ def pre_sign_user_identity_image(side, requester, target):
         'side': side,
     }
 
+def verify_picture(picture_data: FileStorage):
+    return picture_data.content_length < 1e+6
+
+def verify_presigned_url(token, side, requester_openid, target_openid):
+    '''
+        return JSON error message with HTTP status_code if verification failed
+        return User instance if verification passed
+    '''
+
+    status_code = 404
+    record = PreSignedUrl.query.filter(PreSignedUrl.token == token, PreSignedUrl.side==side).first()
+
+    if not record or record.openid != requester_openid or record.target_openid != target_openid:
+        return {
+            "status": "failure",
+            "error": "非法口令"
+        }, status_code
+
+    if datetime.now() > record.expire_at:
+        return {
+            "status": "failure",
+            "error": "口令已过期"
+        }, status_code
+
+    return User.query.filter(User.openid == target_openid).first()
+
+ErrorResponseModel = api.model('ErrorResponse', {
+    'status': fields.String,
+    'error': fields.String,
+})
+
 @admin.route("/user_idcard/urls/<string:target_user>", methods=['GET'])
 class UserIdentity(Resource):
-    signed_image_urls = api.model('UserIdentityImageURLs', {
+    signed_image_urls = api.model('UserIDcardImageURLs', {
         'obverse': fields.String,
         'reverse': fields.String
     })
-    UserIdentityResponseModel = api.model('UserIdentityResponse', {
+    UserIdentityResponseModel = api.model('UserIDcardResponse', {
         'status': fields.String,
         'urls': fields.Nested(signed_image_urls, required=True, description="所请求照片的签名后链接"),
-    })
-
-    ErrorResponseModel = api.model('ErrorResponse', {
-        'status': fields.String,
-        'error': fields.String,
     })
 
     @api.response(200, 'Success', UserIdentityResponseModel)
@@ -695,13 +726,6 @@ class UploadUserIdentity(Resource):
         "obverse": fields.String(required=True, description="身份证正面照片"),
     })
 
-    ErrorResponseModel = api.model('ErrorResponse', {
-        'status': fields.String,
-        'error': fields.String,
-    })
-
-    def verify_picture(self, picture_data: FileStorage):
-        return picture_data.content_length < 1e+6
 
     @api.doc('上传身份证正反面照片', body=UserIdentityPostModel)
     @api.response(200, 'Success')
@@ -725,7 +749,7 @@ class UploadUserIdentity(Resource):
 
             side = 'reverse'
 
-        if not self.verify_picture(pic):
+        if not verify_picture(pic):
             return {
                 'status': 'failure',
                 'error': '照片文件内容过大'
@@ -744,6 +768,9 @@ class UploadUserIdentity(Resource):
 
         params = pre_sign_user_identity_image(side, openid, openid)
         psu = PreSignedUrl(**params)
+
+        # FIXME this code is for test, remove this before release
+        user.audit_status = 0
 
         db.session.add(user)
         db.session.add(psu)
@@ -777,25 +804,184 @@ class UserIdentityImage(Resource):
                 "error": "参数错误: side"
             }, 400
 
-        record = PreSignedUrl.query.filter(PreSignedUrl.token == token).first()
-        if not record or record.openid != requester or record.target_openid != target_openid:
-            return {
-                "status": "failure",
-                "error": "非法口令"
-            }, 404
+        result = verify_presigned_url(token, side, requester_openid, target_openid)
 
-        if datetime.now() > record.expire_at:
-            return {
-                "status": "failure",
-                "error": "口令已过期"
-            }, 404
+        if not isinstance(result, User):
+            return result
 
-        user = User.query.filter(User.openid == target_openid).first()
-        file_path = getattr(user, f'idcard_{side}_path')
-        if not user or not file_path:
+        file_path = getattr(result, f'idcard_{side}_path')
+        if not file_path:
             return {
                 "status": "failure",
                 "error": "用户身份证信息未找到"
             }, 404
 
         return send_file(user_idcard_realpath(file_path), mimetype='image/jpeg')
+
+user_disabled_id_file_post_parser = reqparse.RequestParser()
+user_disabled_id_file_post_parser.add_argument('obverse', type=FileStorage, required=False, location="files")
+
+@admin.route("/user_disabled_id/image/<string:target_openid>", methods=['POST'])
+class UploadUserDisabledIdImage(Resource):
+    UserDisabledIdPostModel = api.model('UserDisabledIdPost', {
+        "disabled_id_obverse": fields.String(required=True, description="身份证正面照片"),
+    })
+
+
+    @api.doc('上传身份证正反面照片', body=UserDisabledIdPostModel)
+    @api.response(200, 'Success')
+    @api.response(400, 'Invalid request body', ErrorResponseModel)
+    @api.expect(user_disabled_id_file_post_parser)
+    def post(self, target_openid):
+        # TODO change to JWT get_jwt_identity
+        # openid = request.headers.get('Authorization')
+        openid = target_openid
+
+        files = user_disabled_id_file_post_parser.parse_args()
+        side = 'obverse'
+        pic = files.get(side)
+        if pic is None:
+            return {
+                'status': 'failure',
+                'error': '未找到照片'
+            }, 400
+
+        if not verify_picture(pic):
+            return {
+                'status': 'failure',
+                'error': '照片文件内容过大'
+            }, 400
+
+        user = User.query.filter(User.openid == openid).first()
+        if user is None:
+            return {
+                'status': 'failure',
+                'error': '用户信息未找到'
+            }, 404
+
+        filename = f'{openid}_{side}_side.jpg'
+        pic.save(user_disabled_id_realpath(filename))
+        setattr(user, f'disabled_id_obverse_path', filename)
+
+        params = pre_sign_user_identity_image('disabled_id_obverse', openid, openid)
+        psu = PreSignedUrl(**params)
+
+        db.session.add(user)
+        db.session.add(psu)
+        db.session.commit()
+
+        ret = {}
+        ret[side] = '/user_disabled_id/image/{}?token={}&side={}'.format(openid, params['token'], side)
+
+        return {
+            'status': 'success',
+            'urls': ret
+        }, 200
+
+user_identity_image_get_parser = reqparse.RequestParser()
+user_identity_image_get_parser.add_argument('token', type=str, required=True, location="args")
+
+@admin.route("/user_disabled_id/image/<string:target_openid>", methods=['GET'])
+class UserDisabledIdImage(Resource):
+    @api.expect(user_identity_image_get_parser)
+    def get(self, target_openid):
+        args = user_identity_image_get_parser.parse_args()
+        side = 'obverse'
+        token = args.get('token')
+        # TODO change to JWT get_jwt_identity
+        requester_openid = request.headers.get('Authorization')
+
+        if side != 'obverse':
+            return {
+                "status": "failure",
+                "error": "参数错误: side"
+            }, 400
+
+        result = verify_presigned_url(token, 'disabled_id_obverse',
+                requester_openid, target_openid)
+
+        if not isinstance(result, User):
+            return result
+
+        file_path = getattr(result, f'disabled_id_{side}_path')
+        if not file_path:
+            return {
+                "status": "failure",
+                "error": "用户残疾证信息未找到"
+            }, 404
+
+        return send_file(user_disabled_id_realpath(file_path), mimetype='image/jpeg')
+
+@admin.route("/user_identities/urls/<string:target_user>", methods=['GET'])
+class UserIdentities(Resource):
+    signed_image_urls = api.model('UserIdentityImageURLs', {
+        'obverse': fields.String,
+        'reverse': fields.String,
+        'disabled_id_obverse': fields.String
+    })
+    UserIdentityResponseModel = api.model('UserIdentityResponse', {
+        'status': fields.String,
+        'urls': fields.Nested(signed_image_urls, required=True, description="所请求照片的签名后链接"),
+    })
+
+    @api.response(200, 'Success', UserIdentityResponseModel)
+    @api.response(404, 'User identity not found', ErrorResponseModel)
+    @api.response(401, 'Unauthorized', ErrorResponseModel)
+    @api.response(500, 'InternalError', ErrorResponseModel)
+    def get(self, target_user):
+        # TODO change to JWT get_jwt_identity
+        requester = request.headers.get('Authorization')
+        if requester != target_user and not is_admin(requester):
+            return {
+                "status": "failure",
+                "error": "该用户无法读取其他用户的信息"
+            }, 401
+
+        if User.query.filter(User.openid == target_user).first() is None:
+            return {
+                'status': 'failure',
+                'error': '用户信息未找到'
+            }, 404
+
+        ret = {}
+        try:
+            for side in ['obverse', 'reverse', 'disabled_id_obverse']:
+                params = pre_sign_user_identity_image(side,
+                        requester, target_user)
+                psu = PreSignedUrl(**params)
+                db.session.add(psu)
+                if side in ['obverse', 'reverse']:
+                    ret[side] = '/user_idcard/image/{}?token={}&side={}'.format(target_user, params['token'], side)
+                else:
+                    ret[side] = '/user_disabled_id/image/{}?token={}'.format(target_user, params['token'])
+            db.session.commit()
+        except Exception as e:
+            logger.error("failed to commit to database: %s", e)
+            return {
+                "status": "failure",
+                "error": f"发生未知服务器错误: {e}",
+            }, 500
+        else:
+            return {
+                "status": "success",
+                "urls": ret
+            }
+
+# FIXME for test purpose
+@admin.route("/user_tmp_toggle/<string:username>", methods=['GET'])
+class TmpToggleUserRole(Resource):
+    def get(self, username):
+        user = User.query.filter(User.name == username).first()
+        if user is None:
+            return {
+                "status": "failure",
+                "error": f"用户信息未找到 {username}"
+            }, 404
+
+        user.role = 0 if user.role == 1 else 1
+        db.session.add(user)
+        db.session.commit()
+
+        return {
+            'status': 'success',
+        }, 200

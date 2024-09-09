@@ -340,6 +340,8 @@ class TestUserIDCard(UserCase):
             user_info = db.session.query(User).filter(User.openid == openid).first()
             user_info.idcard_obverse_path = None
             user_info.idcard_reverse_path = None
+            # FIXME this audit_status set is for test
+            user_info.audit_status = 1
             db.session.add(user_info)
             db.session.commit()
 
@@ -362,6 +364,8 @@ class TestUserIDCard(UserCase):
             user_info = db.session.query(User).filter(User.openid == openid).first()
             self.assertIsNotNone(user_info.idcard_obverse_path)
             self.assertIsNone(user_info.idcard_reverse_path)
+            # FIXME this audit_status set is for test
+            self.assertEqual(user_info.audit_status, 0)
 
             psu = PreSignedUrl.query.filter(PreSignedUrl.openid == openid).first()
             self.assertEqual(psu.target_openid, openid)
@@ -459,6 +463,89 @@ class TestUserIDCard(UserCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json['error'], '口令已过期')
+
+class TestUserIDCard(UserCase):
+    get_signed_urls = '/user_disabled_id/urls'
+    image_url = '/user_disabled_id/image'
+
+    @mock.patch('werkzeug.datastructures.FileStorage.save')
+    def test_post_success(self, mock_save): # mock_os, mock_open):
+        mock_save.return_value = None
+
+        openid = self.default_impaired_attrs['openid']
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            user_info.disabled_id_obverse_path = None
+            db.session.add(user_info)
+            db.session.commit()
+
+            psu = PreSignedUrl.query.filter(PreSignedUrl.openid == openid).first()
+            self.assertIsNone(psu)
+
+        response = self.client.post(f'{self.image_url}/{openid}',
+                       data={
+                           'obverse': (io.BytesIO(b"dummy data"), 'obverse.jpg'),
+                       },
+                       headers={'Authorization': openid})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['status'], 'success')
+        obverse_side_file = os.path.realpath(
+            os.path.join(GrimmConfig.GRIMM_DISABLED_ID_UPLOAD_PATH,
+                f'{openid}_obverse_side.jpg'))
+        mock_save.assert_any_call(obverse_side_file)
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            self.assertIsNotNone(user_info.disabled_id_obverse_path)
+
+            psu = PreSignedUrl.query.filter(PreSignedUrl.openid == openid).first()
+            self.assertEqual(psu.target_openid, openid)
+
+        pathlib.Path(obverse_side_file).touch()
+        with self.client as client:
+            response = client.get(response.json['urls']['obverse'],
+                          headers={'Authorization': openid})
+
+        os.remove(obverse_side_file)
+        self.assertEqual(response.status_code, 200)
+
+class TestUserToggleRole(UserCase):
+    def test_toggle(self):
+        openid = self.default_volunteer_attrs['openid']
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            self.assertEqual(user_info.role, 0)
+
+        username = self.default_volunteer_attrs['name']
+        response = self.client.get(f'/user_tmp_toggle/{username}')
+        self.assertEqual(response.status_code, 200)
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            self.assertEqual(user_info.role, 1)
+
+        response = self.client.get(f'/user_tmp_toggle/{username}')
+        self.assertEqual(response.status_code, 200)
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            self.assertEqual(user_info.role, 0)
+
+class TestUserIdentityImages(UserCase):
+    def test_get_success(self): # mock_os, mock_open):
+        openid = self.default_impaired_attrs['openid']
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            user_info.idcard_obverse_path = 'obverse.png'
+            user_info.idcard_reverse_path = 'reverse.png'
+            user_info.disabled_id_obverse_path = 'disabled_id_obverse.png'
+            db.session.add(user_info)
+
+        response = self.client.get(f'/user_identities/urls/{openid}',
+                        headers={'Authorization': openid})
+        self.assertEqual(response.status_code, 200)
+        urls = response.json['urls']
+        self.assertEqual(len(urls), 3)
+        for k in urls:
+            self.assertTrue(urls[k] is not None and urls[k] != '')
 
 if __name__ == "__main__":
     unittest.main()

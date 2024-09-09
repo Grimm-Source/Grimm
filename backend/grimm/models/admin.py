@@ -19,8 +19,10 @@ class User(db.Model):
     role = db.Column(db.Integer, nullable=False, server_default='0', comment='用户类型, 0=志愿者, 1=视障人士,新用户申请账户时设定')
     name = db.Column(db.String(100), default='志愿者', comment='用户姓名,用户申请账户时输入，可更新')
     real_name = db.Column(db.String(100), comment='用户真实姓名,用户申请证书时输入，可更新')
+    # TODO not used?
     id_type = db.Column(db.String(100), default='身份证', comment='证件类型：身份证；护照；驾驶证等,用户申请证书时输入，可更新')
     idcard = db.Column(db.String(18), unique=True, comment='用户18位身份证号,用户申请账户时输入，可选')
+    # TODO not used?
     idcard_verified = db.Column(db.Integer, server_default='0', comment='身份证号验证标识位，0=未验证，1=已验证,待引用')
     disabled_id = db.Column(db.String(60), unique=True, comment='视障人士残疾人证号,视障人士申请账户时输入')
     disabled_id_verified = db.Column(db.Integer, server_default='0', comment='残疾人证号验证标识位，0=未验证，1=已验证,待引用')
@@ -44,6 +46,7 @@ class User(db.Model):
     avatar_url = db.Column(db.String(300), nullable=False, comment='用户微信头像地址链接')
     idcard_obverse_path = db.Column(db.String(255), comment='用户身份证国徽面路径（正面）')
     idcard_reverse_path = db.Column(db.String(255), comment='用户身份证人像面路径（背面）')
+    disabled_id_obverse_path = db.Column(db.String(255), comment='视障人士残疾人证')
 
     def is_volunteer(self):
         return self.role == 0
@@ -57,7 +60,7 @@ class PreSignedUrl(db.Model):
     openid = db.Column(db.String(64), comment='令牌授权的用户ID')
     expire_at = db.Column(db.DateTime, comment='令牌失效的时间')
     target_openid = db.Column(db.String(64), comment='令牌对应的授权该用户可以查看的用户的ID')
-    side = db.Column(db.String(16), comment='身份证正/反面 reverse=背面 obverse=正面')
+    side = db.Column(db.String(64), comment='身份证正/反面 reverse=背面 obverse=正面')
 
 # class UserDocument(db.Model):
 #     # 储存用户认证信息所需照片，如身份证正反面照片

@@ -81,10 +81,27 @@ class UserCase(BaseCase):
                 'idcard_obverse_path': 'default_volunteer_openid_obverse.png',
                 'idcard_reverse_path': 'default_volunteer_openid_reverse.png',
         }
+
+        self.default_impaired_attrs = {
+                'role': 1,
+                'gender': 'm',
+                'address': 'address',
+                'name': 'default_impaired',
+                'phone': '1234567',
+                'email': 'default_impaired_email',
+                'avatar_url': 'avatar_url',
+                'openid': 'default_impaired',
+                'registration_date': datetime.now(),
+                'birth': datetime.now(),
+        }
+
         with self.app.app_context():
             user = User(**self.default_volunteer_attrs)
             db.session.add(user)
             self.default_volunteer = user
+            impaired = User(**self.default_impaired_attrs)
+            db.session.add(impaired)
+            self.default_impaired = impaired
             db.session.commit()
 
 class ActivityCase(AdminCase, UserCase):

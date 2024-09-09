@@ -44,6 +44,7 @@ def create_app():
     api.add_namespace(activity)
     api.add_namespace(wxapp)
     os.makedirs(os.path.dirname(GrimmConfig.GRIMM_USER_DOCUMENT_UPLOAD_PATH), exist_ok=True)
+    os.makedirs(os.path.dirname(GrimmConfig.GRIMM_DISABLED_ID_UPLOAD_PATH), exist_ok=True)
 
     return app
 
