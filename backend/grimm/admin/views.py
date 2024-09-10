@@ -804,12 +804,21 @@ class UserIdentityImage(Resource):
                 "error": "参数错误: side"
             }, 400
 
-        result = verify_presigned_url(token, side, requester_openid, target_openid)
+        record = PreSignedUrl.query.filter(PreSignedUrl.token == token, PreSignedUrl.side==side).first()
+        # TODO validate requester_openid and target_openid
+        if record is None:
+            return {
+                "status": "failure",
+                "error": "非法口令"
+            }, 404
+        if datetime.now() > record.expire_at:
+            return {
+                "status": "failure",
+                "error": "口令已过期"
+            }, 404
 
-        if not isinstance(result, User):
-            return result
-
-        file_path = getattr(result, f'idcard_{side}_path')
+        user = User.query.filter(User.openid == target_openid).first()
+        file_path = getattr(user, f'idcard_{side}_path', None)
         if not file_path:
             return {
                 "status": "failure",
@@ -982,6 +991,6 @@ class TmpToggleUserRole(Resource):
         db.session.add(user)
         db.session.commit()
 
-        return {
+        return jsonify({
             'status': f'success,当前为 {"志愿者" if user.role == 0 else "视障者"}',
-        }, 200
+        })
