@@ -417,7 +417,7 @@ class TestUserIDCard(UserCase):
         side = 'obverse'
 
         with self.app.app_context():
-            pre_signed_url = PreSignedUrl(token=token, openid=openid, expire_at=datetime.now() + timedelta(hours=1), target_openid=openid)
+            pre_signed_url = PreSignedUrl(token=token, openid=openid, expire_at=datetime.now() + timedelta(hours=1), target_openid=openid, side='obverse')
             db.session.add(pre_signed_url)
             db.session.commit()
 
@@ -453,7 +453,7 @@ class TestUserIDCard(UserCase):
         openid = 'test_openid'
         side = 'obverse'
         with self.app.app_context():
-            pre_signed_url = PreSignedUrl(token=token, openid=openid, expire_at=datetime.now() - timedelta(hours=1), target_openid=openid)
+            pre_signed_url = PreSignedUrl(token=token, openid=openid, expire_at=datetime.now() - timedelta(hours=1), target_openid=openid, side='obverse')
             db.session.add(pre_signed_url)
             db.session.commit()
 
@@ -464,7 +464,7 @@ class TestUserIDCard(UserCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json['error'], '口令已过期')
 
-class TestUserIDCard(UserCase):
+class TestUserDisabledIDImage(UserCase):
     get_signed_urls = '/user_disabled_id/urls'
     image_url = '/user_disabled_id/image'
 

@@ -796,7 +796,7 @@ class UserIdentityImage(Resource):
         side = args.get('side')
         token = args.get('token')
         # TODO change to JWT get_jwt_identity
-        requester = request.headers.get('Authorization')
+        requester_openid = request.headers.get('Authorization')
 
         if side not in ('obverse', 'reverse'):
             return {
@@ -878,14 +878,14 @@ class UploadUserDisabledIdImage(Resource):
             'urls': ret
         }, 200
 
-user_identity_image_get_parser = reqparse.RequestParser()
-user_identity_image_get_parser.add_argument('token', type=str, required=True, location="args")
+user_disabled_id_image_get_parser = reqparse.RequestParser()
+user_disabled_id_image_get_parser.add_argument('token', type=str, required=True, location="args")
 
 @admin.route("/user_disabled_id/image/<string:target_openid>", methods=['GET'])
 class UserDisabledIdImage(Resource):
-    @api.expect(user_identity_image_get_parser)
+    @api.expect(user_disabled_id_image_get_parser)
     def get(self, target_openid):
-        args = user_identity_image_get_parser.parse_args()
+        args = user_disabled_id_image_get_parser.parse_args()
         side = 'obverse'
         token = args.get('token')
         # TODO change to JWT get_jwt_identity
