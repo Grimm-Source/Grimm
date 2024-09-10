@@ -1045,3 +1045,39 @@ class GetGifts(Resource):
             'status': 'success',
             'data': [x.to_json() for x in gifts]
         })
+
+@activity.route("/activity/review/<int:activity_id>", methods=['POST'])
+class ReviewActivity(Resource):
+    def post(self, activity_id):
+        activity = Activity.query.filter(Activity.id == activity_id).first()
+        if activity is None:
+            return {
+                "status": "failure",
+                "error": "活动不存在"
+            }, 404
+
+        data = request.get_json()['data']
+        if not data or len(data) == 0:
+            return {
+                "status": "failure",
+                "error": "活动参与情况不能为空"
+            }, 400
+
+        info_map = dict([(info.phone, info) for info in activity.participate_infos])
+        for item in data:
+            # TODO insert new
+            if info_map.get(item['phone']) is None:
+                continue
+            # TODO check if info.user matches
+
+            info = info_map[item['phone']]
+            info.remark = item['remark']
+            # TODO check if id exists
+            info.duties = item['duties']
+            info.gifts = item['gifts']
+            db.session.add(info)
+
+        db.session.commit()
+        return jsonify({
+            'status': 'success',
+        })

@@ -60,7 +60,7 @@ class PreSignedUrl(db.Model):
     openid = db.Column(db.String(64), comment='令牌授权的用户ID')
     expire_at = db.Column(db.DateTime, comment='令牌失效的时间')
     target_openid = db.Column(db.String(64), comment='令牌对应的授权该用户可以查看的用户的ID')
-    side = db.Column(db.String(64), comment='身份证正/反面 reverse=背面 obverse=正面')
+    side = db.Column(db.String(64), nullable=False, comment='身份证正/反面 reverse=背面 obverse=正面')
 
 # class UserDocument(db.Model):
 #     # 储存用户认证信息所需照片，如身份证正反面照片

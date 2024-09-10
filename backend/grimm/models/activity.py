@@ -97,17 +97,17 @@ class ActivityParticipant(db.Model):
     signoff_time = db.Column(db.DateTime, comment='签退时间')
     signoff_latitude = db.Column(db.DECIMAL(9, 6), comment='签退经纬度-纬度')
     signoff_longitude = db.Column(db.DECIMAL(9, 6), comment='签退经纬度-经度')
-    duty_id = db.Column(db.BigInteger, db.ForeignKey('duty.id'))
     is_child = db.Column(db.Boolean, server_default='0', comment='报名人是否是孩子')
     gifts = db.Column(db.JSON, comment='领取物品种类和数量')
+    duties = db.Column(db.JSON, comment='活动中承担的职责, Duty.id列表')
+    remark = db.Column(db.String(500), server_default='', comment='备注')
 
-    duty = relationship('Duty')
     user = relationship('User', backref='participate_infos')
     activity = relationship('Activity', backref='participate_infos')
 
     @property
-    def duty_name(self):
-        return self.duty.name if self.duty else ''
+    def phone(self):
+        return self.user.phone
 
 class PickupImpaired(db.Model):
     __tablename__ = 'pickup_impaired'

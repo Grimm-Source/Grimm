@@ -365,6 +365,7 @@ def form_duty_summary(activities):
     all_duties = db.session.query(Duty).all()
     all_duties.sort(key=lambda x: x.seq)
     duty_names = [x.name for x in all_duties]
+    duty_ids = [x.id for x in all_duties]
 
     wb = Workbook()
     ws = wb.active
@@ -384,9 +385,9 @@ def form_duty_summary(activities):
 
     for idx, activity in enumerate(activities):
         one = [idx+1, activity.start_date]
-        for name in duty_names:
+        for _id in duty_ids:
             one.append(join_with_chinese_comma([info.user.name for info \
-                in activity.participate_infos if info.duty_name == name]))
+                in activity.participate_infos if info.duties and _id in info.duties]))
         ws.append(one)
 
     stream = BytesIO()

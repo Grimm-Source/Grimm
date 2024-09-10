@@ -14,6 +14,7 @@ os.environ['FLASK_ENV'] = 'test'
 from config import BASE_DIR
 from grimm import db
 from grimm.models.activity import Activity, ActivityParticipant
+from grimm.models.admin import User
 
 from .base import post_json
 from .base import ActivityCase
@@ -393,3 +394,32 @@ class TestGetGifts(ActivityCase):
         self.assertEqual(data['status'], 'success')
         self.assertEqual(len(data['data']), 4)
         self.assertEqual(set([x['name'] for x in data['data']]), set(('衣服', '帽子', '臂包', '腰包')))
+
+# POST "/activity/review"
+class TestActivityReview(ActivityCase):
+    def test_success(self):
+        remark = 'I enjoyed it'
+        with self.app.app_context():
+            participant = db.session.query(ActivityParticipant).filter_by(participant_openid=self.user_helper_attrs['openid']).first()
+            self.assertEqual(participant.remark, '')
+            self.assertIsNone(participant.duties)
+            self.assertIsNone(participant.gifts)
+
+        headers = {'content_type': 'application/json'}
+        duties = [1,2]
+        gifts = {1: 1, 2: 2}
+        response = post_json(self.client, f'/activity/review/2',
+                data={
+                    'data': [{
+                        'phone': self.user_helper_attrs['phone'],
+                        'duties': duties,
+                        'gifts': gifts,
+                        'remark': remark,
+                    }]
+                }, headers=headers)
+
+        with self.app.app_context():
+            participant = db.session.query(ActivityParticipant).filter_by(participant_openid=self.user_helper_attrs['openid']).first()
+            self.assertEqual(participant.remark, remark)
+            self.assertEqual(json.dumps(participant.duties), json.dumps(duties))
+            self.assertEqual(json.dumps(participant.gifts), json.dumps(gifts))
