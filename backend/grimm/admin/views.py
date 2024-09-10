@@ -983,5 +983,5 @@ class TmpToggleUserRole(Resource):
         db.session.commit()
 
         return {
-            'status': 'success',
+            'status': f'success,当前为 {"志愿者" if user.role == 0 else "视障者"}',
         }, 200
