@@ -880,7 +880,7 @@ class UploadUserDisabledIdImage(Resource):
         db.session.commit()
 
         ret = {}
-        ret[side] = '/user_disabled_id/image/{}?token={}&side={}'.format(openid, params['token'], side)
+        ret[side] = '/user_disabled_id/image/{}?token={}&side={}'.format(openid, params['token'], 'disabled_id_obverse')
 
         return {
             'status': 'success',
