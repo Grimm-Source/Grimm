@@ -2,6 +2,7 @@ import json
 import os
 import uuid
 from datetime import datetime, timedelta
+from urllib.parse import unquote_plus
 
 from flask import request, jsonify, send_file
 from flask_restx import Resource, reqparse
@@ -168,12 +169,12 @@ class ActivityThemePic(Resource):
             if activity_info is None:
                 return jsonify({'status': 'failure', 'message': 'Activity not exists.'})
 
-            file_name = activity_info.theme_pic_name
+            filename = activity_info.theme_pic_name
         else:
-            file_name = request.args.get('activity_them_pic_name')
-        if not file_name:
+            filename = request.args.get('activity_them_pic_name')
+        if not filename:
             return jsonify({'status': 'failure', 'message': 'Please input activity id or file name.'})
-        image = os.path.join(BASE_DIR, 'static/activity_theme_pictures/' + file_name)
+        image = os.path.join(BASE_DIR, 'static/activity_theme_pictures/' + unquote_plus(filename))
         return send_file(image)
 
     def post(self):
@@ -225,6 +226,7 @@ class ActivityRegistration(Resource):
             # user["accepted"] = item.accepted
             # user["needpickup"] = item.needpickup
             # user["topickup"] = item.topickup
+            user['current_state'] = item.current_state if item.current_state is not None else 'canceled'
             users.append(user)
         feedback = {'status': 'success', 'users': users}
         return jsonify(feedback)
@@ -983,8 +985,8 @@ class ExportSummaryParser(object):
     @staticmethod
     def get():
         parser = reqparse.RequestParser()
-        parser.add_argument('start_date', type=lambda x: datetime.strptime(x,'%Y-%m-%d'))
-        parser.add_argument('end_date', type=lambda x: datetime.strptime(x,'%Y-%m-%d'))
+        parser.add_argument('start_date', type=lambda x: datetime.strptime(x,'%Y-%m-%d'), required=True)
+        parser.add_argument('end_date', type=lambda x: datetime.strptime(x,'%Y-%m-%d'), required=True)
 
         return parser
 
