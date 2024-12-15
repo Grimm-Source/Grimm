@@ -47,7 +47,7 @@ class TestUserQuery(UserCase):
             for attr in ('openid', 'name', 'role', 'birthdate', 'comment', 'emergencyPerson', 'emergencyTel', 'gender', 'idcard', 'linkaddress', 'linktel', 'phone', 'registrationDate', 'activitiesJoined', 'joindHours', 'audit_status'):
                 self.assertIn(attr, user)
 
-    def test_patch_users(self):
+    def test_appove_users(self):
         res = self.client.patch('/users', 
                 data=json.dumps([
                     {'openid': self.default_volunteer_attrs['openid'],
@@ -56,6 +56,23 @@ class TestUserQuery(UserCase):
         self.assertEqual(res.status_code, 200)
         data = json.loads(res.data)
         self.assertEqual(data["status"], "success")
+
+    def test_reject_users(self):
+        reject_comment = 'reject_comment'
+        res = self.client.patch('/users',
+                data=json.dumps([
+                    {'openid': self.default_volunteer_attrs['openid'],
+                        'audit_status': 'rejected',
+                        'audit_comment': 'reject_comment'}]),
+                headers={'Content-Type': 'application/json'})
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.data)
+        self.assertEqual(data["status"], "success")
+
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == self.default_volunteer_attrs['openid']).first()
+            self.assertEqual(user_info.audit_status, -1)
+            self.assertEqual(user_info.audit_comment, reject_comment)
 
 class TestUserProfile(UserCase):
     def test_get_profile(self):

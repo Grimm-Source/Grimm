@@ -39,6 +39,7 @@ class User(db.Model):
     activities_joined = db.Column(db.Integer, server_default='0', nullable=False, comment='微信端显示活动参加次数，以及根据次数计算参加时长,待定')
     remark = db.Column(db.String(255), server_default='', comment='用户备注,用户申请账户时输入')
     audit_status = db.Column(db.Integer, server_default='0', nullable=False, comment='用户注册申请的审核状态,0=进行中, 1=已通过, -1=被拒绝,2=导入数据,管理员审核注册用户时更新')
+    audit_comment = db.Column(db.String(255), server_default='', nullable=False, comment='审核用户注册申请的批注,管理员审核注册用户时更新')
     push_status = db.Column(db.Integer, server_default='0', nullable=False, comment='???')
     recipient_name = db.Column(db.String(100), comment='证书收件人姓名,用户申请证书时输入，可更新')
     recipient_address = db.Column(db.String(80), comment='证书收件人地址,用户申请账户时输入，可更新')

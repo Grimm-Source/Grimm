@@ -218,6 +218,7 @@ class Users(Resource):
         for audit in audit_info:
             openid = audit["openid"]
             status = audit["audit_status"]
+            comment = audit.get("audit_comment", '')
             user_info = db.session.query(User).filter(User.openid == openid).first()
             if not user_info:
                 logger.warning("%s, no such user openid", openid)
@@ -230,7 +231,10 @@ class Users(Resource):
                     db.session.commit()
                 elif status == "rejected":
                     sms_template = "NOTIFY_REJECTED"
-                    db.session.delete(user_info)
+                    user_info.audit_status = -1
+                    user_info.audit_comment = comment
+                    # db.session.delete(user_info)
+                    db.session.add(user_info)
                     db.session.commit()
                 else:
                     continue
@@ -246,7 +250,6 @@ class Users(Resource):
                         logger.warning("%s, unable to send sms to number", user_info.phone)
                 except Exception as e:
                     logger.error(getattr(e, 'message', repr(e)))
-                    pass
 
         logger.info("update users audit status successfully")
         return jsonify({"status": "success"})
@@ -645,7 +648,9 @@ def verify_presigned_url(token, side, requester_openid, target_openid):
     status_code = 404
     record = PreSignedUrl.query.filter(PreSignedUrl.token == token, PreSignedUrl.side==side).first()
 
-    if not record or record.openid != requester_openid or record.target_openid != target_openid:
+    # if not record or record.openid != requester_openid or record.target_openid != target_openid:
+    # FIXME can not validate requester_openid for now (request from web page no Authorization)
+    if not record or record.target_openid != target_openid:
         return {
             "status": "failure",
             "error": "非法口令"
