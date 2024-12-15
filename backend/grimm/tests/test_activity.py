@@ -30,6 +30,9 @@ class TestGetActivities(ActivityCase):
         self.assertEqual(2, len(data))
         self.assertGreater(data[0]['start_time'],
             data[1]['start_time'])
+        self.assertEqual(data[0]['project_id'], 1)
+        self.assertEqual(data[0]['project_name'],
+                self.default_projects[0]['name'])
 
     def test_get_activities_by_keyword(self):
         response = self.client.get('/activities?keyword={}'.format(
@@ -271,8 +274,10 @@ class TestActivityThemePicPost(ActivityCase):
 class TestActivityRegistrationGet(ActivityCase):
     def test_get_activity_registration(self):
         openid = self.default_volunteer_attrs['openid']
+        gifts = {'1':2, '2':1}
+        duties = [1,2]
         with self.app.app_context():
-            participant = ActivityParticipant(activity_id=1, participant_openid=openid)
+            participant = ActivityParticipant(activity_id=1, participant_openid=openid, gifts=gifts, duties=duties)
             db.session.add(participant)
             db.session.commit()
 
@@ -283,6 +288,8 @@ class TestActivityRegistrationGet(ActivityCase):
         self.assertEqual(len(response.json['users']), 1)
         self.assertEqual(response.json['users'][0]['openid'], openid)
         self.assertEqual(response.json['users'][0]['name'], self.default_volunteer_attrs['name'])
+        self.assertEqual(response.json['users'][0]['gifts'], gifts)
+        self.assertEqual(response.json['users'][0]['duties'], duties)
 
     def test_get_activity_registration_no_activity(self):
         response = self.client.get('/activityRegistration/999')
@@ -394,32 +401,58 @@ class TestGetGifts(ActivityCase):
         self.assertEqual(data['status'], 'success')
         self.assertEqual(len(data['data']), 4)
         self.assertEqual(set([x['name'] for x in data['data']]), set(('衣服', '帽子', '臂包', '腰包')))
+        self.assertEqual(set([x['category'] for x in data['data']]), set(('other',)))
 
 # POST "/activity/review"
 class TestActivityReview(ActivityCase):
     def test_success(self):
         remark = 'I enjoyed it'
+        activity_id = 2
         with self.app.app_context():
-            participant = db.session.query(ActivityParticipant).filter_by(participant_openid=self.user_helper_attrs['openid']).first()
+            participant = db.session.query(ActivityParticipant).filter_by(participant_openid=self.user_helper_attrs[1]['openid']).first()
             self.assertEqual(participant.remark, '')
             self.assertIsNone(participant.duties)
             self.assertIsNone(participant.gifts)
+            self.assertIsNone(participant.current_state)
+
+            existing_participant_count = db.session.query(ActivityParticipant).filter_by(activity_id=activity_id).count()
 
         headers = {'content_type': 'application/json'}
         duties = [1,2]
         gifts = {1: 1, 2: 2}
-        response = post_json(self.client, f'/activity/review/2',
+        response = post_json(self.client, f'/activity/review/{activity_id}',
                 data={
                     'data': [{
-                        'phone': self.user_helper_attrs['phone'],
+                        'phone': self.user_helper_attrs[1]['phone'],
                         'duties': duties,
                         'gifts': gifts,
                         'remark': remark,
+                        'signup': 1,
+                    }, { # new add participant
+                        'phone': self.user_helper_attrs[0]['phone'],
+                        'duties': duties,
+                        'gifts': gifts,
+                        'remark': remark,
+                        'signup': 0,
+                        'is_child': 1,
                     }]
                 }, headers=headers)
 
         with self.app.app_context():
-            participant = db.session.query(ActivityParticipant).filter_by(participant_openid=self.user_helper_attrs['openid']).first()
-            self.assertEqual(participant.remark, remark)
-            self.assertEqual(json.dumps(participant.duties), json.dumps(duties))
-            self.assertEqual(json.dumps(participant.gifts), json.dumps(gifts))
+            participants = db.session.query(
+                    ActivityParticipant).filter_by(
+                    activity_id=activity_id).all()
+            self.assertEqual(len(participants), existing_participant_count + 1)
+            for participant in participants:
+                if participant.user.phone not in [x['phone'] for x in self.user_helper_attrs]:
+                    continue
+
+                self.assertEqual(participant.remark, remark)
+                self.assertEqual(json.dumps(participant.duties), json.dumps(duties))
+                self.assertEqual(json.dumps(participant.gifts), json.dumps(gifts))
+                if participant.user.phone == self.user_helper_attrs[1]['phone']:
+                    self.assertEqual(participant.current_state, 'signed_up')
+                    self.assertEqual(participant.is_child, False)
+                if participant.user.phone == self.user_helper_attrs[0]['phone']:
+                    self.assertIsNone(participant.current_state)
+                    self.assertEqual(participant.is_child, True)

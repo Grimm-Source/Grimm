@@ -24,10 +24,11 @@ class Gift(db.Model):
     __tablename__ = 'gift'
     id = db.Column(db.BigInteger, primary_key=True, nullable=False, autoincrement=True)
     name = db.Column(db.String(60), nullable=False, unique=True)
+    category = db.Column(db.String(60), server_default='other', nullable=False)
     seq = db.Column(db.Integer, nullable=False, unique=True, comment='导出汇总表时的列顺序，小的数字靠左')
 
     def to_json(self):
-        return {'id': self.id, 'name': self.name}
+        return {'id': self.id, 'name': self.name, 'category': self.category}
 
 class Activity(db.Model):
     __tablename__ = 'activity'

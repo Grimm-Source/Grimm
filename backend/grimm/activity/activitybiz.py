@@ -8,7 +8,7 @@ from openpyxl.styles import Alignment, PatternFill
 from sqlalchemy import func
 
 from grimm import logger, db
-from grimm.models.activity import Duty, Gift
+from grimm.models.activity import Project, Duty, Gift
 from grimm.models.activity import ActivityParticipant, PickupImpaired, Activity, PickupVolunteer
 from grimm.models.admin import User
 from grimm.utils import misctools, constants, smstools
@@ -97,6 +97,9 @@ def activity_converter(activity, openid=0):
         else False
     )
     query["activity_them_pic_name"] = activity['theme_pic_name']
+    query['project_id'] = activity['project_id']
+    # TODO not query like this one by one
+    query['project_name'] = Project.query.filter_by(id=activity['project_id']).first().name
     return query
 
 

@@ -152,7 +152,7 @@ class ActivityCase(AdminCase, UserCase):
             'project_id': 2,
             'project_seq': 2,
         }]
-        self.user_helper_attrs = {
+        self.user_helper_attrs = [{
                 'role': 1,
                 'gender': 'm',
                 'address': 'address',
@@ -165,7 +165,20 @@ class ActivityCase(AdminCase, UserCase):
                 'birth': datetime.now(),
                 'idcard_obverse_path': 'impaired_helper.png',
                 'idcard_reverse_path': 'impaired_helper.png',
-        }
+            }, {
+                'role': 1,
+                'gender': 'm',
+                'address': 'address',
+                'name': 'impaired_helper_1',
+                'phone': '123456701',
+                'email': 'impaired_helper_1_email',
+                'avatar_url': 'avatar_url',
+                'openid': 'impaired_helper_1',
+                'registration_date': datetime.now(),
+                'birth': datetime.now(),
+                'idcard_obverse_path': 'impaired_helper_1.png',
+                'idcard_reverse_path': 'impaired_helper_1.png',
+        }]
 
         with self.app.app_context():
             # admin = Admin(**self.default_admin_attrs)
@@ -213,11 +226,12 @@ class ActivityCase(AdminCase, UserCase):
             db.session.add(ActivityParticipant(user=user,
                 activity=activity, gifts={2:2}))
 
-            user_helper = User(**self.user_helper_attrs)
-            db.session.add(user_helper)
-            db.session.flush()
-            db.session.add(ActivityParticipant(user=user_helper,
-                activity=activity))
+            for attrs in self.user_helper_attrs:
+                user_helper = User(**attrs)
+                db.session.add(user_helper)
+                db.session.flush()
+            db.session.add(ActivityParticipant(
+                user=user_helper, activity=activity))
 
             db.session.commit()
 

@@ -86,7 +86,8 @@ class NewActivity(Resource):
         activity_info.vision_impaired_capacity = info["vision_impaired_capacity"]
         activity_info.volunteer_job_title = info["volunteer_job_title"]
         activity_info.volunteer_job_content = info["volunteer_job_content"]
-        activity_info.activity_fee = info["activity_fee"] if 'activity_fee' in info else 0
+        activity_info.activity_fee = info.get("activity_fee", 0)
+        activity_info.project_id = info.get("project_id", 1)
         db.session.add(activity_info)
         db.session.commit()
         logger.info("%s: create new activity successfully", activity_info.title)
@@ -227,6 +228,10 @@ class ActivityRegistration(Resource):
             # user["needpickup"] = item.needpickup
             # user["topickup"] = item.topickup
             user['current_state'] = item.current_state if item.current_state is not None else 'canceled'
+
+            user['gifts'] = item.gifts
+            user['duties'] = item.duties
+
             users.append(user)
         feedback = {'status': 'success', 'users': users}
         return jsonify(feedback)
@@ -631,6 +636,7 @@ class UserRegisterActivitiesParser(object):
         parser = reqparse.RequestParser()
         parser.add_argument('Authorization', type=str, location='headers', help='Open User ID')
         parser.add_argument('activity_id', type=int, location='json', help='Activity ID')
+        parser.add_argument('is_child', type=int, location='json', help='Is child')
         return parser
 
 
@@ -647,8 +653,7 @@ class UserRegisterActivities(Resource):
 
         exist_registered_info = ActivityParticipant.query. \
             filter(ActivityParticipant.participant_openid == openid,
-                   ActivityParticipant.activity_id == activity_id,
-                   ActivityParticipant.current_state == 'Registered').first()
+                   ActivityParticipant.activity_id == activity_id).first()
         if exist_registered_info:
             logger.info('Repeat registration.')
             return jsonify({"status": "failure", "message": "重复报名"})
@@ -662,32 +667,22 @@ class UserRegisterActivities(Resource):
             logger.error("Activity %d is not existing!", activity_id)
             return jsonify({"status": "failure", "message": "活动不存在"})
 
-        exist_participant_info = db.session.query(ActivityParticipant). \
-            filter(ActivityParticipant.participant_openid == openid,
-                   ActivityParticipant.activity_id == activity_id).first()
-        if not exist_participant_info:
-            activity_participant_info = ActivityParticipant()
-            activity_participant_info.activity_id = activity_id
-            activity_participant_info.participant_openid = openid
-            activity_participant_info.interested = 0
-            activity_participant_info.share = 0
-            activity_participant_info.thumbs_up = 0
-            activity_participant_info.current_state = "Registered"
-            activity_participant_info.sign_method = "gps"
-            activity_participant_info.certificated = 0
-            activity_participant_info.certiticate_date = 0
-            activity_participant_info.paper_certificate = 0
-            db.session.add(activity_participant_info)
-            db.session.commit()
-            logger.info("OpenId:%s in activity:%s are inserted to activity_participant!", openid, activity_id)
-        else:
-            exist_participant_info.current_state = "Registered"
-            exist_participant_info.sign_method = "gps"
-            exist_participant_info.certificated = 0
-            exist_participant_info.certiticate_date = 0
-            exist_participant_info.paper_certificate = 0
-            logger.info("OpenId:%s in activity:%s are updated to activity_participant!", openid, activity_id)
-            db.session.commit()
+        activity_participant_info = ActivityParticipant()
+        activity_participant_info.activity_id = activity_id
+        activity_participant_info.participant_openid = openid
+        activity_participant_info.interested = 0
+        activity_participant_info.share = 0
+        activity_participant_info.thumbs_up = 0
+        activity_participant_info.current_state = "Registered"
+        activity_participant_info.sign_method = "gps"
+        activity_participant_info.certificated = 0
+        activity_participant_info.certiticate_date = 0
+        activity_participant_info.paper_certificate = 0
+        activity_participant_info.is_child = bool(info.get('is_child', 0))
+        db.session.add(activity_participant_info)
+        db.session.commit()
+        logger.info("OpenId:%s in activity:%s are inserted to activity_participant!", openid, activity_id)
+        db.session.commit()
         return jsonify({"status": "success"})
 
     @activity.expect(UserRegisterActivitiesParser().common())
@@ -1066,18 +1061,40 @@ class ReviewActivity(Resource):
             }, 400
 
         info_map = dict([(info.phone, info) for info in activity.participate_infos])
+        unknown_phones = []
         for item in data:
-            # TODO insert new
             if info_map.get(item['phone']) is None:
-                continue
-            # TODO check if info.user matches
+                user = db.session.query(User).filter_by(
+                        phone=item['phone']).first()
+                if user is None:
+                    unknown_phones.append(item['phone'])
+                    continue
 
-            info = info_map[item['phone']]
+                info = ActivityParticipant(
+                        activity_id = activity_id,
+                        participant_openid = user.openid,
+                        )
+                logger.warning('add %s' % user.openid)
+            else:
+                # TODO check if info.user matches
+                info = info_map[item['phone']]
+
             info.remark = item['remark']
             # TODO check if id exists
             info.duties = item['duties']
             info.gifts = item['gifts']
+            if item.get('signup'):
+                info.current_state = 'signed_up'
+            if item.get('is_child'):
+                info.is_child = True
             db.session.add(info)
+
+        if unknown_phones:
+            return {
+                "status": "failure",
+                "error": '手机号未找到对应用户: {}'.format(
+                    ','.join(unknown_phones)),
+            }, 400
 
         db.session.commit()
         return jsonify({
