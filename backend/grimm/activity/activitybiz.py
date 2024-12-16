@@ -289,7 +289,9 @@ def form_sign(activity):
         for cell in ws['A1':'H1'][0]:
             cell.border = thin_border
 
-        project_name = activity.project.name
+        project_name = ''
+        if activity.project:
+            project_name = activity.project.name
         if activity.project_seq:
             project_name += f' 第({activity.project_seq})期'
         ws.append(['', f'项目名称：{project_name}'])

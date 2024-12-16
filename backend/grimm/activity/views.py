@@ -6,6 +6,7 @@ from urllib.parse import unquote_plus
 
 from flask import request, jsonify, send_file
 from flask_restx import Resource, reqparse
+from sqlalchemy import func as sql_func
 from six.moves.urllib.parse import quote
 
 from config import BASE_DIR
@@ -88,6 +89,10 @@ class NewActivity(Resource):
         activity_info.volunteer_job_content = info["volunteer_job_content"]
         activity_info.activity_fee = info.get("activity_fee", 0)
         activity_info.project_id = info.get("project_id", 1)
+        max_seq = db.session.query(sql_func.max(Activity.project_seq)).filter_by(project_id=activity_info.project_id).scalar()
+        if max_seq is None:
+            max_seq = 1
+        activity_info.project_seq = info.get("project_seq", max_seq + 1)
         db.session.add(activity_info)
         db.session.commit()
         logger.info("%s: create new activity successfully", activity_info.title)
@@ -967,6 +972,12 @@ class ExportSign(Resource):
         activity_id = info.get('activity_id')
 
         activity = db.session.query(Activity).filter_by(id=activity_id).first()
+
+        if activity is None:
+            return {
+                "status": "failure",
+                "error": "活动不存在"
+            }, 404
 
         xls = activitybiz.form_sign(activity)
 

@@ -7,6 +7,7 @@ from unittest import mock
 from datetime import datetime
 
 from openpyxl import Workbook, load_workbook
+from sqlalchemy import func as sql_func
 from werkzeug.datastructures import BytesIO
 
 os.environ['FLASK_ENV'] = 'test'
@@ -93,6 +94,11 @@ class TestNewActivityResource(ActivityCase):
         # Mock the address_to_coordinate function to return a successful status and coordinates
         mock_address_to_coordinate.return_value = (True, {'lat': 123.45, 'lng': 678.90})
 
+        with self.app.app_context():
+            max_project_seq = db.session.query(sql_func.max(Activity.project_seq)).filter_by(project_id=1).scalar()
+            if max_project_seq is None:
+                max_project_seq = 1
+
         response = post_json(self.client, '/activity', self.test_data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json, {"status": "success"})
@@ -100,6 +106,8 @@ class TestNewActivityResource(ActivityCase):
         with self.app.app_context():
             activity = db.session.query(Activity).filter_by(title=self.test_data['title']).first()
             self.assertIsNotNone(activity)
+            self.assertEqual(activity.project_id, 1)
+            self.assertEqual(activity.project_seq, max_project_seq + 1)
 
     @mock.patch('grimm.utils.areautils.address_to_coordinate')
     def test_post_new_activity_failure_address(self, mock_address_to_coordinate):
