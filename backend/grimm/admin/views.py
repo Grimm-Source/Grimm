@@ -491,7 +491,7 @@ class RegisterInfo(Resource):
         else:
             user_info.role = 2
 
-        if user_info.role == 1:
+        if user_info.role == 1 and info.get('disabledID'):
             user_info.disabled_id = info['disabledID']
             user_info.disabled_id_verified = 0
 
