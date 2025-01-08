@@ -42,12 +42,14 @@ from server.core.const import CAROUSEL_LIST
 
 from server.utils.decrypt import PhoneNumberDecrypt
 from flask_restx import Resource
+from flask_jwt_extended import jwt_required
 
 SMS_VERIFIED_OPENID = {}
 
 
 @api.route("/jscode2session")
 class wxjscode2session(Resource):
+    @jwt_required()
     def get(self):
         """view function for validating weixin user openid"""
         js_code = request.args.get("js_code")
@@ -102,6 +104,7 @@ class wxjscode2session(Resource):
 
 @api.route("/getPhoneNumber")
 class getPhoneNumber(Resource):
+    @jwt_required()
     def post(self):
         """get weixin user phoneNumber"""
         info = json_load_http_request(request)  # get http POST data bytes format
@@ -144,6 +147,7 @@ class getPhoneNumber(Resource):
 
 @api.route("/register")
 class register(Resource):
+    @jwt_required()
     def post(self):
         """view function for registering new user to database"""
         global SMS_VERIFIED_OPENID
@@ -218,6 +222,7 @@ class register(Resource):
 
 @api.route("/profile")
 class profile(Resource):
+    @jwt_required()
     def get(self):
         """ display profile """
         feedback = {"status": "success"}
@@ -282,6 +287,7 @@ class profile(Resource):
 
 @api.route("/smscode")
 class smscode(Resource):
+    @jwt_required()
     def get(self):
         """ send sms code """
         phone_number = request.args.get("phone")
@@ -348,6 +354,7 @@ class smscode(Resource):
 
 @api.route("/registeredActivities")
 class registeredActivities(Resource):
+    @jwt_required()
     def post(self):
         """ register an activity """
         print(request)
@@ -451,6 +458,7 @@ class registeredActivities(Resource):
 
 @api.route("/activity_detail")
 class get_activity(Resource):
+    @jwt_required()
     def get(self):
         """ get activity detail with activityId """
         openid = request.headers.get("Authorization")
@@ -480,6 +488,7 @@ class get_activity(Resource):
 
 @api.route("/activity_detail/interest")
 class mark_activity(Resource):
+    @jwt_required()
     def post(self):
         """mark activity as Insterest"""
         openid = request.headers.get("Authorization")
@@ -516,6 +525,7 @@ class mark_activity(Resource):
 
 @api.route("/activity_detail/thumbs_up")
 class thumbsup_activity(Resource):
+    @jwt_required()
     def post(self):
         """mark activity as thumbs_up"""
         openid = request.headers.get("Authorization")
@@ -552,6 +562,7 @@ class thumbsup_activity(Resource):
 
 @api.route("/activity_detail/share")
 class share_activity(Resource):
+    @jwt_required()
     def post(self):
         """share activity"""
         openid = request.headers.get("Authorization")
@@ -604,6 +615,7 @@ class share_activity(Resource):
 
 @api.route("/carousel")
 class get_carousel_list(Resource):
+    @jwt_required()
     def get(self):
         """view function for the activity_detail"""
         user_logger.info("query all carousel info successfully")
@@ -612,6 +624,7 @@ class get_carousel_list(Resource):
 
 @api.route("/myActivities")
 class get_favorite_activities(Resource):
+    @jwt_required()
     def get(self):
         """ list my activities"""
         openid = request.headers.get("Authorization")

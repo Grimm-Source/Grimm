@@ -57,7 +57,7 @@ def initialize():
                         default='0.0.0.0', dest='host',
                         help='Customize server host address.')
     parser.add_argument('-p', '--port', metavar='Port Num', nargs='?',
-                        default=5000, type=int, dest='port',
+                        default=5001, type=int, dest='port',
                         help='Customize service\'s listening port.')
     parser.add_argument('-l', '--logfile', dest='logfile', metavar='Log File',
                         nargs='?', default='./log/session.log',

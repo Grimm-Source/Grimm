@@ -20,7 +20,7 @@
 # import sys
 # import os
 # import urllib3
-from flask import request
+from flask import request, jsonify, make_response
 from datetime import datetime
 from datetime import timedelta
 from flask_socketio import emit
@@ -43,6 +43,8 @@ from server.utils.misctools import (
 
 from server.core.const import EMAIL_VRF_EXPIRY, COM_SIGNATURE
 from flask_restx import Resource
+from flask_jwt_extended import create_access_token, jwt_required, decode_token, create_refresh_token, get_jwt_identity
+
 
 
 @socketio.on("disconnect")
@@ -77,6 +79,14 @@ def notice_connect():
         except Exception as e:
             print(e)
 
+# refresh access token
+@api.route('/refresh')
+class RefreshToken(Resource):
+    @jwt_required(refresh=True)
+    def post(self):
+        current_user = get_jwt_identity()
+        new_access_token = create_access_token(identity=current_user)
+        return jsonify(access_token=new_access_token)
 
 @api.route("/login")
 class admin_login(Resource):
@@ -93,11 +103,23 @@ class admin_login(Resource):
             input_password = info["password"]
             if password.verify_password(input_password, "admin", email=info["email"]):
                 if admininfo["email_verified"]:
+                    # Set JWT_ACCESS_TOKEN_EXPIRES to 30 days
+                    # Genreate JWT Token
+                    access_token = create_access_token(identity=admininfo["id"])
+                    refresh_token = create_refresh_token(identity=admininfo["id"])
+                    # Decode token
+                    decoded_token = decode_token(access_token)
+                    expiration_time = datetime.fromtimestamp(decoded_token['exp'])
+                    # Convert Time to humanable format
+                    expiration_time_str = expiration_time.strftime('%Y-%m-%d %H:%M:%S')
                     feedback["id"] = admininfo["id"]
                     feedback["email"] = admininfo["email"]
+                    feedback["token"] = access_token
+                    feedback["expire_time"] = expiration_time_str
                     feedback["type"] = (
                         "root" if admininfo["id"] == 0 else "normal"
                     )
+                
                     admin_logger.info(
                         "%d, %s: admin login successfully",
                         admininfo["id"],
@@ -123,11 +145,15 @@ class admin_login(Resource):
 
         if "message" in feedback:
             feedback["status"] = "failure"
-        return json_dump_http_response(feedback)
+        response = make_response(jsonify(feedback))
+        response.set_cookie('access_token', access_token, max_age=3600 * 24 * 30, httponly=True)
+        response.set_cookie('refresh_token', refresh_token, max_age=3600 * 24 *30, httponly=True)
+        return response
 
 
 @api.route("/admins")
 class admins(Resource):
+    @jwt_required()
     def get(self):
         """view function to display all admins profile"""
         try:
@@ -151,6 +177,7 @@ class admins(Resource):
 
 @api.route("/admin/<int:admin_id>")
 class manage_admin(Resource):
+    @jwt_required()
     def get(self, admin_id):
         """ get admin info with a specific admin_id """
         feedback = {"status": "success"}
@@ -199,6 +226,7 @@ class manage_admin(Resource):
 
 @api.route("/user")
 class manage_user(Resource):
+    @jwt_required()
     def delete(self):
         """ delete user with an openid"""
         openid = request.args.get("openid")
@@ -215,6 +243,7 @@ class manage_user(Resource):
 
 @api.route("/admin")
 class new_admin(Resource):
+    @jwt_required()
     def post(self):
         """view function to create new admin"""
         info = json_load_http_request(request)
@@ -305,6 +334,7 @@ class new_admin(Resource):
 
 @api.route("/admin-email")
 class send_vrfemail(Resource):
+    @jwt_required()
     def get(self):
         """ view function to send and verify admin email"""
         feedback = {"status": "success"}
@@ -352,6 +382,7 @@ class send_vrfemail(Resource):
 
 @api.route("/activity")
 class new_activity(Resource):
+    @jwt_required
     def post(self):
         """view function to add new activity"""
         info = json_load_http_request(request)
@@ -389,6 +420,7 @@ class new_activity(Resource):
 
 @api.route("/activity/<int:activity_id>", methods=["POST", "GET", "DELETE"])
 class activity(Resource):
+    @jwt_required()
     def get(self, activity_id):
         """ get a activity with a specific id """
         if db.exist_row("activity", id=activity_id):
@@ -464,6 +496,7 @@ class activity(Resource):
 
 @api.route("/activities")
 class activities(Resource):
+    # @jwt_required()
     def get(self):
         """view function to get activities info"""
         try:
@@ -600,6 +633,7 @@ def should_append_by_recents(activity):
 
 @api.route("/admin/<int:admin_id>/update-password")
 class admin_update_password(Resource):
+    @jwt_required()
     def post(self, admin_id):
         """view function for admins to update new passwords"""
         admin_password = json_load_http_request(request)
@@ -626,6 +660,7 @@ class admin_update_password(Resource):
 
 @api.route("/admin/forget-password")
 class admin_reset_password(Resource):
+    @jwt_required()
     def get(self):
         """view function for admins to reset new passwords"""
         addr = request.args.get("email")
@@ -655,6 +690,7 @@ class admin_reset_password(Resource):
 
 @api.route("/users")
 class users(Resource):
+    @jwt_required()
     def get(self):
         """ get wechat user list (volunteer) """
         user_type = request.args.get("role")
@@ -786,6 +822,7 @@ class users(Resource):
 
 @api.route("/tags")
 class tags_db(Resource):
+    @jwt_required()
     def get(self):
         """view function to get all tags info"""
         tags_list = tag_converter.get_all_tags()
@@ -795,6 +832,7 @@ class tags_db(Resource):
 
 @api.route("/activityRegistration/<int:activity_id>", methods=["POST", "GET"])
 class activity_registration(Resource):
+    @jwt_required()
     def get(self, activity_id):
         """ get an activity registration list with a specific id """
         if db.exist_row("activity", id=activity_id):
@@ -850,6 +888,7 @@ class activity_registration(Resource):
 
 @api.route("/activityParticipant")
 class activity_participant(Resource):
+    @jwt_required()
     def get(self):
         """ get an activity participant list with a participant_openid """
         participant_openid = request.args.get("participant_openid")

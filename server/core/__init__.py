@@ -33,6 +33,7 @@ wxappid = None
 wxsecret = None
 socketio = None
 api = None
+jwt = None
 
 # initialize grimm back-end service
 if grimm is None:
@@ -44,12 +45,19 @@ if grimm is None:
     from server.utils.misctools import get_pardir
     from flask_socketio import SocketIO
     from flask_restx import Api
+    from flask_jwt_extended import JWTManager
+    from datetime import timedelta
+
 
     grimm = Flask('grimm')
     grimm_ext = CORS(grimm)
 
+
     grimm.config['SECRET_KEY']= os.urandom(24)
     grimm.config['SECURITY_PASSWORD_SALT'] = uuid.uuid4().hex
+    grimm.config['JWT_SECRET_KEY'] = uuid.uuid4().hex
+    grimm.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)
+    grimm.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 
     socketio = SocketIO(cors_allowed_origins='*', debug=True)
     socketio.init_app(grimm)
@@ -63,3 +71,4 @@ if grimm is None:
 
     del wxconfig, get_pardir, path
     api = Api(grimm)
+    jwt = JWTManager(grimm)
