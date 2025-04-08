@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "搜索活动",
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar",
+    "van-search": "@vant/weapp/search/index",
+    "van-empty": "@vant/weapp/empty/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "van-sticky": "@vant/weapp/sticky/index",
+    "van-divider": "@vant/weapp/divider/index",
+    "activityItem": "/components/activityItem/activityItem"
+  },
+  "enablePullDownRefresh": true
+}

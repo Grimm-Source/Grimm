@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "志愿者接送详情页面",
+  "usingComponents": {
+    "van-toast": "@vant/weapp/toast/index",
+    "t-notice-bar": "tdesign-miniprogram/notice-bar/notice-bar",
+    "van-button": "@vant/weapp/button/index",
+    "van-checkbox": "@vant/weapp/checkbox/index",
+    "van-checkbox-group": "@vant/weapp/checkbox-group/index"
+  }
+}

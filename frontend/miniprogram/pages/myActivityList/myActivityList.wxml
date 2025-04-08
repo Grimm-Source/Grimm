@@ -1,0 +1,48 @@
+<!--pages/myActivityList/myActivityList.wxml-->
+<van-toast id="van-toast" />
+<van-tabs catchtouchmove='true' active="{{active}}" color="#008000" bind:change="onChange" animated swipeable sticky>
+  <van-tab title="全部">
+    <scroll-view class="scrollarea" scroll-y type="list">
+      <view wx:if="{{activityList.length === 0}}" class="empty">
+        <van-empty description="抱歉，我们没有找到相关活动" />
+      </view>
+      <block wx:else>
+        <activityItem wx:for="{{activityList}}" activity="{{item}}" wx:key="id" />
+        <van-divider contentPosition="center">没有更多活动</van-divider>
+      </block>
+    </scroll-view>
+  </van-tab>
+  <van-tab title="已报名">
+    <scroll-view class="scrollarea" scroll-y type="list">
+      <view wx:if="{{activityList.length === 0}}" class="empty">
+        <van-empty description="抱歉，我们没有找到相关活动" />
+      </view>
+      <block wx:else>
+        <activityItem wx:for="{{activityList}}" activity="{{item}}" wx:key="id" />
+        <van-divider contentPosition="center">没有更多活动</van-divider>
+      </block>
+    </scroll-view>
+  </van-tab>
+  <van-tab title="感兴趣">
+    <scroll-view class="scrollarea" scroll-y type="list">
+      <view wx:if="{{activityList.length === 0}}" class="empty">
+        <van-empty description="抱歉，我们没有找到相关活动" />
+      </view>
+      <block wx:else>
+        <activityItem wx:for="{{activityList}}" activity="{{item}}" wx:key="id" />
+        <van-divider contentPosition="center">没有更多活动</van-divider>
+      </block>
+    </scroll-view>
+  </van-tab>
+  <van-tab title="已结束">
+    <scroll-view class="scrollarea" scroll-y type="list">
+      <view wx:if="{{activityList.length === 0}}" class="empty">
+        <van-empty description="抱歉，我们没有找到相关活动" />
+      </view>
+      <block wx:else>
+        <activityItem wx:for="{{activityList}}" activity="{{item}}" wx:key="id" />
+        <van-divider contentPosition="center">没有更多活动</van-divider>
+      </block>
+    </scroll-view>
+  </van-tab>
+</van-tabs>

@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "活动详情",
+  "usingComponents": {
+    "van-divider": "@vant/weapp/divider/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-image": "@vant/weapp/image/index",
+    "van-icon": "@vant/weapp/icon/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "t-progress": "tdesign-miniprogram/progress/progress"
+  }
+}

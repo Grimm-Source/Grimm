@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "注册成功",
+  "usingComponents": {
+    "t-notice-bar": "tdesign-miniprogram/notice-bar/notice-bar",
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "van-button": "@vant/weapp/button/index"
+  }
+}

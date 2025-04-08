@@ -1,0 +1,69 @@
+{
+  "pages": [
+    "pages/activityList/activityList",
+    "pages/search/search",
+    "pages/message/message",
+    "pages/my/my",
+    "pages/myActivityList/myActivityList",
+    "pages/profile/profile",
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/activityDetail/activityDetail",
+    "pages/activityRegister/activityRegister",
+    "pages/activityPickup/activityPickup",
+    "pages/register/register",
+    "pages/pickupFormForVolunteer/pickupFormForVolunteer",
+    "pages/pickupFormForImpaired/pickupFormForImpaired",
+    "pages/pickupDetailForVolunteer/pickupDetailForVolunteer"
+  ],
+  "window": {
+    "navigationBarTitleText": "爱心牵手",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFFFFF",
+    "backgroundTextStyle": "dark"
+  },
+  "rendererOptions": {
+    "skyline": {
+      "defaultDisplayBlock": true,
+      "disableABTest": true,
+      "sdkVersionBegin": "3.0.0",
+      "sdkVersionEnd": "15.255.255"
+    }
+  },
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "useExtendedLib": {
+    "weui": true
+  },
+  "tabBar": {
+    "selectedColor": "#008000",
+    "list": [
+      {
+        "pagePath": "pages/activityList/activityList",
+        "iconPath": "image/activity.png",
+        "selectedIconPath": "image/activity_selected.png",
+        "text": "活动"
+      },
+      {
+        "pagePath": "pages/search/search",
+        "iconPath": "image/search.png",
+        "selectedIconPath": "image/search_selected.png",
+        "text": "搜索"
+      },
+      {
+        "pagePath": "pages/message/message",
+        "iconPath": "image/message.png",
+        "selectedIconPath": "image/message_selected.png",
+        "text": "签到"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "iconPath": "image/my.png",
+        "selectedIconPath": "image/my_selected.png",
+        "text": "我的"
+      }
+    ]
+  }
+}

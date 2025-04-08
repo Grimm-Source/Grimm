@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "修改个人信息",
+  "usingComponents": {
+    "van-button": "@vant/weapp/button/index",
+    "van-image": "@vant/weapp/image/index",
+    "van-icon": "@vant/weapp/icon/index"
+  }
+}

@@ -1,0 +1,33 @@
+/* pages/activityDetail/activityDetail.wxss */
+page {
+	height: calc(100vh - env(safe-area-inset-bottom));
+	overflow: hidden;
+}
+.scrollarea {
+  height: 100%;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.footer {
+  width: 100%;
+  position: fixed;
+  height: 160rpx;
+  bottom: 0;
+  background-color: #FFFFFF;
+}
+.bg-image {
+  height: 320rpx;
+  background-position: center center;
+  background-size: 100% auto;
+}
+.image {
+  background-color: #000;
+}
+.share-button {
+  .van-button--default {
+    border: 0;
+  }
+  .van-button--normal {
+    padding: 0 10rpx !important;
+    min-width: 100rpx;
+  }
+}

@@ -1,0 +1,21 @@
+<!--pages/activityRegister/activityRegister.wxml-->
+<van-toast id="van-toast" />
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="notice-bar">
+    <t-notice-bar visible theme="success" content="恭喜，您已成功报名此次活动，期待您的参与！" class="title" />
+  </view>
+  <view class="notice padding bg-white">
+    <view class="flex align-center">
+      <t-icon class="icon" name="sound" size="36rpx" data-name="sound" />
+      <view class="title text-black text-bold">特别说明</view>
+    </view>
+    <view class="text-black margin-top">
+      视障人士由于视力问题出行不便，请问您是否愿意帮助接送视障人士？如果愿意的话，需要填写一些认证信息，系统会尽快就近安排。（接送方式包括：私家车接送、地铁站接送）
+    </view>
+    <view class="flex align-center justify-center padding-top">
+      <van-button class="flex-sub margin-right" type="primary" color="#000000" bind:tap="onActivityPickupTap" data-activity-id="{{id}}" block>愿意接送</van-button>
+      <van-button class="flex-sub" type="primary" bind:tap="onBackToPrevPageTap" block>我再想想</van-button>
+    </view>
+  </view>
+
+</scroll-view>

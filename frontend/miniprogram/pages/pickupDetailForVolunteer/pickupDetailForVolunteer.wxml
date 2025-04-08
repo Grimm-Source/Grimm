@@ -1,0 +1,64 @@
+<!--pages/pickupDetailForVolunteer/pickupDetailForVolunteer.wxml-->
+<van-toast id="van-toast" />
+<block>
+  <view class="footer flex align-center justify-center padding">
+    <van-button type="primary" color="#000000" class="flex-sub margin-right" bind:tap="onCancelTap" block>取消接送服务</van-button>
+    <van-button type="primary" class="flex-sub" bind:tap="onConfirmTap" block>修改接送需求</van-button>
+  </view>
+</block>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="cu-card case no-card">
+    <view class="cu-item shadow">
+      <view class="image">
+        <view style="background-image:url('{{banner}}')" class="bg-image"></view>
+        <view class="cu-bar bg-shadeBottom">
+          <text class="text-cut text-lg text-bold">{{title}}</text>
+        </view>
+      </view>
+      <view class="text-content padding">
+        <view class="text-black">
+          <view>{{start_time}} - {{end_time}}</view>
+          <view style="margin-top: 12rpx;">{{location}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view style="margin-top: 16rpx;">
+    <t-notice-bar visible prefixIcon="{{false}}">
+      <view slot="content">具体信息会在后台审核配对后推送给您，感谢您的爱心</view>
+    </t-notice-bar>
+  </view>
+  <view class="bg-white">
+    <view class="text-black padding-left padding-right padding-top">您可以提供的志愿者服务：</view>
+    <view class="section" style="margin-top: 12rpx;">
+      <van-checkbox-group value="{{current}}" bind:change="onCheckboxChange">
+        <view wx:for="{{options}}" wx:key="value">
+          <view class="flex align-center justify-start" style="margin-bottom: 24rpx;">
+            <van-checkbox
+              name="{{item.value}}"
+              value="{{item.checked}}"
+              checked-color="#07c160"
+            />
+            <text>{{item.name}}</text>
+          </view>
+          <view
+            wx:for="{{item.items}}"
+            wx:for-item="itemChild"
+            wx:key="value"
+            class="flex align-center justify-start"
+            style="margin-bottom: 24rpx; margin-left: 60rpx;"
+          >
+            <van-checkbox
+              name="{{itemChild.value}}"
+              value="{{itemChild.checked}}"
+              checked-color="#07c160"
+              shape="square"
+              icon-size="28rpx"
+            />
+            <text>{{itemChild.name}}</text>
+          </view>
+        </view>
+      </van-checkbox-group>
+    </view>
+  </view>
+</scroll-view>

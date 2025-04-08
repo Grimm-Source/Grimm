@@ -1,0 +1,32 @@
+/* pages/my/my.wxss */
+page {
+	height: calc(100vh - env(safe-area-inset-bottom));
+	overflow: hidden;
+}
+.scrollarea {
+  height: 100%;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.name {
+  text-transform: uppercase;
+}
+.user-links {
+  padding: 15px 0;
+  font-size: 24rpx;
+  text-align: center;
+  background-color: #fff;
+}
+.user-links .van-icon {
+  display: block;
+  font-size: 24px;
+}
+.user-links .van-row {
+  padding: 15px 0;
+}
+
+.my {
+  .van-divider {
+    margin: 24rpx !important;
+  }
+}

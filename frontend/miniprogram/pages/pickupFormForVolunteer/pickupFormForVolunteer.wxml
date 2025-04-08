@@ -1,0 +1,62 @@
+<!--pages/pickupFormForVolunteer/pickupFormForVolunteer.wxml-->
+<van-toast id="van-toast" />
+<block>
+  <view class="footer flex align-center justify-center padding">
+    <van-button type="primary" class="flex-sub" bind:tap="onSubmitTap" block>确认提交</van-button>
+  </view>
+</block>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="notice-bar">
+    <t-notice-bar visible theme="info" content="为视障人士提供接送服务，请实名验证并填写信息" class="title" />
+  </view>
+  <view class="form padding-top bg-white">
+    <view class="text-xs text-bold padding-left">实名认证</view>
+    <view class="section flex">
+      <view class="text-black padding-right">真实姓名</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeNameInput" value="{{name}}" placeholder="请填写真实姓名" />
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">身份证号</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeIdcardInput" value="{{idcard}}" placeholder="请填写身份证号" />
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">所在城区</view>
+      <picker class="flex-sub text-black" mode="region" bind:change="changeRegionSelect" value="{{region}}">
+        <view>{{region ? region : '请选择所在城区'}}</view>
+      </picker>
+    </view>
+  </view>
+  <view class="form padding-top bg-white" style="margin-top: 16rpx;">
+    <view class="text-black padding-left">您可以提供的志愿者服务：</view>
+    <view class="section" style="margin-top: 12rpx;">
+      <van-checkbox-group value="{{current}}" bind:change="onCheckboxChange">
+        <view wx:for="{{options}}" wx:key="value">
+          <view class="flex align-center justify-start" style="margin-bottom: 24rpx;">
+            <van-checkbox
+              name="{{item.value}}"
+              value="{{item.checked}}"
+              checked-color="#07c160"
+            />
+            <text>{{item.name}}</text>
+          </view>
+          <view
+            wx:for="{{item.items}}"
+            wx:for-item="itemChild"
+            wx:key="value"
+            class="flex align-center justify-start"
+            style="margin-bottom: 24rpx; margin-left: 60rpx;"
+          >
+            <van-checkbox
+              name="{{itemChild.value}}"
+              value="{{itemChild.checked}}"
+              checked-color="#07c160"
+              shape="square"
+              icon-size="28rpx"
+            />
+            <text>{{itemChild.name}}</text>
+          </view>
+        </view>
+      </van-checkbox-group>
+    </view>
+  </view>
+</scroll-view>

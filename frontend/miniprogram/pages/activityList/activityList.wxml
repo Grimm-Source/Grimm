@@ -1,0 +1,24 @@
+<!--pages/activityList/activityList.wxml-->
+<van-toast id="van-toast" />
+<swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
+  <block wx:for="{{background}}" wx:key="*this">
+    <swiper-item>
+      <view class="swiper" style="background-image: url('{{item}}')"></view>
+    </swiper-item>
+  </block>
+</swiper>
+<van-sticky>
+  <van-dropdown-menu active-color="#008000">
+    <van-dropdown-item value="{{ category }}" options="{{ categoryList }}" bind:change="onChangeCategory" />
+    <van-dropdown-item value="{{ time }}" options="{{ timeList }}" bind:change="onChangeTime" />
+  </van-dropdown-menu>
+</van-sticky>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view wx:if="{{activityList.length === 0}}" class="empty">
+    <van-empty description="抱歉，我们没有找到相关活动" />
+  </view>
+  <block wx:else>
+    <activityItem wx:for="{{activityList}}" activity="{{item}}" wx:key="id" />
+    <van-divider contentPosition="center">没有更多活动</van-divider>
+  </block>
+</scroll-view>

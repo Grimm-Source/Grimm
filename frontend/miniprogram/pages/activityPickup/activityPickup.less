@@ -1,0 +1,28 @@
+/* pages/activityPickup/activityPickup.wxss */
+page {
+	height: calc(100vh - env(safe-area-inset-bottom));
+	overflow: hidden;
+}
+.scrollarea {
+  height: 100%;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.form {
+  .input {
+    .input-label::after {
+      content: '*';
+      color: red;
+    }
+  }
+}
+.footer {
+  width: 100%;
+  position: fixed;
+  height: 160rpx;
+  bottom: 0;
+  background-color: #FFFFFF;
+}
+.section {
+  padding: 24rpx 30rpx;
+  border-bottom: 1px solid #f5f5f5;
+}

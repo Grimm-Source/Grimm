@@ -1,0 +1,101 @@
+<!--pages/register/register.wxml-->
+<van-toast id="van-toast" />
+<block>
+  <view class="footer flex align-center justify-center padding">
+    <van-button type="primary" class="flex-sub" bind:tap="onSubmitTap" block>提交修改</van-button>
+  </view>
+</block>
+<scroll-view class="profile scrollarea" scroll-y type="list">
+  <view class="padding text-center bg-white">
+    <view class="avatar">
+      <van-image
+        round
+        width="150rpx"
+        height="150rpx"
+        src="{{avatarUrl}}"
+      />
+      <button class="button" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <van-icon class="icon" name="exchange" />
+      </button>
+    </view>
+    <view class="padding-top">欢迎加入成为我们的一员，体验精彩活动</view>
+  </view>
+
+  <view class="form padding-top bg-white" style="margin-top: 16rpx">
+    <view class="text-xs text-bold padding-left">基本信息</view>
+    <view class="section flex">
+      <view class="text-black padding-right">手机号码</view>
+      <input class="flex-sub text-black" type="number" value="{{phone}}" placeholder="请填写手机号码" disabled />
+      <view class="cu-tag line-green"> 已验证 </view>
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">角色类型</view>
+      <picker class="flex-sub text-black" mode="selector" bind:change="changeRoleSelect" value="{{roleIndex}}" range="{{roleShow}}">
+        <view>{{roleIndex >= 0 ? roleShow[roleIndex] : '请选择角色类型'}}</view>
+      </picker>
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">真实姓名</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeNameInput" value="{{name}}" placeholder="请填写真实姓名" />
+    </view>
+  </view>
+
+  <view class="form padding-top bg-white" style="margin-top: 16rpx">
+    <view class="text-xs text-bold padding-left">个人信息</view>
+    <view class="section flex">
+      <view class="text-black padding-right">您的性别</view>
+      <picker class="flex-sub text-black" mode="selector" bind:change="changeGenderSelect" value="{{genderIndex}}" range="{{genderShow}}">
+        <view>{{genderIndex >= 0 ? genderShow[genderIndex] : '请选择您的性别'}}</view>
+      </picker>
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">电子邮箱</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeEmailInput" value="{{email}}" placeholder="请填写电子邮箱" />
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">出生日期</view>
+      <picker class="flex-sub text-black" mode="date" bind:change="changeBirthdateSelect" value="{{birthdate}}">
+        <view>{{birthdate ? birthdate : '请选择出生日期'}}</view>
+      </picker>
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">所在城区</view>
+      <picker class="flex-sub text-black" mode="region" bind:change="changeRegionSelect" value="{{region}}">
+        <view>{{region ? region : '请选择所在城区'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="form padding-top bg-white" style="margin-top: 16rpx">
+    <view class="text-xs text-bold padding-left">实名认证</view>
+    <view class="section flex">
+      <view class="text-black padding-right">身份证号</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeIdcardInput" value="{{idcard}}" placeholder="请填写身份证号" />
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">上传身份证</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeIdcardPicInput" value="{{idcardPic}}" placeholder="请上传身份证" />
+    </view>
+  </view>
+
+  <view class="form padding-top bg-white" style="margin-top: 16rpx">
+    <view class="text-xs text-bold padding-left">紧急联系</view>
+    <view class="section flex">
+      <view class="text-black padding-right">紧急联系人</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeEmergencyPersonInput" value="{{emergencyPerson}}" placeholder="请填写紧急联系人" />
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">联系人电话</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeEmergencyTelInput" value="{{emergencyTel}}" placeholder="请填写联系人电话" />
+    </view>
+  </view>
+
+  <view class="form padding-top bg-white" style="margin-top: 16rpx">
+    <view class="text-xs text-bold padding-left">其他</view>
+    <view class="section flex">
+      <view class="text-black padding-right">备注</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeUsercommentInput" value="{{usercomment}}" placeholder="请输入备注" />
+    </view>
+    
+  </view>
+</scroll-view>

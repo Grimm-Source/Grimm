@@ -1,0 +1,7 @@
+<!--pages/message/message.wxml-->
+<van-toast id="van-toast" />
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="empty">
+    <van-empty description="抱歉，我们没有找到相关活动" />
+  </view>
+</scroll-view>
