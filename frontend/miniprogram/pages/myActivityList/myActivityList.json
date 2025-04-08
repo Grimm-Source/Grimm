@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "我的活动",
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar",
+    "van-tab": "@vant/weapp/tab/index",
+    "van-tabs": "@vant/weapp/tabs/index",
+    "van-empty": "@vant/weapp/empty/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "van-divider": "@vant/weapp/divider/index",
+    "activityItem": "/components/activityItem/activityItem"
+  },
+  "enablePullDownRefresh": true
+}

@@ -1,0 +1,95 @@
+<!--pages/activityDetail/activityDetail.wxml-->
+<van-toast id="van-toast" />
+<block>
+  <view wx:if="{{isActivityEnd}}" class="footer flex align-center justify-center padding">
+    <van-button class="flex-sub" type="link" block>本次活动已结束，期待您下次的参与</van-button>
+  </view>
+  <view wx:elif="{{isRegistered}}" class="footer flex align-center justify-center padding">
+    <van-button wx:if="{{!isNeedPickup}}" bind:tap="onPickupDetailTap" class="flex-sub margin-right" type="primary" color="#000000" block>接送详情</van-button>
+    <van-button wx:else bind:tap="onNeedPickupTap" class="flex-sub margin-right" type="primary" color="#000000" block>我要接送</van-button>
+    <van-button class="flex-sub" type="primary" bind:tap="onRegisterTap" block>
+      {{isRegistered ? '取消报名' : '我要报名'}}
+    </van-button>
+  </view>
+  <view wx:else class="footer flex align-center justify-center padding">
+    <van-button class="flex-sub margin-right" type="primary" bind:tap="onInterestTap" color="#000000" block>
+      {{isInterested ? '不感兴趣' : '感兴趣'}}
+    </van-button>
+    <van-button class="flex-sub" type="primary" bind:tap="onRegisterTap" block>
+      {{isRegistered ? '取消报名' : '我要报名'}}
+    </van-button>
+  </view>
+</block>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="cu-card case no-card">
+    <view class="cu-item shadow">
+      <view class="image">
+        <view style="background-image:url('{{banner}}')" class="bg-image"></view>
+        <view class="cu-bar bg-shadeBottom">
+          <text class="text-cut text-lg text-bold">{{title}}</text>
+        </view>
+      </view>
+      <view class="text-content text-grey padding" style="padding-top: 12rpx;">
+        <view class="flex justify-between">
+          <view class="flex align-center text-black">
+            <view wx:if="{{registered_impaired + registered_volunteer > 0}}" class="margin-right">{{registered_impaired + registered_volunteer}}人参加</view>
+            <!-- <view wx:if="{{interested > 0}}">{{interested}}人感兴趣</view> -->
+          </view>
+          <view class="text-black flex align-center">
+            <view>
+              <van-button class="share-button" size="normal" bind:tap="onLikeTap">
+                <van-icon wx:if="{{isLike}}" name="like" color="#DC143C" />
+                <van-icon wx:else name="like-o" />
+                赞
+              </van-button>
+            </view>            
+            <view>
+              <van-button class="share-button" size="normal" open-type="share">
+                <van-icon name="share-o" /> 分享
+              </van-button>
+            </view>
+          </view>
+        </view>
+        <view>
+          <!-- <view><text>报名情况</text></view> -->
+          <view>
+            <t-progress
+              theme="plump"
+              color="{{ { from: '#0052D9', to: '#007f00' } }}"
+              label="{{volunteer_label}}" 
+              percentage="{{volunteer_value}}"
+              t-class="tClass"
+              t-class-label="tClassLabel"
+            />
+          </view>
+          <view style="margin-top: 8rpx;">
+            <t-progress
+              theme="plump"
+              color="{{ {  from: '#0052D9', to: '#007f00' } }}"
+              label="{{vision_impaired_label}}" 
+              percentage="{{vision_impaired_value}}"
+              t-class="tClass"
+              t-class-label="tClassLabel"
+            />
+          </view>
+        </view>
+        <van-divider contentPosition="center"><text class="text-sm">基本信息</text></van-divider>
+        <view class="text-black">
+          <view>【开始时间】{{start_time}}</view>
+          <view>【结束时间】{{end_time}}</view>
+          <view class="flex">
+            <view>【活动地点】</view>
+            <view class="flex-sub">{{location}}</view>
+          </view>
+          <view>【活动费用】{{fee}}</view>
+        </view>
+        <van-divider contentPosition="center"><text class="text-sm">服务内容</text></van-divider>
+        <view class="text-black">{{content_service}}</view>
+        <van-divider contentPosition="center"><text class="text-sm">注意事项</text></van-divider>
+        <view class="text-black">{{content_notice}}</view>
+        <van-divider contentPosition="center"><text class="text-sm">特别注意</text></van-divider>
+        <view class="text-black">{{notice}}</view>
+      </view>
+    </view>
+  </view>
+</scroll-view>

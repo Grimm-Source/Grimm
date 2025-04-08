@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "接送信息",
+  "usingComponents": {
+    "t-notice-bar": "tdesign-miniprogram/notice-bar/notice-bar",
+    "van-button": "@vant/weapp/button/index",
+    "van-radio": "@vant/weapp/radio/index",
+    "van-radio-group": "@vant/weapp/radio-group/index"
+  }
+}

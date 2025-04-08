@@ -1,0 +1,42 @@
+<!--pages/activityPickup/activityPickup.wxml-->
+<van-toast id="van-toast" />
+<block>
+  <view class="footer flex align-center justify-center padding">
+    <van-button type="primary" class="flex-sub" block>确认提交</van-button>
+  </view>
+</block>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="notice-bar">
+    <t-notice-bar visible theme="info" content="为视障人士提供接送服务，请实名验证并填写信息" class="title" />
+  </view>
+  <view class="form padding-top bg-white">
+    <view class="text-xs text-bold padding-left">实名认证</view>
+    <view class="section flex">
+      <view class="text-black padding-right">真实姓名</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeNameInput" value="{{name}}" placeholder="请填写真实姓名" />
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">身份证号</view>
+      <input class="flex-sub text-black" type="text" bind:change="changeIdcardInput" value="{{idcard}}" placeholder="请填写身份证号" />
+    </view>
+    <view class="section flex">
+      <view class="text-black padding-right">所在城区</view>
+      <picker class="flex-sub text-black" mode="region" bind:change="changeRegionSelect" value="{{region}}">
+        <view>{{region ? region : '请选择所在城区'}}</view>
+      </picker>
+    </view>
+  </view>
+  <view class="form padding-top bg-white" style="margin-top: 16rpx;">
+    <view class="text-black padding-left">您可以提供的志愿者服务</view>
+    <view class="section" style="margin-top: 12rpx;">
+      <van-radio-group value="{{ radio }}" bind:change="onChange">
+        <block wx:for="{{options}}" wx:key="item.value">
+          <view class="flex align-center justify-start" style="margin-bottom: 24rpx;">
+            <van-radio value="{{item.value}}" checked-color="#07c160" />
+            <text>{{item.label}}</text>
+          </view>
+        </block>
+      </van-radio-group>
+    </view>
+  </view>
+</scroll-view>

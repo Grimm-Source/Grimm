@@ -1,0 +1,95 @@
+<!--pages/my/my.wxml-->
+<van-toast id="van-toast" />
+<scroll-view class="my scrollarea" scroll-y type="list">
+  <view class="cu-card case padding-bottom">
+    <view class="cu-item shadow" style="position: relative;">
+      <view
+        wx:if="{{auditStatus}}"
+        class="cu-tag bg-blue"
+        style="position: absolute; z-index: 1; right: 0;"
+      >{{auditStatus}}</view>
+      <view class="cu-list menu-avatar">
+        <view class="cu-item">
+          <view class="cu-avatar round lg" style="background-image:url('/image/logo.png');"></view>
+          <view class="content flex-sub">
+            <view class="name">{{name ? name : '非会员'}} {{phone ? phone : ''}}</view>
+            <view wx:if="{{isRegistered}}" class="text-sm flex">
+              <text>{{role}}</text>
+            </view>
+            <view wx:else class="text-gray text-sm flex">
+              <text>为给您提供更好的服务请授权登录</text>
+            </view>
+          </view>
+          <van-button
+            wx:if="{{!isRegistered}}"
+            round
+            size="small"
+            color="#000000"
+            style="margin-right: 12rpx;"
+            open-type="getPhoneNumber"
+            bind:getphonenumber="getPhoneNumber"
+          >登录 / 注册</van-button>
+        </view>
+        <view
+          wx:if="{{isRegistered && role === '志愿者'}}"
+          class="padding-left padding-right padding-bottom">
+          <view class="flex align-center justify-center">
+            <van-circle
+              stroke-width="2"
+              size="100"
+              layer-color="#e5e5e5"
+              value="{{joindHours}}"
+              color="{{gradientColor}}"
+              text="{{joindHours}}分钟"
+              style="margin-right: 100rpx; font-size: 24rpx;"
+            />
+            <van-circle
+              stroke-width="2"
+              size="100"
+              layer-color="#e5e5e5"
+              value="{{activitiesJoined}}"
+              color="{{gradientColor}}"
+              text="{{activitiesJoined}}次活动"
+              style="font-size: 24rpx;"
+            />
+          </view>
+          <van-divider />
+          <view class="text-sm text-center">
+            <view>活动结束后，志愿者可以登录《志愿者网》</view>
+            <view><text class="text-blue">www.volunteer.sh.cn</text> 申请证书哦！</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <block>
+    <van-cell-group>
+      <van-cell
+        is-link
+        title="我的活动"
+        bind:tap="navigateToMyActivityList"
+      />
+    </van-cell-group>
+    <view class="bg-white">
+      <van-row class="user-links">
+        <van-col span="8">
+          <van-icon name="sign" />
+          已报名
+        </van-col>
+        <van-col span="8">
+          <van-icon name="good-job-o" />
+          感兴趣
+        </van-col>
+        <van-col span="8">
+          <van-icon name="certificate" />
+          已结束
+        </van-col>
+      </van-row>
+    </view>
+  </block>
+  <van-cell-group>
+    <van-cell wx:if="{{isRegistered}}" is-link title="修改个人信息" link-type="navigateTo" url="/pages/profile/profile" />
+    <van-cell wx:if="{{isRegistered && role === '志愿者'}}" is-link title="申请志愿者证书" link-type="navigateTo" url="/pages/myVolunteerCertificate/myVolunteerCertificate" />
+    <van-cell wx:if="{{isRegistered}}" is-link title="退出登录" bind:tap="onLogoutTap" />
+  </van-cell-group>
+</scroll-view>

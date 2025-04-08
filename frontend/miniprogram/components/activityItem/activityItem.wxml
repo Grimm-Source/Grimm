@@ -1,0 +1,44 @@
+<!--components/activityItem/activityItem.wxml-->
+<view class="cu-card case">
+  <view class="cu-item shadow">
+    <view class="image" bind:tap="onRedirectToPageTap" data-activity-id="{{id}}">
+      <view style="background-image:url('{{banner}}')" class="bg-image"></view>
+      <!-- <view class="cu-tag bg-blue">运动</view> -->
+      <view class="cu-bar bg-shadeBottom">
+        <text class="text-cut text-lg text-bold">{{title}}</text>
+      </view>
+    </view>
+    <view class="text-content text-grey padding">
+      <view class="text-969799" bind:tap="onRedirectToPageTap" data-activity-id="{{id}}">
+        <view>开始时间：<text>{{start_time}}</text></view>
+        <view>结束时间：<text>{{end_time}}</text></view>
+        <view class="flex">
+          <view>活动地点：</view>
+          <view class="flex-sub">{{location}}</view>
+        </view>
+        <view>活动费用：<text>{{fee}}</text></view>
+      </view>
+      <van-divider />
+      <view class="flex justify-between margin-top text-969799">
+        <view class="flex">
+          <view wx:if="{{registered > 0}}" class="margin-right">{{registered}}人参加</view>
+          <view wx:if="{{interested > 0}}">{{interested}}人感兴趣</view>
+        </view>
+        <view class="flex align-center text-lg">
+          <view>
+            <van-icon wx:if="{{isLike}}" name="like" color="#DC143C" />
+            <van-icon wx:else name="like-o" />
+            {{thumbs_up}}
+          </view>            
+          <view class="margin-left">
+            <van-icon name="share-o" /> {{share}}
+          </view>
+        </view>
+        <!-- <view class="text-gray">
+          <text class="cuIcon-like margin-lr-xs"></text>{{thumbs_up}}
+          <text class="cuIcon-share margin-lr-xs"></text>{{share}}
+        </view> -->
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,23 @@
+<!--pages/search/search.wxml-->
+<van-toast id="van-toast" />
+<van-sticky>
+  <!-- <navigation-bar title="搜索活动" back="{{false}}" color="black" background="#FFF"></navigation-bar> -->
+  <van-search
+    shape="round"
+    background="#FFFFFF"
+    placeholder="请输入搜索关键词"
+    value="{{value}}"
+    focus="{{focus}}"
+    bind:change="onChange"
+    bind:search="onSearch"
+  />
+</van-sticky>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view wx:if="{{activityList.length === 0}}" class="empty">
+    <van-empty description="抱歉，我们没有找到相关活动" />
+  </view>
+  <block wx:else>
+    <activityItem wx:for="{{activityList}}" activity="{{item}}" wx:key="*this" />
+    <van-divider contentPosition="center">没有更多活动</van-divider>
+  </block>
+</scroll-view>
