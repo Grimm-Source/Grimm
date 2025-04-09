@@ -105,11 +105,12 @@ def activity_converter(activity, openid=0):
 
 def sort_by_time(activities_info, filter_time):
     if filter_time == "all":
-        res_info = [
-                activity
-                for activity in activities_info
-                if datetime.today() - timedelta(days=365) < activity["end_time"]
-            ]
+        # res_info = [
+        #         activity
+        #         for activity in activities_info
+        #         if datetime.today() - timedelta(days=365) < activity["end_time"]
+        #     ]
+        res_info = activities_info
     elif filter_time == "latest":
         res_info = [
                 activity
