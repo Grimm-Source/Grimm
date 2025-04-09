@@ -17,7 +17,7 @@ from grimm import db
 from grimm.models.activity import Activity, ActivityParticipant
 from grimm.models.admin import User
 
-from .base import post_json
+from .base import post_json, delete_json
 from .base import ActivityCase
 
 # GET "/activities"
@@ -421,7 +421,7 @@ class TestActivityReview(ActivityCase):
             self.assertEqual(participant.remark, '')
             self.assertIsNone(participant.duties)
             self.assertIsNone(participant.gifts)
-            self.assertIsNone(participant.current_state)
+            self.assertEqual('Registered', participant.current_state)
 
             existing_participant_count = db.session.query(ActivityParticipant).filter_by(activity_id=activity_id).count()
 
@@ -462,5 +462,43 @@ class TestActivityReview(ActivityCase):
                     self.assertEqual(participant.current_state, 'signed_up')
                     self.assertEqual(participant.is_child, False)
                 if participant.user.phone == self.user_helper_attrs[0]['phone']:
-                    self.assertIsNone(participant.current_state)
+                    self.assertEqual('Registered', participant.current_state)
                     self.assertEqual(participant.is_child, True)
+
+# POST "/activityParticipant/registerActivity"
+class TestActivityRegister(ActivityCase):
+    def test_success(self):
+        openid = self.user_helper_attrs[1]['openid']
+        headers = {'Authorization': openid}
+        activity_id = None
+
+        with self.app.app_context():
+            participant = db.session.query(ActivityParticipant).filter_by(participant_openid=openid).first()
+            self.assertNotEqual(participant, None)
+            activity_id = participant.activity_id
+
+        response = post_json(self.client, f'/activityParticipant/registerActivity',
+                data={
+                    'activity_id': activity_id,
+                }, headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        print(data)
+        self.assertEqual(data['message'], '重复报名')
+
+        response = delete_json(self.client, f'/activityParticipant/registerActivity',
+                data={
+                    'activity_id': activity_id,
+                }, headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['status'], '取消活动成功！')
+
+        response = post_json(self.client, f'/activityParticipant/registerActivity',
+                data={
+                    'activity_id': activity_id,
+                }, headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['status'], 'success')
+

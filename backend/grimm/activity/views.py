@@ -19,6 +19,8 @@ from grimm.utils import dbutils, certificationgenerate, emailverify, areautils
 from grimm.utils.constants import TAG_LIST
 
 
+# TODO keyword filter does not match without keyword
+# tags / time
 @activity.route("/activities", methods=['GET'])
 class Activities(Resource):
     def get(self):
@@ -236,6 +238,8 @@ class ActivityRegistration(Resource):
 
             user['gifts'] = item.gifts
             user['duties'] = item.duties
+            user['remark'] = item.remark
+            user['is_child'] = 1 if item.is_child else 0
 
             users.append(user)
         feedback = {'status': 'success', 'users': users}
@@ -656,13 +660,6 @@ class UserRegisterActivities(Resource):
 
         logger.info('User %s register activity %s.' % (openid, activity_id))
 
-        exist_registered_info = ActivityParticipant.query. \
-            filter(ActivityParticipant.participant_openid == openid,
-                   ActivityParticipant.activity_id == activity_id).first()
-        if exist_registered_info:
-            logger.info('Repeat registration.')
-            return jsonify({"status": "failure", "message": "重复报名"})
-
         user_info = User.query.filter(User.openid == openid).first()
         if not user_info:
             return jsonify({"status": "failure", "message": "未能获取用户信息, 请先注册"})
@@ -672,7 +669,14 @@ class UserRegisterActivities(Resource):
             logger.error("Activity %d is not existing!", activity_id)
             return jsonify({"status": "failure", "message": "活动不存在"})
 
-        activity_participant_info = ActivityParticipant()
+        exist_registered_info = ActivityParticipant.query. \
+            filter(ActivityParticipant.participant_openid == openid,
+                   ActivityParticipant.activity_id == activity_id).first()
+        if exist_registered_info and exist_registered_info.current_state is not None:
+            logger.info('Repeat registration.')
+            return jsonify({"status": "failure", "message": "重复报名"})
+
+        activity_participant_info = exist_registered_info or ActivityParticipant()
         activity_participant_info.activity_id = activity_id
         activity_participant_info.participant_openid = openid
         activity_participant_info.interested = 0
@@ -1064,7 +1068,7 @@ class ReviewActivity(Resource):
                 "error": "活动不存在"
             }, 404
 
-        data = request.get_json()['data']
+        data = request.get_json()
         if not data or len(data) == 0:
             return {
                 "status": "failure",
@@ -1073,7 +1077,7 @@ class ReviewActivity(Resource):
 
         info_map = dict([(info.phone, info) for info in activity.participate_infos])
         unknown_phones = []
-        for item in data:
+        for item in data['data']:
             if info_map.get(item['phone']) is None:
                 user = db.session.query(User).filter_by(
                         phone=item['phone']).first()
@@ -1084,6 +1088,7 @@ class ReviewActivity(Resource):
                 info = ActivityParticipant(
                         activity_id = activity_id,
                         participant_openid = user.openid,
+                        current_state = 'Registered',
                         )
                 logger.warning('add %s' % user.openid)
             else:
