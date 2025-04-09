@@ -17,7 +17,20 @@ def post_json(client, uri, data, headers=None):
 
     headers["Content-Type"] = "application/json"
 
-    return client.post(uri, headers=headers, data=json.dumps(data))
+    return req_json('post', client, uri, data, headers)
+
+def delete_json(client, uri, data, headers=None):
+
+    return req_json('delete', client, uri, data, headers)
+
+def req_json(method, client, uri, data, headers=None):
+    if not isinstance(headers, dict):
+        headers = {}
+
+    f = getattr(client, method)
+    headers["Content-Type"] = "application/json"
+
+    return f(uri, headers=headers, data=json.dumps(data))
 
 class BaseCase(unittest.TestCase):
     def setUp(self):
@@ -231,7 +244,7 @@ class ActivityCase(AdminCase, UserCase):
                 db.session.add(user_helper)
                 db.session.flush()
             db.session.add(ActivityParticipant(
-                user=user_helper, activity=activity))
+                user=user_helper, activity=activity, current_state='Registered'))
 
             db.session.commit()
 
