@@ -6,12 +6,13 @@ import pathlib
 import unittest
 from unittest import mock
 # import urllib3
-from datetime import datetime, timedelta 
+from datetime import datetime, timedelta
 os.environ['FLASK_ENV'] = 'dev'
 
 from grimm import db, GrimmConfig
 from grimm.utils import constants
 from grimm.models.admin import Admin, User, PreSignedUrl
+from grimm.models.activity import ActivityParticipant, Activity
 
 from .base import post_json, MockResponse
 from .base import UserCase
@@ -48,10 +49,10 @@ class TestUserQuery(UserCase):
                 self.assertIn(attr, user)
 
     def test_appove_users(self):
-        res = self.client.patch('/users', 
+        res = self.client.patch('/users',
                 data=json.dumps([
                     {'openid': self.default_volunteer_attrs['openid'],
-                        'audit_status': 'approved'}]), 
+                        'audit_status': 'approved'}]),
                 headers={'Content-Type': 'application/json'})
         self.assertEqual(res.status_code, 200)
         data = json.loads(res.data)
@@ -563,6 +564,170 @@ class TestUserIdentityImages(UserCase):
         self.assertEqual(len(urls), 3)
         for k in urls:
             self.assertTrue(urls[k] is not None and urls[k] != '')
+
+class TestProfileOperate(UserCase):
+    def test_get_profile_success(self):
+        """Test successful profile retrieval"""
+        openid = self.default_volunteer_attrs['openid']
+        res = self.client.get('/profile', headers={'Authorization': openid})
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.data)
+        self.assertEqual(data["status"], "success")
+
+        # Check required fields are present
+        expected_attrs = ('openid', 'birthDate', 'usercomment', 'disabledID', 'emergencyPerson',
+                         'emergencyTel', 'gender', 'idcard', 'linkaddress', 'linktel', 'name',
+                         'role', 'phone', 'email', 'registrationDate', 'activitiesJoined', 'joindHours')
+
+        for attr in expected_attrs:
+            self.assertIn(attr, data)
+
+        # Verify specific data values
+        self.assertEqual(data['openid'], openid)
+        self.assertEqual(data['name'], self.default_volunteer_attrs['name'])
+        self.assertEqual(data['role'], 'volunteer')  # role 0 should map to 'volunteer'
+        self.assertEqual(data['phone'], self.default_volunteer_attrs['phone'])
+        self.assertEqual(data['email'], self.default_volunteer_attrs['email'])
+
+    def test_get_profile_non_existent_user(self):
+        """Test profile retrieval for non-existent user"""
+        res = self.client.get('/profile', headers={'Authorization': 'nonexistent_openid'})
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.data)
+        self.assertEqual(data["status"], "failure")
+        self.assertEqual(data["message"], "用户未注册")
+
+    def test_get_profile_impaired_user(self):
+        """Test profile retrieval for impaired user (role 1)"""
+        openid = self.default_impaired_attrs['openid']
+        res = self.client.get('/profile', headers={'Authorization': openid})
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.data)
+        self.assertEqual(data["status"], "success")
+        self.assertEqual(data['role'], 'impaired')  # role 1 should map to 'impaired'
+
+    @mock.patch('grimm.utils.botutils.send_error_to_spark')
+    def test_post_profile_success(self, mocked_func):
+        """Test successful profile update"""
+        mocked_func.return_value = (200, '')
+
+        openid = self.default_volunteer_attrs['openid']
+        new_info = {
+            "gender": "f",
+            "birthDate": "2000-01-01",
+            "name": "Updated Test User",
+            "linkaddress": "Updated Test Address",
+            "email": "updated@test.com",
+            "role": "volunteer",
+            "emergencyPerson": "e_cntct",
+            "emergencyTel": "123456789",
+            "usercomment": "Test comment",
+            "idcard": "123456789012345678"
+        }
+
+        res = self.client.post('/profile', data=json.dumps(new_info), headers={
+            'Authorization': openid, 'Content-Type': 'application/json'})
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.data)
+        self.assertEqual(data["status"], "success")
+
+        # Verify the database was updated
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            self.assertIsNotNone(user_info)
+            self.assertEqual(user_info.gender, new_info["gender"])
+            self.assertEqual(str(user_info.birth)[:10], new_info["birthDate"])
+            self.assertEqual(user_info.name, new_info["name"])
+            self.assertEqual(user_info.address, new_info["linkaddress"])
+            self.assertEqual(user_info.email, new_info["email"])
+            self.assertEqual(user_info.role, 0)  # volunteer role
+            self.assertEqual(user_info.emergent_contact, new_info["emergencyPerson"])
+            self.assertEqual(user_info.emergent_contact_phone, new_info["emergencyTel"])
+            self.assertEqual(user_info.remark, new_info["usercomment"])
+            self.assertEqual(user_info.idcard, new_info["idcard"])
+
+    @mock.patch('grimm.utils.botutils.send_error_to_spark')
+    def test_post_profile_impaired_role(self, mocked_func):
+        """Test profile update with impaired role and disabled ID"""
+        mocked_func.return_value = (200, '')
+
+        openid = self.default_volunteer_attrs['openid']
+        new_info = {
+            "gender": "m",
+            "birthDate": "1990-01-01",
+            "name": "Impaired User",
+            "linkaddress": "Test Address",
+            "email": "impaired@test.com",
+            "role": "impaired",
+            "disabledID": "DISABLED123"
+        }
+
+        res = self.client.post('/profile', data=json.dumps(new_info), headers={
+            'Authorization': openid, 'Content-Type': 'application/json'})
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.data)
+        self.assertEqual(data["status"], "success")
+
+        # Verify the database was updated with impaired role
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            self.assertIsNotNone(user_info)
+            self.assertEqual(user_info.role, 1)  # impaired role
+            self.assertEqual(user_info.disabled_id, new_info["disabledID"])
+            self.assertEqual(user_info.disabled_id_verified, 0)
+
+    @mock.patch('grimm.utils.botutils.send_error_to_spark')
+    def test_post_profile_non_existent_user(self, mocked_func):
+        """Test profile update for non-existent user"""
+        mocked_func.return_value = (200, '')
+
+        new_info = {
+            "gender": "f",
+            "birthDate": "2000-01-01",
+            "name": "Test User",
+            "linkaddress": "Test Address",
+            "email": "test@test.com",
+            "role": "volunteer"
+        }
+
+        res = self.client.post('/profile', data=json.dumps(new_info), headers={
+            'Authorization': 'nonexistent_openid', 'Content-Type': 'application/json'})
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.data)
+        # Should return success to prevent enumeration attack
+        self.assertEqual(data["status"], "success")
+
+        # Verify no user was created
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == 'nonexistent_openid').first()
+            self.assertIsNone(user_info)
+
+    @mock.patch('grimm.utils.botutils.send_error_to_spark')
+    def test_post_profile_partial_update(self, mocked_func):
+        """Test profile update with only some fields"""
+        mocked_func.return_value = (200, '')
+
+        openid = self.default_volunteer_attrs['openid']
+        new_info = {
+            "name": "Partially Updated Name",
+            "email": "partial@test.com",
+            "role": "volunteer"
+        }
+
+        res = self.client.post('/profile', data=json.dumps(new_info), headers={
+            'Authorization': openid, 'Content-Type': 'application/json'})
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.data)
+        self.assertEqual(data["status"], "success")
+
+        # Verify only specified fields were updated
+        with self.app.app_context():
+            user_info = db.session.query(User).filter(User.openid == openid).first()
+            self.assertIsNotNone(user_info)
+            self.assertEqual(user_info.name, new_info["name"])
+            self.assertEqual(user_info.email, new_info["email"])
+            # Other fields should remain unchanged
+            self.assertEqual(user_info.phone, self.default_volunteer_attrs['phone'])
 
 if __name__ == "__main__":
     unittest.main()
