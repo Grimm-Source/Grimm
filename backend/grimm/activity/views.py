@@ -1077,7 +1077,7 @@ class ReviewActivity(Resource):
 
         info_map = dict([(info.phone, info) for info in activity.participate_infos])
         unknown_phones = []
-        for item in data['data']:
+        for item in data:
             if info_map.get(item['phone']) is None:
                 user = db.session.query(User).filter_by(
                         phone=item['phone']).first()

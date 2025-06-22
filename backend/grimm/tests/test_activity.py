@@ -429,8 +429,8 @@ class TestActivityReview(ActivityCase):
         duties = [1,2]
         gifts = {1: 1, 2: 2}
         response = post_json(self.client, f'/activity/review/{activity_id}',
-                data={
-                    'data': [{
+                data=[
+                    {
                         'phone': self.user_helper_attrs[1]['phone'],
                         'duties': duties,
                         'gifts': gifts,
@@ -443,8 +443,8 @@ class TestActivityReview(ActivityCase):
                         'remark': remark,
                         'signup': 0,
                         'is_child': 1,
-                    }]
-                }, headers=headers)
+                    }
+                 ], headers=headers)
 
         with self.app.app_context():
             participants = db.session.query(
