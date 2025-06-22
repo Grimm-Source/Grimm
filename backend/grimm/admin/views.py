@@ -386,11 +386,19 @@ class ProfileOperate(Resource):
             # set same response as success to prevent enumeration attack
             return jsonify({"status": "success"})
 
-        status.gender = new_info["gender"]
-        status.birth = new_info["birthDate"]
-        status.name = new_info["name"]
-        status.address = new_info["linkaddress"]
-        status.email = new_info["email"]
+        key_map = {
+                'gender': 'gender',
+                'birthDate': 'birth',
+                'name': 'name',
+                'linkaddress': 'address',
+                'email': 'email',
+                'emergencyPerson': 'emergent_contact',
+                'emergencyTel': 'emergent_contact_phone',
+                'usercomment': 'remark',
+        }
+        for key in key_map:
+            if key in new_info:
+                setattr(status, key_map[key], new_info[key])
 
         if new_info["role"] == 'volunteer':
             status.role = 0
