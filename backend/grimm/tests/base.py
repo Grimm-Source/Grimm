@@ -89,6 +89,7 @@ class UserCase(BaseCase):
                 'email': 'email',
                 'avatar_url': 'avatar_url',
                 'openid': 'default_volunteer_openid',
+                'idcard': '123456789012345678',
                 'registration_date': datetime.now(),
                 'birth': datetime.now(),
                 'idcard_obverse_path': 'default_volunteer_openid_obverse.png',
