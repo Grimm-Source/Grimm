@@ -125,3 +125,12 @@ def calc_duration(start, end):
 def generate_password_hash(password):
     salt = bcrypt.gensalt(constants.DEFAULT_PASSWORD_SALT)
     return bcrypt.hashpw(password.encode('utf-8'), salt)
+
+def mask_idcard_num(idcard):
+    if not isinstance(idcard, str):
+        return idcard
+
+    if len(idcard) != 18:
+        return idcard
+
+    return idcard[:6] + '**********' + idcard[16:18]

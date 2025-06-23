@@ -20,6 +20,7 @@ from grimm.admin.admindto import AdminDto
 from grimm.models.activity import ActivityParticipant, Activity
 from grimm.models.admin import Admin, User, PreSignedUrl
 from grimm.utils import constants, smsverify, emailverify, dbutils, decrypt
+from grimm.utils import misctools
 
 @admin.route('/login', methods=['POST'])
 class AdminLogin(Resource):
@@ -190,7 +191,7 @@ class Users(Resource):
                     "emergencyPerson": user_info.emergent_contact,
                     "emergencyTel": user_info.emergent_contact_phone,
                     "gender": user_info.gender,
-                    "idcard": user_info.idcard,
+                    "idcard": misctools.mask_idcard_num(user_info.idcard),
                     "linkaddress": user_info.address,
                     "linktel": user_info.contact,
                     "phone": user_info.phone,
@@ -319,7 +320,7 @@ class ProfileOperate(Resource):
             "emergencyPerson": user_info["emergent_contact"],
             "emergencyTel": user_info["emergent_contact_phone"],
             "gender": user_info["gender"],
-            "idcard": user_info["idcard"],
+            "idcard": misctools.mask_idcard_num(user_info["idcard"]),
             "linkaddress": user_info["address"],
             "linktel": user_info["contact"],
             "name": user_info["name"],
