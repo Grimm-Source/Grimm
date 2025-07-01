@@ -197,7 +197,9 @@ class Users(Resource):
                     "phone": user_info.phone,
                     "registrationDate": str(user_info.registration_date),
                     "activitiesJoined": user_info.activities_joined,
-                    "joindHours": 4 * user_info.activities_joined}
+                    "joindHours": 4 * user_info.activities_joined,
+                    "audit_comment": user_info.audit_comment
+            }
             if user_info.role == 1:
                 info["disabledID"] = user_info.disabled_id
             if user_info.audit_status == 0:
