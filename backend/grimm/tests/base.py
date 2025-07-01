@@ -236,9 +236,11 @@ class ActivityCase(AdminCase, UserCase):
                 db.session.add(activity)
 
             db.session.add(ActivityParticipant(user=self.default_volunteer,
-                activity=activity, duties=[1,], gifts={1:1}))
+                activity=activity, duties=[1,], gifts={1:1},
+                current_state='Registered'))
             db.session.add(ActivityParticipant(user=user,
-                activity=activity, gifts={2:2}))
+                activity=activity, gifts={2:2},
+                current_state='Registered'))
 
             for attrs in self.user_helper_attrs:
                 user_helper = User(**attrs)

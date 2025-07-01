@@ -65,11 +65,13 @@ class Activity(db.Model):
 
     @property
     def volunteers(self):
-        return [info.user for info in self.participate_infos if info.user.is_volunteer()]
+        return [info.user for info in self.participate_infos if info.user.is_volunteer() \
+                and info.current_state is not None]
 
     @property
     def impaireds(self):
-        return [info.user for info in self.participate_infos if info.user.is_impaired()]
+        return [info.user for info in self.participate_infos if info.user.is_impaired() \
+                and info.current_state is not None]
 
     @property
     def children_count(self):
