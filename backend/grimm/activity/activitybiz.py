@@ -305,44 +305,137 @@ def form_sign(activity):
         ws.append(['', f'活动主题：{activity.title}'])
         ws.merge_cells('B4:H4')
 
-        ws.append(['序号', '姓名', '电话', '签名', '身份证', '衣服领取', '物品领取', '备注'])
+        # 获取所有礼品/物品信息
+        all_gifts = db.session.query(Gift).all()
+        all_gifts.sort(key=lambda x: x.seq)
 
-        ws.column_dimensions['A'].width = 5
-        ws.column_dimensions['B'].width = 10
-        for col in 'CDEFGH':
-            ws.column_dimensions[col].width = 20
+        # 构建表头
+        header_row = ['序号', '姓名', '电话', '签名', '身份证', '签到状态']
 
-        for row in ws['A2':'H5']:
+        # 添加具体的物品列
+        for gift in all_gifts:
+            header_row.append(f'{gift.name}')
+
+        header_row.extend(['备注'])
+        ws.append(header_row)
+
+        # 设置列宽
+        ws.column_dimensions['A'].width = 5   # 序号
+        ws.column_dimensions['B'].width = 10  # 姓名
+        ws.column_dimensions['C'].width = 15  # 电话
+        ws.column_dimensions['D'].width = 15  # 签名
+        ws.column_dimensions['E'].width = 18  # 身份证
+        ws.column_dimensions['F'].width = 10  # 签到状态
+
+        # 物品列宽度
+        start_col = ord('G')
+        for i, gift in enumerate(all_gifts):
+            col_letter = chr(start_col + i)
+            ws.column_dimensions[col_letter].width = 12
+
+        # 备注列
+        remark_col = chr(start_col + len(all_gifts))
+        ws.column_dimensions[remark_col].width = 20
+
+        # 设置表头样式
+        for row in ws['A2':f'{remark_col}5']:
             for cell in row:
                 cell.font = bold_11
                 cell.border = thin_border
 
-        for cell in ws['A5':'H5'][0]:
+        header_range = f'A5:{remark_col}5'
+        for cell in ws[header_range][0]:
             cell.fill = light_grey
 
-        for idx, volunteer in enumerate(users):
-            ws.append([
-                idx+1,
-                volunteer.name,
-                volunteer.phone,
-                '',  # column for manual input of signature
-                volunteer.idcard,
-                '', '', # columns for manual input of receiving items
-                # TODO should be ActivityParticipant.remark?
-                volunteer.remark])
+        # 统计物品数量
+        gift_statistics = {}
+        for gift in all_gifts:
+            gift_statistics[gift.id] = 0
+
+        # 填写用户数据
+        for idx, user in enumerate(users):
+            # 获取用户的活动参与信息
+            participant = ActivityParticipant.query.filter(
+                ActivityParticipant.activity_id == activity.id,
+                ActivityParticipant.participant_openid == user.openid
+            ).first()
+
+            row_data = [
+                idx + 1,
+                user.name,
+                user.phone,
+                '',  # 签名列留空供手动填写
+                user.idcard if hasattr(user, 'idcard') else '',
+                '已签到' if participant and participant.signup else '未签到'
+            ]
+
+            # 添加物品领取信息
+            for gift in all_gifts:
+                gift_count = 0
+                if participant and participant.gifts and str(gift.id) in participant.gifts:
+                    gift_count = participant.gifts[str(gift.id)]
+                    gift_statistics[gift.id] += gift_count
+
+                # 显示领取数量，0则显示空白
+                row_data.append(gift_count if gift_count > 0 else '')
+
+            # 备注
+            remark = ''
+            if participant and participant.remark:
+                remark = participant.remark
+            row_data.append(remark)
+
+            ws.append(row_data)
 
         user_total = len(users)
+        signed_up_count = sum(1 for user in users
+                             if ActivityParticipant.query.filter(
+                                 ActivityParticipant.activity_id == activity.id,
+                                 ActivityParticipant.participant_openid == user.openid,
+                                 ActivityParticipant.signup == True
+                             ).first())
+        not_signed_count = user_total - signed_up_count
+
+        # 计算统计行位置
         summary_row_idx = 36
         if user_total > 30:
             summary_row_idx = user_total + 6
 
+        # 人数统计行
         ws[f'A{summary_row_idx}'].value = '总计'
-        ws[f'B{summary_row_idx}'].value = f'活动人数：  {user_total}  参加人数：    未参加人数：'
-        ws.merge_cells(f'B{summary_row_idx}:H{summary_row_idx}')
+        ws[f'B{summary_row_idx}'].value = f'活动人数：{user_total}  已签到：{signed_up_count}  未签到：{not_signed_count}'
+        ws.merge_cells(f'B{summary_row_idx}:{remark_col}{summary_row_idx}')
         ws[f'A{summary_row_idx}'].font = bold_11
         ws[f'B{summary_row_idx}'].font = bold_with_size(14)
         ws[f'B{summary_row_idx}'].alignment = center_aligned
-        for cell in ws[f'A{summary_row_idx}':f'H{summary_row_idx}'][0]:
+
+        for cell in ws[f'A{summary_row_idx}':f'{remark_col}{summary_row_idx}'][0]:
+            cell.border = thin_border
+
+        # 物品统计行
+        gift_summary_row = summary_row_idx + 2
+        ws[f'A{gift_summary_row}'].value = '物品统计'
+        ws[f'A{gift_summary_row}'].font = bold_11
+        ws[f'A{gift_summary_row}'].border = thin_border
+
+        # 物品统计详情
+        gift_summary_row += 1
+        summary_text = '物品领取汇总：'
+        for gift in all_gifts:
+            count = gift_statistics[gift.id]
+            if count > 0:
+                summary_text += f' {gift.name}：{count}件'
+
+        if not any(gift_statistics.values()):
+            summary_text += ' 暂无物品领取'
+
+        ws[f'A{gift_summary_row}'].value = summary_text
+        ws.merge_cells(f'A{gift_summary_row}:{remark_col}{gift_summary_row}')
+        ws[f'A{gift_summary_row}'].font = bold_12
+        ws[f'A{gift_summary_row}'].alignment = center_aligned
+        ws[f'A{gift_summary_row}'].fill = yellow
+
+        for cell in ws[f'A{gift_summary_row}':f'{remark_col}{gift_summary_row}'][0]:
             cell.border = thin_border
 
     wb = Workbook()

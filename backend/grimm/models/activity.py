@@ -104,6 +104,7 @@ class ActivityParticipant(db.Model):
     gifts = db.Column(db.JSON, comment='领取物品种类和数量')
     duties = db.Column(db.JSON, comment='活动中承担的职责, Duty.id列表')
     remark = db.Column(db.String(500), server_default='', comment='备注')
+    signup = db.Column(db.Boolean, server_default='0', comment='报名人是否已经签到，0=未签到，1=已签到')
 
     user = relationship('User', backref='participate_infos')
     activity = relationship('Activity', backref='participate_infos')

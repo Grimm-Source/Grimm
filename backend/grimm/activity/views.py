@@ -235,6 +235,7 @@ class ActivityRegistration(Resource):
             # user["needpickup"] = item.needpickup
             # user["topickup"] = item.topickup
             user['current_state'] = item.current_state if item.current_state is not None else 'canceled'
+            user['signup'] = 0 if item.signup is None else item.signup
 
             user['gifts'] = item.gifts
             user['duties'] = item.duties
@@ -1101,6 +1102,7 @@ class ReviewActivity(Resource):
             info.gifts = item['gifts']
             if item.get('signup'):
                 info.current_state = 'signed_up'
+                info.signup = item['signup']
             if item.get('is_child'):
                 info.is_child = True
             db.session.add(info)
