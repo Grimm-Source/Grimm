@@ -5,6 +5,7 @@ basedir=$(dirname $0)
     mkdir -p ${basedir}/logs
     echo "Create log directory, done."
 }
+export FLASK_ENV=testing
 
 # for logs backup
 dir_name=$(date +%Y-%m-%d-%H-%M-%S)
@@ -27,6 +28,7 @@ gunicorn --bind 0.0.0.0:5000 \
          --error-log logs/error_log \
          --pid logs/grimm.pid \
          --capture-output \
+         --daemon \
           manage:app
 
 echo " Has done."

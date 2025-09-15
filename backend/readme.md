@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This is a charitable projects, the purpose is to help visually impaired people, and this project is cloned from 
+This is a charitable projects, the purpose is to help visually impaired people, and this project is cloned from
 
 > git@github.com:Grimm-Source/Grimm.git
 
@@ -116,7 +116,7 @@ There are many other methods that can be used in project, for more info, please 
 
 ### - flask_sqlalchemy
 
-Below is the sqlalchemy usage demo script. 
+Below is the sqlalchemy usage demo script.
 
 ```python
 from datetime import datetime

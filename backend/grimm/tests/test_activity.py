@@ -298,6 +298,7 @@ class TestActivityRegistrationGet(ActivityCase):
         self.assertEqual(response.json['users'][0]['name'], self.default_volunteer_attrs['name'])
         self.assertEqual(response.json['users'][0]['gifts'], gifts)
         self.assertEqual(response.json['users'][0]['duties'], duties)
+        self.assertEqual(response.json['users'][0]['signup'], 0)
 
     def test_get_activity_registration_no_activity(self):
         response = self.client.get('/activityRegistration/999')
@@ -427,7 +428,7 @@ class TestActivityReview(ActivityCase):
 
         headers = {'content_type': 'application/json'}
         duties = [1,2]
-        gifts = {1: 1, 2: 2}
+        gifts = [{"1": 1}, {"2": 2}]
         response = post_json(self.client, f'/activity/review/{activity_id}',
                 data=[
                     {
@@ -435,13 +436,13 @@ class TestActivityReview(ActivityCase):
                         'duties': duties,
                         'gifts': gifts,
                         'remark': remark,
-                        'signup': 1,
+                        'signup': True,
                     }, { # new add participant
                         'phone': self.user_helper_attrs[0]['phone'],
                         'duties': duties,
                         'gifts': gifts,
                         'remark': remark,
-                        'signup': 0,
+                        'signup': False,
                         'is_child': 1,
                     }
                  ], headers=headers)

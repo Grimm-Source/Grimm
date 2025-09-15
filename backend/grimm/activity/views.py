@@ -235,7 +235,7 @@ class ActivityRegistration(Resource):
             # user["needpickup"] = item.needpickup
             # user["topickup"] = item.topickup
             user['current_state'] = item.current_state if item.current_state is not None else 'canceled'
-            user['signup'] = 0 if item.signup is None else item.signup
+            user['signup'] = 1 if item.signup else 0
 
             user['gifts'] = item.gifts
             user['duties'] = item.duties
@@ -689,6 +689,7 @@ class UserRegisterActivities(Resource):
         activity_participant_info.certiticate_date = 0
         activity_participant_info.paper_certificate = 0
         activity_participant_info.is_child = bool(info.get('is_child', 0))
+        activity_participant_info.signup = bool(info.get('signup', 0))
         db.session.add(activity_participant_info)
         db.session.commit()
         logger.info("OpenId:%s in activity:%s are inserted to activity_participant!", openid, activity_id)
@@ -1100,11 +1101,15 @@ class ReviewActivity(Resource):
             # TODO check if id exists
             info.duties = item['duties']
             info.gifts = item['gifts']
-            if item.get('signup'):
-                info.current_state = 'signed_up'
-                info.signup = item['signup']
+            info.signup = item['signup']
+            if info.signup:
+                info.current_state = "signed_up"
+            else:
+                info.current_state = "Registered"
             if item.get('is_child'):
                 info.is_child = True
+            else:
+                info.is_child = False
             db.session.add(info)
 
         if unknown_phones:

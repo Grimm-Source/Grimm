@@ -372,9 +372,14 @@ def form_sign(activity):
             # 添加物品领取信息
             for gift in all_gifts:
                 gift_count = 0
-                if participant and participant.gifts and str(gift.id) in participant.gifts:
-                    gift_count = participant.gifts[str(gift.id)]
-                    gift_statistics[gift.id] += gift_count
+                # participant.gifts is a list of dict
+                # "gifts":[{"1":1},{"2":1},{"3":1},{"4":1}]
+                if participant and participant.gifts:
+                    for index, each_gift in enumerate(participant.gifts):
+                        if str(gift.id) in each_gift.keys():
+                            gift_count = each_gift[str(gift.id)]
+                            gift_statistics[gift.id] += gift_count
+                            break
 
                 # 显示领取数量，0则显示空白
                 row_data.append(gift_count if gift_count > 0 else '')
@@ -528,9 +533,10 @@ def form_info_summary(activities):
         gift_count = {}
         for info in activity.participate_infos:
             if info.gifts:
-                for _id in info.gifts:
-                    gift_count.setdefault(_id, 0)
-                    gift_count[_id] += info.gifts[_id]
+                for each_gift in info.gifts:
+                    for _id, count in each_gift.items():
+                        gift_count.setdefault(_id, 0)
+                        gift_count[_id] += count
 
         for g in all_gifts:
             one.append(gift_count.get(str(g.id), 0))

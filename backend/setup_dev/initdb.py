@@ -150,6 +150,7 @@ def create_activity(admin_id, volunteer_openid, project_id):
 
 def create_activityparticipant(activity_id,
         volunteer_openid, impaired_openid):
+    signup_value = 0
 
     for openid in (volunteer_openid, impaired_openid):
         participant = ActivityParticipant(
@@ -171,6 +172,8 @@ def create_activityparticipant(activity_id,
         with app.app_context():
             db.session.add(participant)
             db.session.commit()
+
+        signup_value += 1
 
 def create_pick(activity_id, volunteer_openid, impaired_openid):
     abbr = 'pkp_impd'
