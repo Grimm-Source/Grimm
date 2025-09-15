@@ -236,7 +236,7 @@ class ActivityCase(AdminCase, UserCase):
                 db.session.add(activity)
 
             db.session.add(ActivityParticipant(user=self.default_volunteer,
-                activity=activity, duties=[1,], gifts=[{"1":1}],
+                activity=activity, duties=[1,2,3], gifts=[{"1":1}],
                 current_state='Registered'))
             db.session.add(ActivityParticipant(user=user,
                 activity=activity, gifts=[{"2":2}],

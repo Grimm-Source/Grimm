@@ -287,7 +287,7 @@ def form_sign(activity):
         ws['A1'].font = bold_with_size(20)
         ws['A1'].alignment = center_aligned
         ws['A1'].value = f'{ws.title} 签到/签收表'
-        for cell in ws['A1':'H1'][0]:
+        for cell in ws['A1':'L1'][0]:
             cell.border = thin_border
 
         project_name = ''
@@ -296,21 +296,21 @@ def form_sign(activity):
         if activity.project_seq:
             project_name += f' 第({activity.project_seq})期'
         ws.append(['', f'项目名称：{project_name}'])
-        ws.merge_cells('B2:H2')
+        ws.merge_cells('B2:L2')
 
         ws.append(['',
             f'活动日期：{activity.start_date}'])
-        ws.merge_cells('B3:H3')
+        ws.merge_cells('B3:L3')
 
         ws.append(['', f'活动主题：{activity.title}'])
-        ws.merge_cells('B4:H4')
+        ws.merge_cells('B4:L4')
 
         # 获取所有礼品/物品信息
         all_gifts = db.session.query(Gift).all()
         all_gifts.sort(key=lambda x: x.seq)
 
         # 构建表头
-        header_row = ['序号', '姓名', '电话', '签名', '身份证', '签到状态']
+        header_row = ['序号', '姓名', '电话', '签名', '身份证', '签到状态', '活动职责']
 
         # 添加具体的物品列
         for gift in all_gifts:
@@ -326,9 +326,10 @@ def form_sign(activity):
         ws.column_dimensions['D'].width = 15  # 签名
         ws.column_dimensions['E'].width = 18  # 身份证
         ws.column_dimensions['F'].width = 10  # 签到状态
+        ws.column_dimensions['G'].width = 15  # 活动职责
 
         # 物品列宽度
-        start_col = ord('G')
+        start_col = ord('H')
         for i, gift in enumerate(all_gifts):
             col_letter = chr(start_col + i)
             ws.column_dimensions[col_letter].width = 12
@@ -360,13 +361,25 @@ def form_sign(activity):
                 ActivityParticipant.participant_openid == user.openid
             ).first()
 
+            # 获取职责信息
+            duties_text = ''
+            if participant and participant.duties:
+                # participant.duties 是一个ID列表，需要转换为名称
+                duty_names = []
+                for duty_id in participant.duties:
+                    duty = db.session.query(Duty).filter_by(id=duty_id).first()
+                    if duty:
+                        duty_names.append(duty.name)
+                duties_text = '\n'.join(duty_names)
+
             row_data = [
                 idx + 1,
                 user.name,
                 user.phone,
                 '',  # 签名列留空供手动填写
                 user.idcard if hasattr(user, 'idcard') else '',
-                '已签到' if participant and participant.signup else '未签到'
+                '已签到' if participant and participant.signup else '未签到',
+                duties_text
             ]
 
             # 添加物品领取信息
