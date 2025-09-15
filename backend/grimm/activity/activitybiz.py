@@ -282,7 +282,7 @@ bold_11 = bold_with_size(11)
 
 def form_sign(activity):
     def _write_sheet(ws, users):
-        ws.merge_cells('A1:H1')
+        ws.merge_cells('A1:L1')
         ws['A1'].fill = dark_grey
         ws['A1'].font = bold_with_size(20)
         ws['A1'].alignment = center_aligned
@@ -324,7 +324,7 @@ def form_sign(activity):
         ws.column_dimensions['B'].width = 10  # 姓名
         ws.column_dimensions['C'].width = 15  # 电话
         ws.column_dimensions['D'].width = 15  # 签名
-        ws.column_dimensions['E'].width = 18  # 身份证
+        ws.column_dimensions['E'].width = 25  # 身份证
         ws.column_dimensions['F'].width = 10  # 签到状态
         ws.column_dimensions['G'].width = 15  # 活动职责
 
@@ -403,7 +403,18 @@ def form_sign(activity):
                 remark = participant.remark
             row_data.append(remark)
 
+            row_index = idx + 6  # 从第6行开始（考虑标题行）
             ws.append(row_data)
+
+            # 为整行的所有列设置顶端对齐
+            total_columns = len(header_row)  # 总列数
+            for col_index in range(1, total_columns + 1):
+                cell = ws.cell(row=row_index, column=col_index)
+                cell.alignment = Alignment(
+                    wrap_text=True,      # 启用自动换行
+                    vertical='top',      # 垂直顶端对齐
+                    horizontal='left'    # 水平左对齐（序号列可能需要居中）
+                )
 
         user_total = len(users)
         signed_up_count = sum(1 for user in users
