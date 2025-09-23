@@ -362,7 +362,8 @@ class TestExportDutySummary(ActivityCase):
         ws = workbook.active
         self.assertEqual(ws['A1'].value, '活动序号')
         self.assertEqual(ws['B2'].value, today)
-        self.assertEqual(ws['C3'].value, self.default_volunteer_attrs['name'])
+        self.assertEqual(ws['C1'].value, '活动主题')
+        self.assertEqual(ws['D3'].value, self.default_volunteer_attrs['name'])
 
 # GET "/activity/export/info_summary"
 class TestExportInfoSummary(ActivityCase):
@@ -376,7 +377,8 @@ class TestExportInfoSummary(ActivityCase):
         ws = workbook.active
         self.assertEqual(ws['A2'].value, '活动序号')
         self.assertEqual(ws['B3'].value, today)
-        self.assertEqual(ws['E4'].value, 1)
+        self.assertEqual(ws['C2'].value, '活动主题')
+        self.assertEqual(ws['F4'].value, 1)
 
 # GET "/activity/projects"
 class TestGetProjects(ActivityCase):

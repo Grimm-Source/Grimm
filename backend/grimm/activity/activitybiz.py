@@ -497,22 +497,23 @@ def form_duty_summary(activities):
 
     wb = Workbook()
     ws = wb.active
-    title_row = ['活动序号', '日期']
+    title_row = ['活动序号', '日期', '活动主题']
     title_row.extend(duty_names)
     ws.append(title_row)
 
     ws.column_dimensions['A'].width = 20
     ws.column_dimensions['B'].width = 25
-    for col in 'CDEFGH':
+    ws.column_dimensions['C'].width = 30
+    for col in 'DEFGHI':
         ws.column_dimensions[col].width = 50
 
-    for cell in ws['A1':'H1'][0]:
+    for cell in ws['A1':'I1'][0]:
         cell.fill = light_grey
         cell.font = bold_12
         cell.border = thin_border
 
     for idx, activity in enumerate(activities):
-        one = [idx+1, activity.start_date]
+        one = [idx+1, activity.start_date, activity.title]
         for _id in duty_ids:
             one.append(join_with_chinese_comma([info.user.name for info \
                 in activity.participate_infos if info.duties and _id in info.duties]))
@@ -531,24 +532,24 @@ def form_info_summary(activities):
 
     wb = Workbook()
     ws = wb.active
-    ws.merge_cells('A1:L1')
+    ws.merge_cells('A1:M1')
     ws['A1'].font = bold_with_size(20)
     ws['A1'].alignment = center_aligned
     ws['A1'].value = '活动汇总信息'
     ws['A1'].border = thin_border
 
-    title_row = ['活动序号', '日期', '地点', '孩子数', '志愿者人数', '视障者人数', '总人数']
+    title_row = ['活动序号', '日期', '活动主题', '地点', '孩子数', '志愿者人数', '视障者人数', '总人数']
     for name in gift_names:
         title_row.append(f'{name}发件数')
     title_row.append('备注')
     ws.append(title_row)
-    for cell in ws['A2':'L2'][0]:
+    for cell in ws['A2':'M2'][0]:
         cell.fill = yellow
         cell.font = bold_12
         cell.border = thin_border
 
     for idx, activity in enumerate(activities):
-        one = [idx+1, activity.start_date, activity.location,
+        one = [idx+1, activity.start_date, activity.title, activity.location,
                 activity.children_count, len(activity.volunteers),
                 len(activity.impaireds),
                 len(activity.volunteers) + len(activity.impaireds),
