@@ -285,7 +285,7 @@ class TestActivityRegistrationGet(ActivityCase):
         gifts = {'1':2, '2':1}
         duties = [1,2]
         with self.app.app_context():
-            participant = ActivityParticipant(activity_id=1, participant_openid=openid, gifts=gifts, duties=duties)
+            participant = ActivityParticipant(activity_id=1, participant_openid=openid, gifts=gifts, duties=duties, current_state='signed_up')
             db.session.add(participant)
             db.session.commit()
 
