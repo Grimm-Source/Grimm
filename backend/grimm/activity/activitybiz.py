@@ -100,6 +100,7 @@ def activity_converter(activity, openid=0):
     query['project_id'] = activity['project_id']
     # TODO not query like this one by one
     query['project_name'] = Project.query.filter_by(id=activity['project_id']).first().name
+    query['published'] = activity['published']
     return query
 
 
@@ -353,8 +354,23 @@ def form_sign(activity):
         for gift in all_gifts:
             gift_statistics[gift.id] = 0
 
-        # 填写用户数据
-        for idx, user in enumerate(users):
+        # 过滤用户：排除已取消的用户
+        active_users = []
+        for user in users:
+            # 获取用户的活动参与信息
+            participant = ActivityParticipant.query.filter(
+                ActivityParticipant.activity_id == activity.id,
+                ActivityParticipant.participant_openid == user.openid,
+                ActivityParticipant.current_state.isnot(None),
+                ActivityParticipant.current_state != 'canceled'
+            ).first()
+
+            # 只包含有效参与者
+            if participant:
+                active_users.append(user)
+
+        # 填写用户数据（只处理有效用户）
+        for idx, user in enumerate(active_users):
             # 获取用户的活动参与信息
             participant = ActivityParticipant.query.filter(
                 ActivityParticipant.activity_id == activity.id,
@@ -471,8 +487,23 @@ def form_sign(activity):
     ws1 = wb.create_sheet(title='志愿')
     ws2 = wb.create_sheet(title='视障')
 
-    _write_sheet(ws1, activity.volunteers)
-    _write_sheet(ws2, activity.impaireds)
+    # 获取活动的志愿者和视障人士（过滤掉已取消的）
+    volunteers = db.session.query(User).join(ActivityParticipant).filter(
+        ActivityParticipant.activity_id == activity.id,
+        User.role == 0,
+        ActivityParticipant.current_state.isnot(None),
+        ActivityParticipant.current_state != 'canceled'
+    ).all()
+
+    impaireds = db.session.query(User).join(ActivityParticipant).filter(
+        ActivityParticipant.activity_id == activity.id,
+        User.role == 1,
+        ActivityParticipant.current_state.isnot(None),
+        ActivityParticipant.current_state != 'canceled'
+    ).all()
+
+    _write_sheet(ws1, volunteers)
+    _write_sheet(ws2, impaireds)
 
     # created two new sheet, so remove the first default sheet
     # which should be empty

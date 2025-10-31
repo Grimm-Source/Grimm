@@ -204,6 +204,14 @@ class ActivityRegistration(Resource):
             logger.warning("%d: no such activity", activity_id)
             return jsonify({"status": "failure", "message": "无效活动 ID"})
         activities_registration = ActivityParticipant.query.filter(ActivityParticipant.activity_id == activity_id).all()
+
+        # 过滤掉已取消的用户 - 只获取current_state不为None且不为'canceled'的参与者
+        activities_registration = ActivityParticipant.query.filter(
+            ActivityParticipant.activity_id == activity_id,
+            ActivityParticipant.current_state.isnot(None),
+            ActivityParticipant.current_state != 'canceled'
+        ).all()
+
         users = []
         for item in activities_registration:
             user = {}
@@ -707,10 +715,22 @@ class UserRegisterActivities(Resource):
         activity_participant_info = db.session.query(ActivityParticipant). \
             filter(ActivityParticipant.participant_openid == openid,
                    ActivityParticipant.activity_id == activity_id).first()
+
         if activity_participant_info:
-            activity_participant_info.current_state = None
+            # 检查用户是否有其他互动记录
+            has_interested = activity_participant_info.interested and activity_participant_info.interested != 0
+            has_thumbs_up = activity_participant_info.thumbs_up and activity_participant_info.thumbs_up != 0
+
+            # 如果没有任何互动记录，直接删除记录
+            if not has_interested and not has_thumbs_up:
+                db.session.delete(activity_participant_info)
+                logger.info("Completely deleted OpenId:%s with activity:%d from activity_participant!", openid, activity_id)
+            else:
+                # 如果有互动记录，只设置状态为取消
+                activity_participant_info.current_state = None
+                logger.info("Set OpenId:%s with activity:%d as canceled in activity_participant!", openid, activity_id)
+
             db.session.commit()
-            logger.info("Deleted OpenId:%s with activity:%d in activity_participant!", openid, activity_id)
 
         activitybiz.user_cancel_activity(openid, activity_id)
         return jsonify({"status": "取消活动成功！"})
