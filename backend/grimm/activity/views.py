@@ -121,6 +121,12 @@ class ActivityOperate(Resource):
             logger.warning("%d: update activity failed", activity_id)
             feedback = {"status": "failure", "message": "无效活动 ID"}
             return jsonify(feedback)
+        if len(new_info) == 1:
+            # Only updating published status
+            activity_info.published = new_info['published']
+            db.session.commit()
+            logger.info("%d: update activity published field successfully", activity_id)
+            return jsonify({"status": "success"})
         if len(new_info['activity_them_pic_name']) == 0:
             logger.warning("%d: update activity failed, no theme picture.", activity_id)
             feedback = {"status": "failure", "message": "请上传活动主题图片"}
@@ -153,6 +159,7 @@ class ActivityOperate(Resource):
         activity_info.volunteer_job_title = new_info["volunteer_job_title"]
         activity_info.volunteer_job_content = new_info["volunteer_job_content"]
         activity_info.activity_fee = new_info["activity_fee"]
+        activity_info.published = new_info["published"]
         db.session.commit()
         logger.info("%d: update activity successfully", activity_id)
         return jsonify({"status": "success"})

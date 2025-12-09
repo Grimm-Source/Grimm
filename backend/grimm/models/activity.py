@@ -46,7 +46,7 @@ class Activity(db.Model):
     user_raiser = db.Column(db.String(28), db.ForeignKey('user.openid'), comment='活动创建者，如果是视障人士/志愿者用户则使用该域，创建活动项时系统自动设置')
     approver = db.Column(db.Integer, db.ForeignKey('admin.id'), comment='活动审批者,管理员审批活动时更新')
     # assignee = db.Column(db.String(28), db.ForeignKey('user.openid'), comment='活动领队/负责人,待定')
-    published = db.Column(db.Integer, nullable=False, server_default='0', comment='活动审核发布标志位, 0=未审核，1=已审核,管理员审核活动时更新')
+    published = db.Column(db.Boolean, default=False, nullable=False, comment='活动是否已发布')
     tag_ids = db.Column(db.String(120), comment='活动分类标签,管理员审核活动时更新')
     volunteer_capacity = db.Column(db.Integer, server_default='0', comment='所需志愿者人数')
     vision_impaired_capacity = db.Column(db.Integer, server_default='0', comment='活动可容纳最大视障者人数')

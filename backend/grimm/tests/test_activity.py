@@ -157,6 +157,7 @@ class TestActivityOperatePost(ActivityCase):
             'volunteer_capacity': 1,
             'vision_impaired_capacity': 1,
             'sign_in_radius': 1,
+            'published': 0,
         }
         response = post_json(self.client, '/activity/1', data=new_info)
         self.assertEqual(response.status_code, 200)
@@ -166,6 +167,7 @@ class TestActivityOperatePost(ActivityCase):
             activity = db.session.query(Activity).filter_by(id=1).first()
             self.assertEqual(activity.title, new_info['title'])
             self.assertEqual(activity.location, new_info['location'])
+            self.assertEqual(activity.published, new_info['published'])
 
     def test_update_activity_invalid_id(self):
         new_info = {
@@ -189,6 +191,20 @@ class TestActivityOperatePost(ActivityCase):
         response = self.client.post('/activity/1', data=json.dumps(new_info), content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json, {"status": "failure", "message": "请上传活动主题图片"})
+
+    def test_publish_activity_success(self):
+        # publish an activity
+        new_info = {
+            'published': 1,
+        }
+        response = post_json(self.client, '/activity/1', data=new_info)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json, {"status": "success"})
+
+        with self.app.app_context():
+            activity = db.session.query(Activity).filter_by(id=1).first()
+            self.assertEqual(activity.published, new_info['published'])
+
 
 # DELETE "/activity/<int:activity_id>"
 class TestActivityOperateDelete(ActivityCase):
