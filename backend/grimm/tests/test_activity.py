@@ -496,6 +496,14 @@ class TestActivityRegister(ActivityCase):
             self.assertNotEqual(participant, None)
             activity_id = participant.activity_id
 
+            # 获取并发布活动
+            activity = db.session.query(Activity).filter_by(id=activity_id).first()
+            self.assertIsNotNone(activity, "Test activity should exist")
+            activity.published = True  # 设置为已发布
+            db.session.commit()
+
+            print(f"Testing with activity_id: {activity_id}, published: {activity.published}")
+
         response = post_json(self.client, f'/activityParticipant/registerActivity',
                 data={
                     'activity_id': activity_id,
@@ -505,6 +513,7 @@ class TestActivityRegister(ActivityCase):
         print(data)
         self.assertEqual(data['message'], '重复报名')
 
+        # 测试取消报名
         response = delete_json(self.client, f'/activityParticipant/registerActivity',
                 data={
                     'activity_id': activity_id,
@@ -513,11 +522,13 @@ class TestActivityRegister(ActivityCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['status'], '取消活动成功！')
 
+        # 测试重新报名
         response = post_json(self.client, f'/activityParticipant/registerActivity',
                 data={
                     'activity_id': activity_id,
                 }, headers=headers)
         data = response.json
         self.assertEqual(response.status_code, 200)
+        print(f"Re-registration response: {data}")
         self.assertEqual(data['status'], 'success')
 

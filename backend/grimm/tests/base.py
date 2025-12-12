@@ -146,6 +146,7 @@ class ActivityCase(AdminCase, UserCase):
             'vision_impaired_capacity': 1,
             'project_id': 1,
             'project_seq': 1,
+            'published': True,
         }, {
             'title': 'activity_title_2',
             'location': 'activity_localtion_2',
@@ -165,6 +166,7 @@ class ActivityCase(AdminCase, UserCase):
             'vision_impaired_capacity': 1,
             'project_id': 2,
             'project_seq': 2,
+            'published': True,
         }]
         self.user_helper_attrs = [{
                 'role': 1,

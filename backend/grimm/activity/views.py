@@ -21,11 +21,12 @@ from grimm.utils.constants import TAG_LIST
 
 # TODO keyword filter does not match without keyword
 # tags / time
+# route for mini-program
 @activity.route("/activities", methods=['GET'])
 class Activities(Resource):
     def get(self):
         keyword = request.args.get("keyword")
-        activities_info = Activity.query.all()
+        activities_info = Activity.query.filter(Activity.published == True).order_by(Activity.id.desc())
         activities_info = [dbutils.serialize(rep) for rep in activities_info]
         if not activities_info:
             return jsonify([])
@@ -33,7 +34,7 @@ class Activities(Resource):
         if keyword and len(keyword) != 0:
             queries = [activitybiz.activity_converter(activity)
                        for activity in activities_info if activity and keyword in activity["title"]]
-            logger.info("get all activities successfully")
+            logger.info(f"Get all activities successfully with keyword: {keyword}")
             return jsonify(queries)
 
         target_tag_list = request.args.get("tags")
@@ -46,7 +47,37 @@ class Activities(Resource):
         queries = [activitybiz.activity_converter(activity)
                    for activity in sorted_activities_info
                    if activitybiz.should_append_by_tag(activity, target_tag_list)]
-        logger.info("get all activities successfully")
+        logger.info("get all activities successfully for mini-program successfully.")
+        return jsonify(queries)
+
+
+# route for web admin
+@activity.route("/admin/activities", methods=['GET'])
+class Activities(Resource):
+    def get(self):
+        keyword = request.args.get("keyword")
+        activities_info = Activity.query.all()
+        activities_info = [dbutils.serialize(rep) for rep in activities_info]
+        if not activities_info:
+            return jsonify([])
+
+        if keyword and len(keyword) != 0:
+            queries = [activitybiz.activity_converter(activity)
+                       for activity in activities_info if activity and keyword in activity["title"]]
+            logger.info(f"Web: Get all activities successfully with keyword: {keyword}")
+            return jsonify(queries)
+
+        target_tag_list = request.args.get("tags")
+        if not target_tag_list or len(target_tag_list) == 0:
+            target_tag_list = "all"
+        filter_time = request.args.get("time")
+        if not filter_time or len(filter_time) == 0:
+            filter_time = "all"
+        sorted_activities_info = activitybiz.sort_by_time(activities_info, filter_time)
+        queries = [activitybiz.activity_converter(activity)
+                   for activity in sorted_activities_info
+                   if activitybiz.should_append_by_tag(activity, target_tag_list)]
+        logger.info("get all activities successfully on Web successfully.")
         return jsonify(queries)
 
 
@@ -489,6 +520,7 @@ class GetActivityParser(object):
         return parser
 
 
+# route for mini-program
 @activity.route("/activity_detail", methods=["GET"])
 class GetActivity(Resource):
     @activity.expect(GetActivityParser().get())
@@ -500,10 +532,10 @@ class GetActivity(Resource):
 
         logger.info("GetActivity: activity_id: %d, openid:%s", activity_id, openid)
 
-        activity_info = Activity.query.filter(Activity.id == activity_id).first()
+        activity_info = Activity.query.filter(Activity.id == activity_id, Activity.published == True).first()
         if not activity_info:
-            logger.warning("%d: no such activity", activity_id)
-            return jsonify({"status": "failure", "message": "未知活动ID"})
+            logger.warning("%d: no such activity or not published.", activity_id)
+            return jsonify({"status": "failure", "message": "活动不存在或未发布"})
 
         feedback = activitybiz.activity_converter(dbutils.serialize(activity_info), openid)
         feedback["status"] = "success"
@@ -665,6 +697,7 @@ class UserRegisterActivitiesParser(object):
         return parser
 
 
+# route for mini-program
 @activity.route("/activityParticipant/registerActivity", methods=["POST", 'DELETE'])
 class UserRegisterActivities(Resource):
     @activity.expect(UserRegisterActivitiesParser().common())
@@ -680,10 +713,10 @@ class UserRegisterActivities(Resource):
         if not user_info:
             return jsonify({"status": "failure", "message": "未能获取用户信息, 请先注册"})
 
-        activity_info = db.session.query(Activity).filter(Activity.id == activity_id).first()
+        activity_info = db.session.query(Activity).filter(Activity.id == activity_id, Activity.published == True).first()
         if not activity_info:
-            logger.error("Activity %d is not existing!", activity_id)
-            return jsonify({"status": "failure", "message": "活动不存在"})
+            logger.error("Activity %d is not existing or not published!", activity_id)
+            return jsonify({"status": "failure", "message": "活动不存在或未发布"})
 
         exist_registered_info = ActivityParticipant.query. \
             filter(ActivityParticipant.participant_openid == openid,
